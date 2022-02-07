@@ -1,0 +1,78 @@
+#include "GAS/System/GASGameplayEffectCalculation.h"
+#include "GAS/System/GASAttributeSet.h"
+#include "AbilitySystemComponent.h"
+
+struct FDamageAttributesStatics
+{
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(AttackRate);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(DefenseRate);
+
+	FDamageAttributesStatics()
+	{
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UGASAttributeSet, Damage, Source, true);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UGASAttributeSet, AttackRate, Source, true);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UGASAttributeSet, DefenseRate, Target, false);
+	}
+};
+
+static const FDamageAttributesStatics& GetAttributesStatics()
+{
+	static FDamageAttributesStatics Attributes;
+	return Attributes;
+}
+
+UGASGameplayEffectCalculation::UGASGameplayEffectCalculation(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	RelevantAttributesToCapture.Add(GetAttributesStatics().DamageDef);
+	RelevantAttributesToCapture.Add(GetAttributesStatics().AttackRateDef);
+	RelevantAttributesToCapture.Add(GetAttributesStatics().DefenseRateDef);
+}
+
+void UGASGameplayEffectCalculation::Execute_Implementation(
+	const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+	OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+{
+	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+
+	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
+	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+
+	FAggregatorEvaluateParameters EvaluationParameters;
+	EvaluationParameters.SourceTags = SourceTags;
+	EvaluationParameters.TargetTags = TargetTags;
+
+	float BaseDamage = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().DamageDef, EvaluationParameters,
+	                                                           BaseDamage);
+	BaseDamage += FMath::Max<float>(
+		Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+
+	float AttackRate = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef,
+	                                                           EvaluationParameters, AttackRate);
+	AttackRate = FMath::Max<float>(AttackRate, 0.0f);
+
+	float DefenseRate = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef,
+	                                                           EvaluationParameters, DefenseRate);
+	DefenseRate = FMath::Max<float>(DefenseRate, 0.0f);
+
+	auto CalculateDamage = [BaseDamage, AttackRate, DefenseRate]() -> float
+	{
+		float DamageDone = BaseDamage + (AttackRate / DefenseRate * FMath::FRandRange(1.f, BaseDamage));
+
+		if (DamageDone < 0.f)
+		{
+			DamageDone *= -1.f;
+		}
+
+		return DamageDone;
+	};
+
+	OutExecutionOutput.AddOutputModifier(
+		FGameplayModifierEvaluatedData(GetAttributesStatics().DamageProperty,
+		                               EGameplayModOp::Additive,
+		                               CalculateDamage()));
+}

@@ -1,0 +1,39 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFeatureAction.h"
+#include "GameFeatureAction_WorldActionBase.generated.h"
+
+class UGameInstance;
+struct FWorldContext;
+
+DECLARE_LOG_CATEGORY_EXTERN(LogGameplayExtraFeatures, Display, All);
+
+UENUM(BlueprintType)
+enum class EControllerOwner :uint8
+{
+	Pawn,
+	Controller
+};
+
+/**
+ *
+ */
+UCLASS(MinimalAPI, Abstract)
+class UGameFeatureAction_WorldActionBase : public UGameFeatureAction
+{
+	GENERATED_BODY()
+
+public:
+	virtual void OnGameFeatureActivating() override;
+	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
+
+protected:
+	virtual void AddToWorld(const FWorldContext& WorldContext)
+	{
+	};
+
+private:
+	void HandleGameInstanceStart(UGameInstance* GameInstance);
+	FDelegateHandle GameInstanceStartHandle;
+};
