@@ -9,7 +9,9 @@ class UGameplayEffect;
 class UGASAbilitySystemComponent;
 class UGameplayAbility;
 class UAttributeSet;
+class UDataTable;
 struct FGameplayTag;
+struct FOnAttributeChangeData;
 /**
  *
  */
@@ -79,8 +81,11 @@ public:
 	TArray<UAttributeSet*> GetAttributeSetArray() const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Enumeration Class"),
-		Category = "Custom GAS | Abilities")
+		Category = "Custom GAS | Data")
 	UEnum* InputIDEnumerationClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom GAS | Data")
+	UDataTable* LevelingData;
 
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
@@ -91,6 +96,16 @@ protected:
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+private:
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom GAS | Data")
+	void SetupCharacterLevel(const uint32 NewLevel);
+	virtual void SetupCharacterLevel_Implementation(const uint32 NewLevel);
+	virtual bool SetupCharacterLevel_Validate(const uint32 NewLevel);
+
+	void ExperienceChanged_Callback(const FOnAttributeChangeData& Data);
+
+	float NextLevelRequirement = 0;
 
 public:
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")

@@ -14,9 +14,9 @@ struct FGASLevelingData : public FTableRowBase
 
 	FGASLevelingData() :
 		Level(0),
-		BonusHealth(0.f),
-		BonusMana(0.f),
-		BonusStamina(0.f),
+		BonusMaxHealth(0.f),
+		BonusMaxMana(0.f),
+		BonusMaxStamina(0.f),
 		BonusAttackRate(0.f),
 		BonusDefenseRate(0.f),
 		ExperienceNeeded(0.f)
@@ -27,13 +27,13 @@ struct FGASLevelingData : public FTableRowBase
 	int32 Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BonusHealth;
+	float BonusMaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BonusMana;
+	float BonusMaxMana;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BonusStamina;
+	float BonusMaxStamina;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BonusAttackRate;

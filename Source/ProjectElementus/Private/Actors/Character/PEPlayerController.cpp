@@ -115,7 +115,7 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 	                     TEXT(__FUNCTION__),
 	                     *Value.ToString(), Value.GetMagnitude());
 
-	if (Value.GetMagnitude() != 0.0f)
+	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
 	{
 		const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
 
@@ -137,7 +137,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value)
 
 	APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 
-	if (IsValid(ControllerOwner) && ControllerOwner->CanJump())
+	if (IsValid(ControllerOwner) && ControllerOwner->CanJump() && !IsMoveInputIgnored())
 	{
 		ControllerOwner->Jump();
 	}

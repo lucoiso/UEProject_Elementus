@@ -31,9 +31,7 @@ public:
 
 private:
 	void DeathStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
-
-	void MovementTagChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
-	void RegenerationTagChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
+	void StunStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
 
 	void HealthChanged_Callback(const struct FOnAttributeChangeData& Data) const;
 	void StaminaChanged_Callback(const FOnAttributeChangeData& Data) const;

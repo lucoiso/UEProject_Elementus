@@ -130,7 +130,7 @@ void APECharacterBase::PreInitializeComponents()
 }
 
 void APECharacterBase::BeginPlay()
-{	
+{
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
 		this, UGameFrameworkComponentManager::NAME_GameActorReady);
 
@@ -139,6 +139,21 @@ void APECharacterBase::BeginPlay()
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
 	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
+
+	if (AbilitySystemComponent.IsValid() && Attributes.IsValid())
+	{
+		const FGASLevelingData* NextLevelingInfo = LevelingData->FindRow<FGASLevelingData>(
+			FName(*FString::FromInt(Attributes->GetLevel() + 1)), "");
+
+		if (NextLevelingInfo != nullptr)
+		{
+			NextLevelRequirement = NextLevelingInfo->ExperienceNeeded;
+
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetExperienceAttribute()).
+			                        AddUObject(
+				                        this, &APECharacterBase::ExperienceChanged_Callback);
+		}
+	}
 }
 
 void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -146,6 +161,57 @@ void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
 	Super::EndPlay(EndPlayReason);
+}
+
+void APECharacterBase::ExperienceChanged_Callback(const FOnAttributeChangeData& Data)
+{
+	if (Attributes.IsValid() && Data.NewValue >= NextLevelRequirement)
+	{
+		SetupCharacterLevel(Attributes->GetLevel() + 1);
+	}
+}
+
+#define UPDATE_ATTRIBUTE_INFORMATIONS(AttributeSet, AttributePropery, LevelingInfo) \
+AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + LevelingInfo->Bonus##AttributePropery;
+
+void APECharacterBase::SetupCharacterLevel_Implementation(const uint32 NewLevel)
+{
+	if (IsValid(LevelingData))
+	{
+		const FGASLevelingData* RespectiveLevelingInfo = LevelingData->FindRow<FGASLevelingData>(
+			FName(*FString::FromInt(NewLevel - 1)), "");
+
+		if (Attributes.IsValid() && RespectiveLevelingInfo != nullptr)
+		{
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, AttackRate, RespectiveLevelingInfo);
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxHealth, RespectiveLevelingInfo);
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxStamina, RespectiveLevelingInfo);
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxMana, RespectiveLevelingInfo);
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, DefenseRate, RespectiveLevelingInfo);
+
+			const FGASLevelingData* NextLevelingInfo = LevelingData->FindRow<FGASLevelingData>(
+				FName(*FString::FromInt(NewLevel)), "");
+
+			if (NextLevelingInfo != nullptr)
+			{
+				const float NewExperience = Attributes->GetExperience() - NextLevelRequirement;
+				NextLevelRequirement = NextLevelingInfo->ExperienceNeeded;
+
+				Attributes->SetLevel(NewLevel);
+				Attributes->SetExperience(NewExperience);
+			}
+			else // Reached max level
+			{
+				AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetExperienceAttribute()).
+				                        RemoveAll(this);
+			}
+		}
+	}
+}
+
+bool APECharacterBase::SetupCharacterLevel_Validate(const uint32 NewLevel)
+{
+	return true;
 }
 
 void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)

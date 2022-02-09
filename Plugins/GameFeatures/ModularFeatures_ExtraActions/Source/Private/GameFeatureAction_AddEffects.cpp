@@ -146,7 +146,10 @@ void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 			{
 				for (const FActiveGameplayEffectHandle& EffectHandle : ActiveEffects)
 				{
-					AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);
+					if (EffectHandle.IsValid())
+					{
+						AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);						
+					}
 				}
 			}
 		}

@@ -61,25 +61,13 @@ void APEPlayerState::BeginPlay()
 		                        AddUObject(
 			                        this, &APEPlayerState::ManaChanged_Callback);
 
-		AbilitySystemComponent->RegisterGameplayTagEvent(
-			FGameplayTag::RequestGameplayTag(FName("GameplayEffect.Debuff.Regeneration.Block.Health")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::RegenerationTagChanged_Callback);
-
-		AbilitySystemComponent->RegisterGameplayTagEvent(
-			FGameplayTag::RequestGameplayTag(FName("GameplayEffect.Debuff.Regeneration.Block.Stamina")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::RegenerationTagChanged_Callback);
-
-		AbilitySystemComponent->RegisterGameplayTagEvent(
-			FGameplayTag::RequestGameplayTag(FName("GameplayEffect.Debuff.Regeneration.Block.Mana")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::RegenerationTagChanged_Callback);
-
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
 		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
 			this, &APEPlayerState::DeathStateChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
 		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::MovementTagChanged_Callback);
+			this, &APEPlayerState::StunStateChanged_Callback);
 	}
 }
 
@@ -107,7 +95,7 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 	}
 }
 
-void APEPlayerState::MovementTagChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
+void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
 	                 TEXT(__FUNCTION__),
@@ -115,64 +103,10 @@ void APEPlayerState::MovementTagChanged_Callback(const FGameplayTag CallbackTag,
 
 	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
 
-	if (IsValid(Player))
+	if (IsValid(Player) && IsValid(Player->GetController()))
 	{
-		UCharacterMovementComponent* MovComp = Player->GetCharacterMovement();
-
-		if (NewCount == 0)
-		{
-			MovComp->Activate();
-		}
-
-		else
-		{
-			MovComp->Deactivate();
-		}
+		Player->GetController()->SetIgnoreMoveInput(NewCount != 0);
 	}
-}
-
-void APEPlayerState::RegenerationTagChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
-{
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 TEXT(__FUNCTION__),
-	                 *CallbackTag.ToString(), NewCount);
-
-	/*
-	const FGameplayTag HealthBlockTag = FGameplayTag::RequestGameplayTag(
-		FName("GameplayEffect.Debuff.Regeneration.Block.Health"));
-
-	const FGameplayTag StaminaBlockTag = FGameplayTag::RequestGameplayTag(
-		FName("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
-
-	const FGameplayTag ManaBlockTag = FGameplayTag::RequestGameplayTag(
-		FName("GameplayEffect.Debuff.Regeneration.Block.Mana"));
-
-	if (CallbackTag == HealthBlockTag)
-	{
-		NewCount == 0
-			? AbilitySystemComponent->ApplyGameplayEffectToSelf(HealthRegenEffect_Ref.GetDefaultObject(), 1.f,
-			                                                    AbilitySystemComponent->MakeEffectContext())
-			: AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
-				HealthRegenEffect_Ref, AbilitySystemComponent.Get());
-	}
-
-	else if (CallbackTag == StaminaBlockTag)
-	{
-		NewCount == 0
-			? AbilitySystemComponent->ApplyGameplayEffectToSelf(StaminaRegenEffect_Ref.GetDefaultObject(), 1.f,
-			                                                    AbilitySystemComponent->MakeEffectContext())
-			: AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
-				StaminaRegenEffect_Ref, AbilitySystemComponent.Get());
-	}
-
-	else if (CallbackTag == ManaBlockTag)
-	{
-		NewCount == 0
-			? AbilitySystemComponent->ApplyGameplayEffectToSelf(ManaRegenEffect_Ref.GetDefaultObject(), 1.f,
-			                                                    AbilitySystemComponent->MakeEffectContext())
-			: AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
-				ManaRegenEffect_Ref, AbilitySystemComponent.Get());
-	}*/
 }
 
 void APEPlayerState::HealthChanged_Callback(const FOnAttributeChangeData& Data) const
