@@ -26,7 +26,7 @@ private:
 	                          const FGameplayAbilityActorInfo* ActorInfo,
 	                          const FGameplayAbilityActivationInfo ActivationInfo) override;
 
-	virtual void WaitTagAdded_Callback_Implementation() override;
+	virtual void WaitAddedTag_Callback_Implementation() override;
 
 	TWeakObjectPtr<UTelekinesisAbility_Task> AbilityTask;
 };

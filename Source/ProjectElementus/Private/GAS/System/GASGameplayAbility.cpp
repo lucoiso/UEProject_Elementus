@@ -24,7 +24,8 @@ UGASGameplayAbility::UGASGameplayAbility(const FObjectInitializer& ObjectInitial
 	: Super(ObjectInitializer),
 	  AbilityActiveTime(0),
 	  AbilityMaxRange(0),
-	  bEndAbilityAfterActiveTime(false)
+	  bEndAbilityAfterActiveTime(false),
+	  bAutoActivateOnGrant(false)
 {
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Stunned"));
@@ -32,6 +33,18 @@ UGASGameplayAbility::UGASGameplayAbility(const FObjectInitializer& ObjectInitial
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	bIsCancelable = true;
+}
+
+void UGASGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	ABILITY_VLOG(this, Warning, TEXT("Ability %s given to %s."), *GetName(), *ActorInfo->AvatarActor->GetName());
+
+	Super::OnGiveAbility(ActorInfo, Spec);
+
+	if (!Spec.IsActive() && bAutoActivateOnGrant)
+	{
+		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
+	}
 }
 
 void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
@@ -165,6 +178,26 @@ void UGASGameplayAbility::ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHa
 		{
 			ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 		}
+	}
+}
+
+void UGASGameplayAbility::BP_RemoveAbilityEffectsFromSelf()
+{
+	check(CurrentActorInfo);
+
+	RemoveAbilityEffectsFromSelf(CurrentActorInfo);
+}
+
+void UGASGameplayAbility::RemoveAbilityEffectsFromSelf(const FGameplayAbilityActorInfo* ActorInfo)
+{
+	ABILITY_VLOG(this, Warning, TEXT("Removing %s ability effects from owner."), *GetName());
+
+	for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
+	{
+		FGameplayEffectQuery Query;
+		Query.EffectDefinition = EffectGroup.EffectClass;
+
+		ActorInfo->AbilitySystemComponent.Get()->RemoveActiveEffects(Query);
 	}
 }
 
@@ -380,22 +413,22 @@ void UGASGameplayAbility::ActivateWaitCancelInputTask()
 	AbilityTask_WaitCancel->ReadyForActivation();
 }
 
-void UGASGameplayAbility::ActivateWaitTagAddedTask(const FGameplayTag Tag)
+void UGASGameplayAbility::ActivateWaitAddedTagTask(const FGameplayTag Tag)
 {
 	UAbilityTask_WaitGameplayTagAdded* AbilityTask_WaitGameplayTagAdded =
 		UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, Tag);
 
-	AbilityTask_WaitGameplayTagAdded->Added.AddDynamic(this, &UGASGameplayAbility::WaitTagAdded_Callback);
+	AbilityTask_WaitGameplayTagAdded->Added.AddDynamic(this, &UGASGameplayAbility::WaitAddedTag_Callback);
 
 	AbilityTask_WaitGameplayTagAdded->ReadyForActivation();
 }
 
-void UGASGameplayAbility::ActivateWaitTagRemovedTask(const FGameplayTag Tag)
+void UGASGameplayAbility::ActivateWaitRemovedTagTask(const FGameplayTag Tag)
 {
 	UAbilityTask_WaitGameplayTagRemoved* AbilityTask_WaitGameplayTagRemoved =
 		UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(this, Tag);
 
-	AbilityTask_WaitGameplayTagRemoved->Removed.AddDynamic(this, &UGASGameplayAbility::WaitTagRemoved_Callback);
+	AbilityTask_WaitGameplayTagRemoved->Removed.AddDynamic(this, &UGASGameplayAbility::WaitRemovedTag_Callback);
 
 	AbilityTask_WaitGameplayTagRemoved->ReadyForActivation();
 }

@@ -11,6 +11,8 @@ UTelekinesis_Ability::UTelekinesis_Ability(const FObjectInitializer& ObjectIniti
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis.Grab"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
+
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging.Hook"));
 }
 
@@ -48,7 +50,7 @@ void UTelekinesis_Ability::ActivateAbility
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Telekinesis.Grab"), Params,
 	                     ActorInfo->AbilitySystemComponent.Get());
 
-	ActivateWaitTagAddedTask(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis.Throw"));
+	ActivateWaitAddedTagTask(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis.Throw"));
 }
 
 void UTelekinesis_Ability::InputPressed(const FGameplayAbilitySpecHandle Handle,
@@ -65,7 +67,7 @@ void UTelekinesis_Ability::InputPressed(const FGameplayAbilitySpecHandle Handle,
 	CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 }
 
-void UTelekinesis_Ability::WaitTagAdded_Callback_Implementation()
+void UTelekinesis_Ability::WaitAddedTag_Callback_Implementation()
 {
 	AbilityTask->ThrowObject();
 
