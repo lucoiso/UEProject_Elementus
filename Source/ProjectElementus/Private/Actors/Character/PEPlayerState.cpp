@@ -25,7 +25,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	NetUpdateFrequency = 33.334f;
+	NetUpdateFrequency = 75.f;
 }
 
 

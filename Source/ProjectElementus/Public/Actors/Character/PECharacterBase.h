@@ -103,6 +103,10 @@ protected:
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
+	void InitializeAttributes(const bool bOnRep);
+
+	bool bAttributesInitialized = false;
 
 private:
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom GAS | Data")

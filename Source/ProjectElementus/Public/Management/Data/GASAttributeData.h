@@ -17,7 +17,6 @@ struct FGASLevelingData : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 	FGASLevelingData() :
-		Level(0),
 		BonusMaxHealth(0.f),
 		BonusMaxMana(0.f),
 		BonusMaxStamina(0.f),
@@ -26,9 +25,6 @@ struct FGASLevelingData : public FTableRowBase
 		ExperienceNeeded(0.f)
 	{
 	};
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Level;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BonusMaxHealth;

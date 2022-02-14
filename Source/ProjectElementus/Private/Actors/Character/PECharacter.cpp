@@ -35,30 +35,14 @@ void APECharacter::PossessedBy(AController* InputController)
 {
 	Super::PossessedBy(InputController);
 
-	APEPlayerState* State = Cast<APEPlayerState>(GetPlayerState());
-
-	if (IsValid(State))
-	{
-		AbilitySystemComponent = Cast<UGASAbilitySystemComponent>(State->GetAbilitySystemComponent());
-		State->GetAbilitySystemComponent()->InitAbilityActorInfo(State, this);
-		Attributes = Cast<UGASAttributeSet>(State->GetAttributeSetBase());
-	}
+	InitializeAttributes(false);
 }
 
 void APECharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	APEPlayerState* State = Cast<APEPlayerState>(GetPlayerState());
-
-	if (IsValid(State))
-	{
-		AbilitySystemComponent = Cast<UGASAbilitySystemComponent>(State->GetAbilitySystemComponent());
-		AbilitySystemComponent->InitAbilityActorInfo(State, this);
-		Attributes = Cast<UGASAttributeSet>(State->GetAttributeSetBase());
-
-		BindASCInput();
-	}
+	InitializeAttributes(true);
 }
 
 void APECharacter::OnRep_Controller()

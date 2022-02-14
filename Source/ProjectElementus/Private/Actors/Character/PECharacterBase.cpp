@@ -4,6 +4,7 @@
 
 #include "Actors/Character/PECharacterBase.h"
 
+#include "Actors/Character/PEPlayerState.h"
 #include "Camera/CameraComponent.h"
 
 #include "Components/CapsuleComponent.h"
@@ -157,11 +158,6 @@ void APECharacterBase::BeginPlay()
 			                        AddUObject(
 				                        this, &APECharacterBase::ExperienceChanged_Callback);
 		}
-
-		if (!AttributesData.IsNull())
-		{
-			Attributes->InitFromMetaDataTable(AttributesData.LoadSynchronous());
-		}
 	}
 }
 
@@ -177,6 +173,28 @@ void APECharacterBase::ExperienceChanged_Callback(const FOnAttributeChangeData& 
 	if (Attributes.IsValid() && Data.NewValue >= NextLevelRequirement)
 	{
 		SetupCharacterLevel(Attributes->GetLevel() + 1);
+	}
+}
+
+void APECharacterBase::InitializeAttributes(const bool bOnRep)
+{
+	APEPlayerState* State = Cast<APEPlayerState>(GetPlayerState());
+
+	if (IsValid(State))
+	{
+		AbilitySystemComponent = Cast<UGASAbilitySystemComponent>(State->GetAbilitySystemComponent());
+
+		bOnRep
+			? AbilitySystemComponent->InitAbilityActorInfo(State, this)
+			: State->GetAbilitySystemComponent()->InitAbilityActorInfo(State, this);
+
+		Attributes = Cast<UGASAttributeSet>(State->GetAttributeSetBase());
+
+		if (!AttributesData.IsNull() && !bAttributesInitialized)
+		{
+			Attributes->InitFromMetaDataTable(AttributesData.LoadSynchronous());
+			bAttributesInitialized = true;
+		}
 	}
 }
 
