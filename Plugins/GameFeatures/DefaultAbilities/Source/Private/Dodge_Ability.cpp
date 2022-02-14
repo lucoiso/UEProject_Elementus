@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "Dodge_Ability.h"
 // #include "Abilities/Tasks/AbilityTask_ApplyRootMotionMoveToForce.h"
 #include "Actors/Character/PECharacterBase.h"

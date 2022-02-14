@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -16,15 +20,19 @@ struct FAbilityMapping
 {
 	GENERATED_BODY()
 
+	/* Ability class to be added */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSoftClassPtr<UGameplayAbility> AbilityClass;
 
+	/* Enhanced Input Action to bind ability activation */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSoftObjectPtr<UInputAction> InputAction;
 
+	/* Ability Level */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 AbilityLevel = 1;
 
+	/* InputID Value Name associated by Enumeration Class */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Value Name"))
 	FName InputIDValueName;
 };
@@ -39,16 +47,20 @@ class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldAct
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, Category="Settings")
+	/* Target actor to which abilities will be given */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (OnlyPlaceable))
 	TSoftClassPtr<AActor> TargetActorClass;
 
-	UPROPERTY(EditAnywhere, Category="Settings")
+	/* Determines whether the binding will be performed within the controller class or within the pawn */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
 	EControllerOwner InputBindingOwner = EControllerOwner::Controller;
 
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "InputID Enumeration Class"), Category="Settings")
+	/* Enumeration class that will be used by the Ability System Component to manage abilities inputs */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (DisplayName = "InputID Enumeration Class"))
 	TSoftObjectPtr<UEnum> InputIDEnumerationClass;
 
-	UPROPERTY(EditAnywhere, Category="Settings", meta=(TitleProperty="Ability Mapping", ShowOnlyInnerProperties))
+	/* Abilities to be added */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(TitleProperty="Ability Mapping", ShowOnlyInnerProperties))
 	TArray<FAbilityMapping> Abilities;
 
 protected:

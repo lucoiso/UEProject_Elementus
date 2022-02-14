@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "Sprint_Ability.h"
 
 USprint_Ability::USprint_Ability(const FObjectInitializer& ObjectInitializer)

@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "Crouch_Ability.h"
 #include "Actors/Character/PECharacterBase.h"
 

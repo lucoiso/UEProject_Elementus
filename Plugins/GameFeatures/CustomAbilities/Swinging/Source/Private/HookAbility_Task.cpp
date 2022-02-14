@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "HookAbility_Task.h"
 #include "Actors/Character/PECharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"

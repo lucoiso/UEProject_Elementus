@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "GAS/Tasks/SpawnProjectile_Task.h"
 
 #include "Actors/Character/PECharacterBase.h"

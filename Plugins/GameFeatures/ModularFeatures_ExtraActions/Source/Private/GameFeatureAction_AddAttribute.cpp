@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #include "GameFeatureAction_AddAttribute.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
@@ -97,6 +101,12 @@ void UGameFeatureAction_AddAttribute::AddAttribute_Implementation(AActor* Target
 				if (IsValid(SetType))
 				{
 					UAttributeSet* NewSet = NewObject<UAttributeSet>(AbilitySystemComponent, SetType);
+
+					if (!InitializationData.IsNull())
+					{
+						NewSet->InitFromMetaDataTable(InitializationData.LoadSynchronous());
+					}
+
 					AbilitySystemComponent->AddAttributeSetSubobject(NewSet);
 					AbilitySystemComponent->ForceReplication();
 

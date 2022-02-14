@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #include "GameFeatureAction_AddAbilities.h"
 #include "AbilityInputBinding.h"
 #include "AbilitySystemComponent.h"

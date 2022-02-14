@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -18,9 +22,11 @@ struct FFunctionStackedData
 {
 	GENERATED_BODY()
 
+	/* UFunction name */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName FunctionName;
 
+	/* Input Trigger event type */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<ETriggerEvent> Triggers;
 };
@@ -30,11 +36,12 @@ struct FInputMappingStack
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	/* Enhanced Input Action to bind with these settings */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSoftObjectPtr<UInputAction> ActionInput;
 
 	/* UFunction and Triggers to bind activation by Enhanced Input */
-	UPROPERTY(EditAnywhere, meta = (DisplayName = "UFunctions to Bind"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "UFunctions to Bind"))
 	TArray<FFunctionStackedData> FunctionBindingData;
 };
 
@@ -46,20 +53,25 @@ class UGameFeatureAction_AddInputs final : public UGameFeatureAction_WorldAction
 {
 	GENERATED_BODY()
 
-public:
-	UPROPERTY(EditAnywhere, Category="Settings")
+public:	
+	/* Target pawn to which Input Mapping will be given */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (AllowedClasses="Pawn"))
 	TSoftClassPtr<APawn> TargetPawnClass;
-
-	UPROPERTY(EditAnywhere, Category="Settings")
+	
+	/* Determines whether the binding will be performed within the controller class or within the pawn */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
 	EControllerOwner InputBindingOwner = EControllerOwner::Controller;
 
-	UPROPERTY(EditAnywhere, Category="Settings")
+	/* Enhanced Input Mapping Context to be added */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
 	TSoftObjectPtr<UInputMappingContext> InputMappingContext;
 
-	UPROPERTY(EditAnywhere, Category="Settings")
+	/* Input Mapping priority */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
 	int32 MappingPriority = 1;
 
-	UPROPERTY(EditAnywhere, Category="Settings", meta=(DisplayName="Actions Bindings", ShowOnlyInnerProperties))
+	/* Enhanced Input Actions binding stacked data */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(DisplayName="Actions Bindings", ShowOnlyInnerProperties))
 	TArray<FInputMappingStack> ActionsBindings;
 
 protected:

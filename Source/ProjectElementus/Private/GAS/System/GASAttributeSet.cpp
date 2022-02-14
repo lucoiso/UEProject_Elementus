@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "GAS/System/GASAttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"
@@ -16,9 +20,6 @@ UGASAttributeSet::UGASAttributeSet(const FObjectInitializer& ObjectInitializer)
 	  , DefenseRate(1.0f)
 	  , SpeedRate(1.0f)
 	  , JumpRate(1.0f)
-	  , HealthRegenerationRate(1.0f)
-	  , ManaRegenerationRate(1.0f)
-	  , StaminaRegenerationRate(1.0f)
 	  , Level(1)
 	  , Experience(0)
 	  , Gold(0)
@@ -102,9 +103,6 @@ void UGASAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(UGASAttributeSet, DefenseRate, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGASAttributeSet, SpeedRate, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGASAttributeSet, JumpRate, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UGASAttributeSet, HealthRegenerationRate, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UGASAttributeSet, ManaRegenerationRate, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UGASAttributeSet, StaminaRegenerationRate, COND_None, REPNOTIFY_Always);
 
 	DOREPLIFETIME_CONDITION_NOTIFY(UGASAttributeSet, Level, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGASAttributeSet, Experience, COND_None, REPNOTIFY_Always);
@@ -177,21 +175,6 @@ void UGASAttributeSet::OnRep_SpeedRate(const FGameplayAttributeData& OldValue) c
 void UGASAttributeSet::OnRep_JumpRate(const FGameplayAttributeData& OldValue) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UGASAttributeSet, JumpRate, OldValue);
-}
-
-void UGASAttributeSet::OnRep_HealthRegenerationRate(const FGameplayAttributeData& OldValue) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UGASAttributeSet, HealthRegenerationRate, OldValue);
-}
-
-void UGASAttributeSet::OnRep_ManaRegenerationRate(const FGameplayAttributeData& OldValue) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UGASAttributeSet, ManaRegenerationRate, OldValue);
-}
-
-void UGASAttributeSet::OnRep_StaminaRegenerationRate(const FGameplayAttributeData& OldValue) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UGASAttributeSet, StaminaRegenerationRate, OldValue);
 }
 
 void UGASAttributeSet::OnRep_Level(const FGameplayAttributeData& OldValue) const

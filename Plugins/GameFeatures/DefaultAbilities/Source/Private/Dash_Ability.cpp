@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "Dash_Ability.h"
 #include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
 #include "Actors/Character/PECharacterBase.h"

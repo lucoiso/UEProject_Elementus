@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/Character/PECharacterBase.h"
 
@@ -21,7 +25,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	NetUpdateFrequency = 100.0f;
+	NetUpdateFrequency = 33.334f;
 }
 
 
@@ -249,19 +253,4 @@ float APEPlayerState::GetSpeedRate() const
 float APEPlayerState::GetJumpRate() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, JumpRate);
-}
-
-float APEPlayerState::GetHealthRegenerationRate() const
-{
-	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, HealthRegenerationRate);
-}
-
-float APEPlayerState::GetManaRegenerationRate() const
-{
-	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, ManaRegenerationRate);
-}
-
-float APEPlayerState::GetStaminaRegenerationRate() const
-{
-	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, StaminaRegenerationRate);
 }

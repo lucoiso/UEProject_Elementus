@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -18,12 +22,15 @@ struct FEffectStackedData
 {
 	GENERATED_BODY()
 
+	/* Gameplay Effect Class */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSoftClassPtr<UGameplayEffect> EffectClass;
-
+	
+	/* Gameplay Effect level */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 EffectLevel = 1;
-
+	
+	/* Set By Caller parameters */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<FGameplayTag, float> SetByCallerParams;
 };
@@ -37,10 +44,12 @@ class UGameFeatureAction_AddEffects final : public UGameFeatureAction_WorldActio
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, Category="Settings")
+	/* Target actor to which gameplay effects will be given */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (OnlyPlaceable))
 	TSoftClassPtr<AActor> TargetActorClass;
 
-	UPROPERTY(EditAnywhere, Category="Settings", meta=(TitleProperty="Effects Mapping", ShowOnlyInnerProperties))
+	/* Gameplay Effects stacked informations */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(TitleProperty="Effects Mapping", ShowOnlyInnerProperties))
 	TArray<FEffectStackedData> Effects;
 
 protected:

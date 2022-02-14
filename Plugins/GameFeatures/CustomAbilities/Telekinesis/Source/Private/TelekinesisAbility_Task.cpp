@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "TelekinesisAbility_Task.h"
 #include "ThrowableActor.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"

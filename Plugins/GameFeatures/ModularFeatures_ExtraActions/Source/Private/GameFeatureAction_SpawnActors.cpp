@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #include "GameFeatureAction_SpawnActors.h"
 #include "Components/GameFrameworkComponentManager.h"
 

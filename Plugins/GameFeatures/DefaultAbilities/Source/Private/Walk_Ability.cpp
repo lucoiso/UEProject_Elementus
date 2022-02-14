@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #include "Walk_Ability.h"
 
 UWalk_Ability::UWalk_Ability(const FObjectInitializer& ObjectInitializer)

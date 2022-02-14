@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,10 +17,12 @@ struct FActorSpawnSettings
 {
 	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (OnlyPlaceable))
+	/* Actor class to be spawned */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (OnlyPlaceable))
 	TSoftClassPtr<AActor> ActorClass;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	/* Transform settings to be added to spawned actor */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FTransform SpawnTransform;
 };
 
@@ -29,10 +35,13 @@ class UGameFeatureAction_SpawnActors final : public UGameFeatureAction_WorldActi
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, Category="Settings")
+	
+	/* Target level to which actor will be spawned */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
 	TSoftObjectPtr<UWorld> TargetLevel;
 
-	UPROPERTY(EditAnywhere, Category="Settings")
+	/* Stacked spawn settings */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
 	TArray<FActorSpawnSettings> SpawnSettings;
 
 protected:

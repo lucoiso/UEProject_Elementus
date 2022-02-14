@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -9,7 +13,7 @@ struct FWorldContext;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogGameplayExtraFeatures, Display, All);
 
-UENUM(BlueprintType)
+UENUM(BlueprintType, Category = "GFA Extra Actions | Enums")
 enum class EControllerOwner :uint8
 {
 	Pawn,

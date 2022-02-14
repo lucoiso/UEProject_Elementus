@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+
 #include "GameFeatureAction_WorldActionBase.h"
 #include "GameFeaturesSubsystemSettings.h"
 #include "Engine/World.h"

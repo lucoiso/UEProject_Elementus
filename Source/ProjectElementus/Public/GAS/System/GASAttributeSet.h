@@ -1,3 +1,7 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -74,18 +78,6 @@ public:
 	FGameplayAttributeData JumpRate;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, JumpRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_HealthRegenerationRate)
-	FGameplayAttributeData HealthRegenerationRate;
-	ATTRIBUTE_ACCESSORS(UGASAttributeSet, HealthRegenerationRate)
-
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_ManaRegenerationRate)
-	FGameplayAttributeData ManaRegenerationRate;
-	ATTRIBUTE_ACCESSORS(UGASAttributeSet, ManaRegenerationRate)
-
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_StaminaRegenerationRate)
-	FGameplayAttributeData StaminaRegenerationRate;
-	ATTRIBUTE_ACCESSORS(UGASAttributeSet, StaminaRegenerationRate)
-
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Level)
 	FGameplayAttributeData Level;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Level)
@@ -128,15 +120,6 @@ protected:
 
 	UFUNCTION()
 	void OnRep_JumpRate(const FGameplayAttributeData& OldValue) const;
-
-	UFUNCTION()
-	void OnRep_HealthRegenerationRate(const FGameplayAttributeData& OldValue) const;
-
-	UFUNCTION()
-	void OnRep_ManaRegenerationRate(const FGameplayAttributeData& OldValue) const;
-
-	UFUNCTION()
-	void OnRep_StaminaRegenerationRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
 	void OnRep_Level(const FGameplayAttributeData& OldValue) const;
