@@ -109,7 +109,7 @@ protected:
 	bool bAttributesInitialized = false;
 
 private:
-	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom GAS | Data")
+	UFUNCTION(NetMulticast, Reliable, WithValidation, Category = "Custom GAS | Data")
 	void SetupCharacterLevel(const uint32 NewLevel);
 	virtual void SetupCharacterLevel_Implementation(const uint32 NewLevel);
 	virtual bool SetupCharacterLevel_Validate(const uint32 NewLevel);

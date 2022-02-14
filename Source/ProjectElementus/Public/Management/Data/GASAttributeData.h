@@ -41,7 +41,8 @@ struct FGASLevelingData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BonusDefenseRate;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	/* Required experience to pass to next level */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Required Xp to Level Up"))
 	float ExperienceNeeded;
 };
 
