@@ -2,8 +2,10 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
+Plugins/Developer/RiderLink
 .vscode
 .vs
+.idea
 *.VC.db
 *.opensdf
 *.opendb
