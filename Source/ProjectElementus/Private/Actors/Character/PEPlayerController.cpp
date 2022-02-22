@@ -78,7 +78,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
-	                     TEXT(__FUNCTION__), InputID);
+	                     __func__, InputID);
 
 	const APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 
@@ -93,7 +93,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
-	                     TEXT(__FUNCTION__), InputID);
+	                     __func__, InputID);
 
 	const APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 
@@ -106,7 +106,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 {
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     TEXT(__FUNCTION__),
+	                     __func__,
 	                     *Value.ToString(), Value.GetMagnitude());
 
 	AddYawInput(-1.f * Value[1] * BaseTurnRate * GetWorld()->GetDeltaSeconds());
@@ -116,7 +116,7 @@ void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 void APEPlayerController::Move(const FInputActionValue& Value)
 {
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     TEXT(__FUNCTION__),
+	                     __func__,
 	                     *Value.ToString(), Value.GetMagnitude());
 
 	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
@@ -136,7 +136,7 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 void APEPlayerController::Jump(const FInputActionValue& Value)
 {
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     TEXT(__FUNCTION__),
+	                     __func__,
 	                     *Value.ToString(), Value.GetMagnitude());
 
 	APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());

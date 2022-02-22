@@ -38,7 +38,7 @@ void APEPlayerState::PreInitializeComponents()
 
 void APEPlayerState::BeginPlay()
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called."), TEXT(__FUNCTION__));
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called."), __func__);
 
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
 		this, UGameFrameworkComponentManager::NAME_GameActorReady);
@@ -85,7 +85,7 @@ void APEPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 TEXT(__FUNCTION__),
+	                 __func__,
 	                 *CallbackTag.ToString(), NewCount);
 
 	if (NewCount != 0)
@@ -102,7 +102,7 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 TEXT(__FUNCTION__),
+	                 __func__,
 	                 *CallbackTag.ToString(), NewCount);
 
 	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
@@ -115,7 +115,7 @@ void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, c
 
 void APEPlayerState::HealthChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), TEXT(__FUNCTION__), Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
 	APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
 
@@ -130,7 +130,7 @@ void APEPlayerState::HealthChanged_Callback(const FOnAttributeChangeData& Data) 
 
 void APEPlayerState::StaminaChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), TEXT(__FUNCTION__), Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
 	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
 
@@ -141,7 +141,7 @@ void APEPlayerState::StaminaChanged_Callback(const FOnAttributeChangeData& Data)
 
 void APEPlayerState::ManaChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), TEXT(__FUNCTION__), Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
 	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
 
@@ -152,7 +152,7 @@ void APEPlayerState::ManaChanged_Callback(const FOnAttributeChangeData& Data) co
 
 void APEPlayerState::SpeedRateChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), TEXT(__FUNCTION__), Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
 	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
 
@@ -167,7 +167,7 @@ void APEPlayerState::SpeedRateChanged_Callback(const FOnAttributeChangeData& Dat
 
 void APEPlayerState::JumpRateChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), TEXT(__FUNCTION__), Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
 	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
 
@@ -180,20 +180,20 @@ void APEPlayerState::JumpRateChanged_Callback(const FOnAttributeChangeData& Data
 
 UAbilitySystemComponent* APEPlayerState::GetAbilitySystemComponent() const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), TEXT(__FUNCTION__));
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
 
 	return AbilitySystemComponent.Get();
 }
 
 UAttributeSet* APEPlayerState::GetAttributeSetBase() const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), TEXT(__FUNCTION__));
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
 	return Attributes.Get();
 }
 
 TArray<UAttributeSet*> APEPlayerState::GetAttributeSetArray() const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), TEXT(__FUNCTION__));
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
 
 	return AbilitySystemComponent.Get()->GetSpawnedAttributes();
 }
@@ -201,7 +201,7 @@ TArray<UAttributeSet*> APEPlayerState::GetAttributeSetArray() const
 #define RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, PropertyName) \
 {\
 	const float OutValue = Attributes.IsValid() ? Attributes->Get##PropertyName() : -1.f;\
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), TEXT(__FUNCTION__), OutValue);\
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, OutValue);\
 	return OutValue;\
 }
 
