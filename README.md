@@ -14,6 +14,6 @@ _Plugin created: https://github.com/lucoiso/UEModularFeatures_ExtraActions_
 
 Related post on Unreal Engine forums: https://forums.unrealengine.com/t/codename-project-elementus-unnamed-template/273595
 
-**This project is being built on Unreal Engine 5 Early Access.**
+**This project is being built on Unreal Engine 5 Preview 1.**
 
 ## More infos on the way...
