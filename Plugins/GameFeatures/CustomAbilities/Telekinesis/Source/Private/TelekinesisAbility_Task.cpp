@@ -51,6 +51,7 @@ void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
 {
 	if (bIsFinished)
 	{
+		EndTask();
 		return;
 	}
 
@@ -82,6 +83,8 @@ void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 void UTelekinesisAbility_Task::ThrowObject()
 {
+	UE_LOG(LogGameplayTasks, Warning, TEXT(" %s called"), __func__);
+
 	bIsFinished = true;
 
 	UPrimitiveComponent* Throwable = PhysicsHandle->GetGrabbedComponent();
@@ -99,7 +102,6 @@ void UTelekinesisAbility_Task::ThrowObject()
 	else
 	{
 		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+		EndTask();
 	}
-
-	EndTask();
 }

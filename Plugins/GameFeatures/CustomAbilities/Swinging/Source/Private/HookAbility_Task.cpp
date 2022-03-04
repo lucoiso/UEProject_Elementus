@@ -32,6 +32,7 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 {
 	if (bIsFinished)
 	{
+		EndTask();
 		return;
 	}
 
