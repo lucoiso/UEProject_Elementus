@@ -254,3 +254,24 @@ float APEPlayerState::GetJumpRate() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, JumpRate);
 }
+
+float APEPlayerState::GetExperience() const
+{
+	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Experience);
+}
+
+float APEPlayerState::GetLevelingRequirementExp() const
+{
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
+
+	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
+
+	return IsValid(Player) ?
+		Player->GetNextLevelRequirement() :
+		-1.f;
+}
+
+float APEPlayerState::GetGold() const
+{
+	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Gold);
+}

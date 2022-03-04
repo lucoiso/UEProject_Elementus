@@ -14,6 +14,7 @@ class UGASAbilitySystemComponent;
 class UGameplayAbility;
 class UAttributeSet;
 class UDataTable;
+class APEPlayerState;
 struct FGameplayTag;
 struct FOnAttributeChangeData;
 /**
@@ -84,6 +85,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
 	TArray<UAttributeSet*> GetAttributeSetArray() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
+	APEPlayerState* GetPEPlayerState() const;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Enumeration Class"),
 		Category = "Custom GAS | Data")
 	UEnum* InputIDEnumerationClass;
@@ -119,6 +123,9 @@ private:
 	float NextLevelRequirement = 0;
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Data")
+	float GetNextLevelRequirement() const;
+
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
 	void GiveAbility(TSubclassOf<UGameplayAbility> Ability);
 

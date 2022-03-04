@@ -99,6 +99,7 @@ void UTelekinesisAbility_Task::ThrowObject()
 	else
 	{
 		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
-		EndTask();
 	}
+
+	EndTask();
 }

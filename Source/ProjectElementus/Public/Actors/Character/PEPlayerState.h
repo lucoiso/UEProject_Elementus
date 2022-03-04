@@ -90,4 +90,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
 	float GetJumpRate() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	float GetExperience() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	float GetGold() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	float GetLevelingRequirementExp() const;
 };

@@ -127,6 +127,11 @@ TArray<UAttributeSet*> APECharacterBase::GetAttributeSetArray() const
 	return AbilitySystemComponent.Get()->GetSpawnedAttributes();
 }
 
+APEPlayerState* APECharacterBase::GetPEPlayerState() const
+{
+	return Cast<APEPlayerState>(GetPlayerState());
+}
+
 void APECharacterBase::PreInitializeComponents()
 {
 	Super::PreInitializeComponents();
@@ -237,6 +242,11 @@ void APECharacterBase::SetupCharacterLevel_Implementation(const uint32 NewLevel)
 bool APECharacterBase::SetupCharacterLevel_Validate(const uint32 NewLevel)
 {
 	return true;
+}
+
+float APECharacterBase::GetNextLevelRequirement() const
+{
+	return NextLevelRequirement;
 }
 
 void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
