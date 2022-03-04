@@ -142,13 +142,19 @@ void UGASGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 }
 
 void UGASGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag,
-                                               const FGameplayCueParameters Parameters,
+                                               FGameplayCueParameters Parameters,
                                                UAbilitySystemComponent* SourceAbilitySystem)
 {
 	ABILITY_VLOG(this, Warning, TEXT("Activating %s ability associated Gameplay Cues."), *GetName());
 
 	if (GameplayCueTag.IsValid())
 	{
+		Parameters.AbilityLevel = GetAbilityLevel();
+		SourceAbilitySystem->GetOwnedGameplayTags(Parameters.AggregatedSourceTags);
+		Parameters.Instigator = SourceAbilitySystem->GetAvatarActor();
+		Parameters.EffectContext = SourceAbilitySystem->MakeEffectContext();
+		Parameters.SourceObject = SourceAbilitySystem;
+
 		SourceAbilitySystem->AddGameplayCue(GameplayCueTag, Parameters);
 		TrackedGameplayCues.Add(GameplayCueTag);
 	}

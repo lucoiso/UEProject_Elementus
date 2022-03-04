@@ -179,7 +179,7 @@ protected:
 
 	/* Activate a Gameplay Cue */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
-	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, const FGameplayCueParameters Parameters,
+	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
 	                          UAbilitySystemComponent* SourceAbilitySystem);
 
 	/* Perform a single line trace */
