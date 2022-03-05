@@ -89,6 +89,19 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 			ActivateWaitCancelInputTask();
 		}
 	}
+
+	if (bEndAbilityAfterActiveTime)
+	{
+		FTimerDelegate TimerDelegate;
+		FTimerHandle TimerHandle;
+		TimerDelegate.BindLambda([this, Handle, ActorInfo, ActivationInfo]() -> void
+			{
+				EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+			});
+
+		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime,
+			false);
+	}
 }
 
 void UGASGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -98,20 +111,7 @@ void UGASGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 {
 	ABILITY_VLOG(this, Warning, TEXT("%s ability successfully activated."), *GetName());
 
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	if (bEndAbilityAfterActiveTime)
-	{
-		FTimerDelegate TimerDelegate;
-		FTimerHandle TimerHandle;
-		TimerDelegate.BindLambda([this, Handle, ActorInfo, ActivationInfo]() -> void
-		{
-			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-		});
-
-		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime,
-		                                                               false);
-	}
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);	
 }
 
 void UGASGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
