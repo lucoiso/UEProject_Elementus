@@ -8,6 +8,7 @@
 #include "InputAction.h"
 #include "AbilitySystemComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
+#include "Blueprint/UserWidget.h"
 
 DEFINE_LOG_CATEGORY(LogController_Base);
 DEFINE_LOG_CATEGORY(LogController_Axis);
@@ -17,6 +18,13 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UserHUDClass(
+		TEXT("/Game/Main/Blueprints/Widgets/BP_ScreenInformations"));
+	if (UserHUDClass.Class != nullptr)
+	{
+		HUDClass = UserHUDClass.Class;
+	}
 }
 
 void APEPlayerController::PreInitializeComponents()
@@ -39,6 +47,23 @@ void APEPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
 	Super::EndPlay(EndPlayReason);
+}
+
+void APEPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	if (IsLocalController())
+	{
+		CreateWidget(this, HUDClass, FName("Main HUD"))->AddToPlayerScreen();
+	}
+}
+
+void APEPlayerController::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	
+	CreateWidget(this, HUDClass, FName("Main HUD"))->AddToPlayerScreen();
 }
 
 void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action, const int32 InputID)

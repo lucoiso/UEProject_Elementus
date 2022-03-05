@@ -9,11 +9,9 @@
 #include "GameFramework/Character.h"
 #include "PECharacterBase.generated.h"
 
-class UGameplayEffect;
 class UGASAbilitySystemComponent;
 class UGameplayAbility;
 class UAttributeSet;
-class UDataTable;
 class APEPlayerState;
 struct FGameplayTag;
 struct FOnAttributeChangeData;
@@ -31,8 +29,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
-
-	TSubclassOf<UGameplayEffect> DeathEffect;
 
 protected:
 	TWeakObjectPtr<UGASAbilitySystemComponent> AbilitySystemComponent;
@@ -92,12 +88,6 @@ public:
 		Category = "Custom GAS | Data")
 	UEnum* InputIDEnumerationClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom GAS | Data")
-	UDataTable* LevelingData;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom GAS | Data")
-	TSoftObjectPtr<UDataTable> AttributesData;
-
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
@@ -110,30 +100,17 @@ protected:
 
 	void InitializeAttributes(const bool bOnRep);
 
-	bool bAttributesInitialized = false;
-
-private:
-	UFUNCTION(NetMulticast, Reliable, WithValidation, Category = "Custom GAS | Data")
-	void SetupCharacterLevel(const uint32 NewLevel);
-	virtual void SetupCharacterLevel_Implementation(const uint32 NewLevel);
-	virtual bool SetupCharacterLevel_Validate(const uint32 NewLevel);
-
-	void ExperienceChanged_Callback(const FOnAttributeChangeData& Data);
-
-	float NextLevelRequirement = 0;
-
 public:
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Data")
-	float GetNextLevelRequirement() const;
-
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
 	void GiveAbility(TSubclassOf<UGameplayAbility> Ability);
+	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
 	void RemoveAbility(TSubclassOf<UGameplayAbility> Ability);
+	virtual void RemoveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability);
 
-	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Behaviors")
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
 	void Die();
-
-	void FinishDying();
+	virtual void Die_Implementation();
+	bool Die_Validate();
 };

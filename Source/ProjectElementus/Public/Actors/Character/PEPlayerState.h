@@ -10,7 +10,9 @@
 #include "PEPlayerState.generated.h"
 
 class UAttributeSet;
+class UGameplayEffect;
 class UGASAbilitySystemComponent;
+class UDataTable;
 struct FGameplayTag;
 /**
  *
@@ -50,6 +52,9 @@ protected:
 
 	TWeakObjectPtr<UGASAbilitySystemComponent> AbilitySystemComponent;
 	TWeakObjectPtr<class UGASAttributeSet> Attributes;
+
+	TWeakObjectPtr<UDataTable> LevelingData;
+	TWeakObjectPtr<UDataTable> AttributesData;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
@@ -99,4 +104,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
 	float GetLevelingRequirementExp() const;
+
+protected:
+	void SetupCharacterLevel(const uint32 NewLevel);
+
+private:
+	float NextLevelRequirement = 0.f;
+	void ExperienceChanged_Callback(const FOnAttributeChangeData& Data);
+
+	TSoftClassPtr<UGameplayEffect> DeathEffect;
 };

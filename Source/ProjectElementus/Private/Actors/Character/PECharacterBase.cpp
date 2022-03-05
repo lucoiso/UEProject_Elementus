@@ -16,8 +16,6 @@
 #include "GAS/System/GASAbilitySystemComponent.h"
 #include "GAS/System/GASAttributeSet.h"
 
-#include "Management/Data/GASAbilityData.h"
-
 APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -72,14 +70,7 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
-	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
-
-	static ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffectClass(
-		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
-	if (DeathGameplayEffectClass.Class != nullptr)
-	{
-		DeathEffect = DeathGameplayEffectClass.Class;
-	}
+	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));	
 }
 
 float APECharacterBase::GetDefaultWalkSpeed() const
@@ -158,14 +149,6 @@ void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void APECharacterBase::ExperienceChanged_Callback(const FOnAttributeChangeData& Data)
-{
-	if (Attributes.IsValid() && Data.NewValue >= NextLevelRequirement)
-	{
-		SetupCharacterLevel(Attributes->GetLevel() + 1);
-	}
-}
-
 void APECharacterBase::InitializeAttributes(const bool bOnRep)
 {
 	APEPlayerState* State = Cast<APEPlayerState>(GetPlayerState());
@@ -180,73 +163,8 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 			bOnRep
 				? AbilitySystemComponent->InitAbilityActorInfo(State, this)
 				: State->GetAbilitySystemComponent()->InitAbilityActorInfo(State, this);
-
-			if (!bAttributesInitialized)
-			{
-				if (!AttributesData.IsNull())
-				{
-					Attributes->InitFromMetaDataTable(AttributesData.LoadSynchronous());
-				}
-
-				const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
-					FName(*FString::FromInt(Attributes->GetLevel())), "");
-
-				if (LevelingInfo != nullptr)
-				{
-					NextLevelRequirement = LevelingInfo->ExperienceNeeded;
-
-					AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-						                        Attributes->GetExperienceAttribute()).
-					                        AddUObject(
-						                        this, &APECharacterBase::ExperienceChanged_Callback);
-				}
-
-				bAttributesInitialized = true;
-			}
 		}
 	}
-}
-
-#define UPDATE_ATTRIBUTE_INFORMATIONS(AttributeSet, AttributePropery, LevelingInfo) \
-AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + LevelingInfo->Bonus##AttributePropery;
-
-void APECharacterBase::SetupCharacterLevel_Implementation(const uint32 NewLevel)
-{
-	if (IsValid(LevelingData))
-	{
-		const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
-			FName(*FString::FromInt(NewLevel)), "");
-
-		if (Attributes.IsValid() && LevelingInfo != nullptr)
-		{
-			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, AttackRate, LevelingInfo);
-			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxHealth, LevelingInfo);
-			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxStamina, LevelingInfo);
-			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxMana, LevelingInfo);
-			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, DefenseRate, LevelingInfo);
-
-			const float NewExperience = Attributes->GetExperience() - NextLevelRequirement;
-			NextLevelRequirement = LevelingInfo->ExperienceNeeded;
-
-			Attributes->SetLevel(NewLevel);
-			Attributes->SetExperience(NewExperience);
-		}
-		else // Reached max level
-		{
-			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetExperienceAttribute()).
-			                        RemoveAll(this);
-		}
-	}
-}
-
-bool APECharacterBase::SetupCharacterLevel_Validate(const uint32 NewLevel)
-{
-	return true;
-}
-
-float APECharacterBase::GetNextLevelRequirement() const
-{
-	return NextLevelRequirement;
 }
 
 void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
@@ -319,23 +237,11 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 
 void APECharacterBase::Die_Implementation()
 {
-	const FGameplayTag DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
-
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !AbilitySystemComponent->
-		HasMatchingGameplayTag(DeadTag))
-	{
-		return;
-	}
-
-
-	AbilitySystemComponent->CancelAllAbilities();
-	AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(DeathEffect->GetDefaultObject()), 1.0f,
-	                                                  AbilitySystemComponent->MakeEffectContext());
-
-	FinishDying();
+	// TO DO
+	Destroy();
 }
 
-void APECharacterBase::FinishDying()
+bool APECharacterBase::Die_Validate()
 {
-	Destroy();
+	return true;
 }

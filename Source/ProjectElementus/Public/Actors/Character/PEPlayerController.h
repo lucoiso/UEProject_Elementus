@@ -62,6 +62,12 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom Properties | Management")
+	TSubclassOf<UUserWidget> HUDClass;
+
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnRep_PlayerState() override;
+
 private:
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 

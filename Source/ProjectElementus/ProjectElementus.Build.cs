@@ -20,6 +20,7 @@ public class ProjectElementus : ModuleRules
 			"EnhancedInput",
 			"AIModule",
 			"Niagara",
+			"UMG",
 			"ModularGameplay",
 			"GameplayAbilities",
 			"GameplayTags",

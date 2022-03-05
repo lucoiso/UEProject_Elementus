@@ -11,6 +11,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
 
+#include "Management/Data/GASAbilityData.h"
+
 DEFINE_LOG_CATEGORY(LogPlayerState);
 
 APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
@@ -26,6 +28,27 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	NetUpdateFrequency = 75.f;
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> LevelingDataObject(
+		TEXT("/Game/Main/Data/GAS/DT_Leveling"));
+	if (LevelingDataObject.Object != nullptr)
+	{
+		LevelingData = LevelingDataObject.Object;
+	}
+	
+	static ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaDataObject(
+		TEXT("/Game/Main/Data/GAS/DT_Character_ATB_Default"));
+	if (AttributesMetaDataObject.Object != nullptr)
+	{
+		AttributesData = AttributesMetaDataObject.Object;
+	}
+
+	static ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffectClass(
+		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
+	if (DeathGameplayEffectClass.Class != nullptr)
+	{
+		DeathEffect = DeathGameplayEffectClass.Class;
+	}
 }
 
 
@@ -72,6 +95,27 @@ void APEPlayerState::BeginPlay()
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
 		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
 			this, &APEPlayerState::StunStateChanged_Callback);
+
+		if (AttributesData.IsValid())
+		{
+			Attributes->InitFromMetaDataTable(AttributesData.Get());
+		}
+
+		if (LevelingData.IsValid())
+		{
+			const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
+				FName(*FString::FromInt(Attributes->GetLevel())), "");
+
+			if (LevelingInfo != nullptr)
+			{
+				NextLevelRequirement = LevelingInfo->ExperienceNeeded;
+
+				AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
+					Attributes->GetExperienceAttribute()).
+					AddUObject(
+						this, &APEPlayerState::ExperienceChanged_Callback);
+			}
+		}
 	}
 }
 
@@ -117,14 +161,11 @@ void APEPlayerState::HealthChanged_Callback(const FOnAttributeChangeData& Data) 
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
-	APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
-
-	if (IsValid(Player))
+	if (Data.NewValue <= 0.f)
 	{
-		if (Data.NewValue <= 0.f)
-		{
-			Player->Die();
-		}
+		AbilitySystemComponent->CancelAllAbilities();
+		AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(DeathEffect.LoadSynchronous()->GetDefaultObject()), 1.f,
+			AbilitySystemComponent->MakeEffectContext());
 	}
 }
 
@@ -264,14 +305,51 @@ float APEPlayerState::GetLevelingRequirementExp() const
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
-
-	return IsValid(Player) ?
-		Player->GetNextLevelRequirement() :
-		-1.f;
+	return NextLevelRequirement;
 }
 
 float APEPlayerState::GetGold() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Gold);
+}
+
+
+#define UPDATE_ATTRIBUTE_INFORMATIONS(AttributeSet, AttributePropery, LevelingInfo) \
+AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + LevelingInfo->Bonus##AttributePropery;
+
+void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
+{
+	if (LevelingData.IsValid())
+	{
+		const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
+			FName(*FString::FromInt(NewLevel)), "");
+
+		if (Attributes.IsValid() && LevelingInfo != nullptr)
+		{
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, AttackRate, LevelingInfo);
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxHealth, LevelingInfo);
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxStamina, LevelingInfo);
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxMana, LevelingInfo);
+			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, DefenseRate, LevelingInfo);
+
+			const float NewExperience = Attributes->GetExperience() - NextLevelRequirement;
+			NextLevelRequirement = LevelingInfo->ExperienceNeeded;
+
+			Attributes->SetLevel(NewLevel);
+			Attributes->SetExperience(NewExperience);
+		}
+		else // Reached max level
+		{
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetExperienceAttribute()).
+				RemoveAll(this);
+		}
+	}
+}
+
+void APEPlayerState::ExperienceChanged_Callback(const FOnAttributeChangeData& Data)
+{
+	if (Attributes.IsValid() && Data.NewValue >= NextLevelRequirement)
+	{
+		SetupCharacterLevel(Attributes->GetLevel() + 1);
+	}
 }
