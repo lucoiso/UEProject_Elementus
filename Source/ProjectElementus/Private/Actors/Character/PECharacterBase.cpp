@@ -130,6 +130,16 @@ void APECharacterBase::PreInitializeComponents()
 	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
 }
 
+void APECharacterBase::PossessedBy(AController* InputController)
+{
+	Super::PossessedBy(InputController);
+}
+
+void APECharacterBase::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+}
+
 void APECharacterBase::BeginPlay()
 {
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
@@ -139,7 +149,7 @@ void APECharacterBase::BeginPlay()
 
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
-	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
+	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;		
 }
 
 void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)

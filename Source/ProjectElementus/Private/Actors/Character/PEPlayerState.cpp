@@ -51,7 +51,6 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	}
 }
 
-
 void APEPlayerState::PreInitializeComponents()
 {
 	Super::PreInitializeComponents();

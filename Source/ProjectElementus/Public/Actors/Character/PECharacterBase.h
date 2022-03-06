@@ -95,6 +95,10 @@ protected:
 	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 
 	virtual void PreInitializeComponents() override;
+
+	virtual void PossessedBy(AController* InputController) override;
+	virtual void OnRep_PlayerState() override;
+
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
