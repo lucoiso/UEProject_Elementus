@@ -31,14 +31,14 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(
-		TEXT("/Game/Main/Mannequin/Character/Mesh/SK_Mannequin"));
+		TEXT("/Game/Main/Character/Mesh/SK_Mannequin"));
 	if (SkeletalMesh.Object != nullptr)
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}
 
 	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(
-		TEXT("/Game/Main/Mannequin/Animations/ThirdPerson_AnimBP"));
+		TEXT("/Game/Main/Character/Animations/ThirdPerson_AnimBP"));
 	if (AnimationClass.Class != nullptr)
 	{
 		GetMesh()->SetAnimInstanceClass(AnimationClass.Class);

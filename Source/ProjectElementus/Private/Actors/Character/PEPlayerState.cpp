@@ -30,14 +30,14 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	NetUpdateFrequency = 75.f;
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> LevelingDataObject(
-		TEXT("/Game/Main/Data/GAS/DT_Leveling"));
+		TEXT("/Game/Main/GAS/Data/DT_Leveling"));
 	if (LevelingDataObject.Object != nullptr)
 	{
 		LevelingData = LevelingDataObject.Object;
 	}
 	
 	static ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaDataObject(
-		TEXT("/Game/Main/Data/GAS/DT_Character_ATB_Default"));
+		TEXT("/Game/Main/GAS/Data/DT_Character_ATB_Default"));
 	if (AttributesMetaDataObject.Object != nullptr)
 	{
 		AttributesData = AttributesMetaDataObject.Object;
