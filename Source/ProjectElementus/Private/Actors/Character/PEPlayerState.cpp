@@ -173,10 +173,14 @@ void APEPlayerState::StaminaChanged_Callback(const FOnAttributeChangeData& Data)
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
-
-	if (IsValid(Player))
+	if (Data.NewValue == 0.f)
 	{
+		const FGameplayTagContainer StaminaCostTagContainer
+		{
+			FGameplayTag::RequestGameplayTag(FName("GameplayAbility.State.CostWhileActive.Stamina"))
+		};
+
+		AbilitySystemComponent->CancelAbilities(&StaminaCostTagContainer);
 	}
 }
 
@@ -184,10 +188,14 @@ void APEPlayerState::ManaChanged_Callback(const FOnAttributeChangeData& Data) co
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
-
-	if (IsValid(Player))
+	if (Data.NewValue == 0.f)
 	{
+		const FGameplayTagContainer ManaCostTagContainer
+		{
+			FGameplayTag::RequestGameplayTag(FName("GameplayAbility.State.CostWhileActive.Mana"))
+		};
+
+		AbilitySystemComponent->CancelAbilities(&ManaCostTagContainer);
 	}
 }
 
