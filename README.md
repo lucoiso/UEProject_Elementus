@@ -1,6 +1,6 @@
 # Codename: Project Elementus (Unnamed Template) - WiP
 
-**This project is being built on Unreal Engine 5 Preview 1.**
+**This project is being built on Unreal Engine 5.**
 
 ![image](https://user-images.githubusercontent.com/77353979/156900459-40a40db1-da1b-44de-a11b-514bde09d73f.png)
 
