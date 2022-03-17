@@ -8,7 +8,7 @@
 #include "InputMappingContext.h"
 #include "Components/GameFrameworkComponentManager.h"
 
-void UGameFeatureAction_AddInputs::OnGameFeatureActivating()
+void UGameFeatureAction_AddInputs::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
 	if (!ensureAlways(ActiveExtensions.IsEmpty()) ||
 		!ensureAlways(ActiveRequests.IsEmpty()))
@@ -16,7 +16,7 @@ void UGameFeatureAction_AddInputs::OnGameFeatureActivating()
 		ResetExtension();
 	}
 
-	Super::OnGameFeatureActivating();
+	Super::OnGameFeatureActivating(Context);
 }
 
 void UGameFeatureAction_AddInputs::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
@@ -63,9 +63,9 @@ void UGameFeatureAction_AddInputs::AddToWorld(const FWorldContext& WorldContext)
 
 void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	UE_LOG(LogGameplayExtraFeatures, Warning,
+	/*UE_LOG(LogGameplayExtraFeatures, Warning,
 	       TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
-	       *Owner->GetActorLabel());
+	       *Owner->GetActorLabel());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -77,7 +77,7 @@ void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName Eve
 		UGameFrameworkComponentManager::NAME_GameActorReady)
 	{
 		if (!InputMappingContext.IsNull())
-		{
+		{			
 			AddActorInputs(Owner);
 		}
 	}
@@ -85,11 +85,11 @@ void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName Eve
 
 void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetActor)
 {
-	if (IsValid(TargetActor) && !InputMappingContext.IsNull())
+	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && !InputMappingContext.IsNull())
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Adding Enhanced Input Mapping %s to Actor %s."), *InputMappingContext.GetAssetName(),
-		       *TargetActor->GetActorLabel());
+			TEXT("Adding Enhanced Input Mapping %s to Actor %s."), *InputMappingContext.GetAssetName(),
+			*TargetActor->GetActorLabel());
 
 		APawn* TargetPawn = Cast<APawn>(TargetActor);
 		const APlayerController* PlayerController = TargetPawn->GetController<APlayerController>();
@@ -114,39 +114,39 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 
 				NewInputData.Mapping = InputMapping;
 
-				for (const FInputMappingStack& InputData : ActionsBindings)
+				UObject* FunctionOwner;
+
+				switch (InputBindingOwner)
 				{
-					UE_LOG(LogGameplayExtraFeatures, Warning,
-					       TEXT("Binding Action Input %s to Actor %s."), *InputData.ActionInput.GetAssetName(),
-					       *TargetActor->GetActorLabel());
+				case EControllerOwner::Pawn:
+					FunctionOwner = TargetPawn;
+					break;
 
-					UEnhancedInputComponent* InputComponent =
-						Cast<UEnhancedInputComponent>(TargetPawn->InputComponent);
+				case EControllerOwner::Controller:
+					FunctionOwner = TargetPawn->GetController();
+					break;
 
-					if (!InputData.ActionInput.IsNull() && IsValid(InputComponent))
+				default:
+					FunctionOwner = nullptr;
+				}
+
+				UEnhancedInputComponent* InputComponent =
+					Cast<UEnhancedInputComponent>(TargetPawn->InputComponent);
+
+				if (IsValid(FunctionOwner) && IsValid(InputComponent))
+				{
+					for (const FInputMappingStack& InputData : ActionsBindings)
 					{
-						UObject* FunctionOwner;
+						UE_LOG(LogGameplayExtraFeatures, Warning,
+							TEXT("Binding Action Input %s to Actor %s."), *InputData.ActionInput.GetAssetName(),
+							*TargetActor->GetActorLabel());
 
-						switch (InputBindingOwner)
+						if (!InputData.ActionInput.IsNull())
 						{
-						case EControllerOwner::Pawn:
-							FunctionOwner = TargetPawn;
-							break;
-
-						case EControllerOwner::Controller:
-							FunctionOwner = TargetPawn->GetController();
-							break;
-
-						default:
-							FunctionOwner = nullptr;
-						}
-
-						for (const FFunctionStackedData& FunctionData : InputData.FunctionBindingData)
-						{
-							const UInputAction* InputAction = InputData.ActionInput.LoadSynchronous();
-
-							if (IsValid(FunctionOwner))
+							for (const FFunctionStackedData& FunctionData : InputData.FunctionBindingData)
 							{
+								const UInputAction* InputAction = InputData.ActionInput.LoadSynchronous();
+
 								for (const ETriggerEvent& Trigger : FunctionData.Triggers)
 								{
 									const FInputBindingHandle& InputBindingHandle = InputComponent->BindAction(

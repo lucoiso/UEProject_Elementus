@@ -33,7 +33,7 @@ public:
 	TSoftObjectPtr<UDataTable> InitializationData;
 
 protected:
-	virtual void OnGameFeatureActivating() override;
+	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 	virtual void AddToWorld(const FWorldContext& WorldContext) override;
 

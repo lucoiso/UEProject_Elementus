@@ -125,9 +125,14 @@ APEPlayerState* APECharacterBase::GetPEPlayerState() const
 
 void APECharacterBase::PreInitializeComponents()
 {
-	Super::PreInitializeComponents();
-
 	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
+
+	Super::PreInitializeComponents();
+}
+
+void APECharacterBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents(); 
 }
 
 void APECharacterBase::PossessedBy(AController* InputController)

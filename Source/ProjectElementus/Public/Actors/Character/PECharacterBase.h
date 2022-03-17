@@ -95,6 +95,7 @@ protected:
 	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 
 	virtual void PreInitializeComponents() override;
+	virtual void PostInitializeComponents() override;
 
 	virtual void PossessedBy(AController* InputController) override;
 	virtual void OnRep_PlayerState() override;

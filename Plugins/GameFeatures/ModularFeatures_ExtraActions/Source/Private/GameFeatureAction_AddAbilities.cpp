@@ -9,8 +9,9 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFeaturesSubsystemSettings.h"
 #include "Engine/AssetManager.h"
+#include "InputAction.h"
 
-void UGameFeatureAction_AddAbilities::OnGameFeatureActivating()
+void UGameFeatureAction_AddAbilities::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
 	if (!ensureAlways(ActiveExtensions.IsEmpty()) ||
 		!ensureAlways(ActiveRequests.IsEmpty()))
@@ -18,7 +19,7 @@ void UGameFeatureAction_AddAbilities::OnGameFeatureActivating()
 		ResetExtension();
 	}
 
-	Super::OnGameFeatureActivating();
+	Super::OnGameFeatureActivating(Context);
 }
 
 void UGameFeatureAction_AddAbilities::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
@@ -66,9 +67,9 @@ void UGameFeatureAction_AddAbilities::AddToWorld(const FWorldContext& WorldConte
 
 void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	UE_LOG(LogGameplayExtraFeatures, Warning,
+	/*UE_LOG(LogGameplayExtraFeatures, Warning,
 	       TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
-	       *Owner->GetActorLabel());
+	       *Owner->GetActorLabel());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -92,7 +93,7 @@ void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName 
 void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* TargetActor,
                                                                        const FAbilityMapping& Ability)
 {
-	if (IsValid(TargetActor) && TargetActor->GetLocalRole() == ROLE_Authority)
+	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 		       TEXT("Adding ability %s to Actor %s."), *Ability.AbilityClass.GetAssetName(),

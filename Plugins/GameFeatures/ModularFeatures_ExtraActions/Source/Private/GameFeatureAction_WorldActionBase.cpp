@@ -9,26 +9,38 @@
 
 DEFINE_LOG_CATEGORY(LogGameplayExtraFeatures);
 
-void UGameFeatureAction_WorldActionBase::OnGameFeatureActivating()
+void UGameFeatureAction_WorldActionBase::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
+	ContextHandles.AddUnique(Context);
+
 	GameInstanceStartHandle = FWorldDelegates::OnStartGameInstance.AddUObject(
-		this, &UGameFeatureAction_WorldActionBase::HandleGameInstanceStart);
+		this, &UGameFeatureAction_WorldActionBase::HandleGameInstanceStart, FGameFeatureStateChangeContext(Context));
 
 	for (const FWorldContext& WorldContext : GEngine->GetWorldContexts())
 	{
-		AddToWorld(WorldContext);
+		if (Context.ShouldApplyToWorldContext(WorldContext))
+		{
+			AddToWorld(WorldContext);
+		}
 	}
 }
 
 void UGameFeatureAction_WorldActionBase::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
 {
+	ContextHandles.AddUnique(Context);
+
 	FWorldDelegates::OnStartGameInstance.Remove(GameInstanceStartHandle);
+
+	ContextHandles.Empty();
 }
 
-void UGameFeatureAction_WorldActionBase::HandleGameInstanceStart(UGameInstance* GameInstance)
-{
+void UGameFeatureAction_WorldActionBase::HandleGameInstanceStart(UGameInstance* GameInstance, FGameFeatureStateChangeContext ChangeContext)
+{	
 	if (const FWorldContext* WorldContext = GameInstance->GetWorldContext())
 	{
-		AddToWorld(*WorldContext);
+		if (ChangeContext.ShouldApplyToWorldContext(*WorldContext))
+		{
+			AddToWorld(*WorldContext);
+		}
 	}
 }

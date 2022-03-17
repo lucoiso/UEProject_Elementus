@@ -8,7 +8,7 @@
 #include "Components/GameFrameworkComponentManager.h"
 
 
-void UGameFeatureAction_AddEffects::OnGameFeatureActivating()
+void UGameFeatureAction_AddEffects::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
 	if (!ensureAlways(ActiveExtensions.IsEmpty()) ||
 		!ensureAlways(ActiveRequests.IsEmpty()))
@@ -16,7 +16,7 @@ void UGameFeatureAction_AddEffects::OnGameFeatureActivating()
 		ResetExtension();
 	}
 
-	Super::OnGameFeatureActivating();
+	Super::OnGameFeatureActivating(Context);
 }
 
 void UGameFeatureAction_AddEffects::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
@@ -63,9 +63,9 @@ void UGameFeatureAction_AddEffects::AddToWorld(const FWorldContext& WorldContext
 
 void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	UE_LOG(LogGameplayExtraFeatures, Warning,
+	/*UE_LOG(LogGameplayExtraFeatures, Warning,
 	       TEXT("Event %s sended by Actor %s for effects management."), *EventName.ToString(),
-	       *Owner->GetActorLabel());
+	       *Owner->GetActorLabel());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -88,7 +88,7 @@ void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName Ev
 
 void UGameFeatureAction_AddEffects::ApplyEffects(AActor* TargetActor, const FEffectStackedData& Effect)
 {
-	if (IsValid(TargetActor) && !Effect.EffectClass.IsNull())
+	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && !Effect.EffectClass.IsNull())
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 		       TEXT("Adding effect %s level %u to Actor %s with %u SetByCaller params."),

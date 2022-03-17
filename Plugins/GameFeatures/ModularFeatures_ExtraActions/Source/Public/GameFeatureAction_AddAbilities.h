@@ -60,11 +60,11 @@ public:
 	TSoftObjectPtr<UEnum> InputIDEnumerationClass;
 
 	/* Abilities to be added */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(TitleProperty="Ability Mapping", ShowOnlyInnerProperties))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(DisplayName="Ability Mapping", ShowOnlyInnerProperties))
 	TArray<FAbilityMapping> Abilities;
 
 protected:
-	virtual void OnGameFeatureActivating() override;
+	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 	virtual void AddToWorld(const FWorldContext& WorldContext) override;
 

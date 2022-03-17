@@ -7,7 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "Components/GameFrameworkComponentManager.h"
 
-void UGameFeatureAction_AddAttribute::OnGameFeatureActivating()
+void UGameFeatureAction_AddAttribute::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
 	if (!ensureAlways(ActiveExtensions.IsEmpty()) ||
 		!ensureAlways(ActiveRequests.IsEmpty()))
@@ -15,7 +15,7 @@ void UGameFeatureAction_AddAttribute::OnGameFeatureActivating()
 		ResetExtension();
 	}
 
-	Super::OnGameFeatureActivating();
+	Super::OnGameFeatureActivating(Context);
 }
 
 void UGameFeatureAction_AddAttribute::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
@@ -62,9 +62,9 @@ void UGameFeatureAction_AddAttribute::AddToWorld(const FWorldContext& WorldConte
 
 void UGameFeatureAction_AddAttribute::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	UE_LOG(LogGameplayExtraFeatures, Warning,
+	/*UE_LOG(LogGameplayExtraFeatures, Warning,
 	       TEXT("Event %s sended by Actor %s for attribute management."), *EventName.ToString(),
-	       *Owner->GetActorLabel());
+	       *Owner->GetActorLabel());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)

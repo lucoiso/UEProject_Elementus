@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFeatureAction.h"
+#include "GameFeaturesSubsystem.h"
 #include "GameFeatureAction_WorldActionBase.generated.h"
 
 class UGameInstance;
@@ -29,7 +30,7 @@ class UGameFeatureAction_WorldActionBase : public UGameFeatureAction
 	GENERATED_BODY()
 
 public:
-	virtual void OnGameFeatureActivating() override;
+	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 
 protected:
@@ -38,6 +39,7 @@ protected:
 	};
 
 private:
-	void HandleGameInstanceStart(UGameInstance* GameInstance);
+	void HandleGameInstanceStart(UGameInstance* GameInstance, FGameFeatureStateChangeContext ChangeContext);
 	FDelegateHandle GameInstanceStartHandle;
+	TArray<FGameFeatureStateChangeContext> ContextHandles;
 };

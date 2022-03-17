@@ -31,7 +31,7 @@ struct FEffectStackedData
 	int32 EffectLevel = 1;
 	
 	/* Set By Caller parameters */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (TitleProperty = "{SetByCaller Tag} -> {SetByCaller Value}"))
 	TMap<FGameplayTag, float> SetByCallerParams;
 };
 
@@ -49,11 +49,11 @@ public:
 	TSoftClassPtr<AActor> TargetActorClass;
 
 	/* Gameplay Effects stacked informations */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(TitleProperty="Effects Mapping", ShowOnlyInnerProperties))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(DisplayName="Effects Mapping", ShowOnlyInnerProperties))
 	TArray<FEffectStackedData> Effects;
 
 protected:
-	virtual void OnGameFeatureActivating() override;
+	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 	virtual void AddToWorld(const FWorldContext& WorldContext) override;
 

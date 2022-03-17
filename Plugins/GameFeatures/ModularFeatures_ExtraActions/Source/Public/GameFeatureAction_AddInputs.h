@@ -41,7 +41,7 @@ struct FInputMappingStack
 	TSoftObjectPtr<UInputAction> ActionInput;
 
 	/* UFunction and Triggers to bind activation by Enhanced Input */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "UFunctions to Bind"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "UFunction Bindings"))
 	TArray<FFunctionStackedData> FunctionBindingData;
 };
 
@@ -75,7 +75,7 @@ public:
 	TArray<FInputMappingStack> ActionsBindings;
 
 protected:
-	virtual void OnGameFeatureActivating() override;
+	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 	virtual void AddToWorld(const FWorldContext& WorldContext) override;
 
