@@ -66,6 +66,17 @@ void UGameFeatureAction_AddAttribute::HandleActorExtension(AActor* Owner, FName 
 	       TEXT("Event %s sended by Actor %s for attribute management."), *EventName.ToString(),
 	       *Owner->GetActorLabel());*/
 
+	if (RequireTags.Num() != 0)
+	{
+		for (const FName Tag : RequireTags)
+		{
+			if (Owner->ActorHasTag(Tag))
+			{
+				return;
+			}
+		}
+	}
+
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
 	{

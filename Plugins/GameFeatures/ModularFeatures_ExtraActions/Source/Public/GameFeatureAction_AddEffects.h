@@ -48,6 +48,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (OnlyPlaceable))
 	TSoftClassPtr<AActor> TargetActorClass;
 
+	/* Tags required on the target to apply this action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+	TArray<FName> RequireTags;
+
 	/* Gameplay Effects stacked informations */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(DisplayName="Effects Mapping", ShowOnlyInnerProperties))
 	TArray<FEffectStackedData> Effects;

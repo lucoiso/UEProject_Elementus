@@ -24,6 +24,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (OnlyPlaceable))
 	TSoftClassPtr<AActor> TargetActorClass;
 
+	/* Tags required on the target to apply this action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+	TArray<FName> RequireTags;
+
 	/* AttributeSet class to be added */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
 	TSoftClassPtr<UAttributeSet> Attribute;

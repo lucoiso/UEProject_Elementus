@@ -51,6 +51,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (OnlyPlaceable))
 	TSoftClassPtr<AActor> TargetActorClass;
 
+	/* Tags required on the target to apply this action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+	TArray<FName> RequireTags;
+
 	/* Determines whether the binding will be performed within the controller class or within the pawn */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
 	EControllerOwner InputBindingOwner = EControllerOwner::Controller;
