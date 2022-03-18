@@ -133,10 +133,14 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 
 			if (NewSpecHandle.IsValid())
 			{
+				UE_LOG(LogGameplayExtraFeatures, Warning, TEXT("NewSpecHandle.IsValid()"));
+
 				NewAbilityData.SpecHandle.Add(NewSpecHandle);
 
 				if (!Ability.InputAction.IsNull())
 				{
+					UE_LOG(LogGameplayExtraFeatures, Warning, TEXT("!Ability.InputAction.IsNull()"));
+
 					IAbilityInputBinding* SetupInputInterface;
 					APawn* TargetPawn = Cast<APawn>(AbilitySystemComponent->GetAvatarActor());
 

@@ -47,7 +47,7 @@ void UGASGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorIn
 
 	if (!Spec.IsActive() && bAutoActivateOnGrant)
 	{
-		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
+		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
 	}
 }
 

@@ -125,26 +125,27 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 
 				NewInputData.Mapping = InputMapping;
 
-				UObject* FunctionOwner;
+				TWeakObjectPtr<UObject> FunctionOwner;
+				TWeakObjectPtr<UEnhancedInputComponent> InputComponent;
 
 				switch (InputBindingOwner)
 				{
 				case EControllerOwner::Pawn:
 					FunctionOwner = TargetPawn;
+					InputComponent = Cast<UEnhancedInputComponent>(TargetPawn->InputComponent.Get());
 					break;
 
 				case EControllerOwner::Controller:
 					FunctionOwner = TargetPawn->GetController();
+					InputComponent = Cast<UEnhancedInputComponent>(TargetPawn->GetController()->InputComponent.Get());
 					break;
 
 				default:
-					FunctionOwner = nullptr;
+					FunctionOwner.Reset();
+					InputComponent.Reset();
 				}
 
-				UEnhancedInputComponent* InputComponent =
-					Cast<UEnhancedInputComponent>(TargetPawn->InputComponent);
-
-				if (IsValid(FunctionOwner) && IsValid(InputComponent))
+				if (FunctionOwner.IsValid() && InputComponent.IsValid())
 				{
 					for (const FInputMappingStack& InputData : ActionsBindings)
 					{
@@ -162,7 +163,7 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 								{
 									const FInputBindingHandle& InputBindingHandle = InputComponent->BindAction(
 										InputAction, Trigger,
-										FunctionOwner, FunctionData.FunctionName);
+										FunctionOwner.Get(), FunctionData.FunctionName);
 
 									NewInputData.ActionBinding.Add(InputBindingHandle);
 								}

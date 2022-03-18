@@ -147,9 +147,6 @@ void APECharacterBase::OnRep_PlayerState()
 
 void APECharacterBase::BeginPlay()
 {
-	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-		this, UGameFrameworkComponentManager::NAME_GameActorReady);
-
 	Super::BeginPlay();
 
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
@@ -180,6 +177,9 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 				: State->GetAbilitySystemComponent()->InitAbilityActorInfo(State, this);
 		}
 	}
+
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
+		this, UGameFrameworkComponentManager::NAME_GameActorReady);
 }
 
 void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
