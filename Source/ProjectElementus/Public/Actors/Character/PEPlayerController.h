@@ -69,6 +69,7 @@ protected:
 	virtual void OnRep_PlayerState() override;
 
 private:
+	TWeakObjectPtr<UUserWidget> HUDHandle;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	const float BaseTurnRate = 45.f;

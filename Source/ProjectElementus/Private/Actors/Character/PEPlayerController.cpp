@@ -55,15 +55,17 @@ void APEPlayerController::OnPossess(APawn* InPawn)
 
 	if (IsLocalController())
 	{
-		CreateWidget(this, HUDClass, FName("Main HUD"))->AddToPlayerScreen();
+		HUDHandle = CreateWidget(this, HUDClass, FName("Main HUD"));
+		HUDHandle->AddToPlayerScreen();
 	}
 }
 
 void APEPlayerController::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	
-	CreateWidget(this, HUDClass, FName("Main HUD"))->AddToPlayerScreen();
+
+	HUDHandle = CreateWidget(this, HUDClass, FName("Main HUD"));
+	HUDHandle->AddToPlayerScreen();
 }
 
 void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action, const int32 InputID)
@@ -146,12 +148,23 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 
 	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
 	{
+		if (!IsValid(GetPawnOrSpectator()))
+		{
+			BeginSpectatingState();
+			StartSpectatingOnly();
+
+			HUDHandle->RemoveFromParent();
+			HUDHandle.Reset();
+
+			return;
+		}
+
 		const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
 
 		const FVector DirectionX = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		const FVector DirectionY = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		GetPawn()->AddMovementInput(DirectionX, Value[1]);
-		GetPawn()->AddMovementInput(DirectionY, Value[0]);
+		GetPawnOrSpectator()->AddMovementInput(DirectionX, Value[1]);
+		GetPawnOrSpectator()->AddMovementInput(DirectionY, Value[0]);
 
 		UE_VLOG_LOCATION(GetPawn(), LogController_Axis, Log, GetPawn()->GetActorLocation(), 25.f, FColor::Green,
 		                 TEXT("%s"), *GetPawn()->GetName());
