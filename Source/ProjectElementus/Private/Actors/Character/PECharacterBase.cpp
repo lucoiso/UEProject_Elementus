@@ -188,7 +188,7 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 	}
 }
 
-void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId)
+void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId, const bool bTryRemoveExistingAbilityWithInput = true)
 {
 	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !IsValid(Ability))
 	{
@@ -201,6 +201,16 @@ void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbi
 	if (AbilitySpec != nullptr || InputID == INDEX_NONE)
 	{
 		return;
+	}
+
+	if (bTryRemoveExistingAbilityWithInput)
+	{
+		const FGameplayAbilitySpec* AbilitySpecFromInput = GetAbilitySystemComponent()->FindAbilitySpecFromInputID(InputID);
+
+		if (AbilitySpecFromInput != nullptr)
+		{
+			RemoveAbility(AbilitySpecFromInput->Ability->GetClass());
+		}
 	}
 
 	const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID, this);

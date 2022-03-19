@@ -111,8 +111,8 @@ protected:
 public:
 	/* Give a new Ability to the Player -  bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
-		void GiveAbility(TSubclassOf<UGameplayAbility> Ability, const FName InputId);
-	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, const FName InputId);
+		void GiveAbility(TSubclassOf<UGameplayAbility> Ability, const FName InputId, const bool bTryRemoveExistingAbilityWithInput);
+	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, const FName InputId, const bool bTryRemoveExistingAbilityWithInput);
 
 	/* Will remove the ability associated to the InputAction */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
