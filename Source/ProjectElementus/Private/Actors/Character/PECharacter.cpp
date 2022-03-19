@@ -22,11 +22,12 @@ void APECharacter::BindASCInput()
 	if (!bInputBound && AbilitySystemComponent.IsValid() && IsValid(InputComponent))
 	{
 		const FGameplayAbilityInputBinds Binds(
-			"Confirm", "Cancel", "EGASAbilityInputID",
+			"Confirm", "Cancel", InputIDEnumerationClass->GetFName().ToString(),
 			InputIDEnumerationClass->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName),
 			InputIDEnumerationClass->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName));
 
 		AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, Binds);
+
 		bInputBound = true;
 	}
 }

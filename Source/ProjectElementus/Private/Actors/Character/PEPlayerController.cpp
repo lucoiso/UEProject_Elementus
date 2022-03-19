@@ -112,6 +112,11 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 	if (IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputPressed(InputID);
+
+		if (InputID == ControllerOwner->InputIDEnumerationClass->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName))
+		{
+			ControllerOwner->GetAbilitySystemComponent()->LocalInputConfirm();
+		}
 	}
 }
 
@@ -127,6 +132,11 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 	if (IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
+
+		if (InputID == ControllerOwner->InputIDEnumerationClass->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName))
+		{
+			ControllerOwner->GetAbilitySystemComponent()->LocalInputConfirm();
+		}
 	}
 }
 

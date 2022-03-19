@@ -67,6 +67,11 @@ void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName Ev
 	       TEXT("Event %s sended by Actor %s for effects management."), *EventName.ToString(),
 	       *Owner->GetActorLabel());*/
 
+	if (ActiveExtensions.Contains(Owner))
+	{
+		return;
+	}
+
 	if (RequireTags.Num() != 0)
 	{
 		for (const FName Tag : RequireTags)

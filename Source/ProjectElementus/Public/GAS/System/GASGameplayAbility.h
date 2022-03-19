@@ -99,10 +99,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Delegates")
 	void ActivateWaitMontageTask();
 
-	/* Perform a targeting and call WaitTargetData_Callback function */
+	/* Performs targeting and call WaitTargetData_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Delegates")
 	void ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation,
-	                                const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass);
+									const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
+									AGameplayAbilityTargetActor*& TargetActor,
+									struct FTargetActorSpawnParams TargetParameters);
 
 	/* Start a task to wait for a Gameplay Event and call WaitGameplayEvent_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Delegates")
@@ -192,8 +194,6 @@ protected:
 		const TArray<FHitResult> HitResults);
 
 	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
-
-	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromTransform(const FTransform TransformData);
 
 	/* Apply SelfAbilityEffects to self */
 	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToSelf", Category = "Custom GAS | Management")

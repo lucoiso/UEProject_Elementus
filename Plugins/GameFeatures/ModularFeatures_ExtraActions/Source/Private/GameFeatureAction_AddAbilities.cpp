@@ -71,6 +71,11 @@ void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName 
 	       TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
 	       *Owner->GetActorLabel());*/
 
+	if (ActiveExtensions.Contains(Owner))
+	{
+		return;
+	}
+
 	if (RequireTags.Num() != 0)
 	{
 		for (const FName Tag : RequireTags)

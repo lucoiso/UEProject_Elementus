@@ -13,6 +13,7 @@ class UGASAbilitySystemComponent;
 class UGameplayAbility;
 class UAttributeSet;
 class APEPlayerState;
+class UInputAction;
 struct FGameplayTag;
 struct FOnAttributeChangeData;
 /**
@@ -29,6 +30,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	bool bIsFrameworkReady = false;
 
 protected:
 	TWeakObjectPtr<UGASAbilitySystemComponent> AbilitySystemComponent;
@@ -106,13 +109,15 @@ protected:
 	void InitializeAttributes(const bool bOnRep);
 
 public:
+	/* Give a new Ability to the Player -  bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
-	void GiveAbility(TSubclassOf<UGameplayAbility> Ability);
-	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability);
+	void GiveAbility(TSubclassOf<UGameplayAbility> Ability, UInputAction* Action, const FName InputId);
+	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, UInputAction* Action, const FName InputId);
 
+	/* Will remove the ability associated to the InputAction */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
-	void RemoveAbility(TSubclassOf<UGameplayAbility> Ability);
-	virtual void RemoveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability);
+	void RemoveAbility(TSubclassOf<UGameplayAbility> Ability, const UInputAction* Action);
+	virtual void RemoveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, const UInputAction* Action);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
 	void Die();

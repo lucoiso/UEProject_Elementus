@@ -67,9 +67,14 @@ void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName Eve
 	       TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
 	       *Owner->GetActorLabel());*/
 
+	if (ActiveExtensions.Contains(Owner))
+	{
+		return;
+	}
+
 	if (RequireTags.Num() != 0)
 	{
-		for (const FName Tag : RequireTags) 
+		for (const FName Tag : RequireTags)
 		{
 			if (Owner->ActorHasTag(Tag))
 			{

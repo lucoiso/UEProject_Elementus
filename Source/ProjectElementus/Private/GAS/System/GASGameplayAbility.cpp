@@ -5,13 +5,13 @@
 #include "GAS/System/GASGameplayAbility.h"
 #include "GAS/System/GASAbilitySystemComponent.h"
 #include "GAS/Tasks/SpawnProjectile_Task.h"
+#include "GAS/Tasks/Targeting_Task.h"
 
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitConfirm.h"
 #include "Abilities/Tasks/AbilityTask_WaitCancel.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
-#include "Abilities/Tasks/AbilityTask_WaitTargetData.h"
 #include "Abilities/Tasks/AbilityTask_SpawnActor.h"
 
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
@@ -372,11 +372,6 @@ FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromAc
 	return FGameplayAbilityTargetDataHandle();
 }
 
-FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromTransform(const FTransform TransformData)
-{
-	return FGameplayAbilityTargetDataHandle();
-}
-
 void UGASGameplayAbility::ActivateWaitMontageTask()
 {
 	UAbilityTask_PlayMontageAndWait* AbilityTask_PlayMontageAndWait =
@@ -391,11 +386,16 @@ void UGASGameplayAbility::ActivateWaitMontageTask()
 
 void UGASGameplayAbility::ActivateWaitTargetDataTask(
 	const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation,
-	const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass)
+	const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
+	AGameplayAbilityTargetActor*& TargetActor,
+	FTargetActorSpawnParams TargetParameters = FTargetActorSpawnParams())
 {
-	UAbilityTask_WaitTargetData* AbilityTask_WaitTargetData =
-		UAbilityTask_WaitTargetData::WaitTargetData(this, "WaitTargetDataTask", TargetingConfirmation,
-		                                            TargetActorClass);
+	TargetParameters.StartLocation = MakeTargetLocationInfoFromOwnerActor();
+	TargetParameters.Range = AbilityMaxRange;
+
+	UTargeting_Task* AbilityTask_WaitTargetData =
+		UTargeting_Task::StartTargetingAndWaitData(this, "WaitTargetDataTask", TargetingConfirmation,
+			TargetActorClass, TargetParameters);
 
 	AbilityTask_WaitTargetData->Cancelled.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
 	AbilityTask_WaitTargetData->ValidData.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);

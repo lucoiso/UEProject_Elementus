@@ -4,6 +4,7 @@
 
 #include "Actors/Character/PECharacterBase.h"
 
+#include "Actors/Character/PEPlayerController.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "Camera/CameraComponent.h"
 
@@ -178,59 +179,45 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 		}
 	}
 
-	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-		this, UGameFrameworkComponentManager::NAME_GameActorReady);
+	if (bOnRep || !bIsFrameworkReady)
+	{
+		UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
+			this, UGameFrameworkComponentManager::NAME_GameActorReady);
+
+		bIsFrameworkReady = true;
+	}
 }
 
-void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
+void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, UInputAction* Action, const FName InputId)
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() ||
-		CharacterAbilities.Num() >= 3 || !IsValid(Ability))
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !IsValid(Ability))
 	{
 		return;
 	}
 
 	const FGameplayAbilitySpec* AbilitySpec = GetAbilitySystemComponent()->FindAbilitySpecFromClass(Ability);
+	const uint32 InputID = InputIDEnumerationClass->GetValueByName(InputId, EGetByNameFlags::CheckAuthoredName);
 
-	if (AbilitySpec != nullptr)
+	if (AbilitySpec != nullptr || InputID == INDEX_NONE)
 	{
 		return;
 	}
 
-	const int32& Index = CharacterAbilities.Num();
-
-	auto InputID = [Index, this]() -> const uint32
-	{
-		switch (Index)
-		{
-		case (0):
-			return InputIDEnumerationClass->GetValueByName("Skill 1", EGetByNameFlags::CheckAuthoredName);
-
-		case(1):
-			return InputIDEnumerationClass->GetValueByName("Skill 2", EGetByNameFlags::CheckAuthoredName);
-
-		case(2):
-			return InputIDEnumerationClass->GetValueByName("Skill 3", EGetByNameFlags::CheckAuthoredName);
-
-		default:
-			return -1;
-		}
-	};
-
-	const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID(), this);
+	const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID, this);
 
 	AbilitySystemComponent->GiveAbility(Spec);
 
 	if (AbilitySystemComponent->FindAbilitySpecFromHandle(Spec.Handle) != nullptr)
 	{
+		GetController<APEPlayerController>()->SetupAbilityInput(Action, InputID);
 		CharacterAbilities.Add(Ability);
 	}
 }
 
-void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
+void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const UInputAction* Action)
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || CharacterAbilities.Num() <= 0 || !
-		IsValid(Ability))
+	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || CharacterAbilities.Num() <= 0 ||
+		!IsValid(Ability))
 	{
 		return;
 	}
@@ -246,6 +233,7 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 
 	if (AbilitySystemComponent->FindAbilitySpecFromClass(Ability) == nullptr)
 	{
+		GetController<APEPlayerController>()->RemoveAbilityInputBinding(Action);
 		CharacterAbilities.Remove(Ability);
 	}
 }
