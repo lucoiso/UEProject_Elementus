@@ -21,8 +21,8 @@ public:
 
 	/* Create a reference to manage this ability task */
 	static UHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility,
-	                                              FName TaskInstanceName,
-	                                              const FHitResult HitResult);
+		FName TaskInstanceName,
+		const FHitResult HitResult);
 
 	virtual void Activate() override;
 

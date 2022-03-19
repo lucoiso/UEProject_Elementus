@@ -22,9 +22,9 @@ UTelekinesis_Ability::UTelekinesis_Ability(const FObjectInitializer& ObjectIniti
 
 void UTelekinesis_Ability::ActivateAbility
 (const FGameplayAbilitySpecHandle Handle,
- const FGameplayAbilityActorInfo* ActorInfo,
- const FGameplayAbilityActivationInfo ActivationInfo,
- const FGameplayEventData* TriggerEventData)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -44,7 +44,7 @@ void UTelekinesis_Ability::ActivateAbility
 	}
 
 	AbilityTask = UTelekinesisAbility_Task::TelekinesisAbilityMovement(this, FName("TelekinesisTask"),
-	                                                                   AbilityTraceDataHandle.Hit.GetActor());
+		AbilityTraceDataHandle.Hit.GetActor());
 	AbilityTask->ReadyForActivation();
 
 	FGameplayCueParameters Params;
@@ -52,14 +52,14 @@ void UTelekinesis_Ability::ActivateAbility
 	Params.TargetAttachComponent = AbilityTraceDataHandle.Hit.GetComponent();
 
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Telekinesis.Grab"), Params,
-	                     ActorInfo->AbilitySystemComponent.Get());
+		ActorInfo->AbilitySystemComponent.Get());
 
 	ActivateWaitAddedTagTask(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis.Throw"));
 }
 
 void UTelekinesis_Ability::InputPressed(const FGameplayAbilitySpecHandle Handle,
-                                        const FGameplayAbilityActorInfo* ActorInfo,
-                                        const FGameplayAbilityActivationInfo ActivationInfo)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 

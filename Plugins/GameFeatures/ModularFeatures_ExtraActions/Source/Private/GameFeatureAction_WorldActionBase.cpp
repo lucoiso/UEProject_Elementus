@@ -35,7 +35,7 @@ void UGameFeatureAction_WorldActionBase::OnGameFeatureDeactivating(FGameFeatureD
 }
 
 void UGameFeatureAction_WorldActionBase::HandleGameInstanceStart(UGameInstance* GameInstance, FGameFeatureStateChangeContext ChangeContext)
-{	
+{
 	if (const FWorldContext* WorldContext = GameInstance->GetWorldContext())
 	{
 		if (ChangeContext.ShouldApplyToWorldContext(*WorldContext))

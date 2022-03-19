@@ -33,7 +33,7 @@ struct FAbilityInputData
 {
 	GENERATED_BODY()
 
-	uint32 OnPressedHandle = 0;
+		uint32 OnPressedHandle = 0;
 	uint32 OnReleasedHandle = 0;
 	uint32 InputID = 0;
 };
@@ -50,11 +50,11 @@ public:
 	APEPlayerController(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(Client, Reliable)
-	virtual void SetupAbilityInput(UInputAction* Action, const int32 InputID) override;
+		virtual void SetupAbilityInput(UInputAction* Action, const int32 InputID) override;
 	virtual void SetupAbilityInput_Implementation(UInputAction* Action, const int32 InputID);
 
 	UFUNCTION(Client, Reliable)
-	virtual void RemoveAbilityInputBinding(const UInputAction* Action) const override;
+		virtual void RemoveAbilityInputBinding(const UInputAction* Action) const override;
 	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const;
 
 protected:
@@ -63,7 +63,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom Properties | Management")
-	TSubclassOf<UUserWidget> HUDClass;
+		TSubclassOf<UUserWidget> HUDClass;
 
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnRep_PlayerState() override;
@@ -76,11 +76,11 @@ private:
 	const float BaseLookUpRate = 45.f;
 
 	UFUNCTION()
-	void ChangeCameraAxis(const FInputActionValue& Value);
+		void ChangeCameraAxis(const FInputActionValue& Value);
 	UFUNCTION()
-	void Move(const FInputActionValue& Value);
+		void Move(const FInputActionValue& Value);
 	UFUNCTION()
-	void Jump(const FInputActionValue& Value);
+		void Jump(const FInputActionValue& Value);
 
 	void OnAbilityInputPressed(UInputAction* Action);
 	void OnAbilityInputReleased(UInputAction* Action);

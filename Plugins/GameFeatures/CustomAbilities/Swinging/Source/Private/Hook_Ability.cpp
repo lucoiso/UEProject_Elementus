@@ -22,9 +22,9 @@ UHook_Ability::UHook_Ability(const FObjectInitializer& ObjectInitializer)
 
 void UHook_Ability::ActivateAbility
 (const FGameplayAbilitySpecHandle Handle,
- const FGameplayAbilityActorInfo* ActorInfo,
- const FGameplayAbilityActivationInfo ActivationInfo,
- const FGameplayEventData* TriggerEventData)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -50,23 +50,23 @@ void UHook_Ability::ActivateAbility
 	Params.TargetAttachComponent = AbilityTraceDataHandle.Hit.GetComponent();
 
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging.Hook"), Params,
-	                     ActorInfo->AbilitySystemComponent.Get());
+		ActorInfo->AbilitySystemComponent.Get());
 
 	if (Cast<APECharacterBase>(AbilityTraceDataHandle.Hit.GetActor()))
 	{
 		FTimerDelegate TimerDelegate;
 		FTimerHandle TimerHandle;
 		TimerDelegate.BindLambda([this, Handle, ActorInfo, ActivationInfo]() -> void
-		{
-			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-		});
+			{
+				EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+			});
 
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime, false);
 	}
 }
 
 void UHook_Ability::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-                                  const FGameplayAbilityActivationInfo ActivationInfo)
+	const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 

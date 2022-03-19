@@ -26,10 +26,10 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
-	void PerformInteraction(class UAbilitySystemComponent* TargetABSC);
+		void PerformInteraction(class UAbilitySystemComponent* TargetABSC);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Custom Functions | Behaviors")
-	void DoInteractionBehavior();
+		void DoInteractionBehavior();
 
 	void DoInteractionBehavior_Implementation()
 	{
@@ -38,5 +38,5 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	FGameplayTagContainer RequirementsTags;
+		FGameplayTagContainer RequirementsTags;
 };

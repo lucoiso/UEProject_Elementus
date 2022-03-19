@@ -17,9 +17,9 @@ UWalk_Ability::UWalk_Ability(const FObjectInitializer& ObjectInitializer)
 
 void UWalk_Ability::ActivateAbility
 (const FGameplayAbilitySpecHandle Handle,
- const FGameplayAbilityActorInfo* ActorInfo,
- const FGameplayAbilityActivationInfo ActivationInfo,
- const FGameplayEventData* TriggerEventData)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -33,7 +33,7 @@ void UWalk_Ability::ActivateAbility
 }
 
 void UWalk_Ability::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-                                  const FGameplayAbilityActivationInfo ActivationInfo)
+	const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 

@@ -58,52 +58,52 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
-	UAttributeSet* GetAttributeSetBase() const;
+		UAttributeSet* GetAttributeSetBase() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
-	TArray<UAttributeSet*> GetAttributeSetArray() const;
+		TArray<UAttributeSet*> GetAttributeSetArray() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetHealth() const;
+		float GetHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetMaxHealth() const;
+		float GetMaxHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetStamina() const;
+		float GetStamina() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetMaxStamina() const;
+		float GetMaxStamina() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetMana() const;
+		float GetMana() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetMaxMana() const;
+		float GetMaxMana() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetAttackRate() const;
+		float GetAttackRate() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetDefenseRate() const;
+		float GetDefenseRate() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetSpeedRate() const;
+		float GetSpeedRate() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetJumpRate() const;
+		float GetJumpRate() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetExperience() const;
+		float GetExperience() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetGold() const;
+		float GetGold() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetLevelingRequirementExp() const;
+		float GetLevelingRequirementExp() const;
 
 protected:
 	void SetupCharacterLevel(const uint32 NewLevel);

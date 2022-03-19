@@ -26,10 +26,10 @@ class PROJECTELEMENTUS_API APECharacterBase : public ACharacter, public IAbility
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+		class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
+		class UCameraComponent* FollowCamera;
 
 	bool bIsFrameworkReady = false;
 
@@ -67,35 +67,35 @@ public:
 	float GetCameraTargetArmLength() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetDefaultWalkSpeed() const;
+		float GetDefaultWalkSpeed() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetDefaultCrouchSpeed() const;
+		float GetDefaultCrouchSpeed() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-	float GetDefaultJumpVelocity() const;
+		float GetDefaultJumpVelocity() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
-	UAttributeSet* GetAttributeSetBase() const;
+		UAttributeSet* GetAttributeSetBase() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
-	TArray<UAttributeSet*> GetAttributeSetArray() const;
+		TArray<UAttributeSet*> GetAttributeSetArray() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
-	APEPlayerState* GetPEPlayerState() const;
+		APEPlayerState* GetPEPlayerState() const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Enumeration Class"),
 		Category = "Custom GAS | Data")
-	UEnum* InputIDEnumerationClass;
+		UEnum* InputIDEnumerationClass;
 
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Abilities")
-	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
+		TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 
 	virtual void PreInitializeComponents() override;
 	virtual void PostInitializeComponents() override;
@@ -111,16 +111,16 @@ protected:
 public:
 	/* Give a new Ability to the Player -  bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
-	void GiveAbility(TSubclassOf<UGameplayAbility> Ability, UInputAction* Action, const FName InputId);
-	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, UInputAction* Action, const FName InputId);
+		void GiveAbility(TSubclassOf<UGameplayAbility> Ability, const FName InputId);
+	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, const FName InputId);
 
 	/* Will remove the ability associated to the InputAction */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
-	void RemoveAbility(TSubclassOf<UGameplayAbility> Ability, const UInputAction* Action);
-	virtual void RemoveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, const UInputAction* Action);
+		void RemoveAbility(TSubclassOf<UGameplayAbility> Ability);
+	virtual void RemoveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
-	void Die();
+		void Die();
 	virtual void Die_Implementation();
 	bool Die_Validate();
 };

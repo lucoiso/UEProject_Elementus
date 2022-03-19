@@ -25,6 +25,7 @@ struct PROJECTELEMENTUS_API FGASTraceDataHandle
 {
 	GENERATED_USTRUCT_BODY()
 
+public:
 	FGASTraceDataHandle();
 
 	FHitResult Hit;
@@ -42,7 +43,8 @@ struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 {
 	GENERATED_USTRUCT_BODY()
 
-		FTargetActorSpawnParams() :
+public:
+	FTargetActorSpawnParams() :
 		Range(0.f),
 		StartLocation(FGameplayAbilityTargetingLocationInfo()),
 		Height(0.f),
@@ -60,26 +62,26 @@ struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 	struct FGameplayAbilityTargetingLocationInfo StartLocation;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float Height;
+		float Height;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float Radius;
+		float Radius;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TSubclassOf<class AGameplayAbilityWorldReticle> ReticleClass;
+		TSubclassOf<class AGameplayAbilityWorldReticle> ReticleClass;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	struct FWorldReticleParameters ReticleParams;
+		struct FWorldReticleParameters ReticleParams;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	struct FGameplayTargetDataFilter TargetFilter;
+		struct FGameplayTargetDataFilter TargetFilter;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bDestroyOnConfirmation;
+		bool bDestroyOnConfirmation;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bTraceAffectsAimPitch;
+		bool bTraceAffectsAimPitch;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bDebug;
+		bool bDebug;
 };

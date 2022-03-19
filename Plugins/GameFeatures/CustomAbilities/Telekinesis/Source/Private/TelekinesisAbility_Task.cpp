@@ -28,13 +28,13 @@ void UTelekinesisAbility_Task::Activate()
 
 	APECharacterBase* TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
 	PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner, UPhysicsHandleComponent::StaticClass(),
-	                                                   FName("TelekinesisPhysicsHandle"));
+		FName("TelekinesisPhysicsHandle"));
 
 	if (IsValid(TelekinesisOwner) && IsValid(Cast<AThrowableActor>(TelekinesisTarget)) && PhysicsHandle.IsValid())
 	{
 		PhysicsHandle->RegisterComponent();
 		PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-		                                       NAME_None, TelekinesisTarget->GetActorLocation());
+			NAME_None, TelekinesisTarget->GetActorLocation());
 		PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 	}
 

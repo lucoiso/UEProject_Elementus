@@ -35,10 +35,10 @@ void UGameFeatureAction_SpawnActors::SpawnActors_Implementation(UWorld* WorldRef
 	for (const FActorSpawnSettings& Settings : SpawnSettings)
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Spawning actor %s on world %s"), *Settings.ActorClass.GetAssetName(), *TargetLevel.GetAssetName());
+			TEXT("Spawning actor %s on world %s"), *Settings.ActorClass.GetAssetName(), *TargetLevel.GetAssetName());
 
 		AActor* SpawnedActor = WorldReference->SpawnActor<AActor>(Settings.ActorClass.LoadSynchronous(),
-		                                                          Settings.SpawnTransform);
+			Settings.SpawnTransform);
 		SpawnedActors.Add(SpawnedActor);
 	}
 }

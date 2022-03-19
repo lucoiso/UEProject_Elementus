@@ -24,7 +24,7 @@ void AConsumableActor::PerformConsumption_Implementation(UAbilitySystemComponent
 		if (TargetABSC->HasAllMatchingGameplayTags(RequirementsTags) && TargetABSC->IsOwnerActorAuthoritative())
 		{
 			TargetABSC->ApplyGameplayEffectToSelf(ObjectEffectClass.GetDefaultObject(), 1.f,
-			                                      TargetABSC->MakeEffectContext());
+				TargetABSC->MakeEffectContext());
 		}
 
 		Destroy();

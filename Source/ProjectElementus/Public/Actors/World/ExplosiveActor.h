@@ -27,20 +27,20 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
-	void PerformExplosion();
+		void PerformExplosion();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	float ExplosionRadius;
+		float ExplosionRadius;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	float ExplosionMagnitude;
+		float ExplosionMagnitude;
 
 	/* Effects that will be apply to affected characters */
 	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
-	TArray<TSubclassOf<UGameplayEffect>> ExplosionEffects;
+		TArray<TSubclassOf<UGameplayEffect>> ExplosionEffects;
 
 	/* Visual Effect */
 	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
-	TArray<UNiagaraSystem*> ExplosionVFXs;
+		TArray<UNiagaraSystem*> ExplosionVFXs;
 };

@@ -29,7 +29,6 @@ void UGameFeatureAction_AddAbilities::OnGameFeatureDeactivating(FGameFeatureDeac
 	ResetExtension();
 }
 
-
 void UGameFeatureAction_AddAbilities::ResetExtension()
 {
 	while (!ActiveExtensions.IsEmpty())
@@ -68,8 +67,8 @@ void UGameFeatureAction_AddAbilities::AddToWorld(const FWorldContext& WorldConte
 void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName EventName)
 {
 	/*UE_LOG(LogGameplayExtraFeatures, Warning,
-	       TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
-	       *Owner->GetActorLabel());*/
+		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
+		   *Owner->GetActorLabel());*/
 
 	if (ActiveExtensions.Contains(Owner))
 	{
@@ -107,32 +106,32 @@ void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName 
 }
 
 void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* TargetActor,
-                                                                       const FAbilityMapping& Ability)
+	const FAbilityMapping& Ability)
 {
 	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Adding ability %s to Actor %s."), *Ability.AbilityClass.GetAssetName(),
-		       *TargetActor->GetActorLabel());
+			TEXT("Adding ability %s to Actor %s."), *Ability.AbilityClass.GetAssetName(),
+			*TargetActor->GetActorLabel());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 		UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
-			                                                  ? InterfaceOwner->GetAbilitySystemComponent()
-			                                                  : TargetActor->FindComponentByClass<
-				                                                  UAbilitySystemComponent>();
+			? InterfaceOwner->GetAbilitySystemComponent()
+			: TargetActor->FindComponentByClass<
+			UAbilitySystemComponent>();
 
 		if (IsValid(AbilitySystemComponent))
 		{
 			FActiveAbilityData NewAbilityData = ActiveExtensions.FindOrAdd(TargetActor);
 
-			const int32 InputID = InputIDEnumerationClass.LoadSynchronous()->GetValueByName(
+			const uint32 InputID = InputIDEnumerationClass.LoadSynchronous()->GetValueByName(
 				Ability.InputIDValueName, EGetByNameFlags::CheckAuthoredName);
 
 			const FGameplayAbilitySpec NewAbilitySpec =
 				FGameplayAbilitySpec(Ability.AbilityClass.LoadSynchronous(),
-				                     Ability.AbilityLevel,
-				                     InputID,
-				                     TargetActor);
+					Ability.AbilityLevel,
+					InputID,
+					TargetActor);
 
 			const FGameplayAbilitySpecHandle NewSpecHandle = AbilitySystemComponent->GiveAbility(NewAbilitySpec);
 
@@ -163,7 +162,7 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 					{
 						UInputAction* AbilityInput = Ability.InputAction.LoadSynchronous();
 						SetupInputInterface->SetupAbilityInput(AbilityInput,
-						                                       InputID);
+							InputID);
 
 						NewAbilityData.InputReference.Add(AbilityInput);
 					}
@@ -180,8 +179,8 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 	if (IsValid(TargetActor) && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Removing associated abilities from Actor %s."),
-		       *TargetActor->GetActorLabel());
+			TEXT("Removing associated abilities from Actor %s."),
+			*TargetActor->GetActorLabel());
 
 		FActiveAbilityData ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
 
@@ -193,9 +192,9 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 		{
 			const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 			UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
-				                                                  ? InterfaceOwner->GetAbilitySystemComponent()
-				                                                  : TargetActor->FindComponentByClass<
-					                                                  UAbilitySystemComponent>();
+				? InterfaceOwner->GetAbilitySystemComponent()
+				: TargetActor->FindComponentByClass<
+				UAbilitySystemComponent>();
 
 			if (IsValid(AbilitySystemComponent))
 			{

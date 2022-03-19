@@ -35,7 +35,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	{
 		LevelingData = LevelingDataObject.Object;
 	}
-	
+
 	static ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaDataObject(
 		TEXT("/Game/Main/GAS/Data/DT_Character_ATB_Default"));
 	if (AttributesMetaDataObject.Object != nullptr)
@@ -70,30 +70,30 @@ void APEPlayerState::BeginPlay()
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetSpeedRateAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::SpeedRateChanged_Callback);
+			AddUObject(
+				this, &APEPlayerState::SpeedRateChanged_Callback);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetJumpRateAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::JumpRateChanged_Callback);
+			AddUObject(
+				this, &APEPlayerState::JumpRateChanged_Callback);
 
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetHealthAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::HealthChanged_Callback);
+			AddUObject(
+				this, &APEPlayerState::HealthChanged_Callback);
 
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetStaminaAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::StaminaChanged_Callback);
+			AddUObject(
+				this, &APEPlayerState::StaminaChanged_Callback);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetManaAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::ManaChanged_Callback);
+			AddUObject(
+				this, &APEPlayerState::ManaChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::DeathStateChanged_Callback);
+			EGameplayTagEventType::NewOrRemoved).AddUObject(
+				this, &APEPlayerState::DeathStateChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::StunStateChanged_Callback);
+			EGameplayTagEventType::NewOrRemoved).AddUObject(
+				this, &APEPlayerState::StunStateChanged_Callback);
 
 		if (AttributesData.IsValid())
 		{
@@ -128,8 +128,8 @@ void APEPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 __func__,
-	                 *CallbackTag.ToString(), NewCount);
+		__func__,
+		*CallbackTag.ToString(), NewCount);
 
 	if (NewCount != 0)
 	{
@@ -145,8 +145,8 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 __func__,
-	                 *CallbackTag.ToString(), NewCount);
+		__func__,
+		*CallbackTag.ToString(), NewCount);
 
 	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
 
@@ -319,7 +319,6 @@ float APEPlayerState::GetGold() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Gold);
 }
-
 
 #define UPDATE_ATTRIBUTE_INFORMATIONS(AttributeSet, AttributePropery, LevelingInfo) \
 AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + LevelingInfo->Bonus##AttributePropery;

@@ -45,8 +45,8 @@ void AProjectileActor::FireInDirection(const FVector Direction)
 }
 
 void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor,
-                                                      UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-                                                      const FHitResult& Hit)
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+	const FHitResult& Hit)
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
 	APECharacterBase* Character = Cast<APECharacterBase>(OtherActor);

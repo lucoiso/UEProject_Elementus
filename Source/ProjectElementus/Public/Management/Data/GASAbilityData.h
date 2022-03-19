@@ -10,6 +10,7 @@
 
 class UGameplayEffect;
 class UGameplayAbility;
+
 /**
  *
  */
@@ -18,15 +19,16 @@ struct FGameplayEffectGroupedData
 {
 	GENERATED_USTRUCT_BODY()
 
+public:
 	FGameplayEffectGroupedData()
 	{
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom GAS | Defaults")
-	TSubclassOf<UGameplayEffect> EffectClass;
+		TSubclassOf<UGameplayEffect> EffectClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom GAS | Defaults")
-	TMap<FGameplayTag, float> SetByCallerStackedData;
+		TMap<FGameplayTag, float> SetByCallerStackedData;
 };
 
 /**
@@ -46,14 +48,14 @@ public:
 	}
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	TSoftClassPtr<UGameplayAbility> AbilityClass;
+		TSoftClassPtr<UGameplayAbility> AbilityClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	FName AbilityName;
+		FName AbilityName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	FText AbilityDescription;
+		FText AbilityDescription;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	UTexture2D* AbilityImage;
+		UTexture2D* AbilityImage;
 };

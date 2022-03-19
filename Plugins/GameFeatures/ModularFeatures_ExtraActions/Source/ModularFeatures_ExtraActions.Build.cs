@@ -21,7 +21,7 @@ public class ModularFeatures_ExtraActions : ModuleRules
             "GameplayAbilities",
             "GameplayTags",
             "GameplayTasks",
-            "GameFeatures",            
+            "GameFeatures",
             "ModularGameplay",
         });
     }

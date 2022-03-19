@@ -7,9 +7,9 @@
 #include "Abilities/GameplayAbilityTargetActor_Radius.h"
 
 UTargeting_Task* UTargeting_Task::StartTargetingAndWaitData(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
-															const TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType,
-															const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
-															const FTargetActorSpawnParams Parameters)
+	const TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType,
+	const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
+	const FTargetActorSpawnParams Parameters)
 {
 	UTargeting_Task* MyObj = NewAbilityTask<UTargeting_Task>(OwningAbility, TaskInstanceName);
 	MyObj->TargetActorClass = TargetActorClass;
@@ -26,7 +26,7 @@ void UTargeting_Task::Activate()
 
 	if (TargetActorClass.Get() == AGameplayAbilityTargetActor_GroundTrace::StaticClass())
 	{
-		AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = 
+		AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj =
 			GetWorld()->SpawnActorDeferred<AGameplayAbilityTargetActor_GroundTrace>(TargetActorClass, FTransform::Identity);
 
 		GroundTraceObj->CollisionRadius = TargetingParams.Radius;

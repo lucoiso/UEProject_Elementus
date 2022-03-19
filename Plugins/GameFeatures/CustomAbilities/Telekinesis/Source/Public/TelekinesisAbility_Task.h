@@ -21,8 +21,8 @@ public:
 
 	/* Create a reference to manage this ability task */
 	static UTelekinesisAbility_Task* TelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-	                                                            FName TaskInstanceName,
-	                                                            const TWeakObjectPtr<AActor> Target);
+		FName TaskInstanceName,
+		const TWeakObjectPtr<AActor> Target);
 
 	virtual void Activate() override;
 

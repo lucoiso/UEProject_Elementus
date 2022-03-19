@@ -9,20 +9,19 @@
 #include "GAS/System/GASTrace.h"
 #include "Targeting_Task.generated.h"
 
-
 /**
  *
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitTargetingDelegate, const struct FGameplayAbilityTargetDataHandle&, Data);
 
 /**
- * 
+ *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Tasks")
 class PROJECTELEMENTUS_API UTargeting_Task : public UAbilityTask
 {
 	GENERATED_BODY()
-	
+
 public:
 	UPROPERTY(BlueprintAssignable)
 		FWaitTargetingDelegate ValidData;
@@ -31,12 +30,12 @@ public:
 		FWaitTargetingDelegate Cancelled;
 
 	/** Spawns target actor and waits for it to return valid data or to be canceled. */
-	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "true", 
+	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "true",
 		HideSpawnParms = "Instigator", AutoCreateRefTerm = "Parameters"), Category = "Custom GAS | Tasks")
-	static UTargeting_Task* StartTargetingAndWaitData(UGameplayAbility* OwningAbility, const FName TaskInstanceName, 
-													const TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType, 
-													const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass, 
-													const FTargetActorSpawnParams Parameters);
+		static UTargeting_Task* StartTargetingAndWaitData(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
+			const TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType,
+			const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
+			const FTargetActorSpawnParams Parameters);
 
 protected:
 	virtual void Activate() override;
@@ -48,7 +47,6 @@ private:
 	TWeakObjectPtr<class AGameplayAbilityTargetActor> TargetActor;
 	TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType;
 	FTargetActorSpawnParams TargetingParams;
-
 
 	UFUNCTION()
 		virtual void OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& Data);

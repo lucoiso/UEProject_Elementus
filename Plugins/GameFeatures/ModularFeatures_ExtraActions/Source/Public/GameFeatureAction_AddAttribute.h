@@ -11,8 +11,9 @@
 class UAttributeSet;
 class UDataTable;
 struct FComponentRequestHandle;
+
 /**
- * 
+ *
  */
 UCLASS(MinimalAPI, meta = (DisplayName = "Add Attribute"))
 class UGameFeatureAction_AddAttribute final : public UGameFeatureAction_WorldActionBase
@@ -21,20 +22,20 @@ class UGameFeatureAction_AddAttribute final : public UGameFeatureAction_WorldAct
 
 public:
 	/* Target actor to which attribute will be given */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (OnlyPlaceable))
-	TSoftClassPtr<AActor> TargetActorClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
+		TSoftClassPtr<AActor> TargetActorClass;
 
 	/* Tags required on the target to apply this action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
-	TArray<FName> RequireTags;
+		TArray<FName> RequireTags;
 
 	/* AttributeSet class to be added */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
-	TSoftClassPtr<UAttributeSet> Attribute;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+		TSoftClassPtr<UAttributeSet> Attribute;
 
 	/* Data Table with Attribute Meta Data to be added (can be left unset) */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
-	TSoftObjectPtr<UDataTable> InitializationData;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+		TSoftObjectPtr<UDataTable> InitializationData;
 
 protected:
 	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
@@ -46,11 +47,11 @@ private:
 	void ResetExtension();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void AddAttribute(AActor* TargetActor);
+		void AddAttribute(AActor* TargetActor);
 	void AddAttribute_Implementation(AActor* TargetActor);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void RemoveAttribute(AActor* TargetActor);
+		void RemoveAttribute(AActor* TargetActor);
 	void RemoveAttribute_Implementation(AActor* TargetActor);
 
 	TMap<TWeakObjectPtr<AActor>, TWeakObjectPtr<UAttributeSet>> ActiveExtensions;

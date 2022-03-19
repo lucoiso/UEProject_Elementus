@@ -78,10 +78,10 @@ void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action,
 		{
 			AbilityBinding.OnPressedHandle =
 			EnhancedInputComponent->BindAction(Action, ETriggerEvent::Started, this,
-			                                   &APEPlayerController::OnAbilityInputPressed, Action).GetHandle(),
+											   &APEPlayerController::OnAbilityInputPressed, Action).GetHandle(),
 			AbilityBinding.OnReleasedHandle =
 			EnhancedInputComponent->BindAction(Action, ETriggerEvent::Completed, this,
-			                                   &APEPlayerController::OnAbilityInputReleased, Action).GetHandle(),
+											   &APEPlayerController::OnAbilityInputReleased, Action).GetHandle(),
 			AbilityBinding.InputID = InputID
 		};
 
@@ -105,7 +105,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
-	                     __func__, InputID);
+		__func__, InputID);
 
 	const APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 
@@ -117,6 +117,11 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 		{
 			ControllerOwner->GetAbilitySystemComponent()->LocalInputConfirm();
 		}
+
+		else if (InputID == ControllerOwner->InputIDEnumerationClass->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName))
+		{
+			ControllerOwner->GetAbilitySystemComponent()->LocalInputCancel();
+		}
 	}
 }
 
@@ -125,26 +130,21 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
-	                     __func__, InputID);
+		__func__, InputID);
 
 	const APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 
 	if (IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
-
-		if (InputID == ControllerOwner->InputIDEnumerationClass->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName))
-		{
-			ControllerOwner->GetAbilitySystemComponent()->LocalInputConfirm();
-		}
 	}
 }
 
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 {
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     __func__,
-	                     *Value.ToString(), Value.GetMagnitude());
+		__func__,
+		*Value.ToString(), Value.GetMagnitude());
 
 	AddYawInput(-1.f * Value[1] * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 	AddPitchInput(Value[0] * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
@@ -153,8 +153,8 @@ void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 void APEPlayerController::Move(const FInputActionValue& Value)
 {
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     __func__,
-	                     *Value.ToString(), Value.GetMagnitude());
+		__func__,
+		*Value.ToString(), Value.GetMagnitude());
 
 	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
 	{
@@ -177,15 +177,15 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 		GetPawnOrSpectator()->AddMovementInput(DirectionY, Value[0]);
 
 		UE_VLOG_LOCATION(GetPawn(), LogController_Axis, Log, GetPawn()->GetActorLocation(), 25.f, FColor::Green,
-		                 TEXT("%s"), *GetPawn()->GetName());
+			TEXT("%s"), *GetPawn()->GetName());
 	}
 }
 
 void APEPlayerController::Jump(const FInputActionValue& Value)
 {
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     __func__,
-	                     *Value.ToString(), Value.GetMagnitude());
+		__func__,
+		*Value.ToString(), Value.GetMagnitude());
 
 	APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 

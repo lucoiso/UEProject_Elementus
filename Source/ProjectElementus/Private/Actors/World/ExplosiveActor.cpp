@@ -33,12 +33,12 @@ void AExplosiveActor::PerformExplosion()
 #endif // !UE_BUILD_DEBUG
 
 	GetWorld()->SweepMultiByObjectType(HitOut,
-	                                   GetActorLocation(),
-	                                   GetActorLocation(),
-	                                   FQuat(FRotator(0.f)),
-	                                   FCollisionObjectQueryParams::AllDynamicObjects,
-	                                   FCollisionShape::MakeSphere(ExplosionRadius),
-	                                   QueryParams);
+		GetActorLocation(),
+		GetActorLocation(),
+		FQuat(FRotator(0.f)),
+		FCollisionObjectQueryParams::AllDynamicObjects,
+		FCollisionShape::MakeSphere(ExplosionRadius),
+		QueryParams);
 
 	for (UNiagaraSystem* NiagaraSystem : ExplosionVFXs)
 	{

@@ -16,6 +16,7 @@ struct FGASLevelingData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
+public:
 	FGASLevelingData() :
 		BonusMaxHealth(0.f),
 		BonusMaxMana(0.f),
@@ -27,23 +28,23 @@ struct FGASLevelingData : public FTableRowBase
 	};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BonusMaxHealth;
+		float BonusMaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BonusMaxMana;
+		float BonusMaxMana;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BonusMaxStamina;
+		float BonusMaxStamina;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BonusAttackRate;
+		float BonusAttackRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BonusDefenseRate;
+		float BonusDefenseRate;
 
 	/* Required experience to pass to next level */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Required Xp to Level Up"))
-	float ExperienceNeeded;
+		float ExperienceNeeded;
 };
 
 /**
@@ -55,6 +56,6 @@ struct FGASLevelingData : public FTableRowBase
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-/**
- *
- */
+ /**
+  *
+  */

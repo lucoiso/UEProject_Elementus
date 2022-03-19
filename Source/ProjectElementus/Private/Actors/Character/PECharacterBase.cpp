@@ -71,7 +71,7 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
-	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));	
+	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 }
 
 float APECharacterBase::GetDefaultWalkSpeed() const
@@ -133,7 +133,7 @@ void APECharacterBase::PreInitializeComponents()
 
 void APECharacterBase::PostInitializeComponents()
 {
-	Super::PostInitializeComponents(); 
+	Super::PostInitializeComponents();
 }
 
 void APECharacterBase::PossessedBy(AController* InputController)
@@ -152,7 +152,7 @@ void APECharacterBase::BeginPlay()
 
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
-	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;		
+	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
 }
 
 void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -188,7 +188,7 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 	}
 }
 
-void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, UInputAction* Action, const FName InputId)
+void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId)
 {
 	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !IsValid(Ability))
 	{
@@ -209,12 +209,11 @@ void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbi
 
 	if (AbilitySystemComponent->FindAbilitySpecFromHandle(Spec.Handle) != nullptr)
 	{
-		GetController<APEPlayerController>()->SetupAbilityInput(Action, InputID);
 		CharacterAbilities.Add(Ability);
 	}
 }
 
-void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const UInputAction* Action)
+void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
 {
 	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || CharacterAbilities.Num() <= 0 ||
 		!IsValid(Ability))
@@ -233,7 +232,6 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 
 	if (AbilitySystemComponent->FindAbilitySpecFromClass(Ability) == nullptr)
 	{
-		GetController<APEPlayerController>()->RemoveAbilityInputBinding(Action);
 		CharacterAbilities.Remove(Ability);
 	}
 }

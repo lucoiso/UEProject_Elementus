@@ -14,7 +14,7 @@ UHookAbility_Task::UHookAbility_Task(const FObjectInitializer& ObjectInitializer
 }
 
 UHookAbility_Task* UHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
-                                                          const FHitResult HitResult)
+	const FHitResult HitResult)
 {
 	UHookAbility_Task* MyObj = NewAbilityTask<UHookAbility_Task>(OwningAbility, TaskInstanceName);
 
