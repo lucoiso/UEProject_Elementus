@@ -102,7 +102,7 @@ protected:
 	/* Performs targeting and call WaitTargetData_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Delegates")
 		void ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation,
-			const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
+			const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
 			AGameplayAbilityTargetActor*& TargetActor,
 			struct FTargetActorSpawnParams TargetParameters);
 

@@ -66,22 +66,6 @@ void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName Ev
 		   TEXT("Event %s sended by Actor %s for effects management."), *EventName.ToString(),
 		   *Owner->GetActorLabel());*/
 
-	if (ActiveExtensions.Contains(Owner))
-	{
-		return;
-	}
-
-	if (RequireTags.Num() != 0)
-	{
-		for (const FName Tag : RequireTags)
-		{
-			if (Owner->ActorHasTag(Tag))
-			{
-				return;
-			}
-		}
-	}
-
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
 	{
@@ -91,6 +75,22 @@ void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName Ev
 	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName ==
 		UGameFrameworkComponentManager::NAME_GameActorReady)
 	{
+		if (ActiveExtensions.Contains(Owner))
+		{
+			return;
+		}
+
+		if (RequireTags.Num() != 0)
+		{
+			for (const FName Tag : RequireTags)
+			{
+				if (Owner->ActorHasTag(Tag))
+				{
+					return;
+				}
+			}
+		}
+
 		for (const FEffectStackedData& Entry : Effects)
 		{
 			if (!Entry.EffectClass.IsNull())

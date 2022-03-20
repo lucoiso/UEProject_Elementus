@@ -4,11 +4,10 @@
 
 #include "GAS/Tasks/Targeting_Task.h"
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
-#include "Abilities/GameplayAbilityTargetActor_Radius.h"
 
 UTargeting_Task* UTargeting_Task::StartTargetingAndWaitData(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
 	const TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType,
-	const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
+	const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
 	const FTargetActorSpawnParams Parameters)
 {
 	UTargeting_Task* MyObj = NewAbilityTask<UTargeting_Task>(OwningAbility, TaskInstanceName);
@@ -24,46 +23,34 @@ void UTargeting_Task::Activate()
 {
 	Super::Activate();
 
-	if (TargetActorClass.Get() == AGameplayAbilityTargetActor_GroundTrace::StaticClass())
-	{
-		AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj =
-			GetWorld()->SpawnActorDeferred<AGameplayAbilityTargetActor_GroundTrace>(TargetActorClass, FTransform::Identity);
-
-		GroundTraceObj->CollisionRadius = TargetingParams.Radius;
-		GroundTraceObj->CollisionHeight = TargetingParams.Height;
-		GroundTraceObj->MaxRange = TargetingParams.Range;
-		GroundTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
-
-		TargetActor = GroundTraceObj;
-	}
-	else if (TargetActorClass.Get() == AGameplayAbilityTargetActor_Radius::StaticClass())
-	{
-		AGameplayAbilityTargetActor_Radius* RadiusTargetObj =
-			GetWorld()->SpawnActorDeferred<AGameplayAbilityTargetActor_Radius>(TargetActorClass, FTransform::Identity);
-
-		RadiusTargetObj->Radius = TargetingParams.Radius;
-	}
-	else
-	{
-		TargetActor = GetWorld()->SpawnActorDeferred<AGameplayAbilityTargetActor>(TargetActorClass, FTransform::Identity);
-	}
+	TargetActor = GetWorld()->SpawnActorDeferred<AGameplayAbilityTargetActor>(TargetActorClass, FTransform::Identity);
 
 	TargetActor->StartLocation = TargetingParams.StartLocation;
 	TargetActor->ReticleClass = TargetingParams.ReticleClass;
 	TargetActor->ReticleParams = TargetingParams.ReticleParams;
+	TargetActor->bDebug = TargetingParams.bDebug;
 
 	FGameplayTargetDataFilterHandle FilterHandle;
 	FilterHandle.Filter = MakeShared<FGameplayTargetDataFilter>(TargetingParams.TargetFilter);
 	TargetActor->Filter = FilterHandle;
 
-	TargetActor->bDestroyOnConfirmation = TargetingParams.bDestroyOnConfirmation;
-	TargetActor->bDebug = TargetingParams.bDebug;
+	if (TargetActorClass.Get() == AGameplayAbilityTargetActor_GroundTrace::StaticClass())
+	{
+		AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
+
+		GroundTraceObj->CollisionRadius = TargetingParams.Radius;
+		GroundTraceObj->CollisionHeight = TargetingParams.Height;
+		GroundTraceObj->MaxRange = TargetingParams.Range;
+		GroundTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
+	}
 
 	TargetActor->FinishSpawning(FTransform::Identity);
 
 	if (TargetActor.IsValid())
 	{
 		TargetActor->MasterPC = Ability->GetCurrentActorInfo()->PlayerController.Get();
+		TargetActor->bDestroyOnConfirmation = TargetingParams.bDestroyOnConfirmation;
+		TargetActor->ShouldProduceTargetDataOnServer = true;
 
 		TargetActor->TargetDataReadyDelegate.AddUObject(this, &UTargeting_Task::OnTargetDataReadyCallback);
 		TargetActor->CanceledDelegate.AddUObject(this, &UTargeting_Task::OnTargetDataCancelledCallback);
@@ -100,11 +87,14 @@ void UTargeting_Task::OnTargetDataCancelledCallback(const FGameplayAbilityTarget
 
 void UTargeting_Task::OnDestroy(bool AbilityEnded)
 {
-	TargetActor->TargetDataReadyDelegate.RemoveAll(this);
-	TargetActor->CanceledDelegate.RemoveAll(this);
+	if (TargetActor.IsValid())
+	{
+		TargetActor->TargetDataReadyDelegate.RemoveAll(this);
+		TargetActor->CanceledDelegate.RemoveAll(this);
 
-	TargetActor->Destroy();
-	TargetActor.Reset();
+		TargetActor->Destroy();
+		TargetActor.Reset();
+	}
 
 	Super::OnDestroy(AbilityEnded);
 }
@@ -121,5 +111,8 @@ void UTargeting_Task::TickTask(float DeltaTime)
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "GetTargetLocation: " + TargetActor->GetTargetLocation().ToString());
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "TargetDataReadyDelegate.IsBound(): " + FString::FromInt(TargetActor->TargetDataReadyDelegate.IsBound()));
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "CanceledDelegate.IsBound(): " + FString::FromInt(TargetActor->CanceledDelegate.IsBound()));
+
+		TargetActor->ConfirmTargetingAndContinue();
+		TargetActor->bDebug = TargetingParams.bDebug;
 	}
 }

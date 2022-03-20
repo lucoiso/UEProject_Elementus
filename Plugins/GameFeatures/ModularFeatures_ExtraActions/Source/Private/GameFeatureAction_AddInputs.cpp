@@ -68,22 +68,6 @@ void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName Eve
 		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
 		   *Owner->GetActorLabel());*/
 
-	if (ActiveExtensions.Contains(Owner))
-	{
-		return;
-	}
-
-	if (RequireTags.Num() != 0)
-	{
-		for (const FName Tag : RequireTags)
-		{
-			if (Owner->ActorHasTag(Tag))
-			{
-				return;
-			}
-		}
-	}
-
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
 	{
@@ -93,6 +77,22 @@ void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName Eve
 	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName ==
 		UGameFrameworkComponentManager::NAME_GameActorReady)
 	{
+		if (ActiveExtensions.Contains(Owner))
+		{
+			return;
+		}
+
+		if (RequireTags.Num() != 0)
+		{
+			for (const FName Tag : RequireTags)
+			{
+				if (Owner->ActorHasTag(Tag))
+				{
+					return;
+				}
+			}
+		}
+
 		if (!InputMappingContext.IsNull())
 		{
 			AddActorInputs(Owner);

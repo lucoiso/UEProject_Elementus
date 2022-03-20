@@ -70,22 +70,6 @@ void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName 
 		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
 		   *Owner->GetActorLabel());*/
 
-	if (ActiveExtensions.Contains(Owner))
-	{
-		return;
-	}
-
-	if (RequireTags.Num() != 0)
-	{
-		for (const FName Tag : RequireTags)
-		{
-			if (Owner->ActorHasTag(Tag))
-			{
-				return;
-			}
-		}
-	}
-
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
 	{
@@ -95,6 +79,22 @@ void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName 
 	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName ==
 		UGameFrameworkComponentManager::NAME_GameActorReady)
 	{
+		if (ActiveExtensions.Contains(Owner))
+		{
+			return;
+		}
+
+		if (RequireTags.Num() != 0)
+		{
+			for (const FName Tag : RequireTags)
+			{
+				if (Owner->ActorHasTag(Tag))
+				{
+					return;
+				}
+			}
+		}
+
 		for (const FAbilityMapping& Entry : Abilities)
 		{
 			if (!Entry.AbilityClass.IsNull())
@@ -182,7 +182,7 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 			TEXT("Removing associated abilities from Actor %s."),
 			*TargetActor->GetActorLabel());
 
-		FActiveAbilityData ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
+		const FActiveAbilityData ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
 
 #if __cplusplus > 201402L // Detect if compiler version is > c++14
 		if constexpr (&ActiveAbilities != nullptr)
@@ -193,14 +193,16 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 			const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 			UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
 				? InterfaceOwner->GetAbilitySystemComponent()
-				: TargetActor->FindComponentByClass<
-				UAbilitySystemComponent>();
+				: TargetActor->FindComponentByClass<UAbilitySystemComponent>();
 
 			if (IsValid(AbilitySystemComponent))
 			{
 				for (const FGameplayAbilitySpecHandle& SpecHandle : ActiveAbilities.SpecHandle)
 				{
-					AbilitySystemComponent->SetRemoveAbilityOnEnd(SpecHandle);
+					if (SpecHandle.IsValid())
+					{
+						AbilitySystemComponent->SetRemoveAbilityOnEnd(SpecHandle);
+					}
 				}
 
 				IAbilityInputBinding* SetupInputInterface;
@@ -224,7 +226,10 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 				{
 					for (const UInputAction* InputRef : ActiveAbilities.InputReference)
 					{
-						SetupInputInterface->RemoveAbilityInputBinding(InputRef);
+						if (IsValid(InputRef)) 
+						{
+							SetupInputInterface->RemoveAbilityInputBinding(InputRef);
+						}
 					}
 				}
 			}

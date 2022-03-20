@@ -34,7 +34,7 @@ public:
 		HideSpawnParms = "Instigator", AutoCreateRefTerm = "Parameters"), Category = "Custom GAS | Tasks")
 		static UTargeting_Task* StartTargetingAndWaitData(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
 			const TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType,
-			const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
+			const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
 			const FTargetActorSpawnParams Parameters);
 
 protected:
@@ -43,7 +43,7 @@ protected:
 	virtual void OnDestroy(bool AbilityEnded) override;
 
 private:
-	TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass;
+	TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass;
 	TWeakObjectPtr<class AGameplayAbilityTargetActor> TargetActor;
 	TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType;
 	FTargetActorSpawnParams TargetingParams;

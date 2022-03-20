@@ -386,7 +386,7 @@ void UGASGameplayAbility::ActivateWaitMontageTask()
 
 void UGASGameplayAbility::ActivateWaitTargetDataTask(
 	const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation,
-	const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass,
+	const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
 	AGameplayAbilityTargetActor*& TargetActor,
 	FTargetActorSpawnParams TargetParameters = FTargetActorSpawnParams())
 {
