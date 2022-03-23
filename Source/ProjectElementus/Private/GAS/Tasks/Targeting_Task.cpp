@@ -3,6 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Tasks/Targeting_Task.h"
+#include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
 
 UTargeting_Task* UTargeting_Task::StartTargetingAndWaitData(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
@@ -42,14 +43,22 @@ void UTargeting_Task::Activate()
 			FilterHandle.Filter = MakeShared<FGameplayTargetDataFilter>(TargetingParams.TargetFilter);
 			TargetActor->Filter = FilterHandle;
 
-			if (TargetActorClass.Get() == AGameplayAbilityTargetActor_GroundTrace::StaticClass())
+			if (TargetActorClass.Get() == AGameplayAbilityTargetActor_SingleLineTrace::StaticClass())
+			{
+				AGameplayAbilityTargetActor_SingleLineTrace* LineTraceObj = Cast<AGameplayAbilityTargetActor_SingleLineTrace>(TargetActor);
+
+				LineTraceObj->MaxRange = TargetingParams.Range;
+				LineTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
+			}
+
+			else if (TargetActorClass.Get() == AGameplayAbilityTargetActor_GroundTrace::StaticClass())
 			{
 				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
 
-				GroundTraceObj->CollisionRadius = TargetingParams.Radius;
-				GroundTraceObj->CollisionHeight = TargetingParams.Height;
 				GroundTraceObj->MaxRange = TargetingParams.Range;
 				GroundTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
+				GroundTraceObj->CollisionRadius = TargetingParams.Radius;
+				GroundTraceObj->CollisionHeight = TargetingParams.Height;
 			}
 
 			TargetActor->FinishSpawning(FTransform::Identity);
