@@ -175,16 +175,22 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 									NewInputData.ActionBinding.Add(InputBindingHandle);
 								}
 							}
-
-							if (AbilityInterface != nullptr && InputData.AbilityBindingData.bSetupAbilityInput)
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+							if constexpr (&AbilityInterface != nullptr)
+#else
+							if (&AbilityInterface != nullptr)
+#endif
 							{
-								const uint32 InputID =
-									InputData.AbilityBindingData.InputIDEnumerationClass.LoadSynchronous()->GetValueByName(
-										InputData.AbilityBindingData.InputIDValueName, EGetByNameFlags::CheckAuthoredName);
+								if (InputData.AbilityBindingData.bSetupAbilityInput)
+								{
+									const uint32 InputID =
+										InputData.AbilityBindingData.InputIDEnumerationClass.LoadSynchronous()->GetValueByName(
+											InputData.AbilityBindingData.InputIDValueName, EGetByNameFlags::CheckAuthoredName);
 
-								AbilityInterface->SetupAbilityInput(InputAction, InputID);
+									AbilityInterface->SetupAbilityInput(InputAction, InputID);
 
-								AbilityActions.Add(InputAction);
+									AbilityActions.Add(InputAction);
+								}
 							}
 						}
 					}
@@ -257,10 +263,17 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 						}
 
 						IAbilityInputBinding* AbilityInterface = Cast<IAbilityInputBinding>(FunctionOwner);
-						for (TWeakObjectPtr<UInputAction> ActiveAbilityAction : AbilityActions)
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+						if constexpr (&AbilityInterface != nullptr)
+#else
+						if (&AbilityInterface != nullptr)
+#endif
 						{
-							AbilityInterface->RemoveAbilityInputBinding(ActiveAbilityAction.Get());
-							ActiveAbilityAction.Reset();
+							for (TWeakObjectPtr<UInputAction> ActiveAbilityAction : AbilityActions)
+							{
+								AbilityInterface->RemoveAbilityInputBinding(ActiveAbilityAction.Get());
+								ActiveAbilityAction.Reset();
+							}
 						}
 					}
 				}

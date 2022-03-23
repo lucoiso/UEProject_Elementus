@@ -103,7 +103,6 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Delegates")
 		void ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation,
 			const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
-			AGameplayAbilityTargetActor*& TargetActor,
 			struct FTargetActorSpawnParams TargetParameters);
 
 	/* Start a task to wait for a Gameplay Event and call WaitGameplayEvent_Callback function */
@@ -183,10 +182,6 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
 			UAbilitySystemComponent* SourceAbilitySystem);
-
-	/* Perform a single line trace */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
-		void DoAbilityLineTrace(FGASTraceDataHandle& TraceDataHandle, AActor* OwnerActor) const;
 
 	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromSingleHitResult(const FHitResult HitResult);
 

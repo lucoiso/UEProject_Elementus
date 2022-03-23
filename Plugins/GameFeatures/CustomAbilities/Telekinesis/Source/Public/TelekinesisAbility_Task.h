@@ -37,5 +37,6 @@ protected:
 	bool bIsFinished;
 
 	TWeakObjectPtr<class UPhysicsHandleComponent> PhysicsHandle;
+	TWeakObjectPtr<class APECharacterBase> TelekinesisOwner;
 	TWeakObjectPtr<AActor> TelekinesisTarget;
 };

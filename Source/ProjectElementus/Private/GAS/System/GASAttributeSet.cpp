@@ -75,17 +75,17 @@ void UGASAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 
 	else if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 	}
 
 	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
 
 	else if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
-		SetStamina(FMath::Clamp(GetStamina(), 0.0f, GetMaxStamina()));
+		SetStamina(FMath::Clamp(GetStamina(), 0.f, GetMaxStamina()));
 	}
 }
 
@@ -114,16 +114,19 @@ void UGASAttributeSet::AdjustAttributeForMaxChange(const FGameplayAttributeData&
 	const FGameplayAttribute& AffectedAttributeProperty) const
 {
 	UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
-	const float CurrentMaxValue = MaxAttribute.GetCurrentValue();
-
-	if (!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
+	if (ensureMsgf(IsValid(AbilityComp), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
-		const float CurrentValue = AffectedAttribute.GetCurrentValue();
-		const float NewDelta = (CurrentMaxValue > 0.f)
-			? (CurrentValue * NewMaxValue / CurrentMaxValue) - CurrentValue
-			: NewMaxValue;
+		const float CurrentMaxValue = MaxAttribute.GetCurrentValue();
 
-		AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
+		if (!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
+		{
+			const float CurrentValue = AffectedAttribute.GetCurrentValue();
+			const float NewDelta = (CurrentMaxValue > 0.f)
+				? (CurrentValue * NewMaxValue / CurrentMaxValue) - CurrentValue
+				: NewMaxValue;
+
+			AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
+		}
 	}
 }
 

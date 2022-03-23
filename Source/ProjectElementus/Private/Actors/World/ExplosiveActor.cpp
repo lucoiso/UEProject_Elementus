@@ -26,7 +26,7 @@ void AExplosiveActor::PerformExplosion()
 	QueryParams.AddIgnoredActor(this);
 	QueryParams.MobilityType = EQueryMobilityType::Dynamic;
 
-#ifdef UE_BUILD_DEBUG
+#if UE_BUILD_DEBUG
 	const FName TraceTag("SphereTraceDebugTag");
 	GetWorld()->DebugDrawTraceTag = TraceTag;
 	QueryParams.TraceTag = TraceTag;
@@ -49,17 +49,21 @@ void AExplosiveActor::PerformExplosion()
 	for (const FHitResult& Hit : HitOut)
 	{
 		const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation());
-		APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
 
-		if (IsValid(Player))
+		if (Hit.GetActor()->GetClass() == APECharacterBase::StaticClass())
 		{
-			Player->LaunchCharacter(Velocity, false, false);
-			for (const TSubclassOf<UGameplayEffect>& Effect : ExplosionEffects)
+			APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
+
+			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 			{
-				if (Player->HasAuthority())
+				Player->LaunchCharacter(Velocity, false, false);
+				for (const TSubclassOf<UGameplayEffect>& Effect : ExplosionEffects)
 				{
-					Player->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
-						1.f, Player->GetAbilitySystemComponent()->MakeEffectContext());
+					if (Player->HasAuthority())
+					{
+						Player->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
+							1.f, Player->GetAbilitySystemComponent()->MakeEffectContext());
+					}
 				}
 			}
 		}
@@ -71,5 +75,8 @@ void AExplosiveActor::PerformExplosion()
 		}
 	}
 
-	Destroy();
+	if (bDestroyAfterExplosion)
+	{
+		Destroy();
+	}
 }

@@ -14,8 +14,11 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 
 void AInteractableActor::PerformInteraction(UAbilitySystemComponent* TargetABSC)
 {
-	if (TargetABSC->HasAllMatchingGameplayTags(RequirementsTags))
+	if (ensureMsgf(IsValid(TargetABSC), TEXT("%s have a invalid target"), *GetActorLabel()))
 	{
-		DoInteractionBehavior();
+		if (TargetABSC->HasAllMatchingGameplayTags(RequirementsTags) || RequirementsTags.IsEmpty())
+		{
+			DoInteractionBehavior();
+		}
 	}
 }

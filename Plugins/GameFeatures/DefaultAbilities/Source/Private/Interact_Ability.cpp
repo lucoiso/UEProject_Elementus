@@ -24,5 +24,8 @@ void UInteract_Ability::ActivateAbility
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	// TO DO
+
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }

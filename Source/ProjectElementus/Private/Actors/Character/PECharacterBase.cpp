@@ -31,16 +31,24 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(
+	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(
 		TEXT("/Game/Main/Character/Mesh/SK_Mannequin"));
-	if (SkeletalMesh.Object != nullptr)
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+	if constexpr (&SkeletalMesh.Object != nullptr)
+#else
+	if (&SkeletalMesh.Object != nullptr)
+#endif
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(
+	static const ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(
 		TEXT("/Game/Main/Character/Animations/ThirdPerson_AnimBP"));
-	if (AnimationClass.Class != nullptr)
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+	if constexpr (&AnimationClass.Class != nullptr)
+#else
+	if (&AnimationClass.Class != nullptr)
+#endif
 	{
 		GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
 	}
@@ -74,32 +82,32 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 }
 
-float APECharacterBase::GetDefaultWalkSpeed() const
+const float APECharacterBase::GetDefaultWalkSpeed() const
 {
 	return DefaultWalkSpeed;
 }
 
-float APECharacterBase::GetDefaultCrouchSpeed() const
+const float APECharacterBase::GetDefaultCrouchSpeed() const
 {
 	return DefaultCrouchSpeed;
 }
 
-float APECharacterBase::GetDefaultJumpVelocity() const
+const float APECharacterBase::GetDefaultJumpVelocity() const
 {
 	return DefaultJumpVelocity;
 }
 
-FVector APECharacterBase::GetCameraForwardVector() const
+const FVector APECharacterBase::GetCameraForwardVector() const
 {
 	return FollowCamera->GetForwardVector();
 }
 
-FVector APECharacterBase::GetCameraComponentLocation() const
+const FVector APECharacterBase::GetCameraComponentLocation() const
 {
 	return FollowCamera->GetComponentLocation();
 }
 
-float APECharacterBase::GetCameraTargetArmLength() const
+const float APECharacterBase::GetCameraTargetArmLength() const
 {
 	return CameraBoom->TargetArmLength;
 }
@@ -131,21 +139,6 @@ void APECharacterBase::PreInitializeComponents()
 	Super::PreInitializeComponents();
 }
 
-void APECharacterBase::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-}
-
-void APECharacterBase::PossessedBy(AController* InputController)
-{
-	Super::PossessedBy(InputController);
-}
-
-void APECharacterBase::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-}
-
 void APECharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -171,7 +164,7 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 		AbilitySystemComponent = Cast<UGASAbilitySystemComponent>(State->GetAbilitySystemComponent());
 		Attributes = Cast<UGASAttributeSet>(State->GetAttributeSetBase());
 
-		if (AbilitySystemComponent.IsValid() && Attributes.IsValid())
+		if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetActorLabel()))
 		{
 			bOnRep
 				? AbilitySystemComponent->InitAbilityActorInfo(State, this)
@@ -188,61 +181,84 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 	}
 }
 
-void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId, const bool bTryRemoveExistingAbilityWithInput = true)
+void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
+	const bool bTryRemoveExistingAbilityWithInput = true, const bool bTryRemoveExistingAbilityWithClass = true)
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !IsValid(Ability))
+	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetActorLabel()))
 	{
-		return;
-	}
-
-	const FGameplayAbilitySpec* AbilitySpec = GetAbilitySystemComponent()->FindAbilitySpecFromClass(Ability);
-	const uint32 InputID = InputIDEnumerationClass->GetValueByName(InputId, EGetByNameFlags::CheckAuthoredName);
-
-	if (AbilitySpec != nullptr || InputID == INDEX_NONE)
-	{
-		return;
-	}
-
-	if (bTryRemoveExistingAbilityWithInput)
-	{
-		const FGameplayAbilitySpec* AbilitySpecFromInput = GetAbilitySystemComponent()->FindAbilitySpecFromInputID(InputID);
-
-		if (AbilitySpecFromInput != nullptr)
+		if (GetLocalRole() != ROLE_Authority || !IsValid(Ability))
 		{
-			RemoveAbility(AbilitySpecFromInput->Ability->GetClass());
+			return;
 		}
-	}
 
-	const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID, this);
+		const uint32 InputID = InputIDEnumerationClass->GetValueByName(InputId, EGetByNameFlags::CheckAuthoredName);
+		if (InputID == INDEX_NONE)
+		{
+			return;
+		}
 
-	AbilitySystemComponent->GiveAbility(Spec);
+		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec* AbilitySpec) -> void
+		{
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+			if constexpr (&AbilitySpec != nullptr)
+#else
+			if (&AbilitySpec != nullptr)
+#endif
+			{
+				RemoveAbility(AbilitySpec->Ability->GetClass());
+			}
+		};
 
-	if (AbilitySystemComponent->FindAbilitySpecFromHandle(Spec.Handle) != nullptr)
-	{
-		CharacterAbilities.Add(Ability);
+		if (bTryRemoveExistingAbilityWithClass)
+		{
+			const FGameplayAbilitySpec* AbilitySpec = GetAbilitySystemComponent()->FindAbilitySpecFromClass(Ability);
+			RemoveAbility_Lambda(AbilitySpec);
+		}
+
+		if (bTryRemoveExistingAbilityWithInput)
+		{
+			const FGameplayAbilitySpec* AbilitySpec = GetAbilitySystemComponent()->FindAbilitySpecFromInputID(InputID);
+			RemoveAbility_Lambda(AbilitySpec);
+		}
+
+		const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID, this);
+
+		AbilitySystemComponent->GiveAbility(Spec);
+
+		if (AbilitySystemComponent->FindAbilitySpecFromHandle(Spec.Handle) != nullptr)
+		{
+			CharacterAbilities.Add(Ability);
+		}
 	}
 }
 
 void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
 {
-	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || CharacterAbilities.Num() <= 0 ||
-		!IsValid(Ability))
+	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetActorLabel()))
 	{
-		return;
-	}
+		if (GetLocalRole() != ROLE_Authority || CharacterAbilities.Num() <= 0 ||
+			!IsValid(Ability))
+		{
+			return;
+		}
 
-	const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
+		const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
 
-	if (AbilitySpec == nullptr)
-	{
-		return;
-	}
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+		if constexpr (&AbilitySpec != nullptr)
+#else
+		if (&AbilitySpec != nullptr)
+#endif
+		{
+			return;
+		}
 
-	AbilitySystemComponent->ClearAbility(AbilitySpec->Handle);
+		AbilitySystemComponent->ClearAbility(AbilitySpec->Handle);
 
-	if (AbilitySystemComponent->FindAbilitySpecFromClass(Ability) == nullptr)
-	{
-		CharacterAbilities.Remove(Ability);
+		if (AbilitySystemComponent->FindAbilitySpecFromClass(Ability) == nullptr)
+		{
+			CharacterAbilities.Remove(Ability);
+		}
 	}
 }
 

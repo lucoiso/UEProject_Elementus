@@ -26,9 +26,9 @@ public:
 	}
 
 	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable, Category = "Custom Functions | Behaviors")
-		void PerformConsumption(class UAbilitySystemComponent* TargetABSC);
-	void PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC);
-	bool PerformConsumption_Validate(UAbilitySystemComponent* TargetABSC);
+		void PerformConsumption(class UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
+	void PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
+	bool PerformConsumption_Validate(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")

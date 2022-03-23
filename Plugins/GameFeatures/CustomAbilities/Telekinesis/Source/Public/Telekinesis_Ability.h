@@ -32,5 +32,7 @@ private:
 
 	virtual void WaitAddedTag_Callback_Implementation() override;
 
+	virtual void WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
+
 	TWeakObjectPtr<UTelekinesisAbility_Task> AbilityTask;
 };

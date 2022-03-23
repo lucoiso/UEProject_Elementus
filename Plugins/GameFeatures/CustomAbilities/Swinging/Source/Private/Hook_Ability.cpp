@@ -4,9 +4,8 @@
 
 #include "Hook_Ability.h"
 #include "HookAbility_Task.h"
-
 #include "Actors/Character/PECharacterBase.h"
-#include "GAS/System/GASTrace.h"
+#include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 
 UHook_Ability::UHook_Ability(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -28,41 +27,10 @@ void UHook_Ability::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	FGASTraceDataHandle AbilityTraceDataHandle;
-	AbilityTraceDataHandle.bDoTick = false;
-	AbilityTraceDataHandle.Type = EGASTraceType::Single;
+	FTargetActorSpawnParams TargetingParams;
+	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
 
-	DoAbilityLineTrace(AbilityTraceDataHandle, ActorInfo->AvatarActor.Get());
-
-	if (!IsValid(AbilityTraceDataHandle.Hit.GetActor()) ||
-		AbilityTraceDataHandle.Hit.Location == FVector(0.f))
-	{
-		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
-		return;
-	}
-
-	UHookAbility_Task* AbilityTask = UHookAbility_Task::HookAbilityMovement(
-		this, FName("HookTask"), AbilityTraceDataHandle.Hit);
-	AbilityTask->ReadyForActivation();
-
-	FGameplayCueParameters Params;
-	Params.Location = AbilityTraceDataHandle.Hit.Location;
-	Params.TargetAttachComponent = AbilityTraceDataHandle.Hit.GetComponent();
-
-	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging.Hook"), Params,
-		ActorInfo->AbilitySystemComponent.Get());
-
-	if (Cast<APECharacterBase>(AbilityTraceDataHandle.Hit.GetActor()))
-	{
-		FTimerDelegate TimerDelegate;
-		FTimerHandle TimerHandle;
-		TimerDelegate.BindLambda([this, Handle, ActorInfo, ActivationInfo]() -> void
-			{
-				EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-			});
-
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime, false);
-	}
+	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
 }
 
 void UHook_Ability::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -71,4 +39,45 @@ void UHook_Ability::InputReleased(const FGameplayAbilitySpecHandle Handle, const
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+}
+
+void UHook_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	if (!TargetDataHandle.IsValid(0))
+	{
+		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+		return;
+	}
+
+	const FGameplayAbilityTargetData* TargetData = TargetDataHandle.Get(0);
+	const FHitResult* TargetHit = TargetData->GetHitResult();
+
+	if (!IsValid(TargetHit->GetActor()))
+	{
+		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+		return;
+	}
+
+	UHookAbility_Task* AbilityTask = UHookAbility_Task::HookAbilityMovement(
+		this, FName("HookTask"), *TargetHit);
+	AbilityTask->ReadyForActivation();
+
+	FGameplayCueParameters Params;
+	Params.Location = TargetHit->Location;
+	Params.TargetAttachComponent = TargetHit->GetComponent();
+
+	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging.Hook"), Params,
+		GetCurrentActorInfo()->AbilitySystemComponent.Get());
+
+	if (Cast<APECharacterBase>(TargetHit->GetActor()))
+	{
+		FTimerDelegate TimerDelegate;
+		FTimerHandle TimerHandle;
+		TimerDelegate.BindLambda([this]() -> void
+			{
+				EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+			});
+
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime, false);
+	}
 }

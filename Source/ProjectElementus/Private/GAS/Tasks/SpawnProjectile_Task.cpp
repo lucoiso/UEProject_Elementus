@@ -3,8 +3,6 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Tasks/SpawnProjectile_Task.h"
-
-#include "Actors/Character/PECharacterBase.h"
 #include "Actors/World/ProjectileActor.h"
 
 USpawnProjectile_Task::USpawnProjectile_Task(const FObjectInitializer& ObjectInitializer)
@@ -33,17 +31,16 @@ void USpawnProjectile_Task::Activate()
 {
 	Super::Activate();
 
-	if (IsValid(Ability) && Ability->GetCurrentActorInfo()->IsNetAuthority() && ProjectileClass != nullptr)
+	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		APECharacterBase* OwnerCharacter = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
-
-		if (IsValid(OwnerCharacter))
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+		if constexpr (&ProjectileClass != nullptr)
+#else
+		if (&ProjectileClass != nullptr)
+#endif
 		{
 			AProjectileActor* SpawnedProjectile =
-				GetWorld()->SpawnActorDeferred<AProjectileActor>(
-					ProjectileClass, ProjectileTransform,
-					OwnerCharacter, OwnerCharacter,
-					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding);
+				GetWorld()->SpawnActorDeferred<AProjectileActor>(ProjectileClass, ProjectileTransform);
 
 			SpawnedProjectile->DamageEffectSpecHandles = ProjectileEffectSpecs;
 

@@ -63,7 +63,7 @@ void UGASGameplayEffectCalculation::Execute_Implementation(
 		EvaluationParameters, DefenseRate);
 	DefenseRate = FMath::Max<float>(DefenseRate, 0.0f);
 
-	auto CalculateDamage = [BaseDamage, AttackRate, DefenseRate]() -> float
+	const auto CalculateDamage = [BaseDamage, AttackRate, DefenseRate]() -> float
 	{
 		float DamageDone = BaseDamage + (AttackRate / DefenseRate * FMath::FRandRange(1.f, BaseDamage));
 

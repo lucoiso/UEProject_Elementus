@@ -10,6 +10,9 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "Blueprint/UserWidget.h"
 
+constexpr float BaseTurnRate = 45.f;
+constexpr float BaseLookUpRate = 45.f;
+
 DEFINE_LOG_CATEGORY(LogController_Base);
 DEFINE_LOG_CATEGORY(LogController_Axis);
 
@@ -19,9 +22,13 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> UserHUDClass(
+	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUDClass(
 		TEXT("/Game/Main/Blueprints/Widgets/BP_ScreenInformations"));
-	if (UserHUDClass.Class != nullptr)
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+	if constexpr (&UserHUDClass.Class != nullptr)
+#else
+	if (&UserHUDClass.Class != nullptr)
+#endif
 	{
 		HUDClass = UserHUDClass.Class;
 	}
@@ -72,7 +79,7 @@ void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action,
 {
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 
-	if (IsValid(EnhancedInputComponent))
+	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetActorLabel()))
 	{
 		FAbilityInputData AbilityBinding
 		{
@@ -93,7 +100,7 @@ void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputA
 {
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 
-	if (IsValid(EnhancedInputComponent))
+	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetActorLabel()))
 	{
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnPressedHandle);
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnReleasedHandle);
@@ -109,7 +116,8 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 
 	const APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 
-	if (IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()))
+	if (ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
+		TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputPressed(InputID);
 
@@ -134,7 +142,8 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 
 	const APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 
-	if (IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()))
+	if (ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
+		TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
 	}
@@ -189,8 +198,11 @@ void APEPlayerController::Jump(const FInputActionValue& Value)
 
 	APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
 
-	if (IsValid(ControllerOwner) && ControllerOwner->CanJump() && !IsMoveInputIgnored())
+	if (ensureMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
 	{
-		ControllerOwner->Jump();
+		if (ControllerOwner->CanJump() && !IsMoveInputIgnored())
+		{
+			ControllerOwner->Jump();
+		}
 	}
 }

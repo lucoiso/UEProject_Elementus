@@ -28,8 +28,10 @@ public:
 
 private:
 	virtual void TickTask(float DeltaTime) override;
-
 	virtual void OnDestroy(bool AbilityIsEnding) override;
+
+	TWeakObjectPtr<class APECharacterBase> HookOwner;
+	TWeakObjectPtr<APECharacterBase> HitTarget;
 
 protected:
 	bool bIsFinished;

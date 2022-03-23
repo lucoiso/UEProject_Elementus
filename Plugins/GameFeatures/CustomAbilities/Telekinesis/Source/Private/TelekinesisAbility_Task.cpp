@@ -3,14 +3,13 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "TelekinesisAbility_Task.h"
-#include "ThrowableActor.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Actors/Character/PECharacterBase.h"
 
 UTelekinesisAbility_Task::UTelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bTickingTask = true;
+	bTickingTask = false;
 	bIsFinished = false;
 }
 
@@ -26,25 +25,32 @@ void UTelekinesisAbility_Task::Activate()
 {
 	Super::Activate();
 
-	APECharacterBase* TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
-	PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner, UPhysicsHandleComponent::StaticClass(),
-		FName("TelekinesisPhysicsHandle"));
-
-	if (IsValid(TelekinesisOwner) && IsValid(Cast<AThrowableActor>(TelekinesisTarget)) && PhysicsHandle.IsValid())
+	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		PhysicsHandle->RegisterComponent();
-		PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-			NAME_None, TelekinesisTarget->GetActorLocation());
-		PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+		TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
+
+		if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+		{
+			PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(),
+				FName("TelekinesisPhysicsHandle"));
+
+			if (PhysicsHandle.IsValid())
+			{
+				PhysicsHandle->RegisterComponent();
+				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
+					NAME_None, TelekinesisTarget->GetActorLocation());
+
+				PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+
+				bTickingTask = true;
+
+				return;
+			}
+		}
 	}
 
-	else
-	{
-		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
-
-		bIsFinished = true;
-		EndTask();
-	}
+	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	EndTask();
 }
 
 void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
@@ -57,9 +63,7 @@ void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
 
 	Super::TickTask(DeltaTime);
 
-	const APECharacterBase* TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
-
-	if (IsValid(TelekinesisOwner) && PhysicsHandle.IsValid() && IsValid(PhysicsHandle->GetGrabbedComponent()))
+	if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 	{
 		PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 	}
@@ -78,6 +82,10 @@ void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 	bIsFinished = true;
 	PhysicsHandle->ReleaseComponent();
 
+	PhysicsHandle.Reset();
+	TelekinesisOwner.Reset();
+	TelekinesisTarget.Reset();
+
 	Super::OnDestroy(AbilityIsEnding);
 }
 
@@ -88,15 +96,11 @@ void UTelekinesisAbility_Task::ThrowObject()
 	bIsFinished = true;
 
 	UPrimitiveComponent* Throwable = PhysicsHandle->GetGrabbedComponent();
-	const APECharacterBase* TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
-
 	PhysicsHandle->ReleaseComponent();
 
-	if (IsValid(TelekinesisOwner) && IsValid(Throwable))
+	if (IsValid(Throwable))
 	{
 		const FVector Velocity = 2750.f * TelekinesisOwner->GetCameraForwardVector();
-
-		Throwable->WakeAllRigidBodies();
 		Throwable->SetAllPhysicsLinearVelocity(Velocity);
 	}
 	else

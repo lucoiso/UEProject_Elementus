@@ -8,6 +8,9 @@
 AThrowableActor::AThrowableActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+
 	SetRootComponent(GetStaticMeshComponent());
 	GetStaticMeshComponent()->SetSimulatePhysics(true);
 	GetStaticMeshComponent()->SetGenerateOverlapEvents(true);
@@ -18,7 +21,4 @@ AThrowableActor::AThrowableActor(const FObjectInitializer& ObjectInitializer)
 
 	bReplicates = true;
 	GetStaticMeshComponent()->SetIsReplicated(true);
-
-	PrimaryActorTick.bCanEverTick = false;
-	PrimaryActorTick.bStartWithTickEnabled = false;
 }

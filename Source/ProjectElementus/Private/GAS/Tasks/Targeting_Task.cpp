@@ -23,56 +23,70 @@ void UTargeting_Task::Activate()
 {
 	Super::Activate();
 
-	TargetActor = GetWorld()->SpawnActorDeferred<AGameplayAbilityTargetActor>(TargetActorClass, FTransform::Identity);
-
-	TargetActor->StartLocation = TargetingParams.StartLocation;
-	TargetActor->ReticleClass = TargetingParams.ReticleClass;
-	TargetActor->ReticleParams = TargetingParams.ReticleParams;
-	TargetActor->bDebug = TargetingParams.bDebug;
-
-	FGameplayTargetDataFilterHandle FilterHandle;
-	FilterHandle.Filter = MakeShared<FGameplayTargetDataFilter>(TargetingParams.TargetFilter);
-	TargetActor->Filter = FilterHandle;
-
-	if (TargetActorClass.Get() == AGameplayAbilityTargetActor_GroundTrace::StaticClass())
+	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
-
-		GroundTraceObj->CollisionRadius = TargetingParams.Radius;
-		GroundTraceObj->CollisionHeight = TargetingParams.Height;
-		GroundTraceObj->MaxRange = TargetingParams.Range;
-		GroundTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
-	}
-
-	TargetActor->FinishSpawning(FTransform::Identity);
-
-	if (TargetActor.IsValid())
-	{
-		TargetActor->MasterPC = Ability->GetCurrentActorInfo()->PlayerController.Get();
-		TargetActor->bDestroyOnConfirmation = TargetingParams.bDestroyOnConfirmation;
-		TargetActor->ShouldProduceTargetDataOnServer = true;
-
-		TargetActor->TargetDataReadyDelegate.AddUObject(this, &UTargeting_Task::OnTargetDataReadyCallback);
-		TargetActor->CanceledDelegate.AddUObject(this, &UTargeting_Task::OnTargetDataCancelledCallback);
-
-		TargetActor->StartTargeting(Ability);
-
-		if (TargetActor->ShouldProduceTargetData())
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+		if constexpr (&TargetActorClass != nullptr)
+#else
+		if (&TargetActorClass != nullptr)
+#endif
 		{
-			if (ConfirmationType == EGameplayTargetingConfirmation::Instant)
+			TargetActor = GetWorld()->SpawnActorDeferred<AGameplayAbilityTargetActor>(TargetActorClass, FTransform::Identity);
+
+			TargetActor->StartLocation = TargetingParams.StartLocation;
+			TargetActor->ReticleClass = TargetingParams.ReticleClass;
+			TargetActor->ReticleParams = TargetingParams.ReticleParams;
+			TargetActor->bDebug = TargetingParams.bDebug;
+
+			FGameplayTargetDataFilterHandle FilterHandle;
+			FilterHandle.Filter = MakeShared<FGameplayTargetDataFilter>(TargetingParams.TargetFilter);
+			TargetActor->Filter = FilterHandle;
+
+			if (TargetActorClass.Get() == AGameplayAbilityTargetActor_GroundTrace::StaticClass())
 			{
-				TargetActor->ConfirmTargeting();
+				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
+
+				GroundTraceObj->CollisionRadius = TargetingParams.Radius;
+				GroundTraceObj->CollisionHeight = TargetingParams.Height;
+				GroundTraceObj->MaxRange = TargetingParams.Range;
+				GroundTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
 			}
-			else
+
+			TargetActor->FinishSpawning(FTransform::Identity);
+
+			if (TargetActor.IsValid())
 			{
-				TargetActor->BindToConfirmCancelInputs();
+				TargetActor->MasterPC = Ability->GetCurrentActorInfo()->PlayerController.Get();
+				TargetActor->bDestroyOnConfirmation = TargetingParams.bDestroyOnConfirmation;
+				TargetActor->ShouldProduceTargetDataOnServer = true;
+
+				if (ShouldBroadcastAbilityTaskDelegates())
+				{
+					TargetActor->TargetDataReadyDelegate.AddUObject(this, &UTargeting_Task::OnTargetDataReadyCallback);
+					TargetActor->CanceledDelegate.AddUObject(this, &UTargeting_Task::OnTargetDataCancelledCallback);
+				}
+
+				TargetActor->StartTargeting(Ability);
+
+				if (TargetActor->ShouldProduceTargetData())
+				{
+					if (ConfirmationType == EGameplayTargetingConfirmation::Instant)
+					{
+						TargetActor->ConfirmTargeting();
+					}
+					else if (ConfirmationType == EGameplayTargetingConfirmation::UserConfirmed)
+					{
+						TargetActor->BindToConfirmCancelInputs();
+					}
+				}
 			}
+
+			return;
 		}
 	}
-	else
-	{
-		EndTask();
-	}
+
+	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	EndTask();
 }
 
 void UTargeting_Task::OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& Data)
@@ -103,7 +117,7 @@ void UTargeting_Task::TickTask(float DeltaTime)
 {
 	Super::TickTask(DeltaTime);
 
-	if (TargetActor.IsValid())
+	if (TargetActor.IsValid() && TargetingParams.bDebug)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "ShouldProduceTargetData: " + FString::FromInt(TargetActor->ShouldProduceTargetData()));
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "ShouldProduceTargetDataOnServer: " + FString::FromInt(TargetActor->ShouldProduceTargetDataOnServer));

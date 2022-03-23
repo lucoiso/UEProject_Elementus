@@ -14,6 +14,8 @@ class UGameplayAbility;
 class UAttributeSet;
 class APEPlayerState;
 class UInputAction;
+class USpringArmComponent;
+class UCameraComponent;
 struct FGameplayTag;
 struct FOnAttributeChangeData;
 /**
@@ -58,22 +60,22 @@ public:
 	}
 
 	/** Returns FollowCamera Forward Vector **/
-	FVector GetCameraForwardVector() const;
+	const FVector GetCameraForwardVector() const;
 
 	/** Returns FollowCamera Location at World **/
-	FVector GetCameraComponentLocation() const;
+	const FVector GetCameraComponentLocation() const;
 
 	/** Returns FollowCamera Location at World **/
-	float GetCameraTargetArmLength() const;
+	const float GetCameraTargetArmLength() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetDefaultWalkSpeed() const;
+		const float GetDefaultWalkSpeed() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetDefaultCrouchSpeed() const;
+		const float GetDefaultCrouchSpeed() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetDefaultJumpVelocity() const;
+		const float GetDefaultJumpVelocity() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
 		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -98,11 +100,6 @@ protected:
 		TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 
 	virtual void PreInitializeComponents() override;
-	virtual void PostInitializeComponents() override;
-
-	virtual void PossessedBy(AController* InputController) override;
-	virtual void OnRep_PlayerState() override;
-
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -111,8 +108,10 @@ protected:
 public:
 	/* Give a new Ability to the Player -  bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
-		void GiveAbility(TSubclassOf<UGameplayAbility> Ability, const FName InputId, const bool bTryRemoveExistingAbilityWithInput);
-	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, const FName InputId, const bool bTryRemoveExistingAbilityWithInput);
+		void GiveAbility(TSubclassOf<UGameplayAbility> Ability, const FName InputId,
+			const bool bTryRemoveExistingAbilityWithInput, const bool bTryRemoveExistingAbilityWithClass);
+	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, const FName InputId,
+		const bool bTryRemoveExistingAbilityWithInput, const bool bTryRemoveExistingAbilityWithClass);
 
 	/* Will remove the ability associated to the InputAction */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")

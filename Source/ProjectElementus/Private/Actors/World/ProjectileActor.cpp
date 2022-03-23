@@ -49,21 +49,19 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 	const FHitResult& Hit)
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
-	APECharacterBase* Character = Cast<APECharacterBase>(OtherActor);
 
-	if (OtherComp->IsSimulatingPhysics() && !IsValid(Character))
+	if (OtherActor->GetClass() == APECharacterBase::StaticClass())
+	{
+		APECharacterBase* Character = Cast<APECharacterBase>(OtherActor);
+		if (ensureMsgf(IsValid(Character), TEXT("%s have a invalid Character"), *GetActorLabel()))
+		{
+			Character->LaunchCharacter(ImpulseVelocity, true, true);
+			ApplyProjectileEffect(Character->GetAbilitySystemComponent());
+		}
+	}
+	else if (OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(ImpulseVelocity, Hit.ImpactPoint, Hit.BoneName);
-	}
-	else if (IsValid(Character))
-	{
-		Character->LaunchCharacter(ImpulseVelocity, true, true);
-
-		UAbilitySystemComponent* AbilitySystem = Character->GetAbilitySystemComponent();
-		if (IsValid(AbilitySystem))
-		{
-			ApplyProjectileEffect(AbilitySystem);
-		}
 	}
 
 	Destroy();
@@ -71,13 +69,17 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 
 void AProjectileActor::ApplyProjectileEffect_Implementation(UAbilitySystemComponent* TargetComp)
 {
-	if (GetLocalRole() != ROLE_Authority || !IsValid(TargetComp))
+	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetActorLabel()))
 	{
-		return;
-	}
-	for (FGameplayEffectSpecHandle SpecHandle : DamageEffectSpecHandles)
-	{
-		TargetComp->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		if (GetLocalRole() != ROLE_Authority)
+		{
+			return;
+		}
+
+		for (const FGameplayEffectSpecHandle& SpecHandle : DamageEffectSpecHandles)
+		{
+			TargetComp->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
 	}
 }
 

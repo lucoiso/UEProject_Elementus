@@ -13,31 +13,6 @@
 /**
  *
  */
-UENUM(BlueprintType, Category = "Custom GAS | Enumerations")
-enum class EGASTraceType : uint8
-{
-	Single,
-	Area
-};
-
-USTRUCT(BlueprintType, Category = "Custom GAS | Data")
-struct PROJECTELEMENTUS_API FGASTraceDataHandle
-{
-	GENERATED_USTRUCT_BODY()
-
-public:
-	FGASTraceDataHandle();
-
-	FHitResult Hit;
-	float MaxRange;
-	TWeakObjectPtr<USceneComponent> Component;
-	bool bDoTick;
-	EGASTraceType Type;
-	FGameplayTargetDataFilterHandle FilterHandle;
-	FCollisionQueryParams QueryParams;
-	FName CollisionProfile;
-};
-
 USTRUCT(BlueprintType, Category = "Custom GAS | Data")
 struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 {
@@ -46,9 +21,9 @@ struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 public:
 	FTargetActorSpawnParams() :
 		Range(0.f),
-		StartLocation(FGameplayAbilityTargetingLocationInfo()),
 		Height(0.f),
 		Radius(0.f),
+		StartLocation(FGameplayAbilityTargetingLocationInfo()),
 		ReticleClass(AGameplayAbilityWorldReticle::StaticClass()),
 		ReticleParams(FWorldReticleParameters()),
 		TargetFilter(FGameplayTargetDataFilter()),
@@ -59,13 +34,15 @@ public:
 	}
 
 	float Range;
-	struct FGameplayAbilityTargetingLocationInfo StartLocation;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float Height;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float Radius;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		struct FGameplayAbilityTargetingLocationInfo StartLocation;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		TSubclassOf<class AGameplayAbilityWorldReticle> ReticleClass;

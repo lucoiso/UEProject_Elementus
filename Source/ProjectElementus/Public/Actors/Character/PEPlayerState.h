@@ -67,43 +67,43 @@ public:
 		TArray<UAttributeSet*> GetAttributeSetArray() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetHealth() const;
+		const float GetHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetMaxHealth() const;
+		const float GetMaxHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetStamina() const;
+		const float GetStamina() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetMaxStamina() const;
+		const float GetMaxStamina() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetMana() const;
+		const float GetMana() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetMaxMana() const;
+		const float GetMaxMana() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetAttackRate() const;
+		const float GetAttackRate() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetDefenseRate() const;
+		const float GetDefenseRate() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetSpeedRate() const;
+		const float GetSpeedRate() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetJumpRate() const;
+		const float GetJumpRate() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetExperience() const;
+		const float GetExperience() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetGold() const;
+		const float GetGold() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
-		float GetLevelingRequirementExp() const;
+		const float GetLevelingRequirementExp() const;
 
 protected:
 	void SetupCharacterLevel(const uint32 NewLevel);

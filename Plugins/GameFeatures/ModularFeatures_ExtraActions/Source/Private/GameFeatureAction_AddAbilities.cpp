@@ -158,7 +158,11 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 						SetupInputInterface = nullptr;
 					}
 
-					if (SetupInputInterface != nullptr)
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+					if constexpr (&SetupInputInterface != nullptr)
+#else
+					if (&SetupInputInterface != nullptr)
+#endif
 					{
 						UInputAction* AbilityInput = Ability.InputAction.LoadSynchronous();
 						SetupInputInterface->SetupAbilityInput(AbilityInput,
@@ -222,11 +226,15 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 					SetupInputInterface = nullptr;
 				}
 
-				if (SetupInputInterface != nullptr)
+#if __cplusplus > 201402L // Detect if compiler version is > c++14
+				if constexpr (&SetupInputInterface != nullptr)
+#else
+				if (&SetupInputInterface != nullptr)
+#endif
 				{
 					for (const UInputAction* InputRef : ActiveAbilities.InputReference)
 					{
-						if (IsValid(InputRef)) 
+						if (IsValid(InputRef))
 						{
 							SetupInputInterface->RemoveAbilityInputBinding(InputRef);
 						}
