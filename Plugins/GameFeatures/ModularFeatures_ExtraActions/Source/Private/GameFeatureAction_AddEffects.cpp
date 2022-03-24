@@ -149,7 +149,7 @@ void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 
 		TArray<FActiveGameplayEffectHandle> ActiveEffects = ActiveExtensions.FindRef(TargetActor);
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&ActiveEffects != nullptr)
 #else
 		if (&ActiveEffects != nullptr)

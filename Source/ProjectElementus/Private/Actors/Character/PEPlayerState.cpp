@@ -31,7 +31,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 
 	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingDataObject(
 		TEXT("/Game/Main/GAS/Data/DT_Leveling"));
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&LevelingDataObject.Object != nullptr)
 #else
 	if (&LevelingDataObject.Object != nullptr)
@@ -42,7 +42,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 
 	static const ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaDataObject(
 		TEXT("/Game/Main/GAS/Data/DT_Character_ATB_Default"));
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&AttributesMetaDataObject.Object != nullptr)
 #else
 	if (&AttributesMetaDataObject.Object != nullptr)
@@ -53,7 +53,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 
 	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffectClass(
 		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&DeathGameplayEffectClass.Class != nullptr)
 #else
 	if (&DeathGameplayEffectClass.Class != nullptr)
@@ -117,7 +117,7 @@ void APEPlayerState::BeginPlay()
 			const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
 				FName(*FString::FromInt(Attributes->GetLevel())), "");
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 			if constexpr (&LevelingInfo != nullptr)
 #else
 			if (&LevelingInfo != nullptr)
@@ -351,7 +351,7 @@ void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
 		const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
 			FName(*FString::FromInt(NewLevel)), "");
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&LevelingInfo != nullptr)
 #else
 		if (&LevelingInfo != nullptr)

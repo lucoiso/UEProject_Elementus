@@ -81,7 +81,7 @@ void APECharacter::Landed(const FHitResult& Hit)
 			*AbilitySystemComponent->FindAbilitySpecFromInputID(
 				InputIDEnumerationClass->GetValueByName("Jump", EGetByNameFlags::CheckAuthoredName));
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&AbilitySpec != nullptr)
 #else
 		if (&AbilitySpec != nullptr)

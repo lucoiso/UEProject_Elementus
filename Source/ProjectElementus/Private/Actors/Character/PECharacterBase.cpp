@@ -33,7 +33,7 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 
 	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(
 		TEXT("/Game/Main/Character/Mesh/SK_Mannequin"));
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&SkeletalMesh.Object != nullptr)
 #else
 	if (&SkeletalMesh.Object != nullptr)
@@ -44,7 +44,7 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 
 	static const ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(
 		TEXT("/Game/Main/Character/Animations/ThirdPerson_AnimBP"));
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&AnimationClass.Class != nullptr)
 #else
 	if (&AnimationClass.Class != nullptr)
@@ -199,7 +199,7 @@ void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbi
 
 		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec* AbilitySpec) -> void
 		{
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 			if constexpr (&AbilitySpec != nullptr)
 #else
 			if (&AbilitySpec != nullptr)
@@ -244,7 +244,7 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 
 		const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&AbilitySpec != nullptr)
 #else
 		if (&AbilitySpec != nullptr)

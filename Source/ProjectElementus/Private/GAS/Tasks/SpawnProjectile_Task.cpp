@@ -33,7 +33,7 @@ void USpawnProjectile_Task::Activate()
 
 	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&ProjectileClass != nullptr)
 #else
 		if (&ProjectileClass != nullptr)

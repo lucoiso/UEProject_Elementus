@@ -353,7 +353,7 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 	const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
 	FTargetActorSpawnParams TargetParameters)
 {
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&TargetParameters.StartLocation == nullptr)
 #else
 	if (&TargetParameters.StartLocation == nullptr)

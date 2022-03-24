@@ -175,7 +175,7 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 									NewInputData.ActionBinding.Add(InputBindingHandle);
 								}
 							}
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 							if constexpr (&AbilityInterface != nullptr)
 #else
 							if (&AbilityInterface != nullptr)
@@ -228,7 +228,7 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 
 				const FInputBindingData& ActiveInputData = ActiveExtensions.FindRef(TargetActor);
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 				if constexpr (&ActiveInputData != nullptr)
 #else
 				if (&ActiveInputData != nullptr)
@@ -263,7 +263,7 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 						}
 
 						IAbilityInputBinding* AbilityInterface = Cast<IAbilityInputBinding>(FunctionOwner);
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 						if constexpr (&AbilityInterface != nullptr)
 #else
 						if (&AbilityInterface != nullptr)

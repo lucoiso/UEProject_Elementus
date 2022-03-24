@@ -158,7 +158,7 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 						SetupInputInterface = nullptr;
 					}
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 					if constexpr (&SetupInputInterface != nullptr)
 #else
 					if (&SetupInputInterface != nullptr)
@@ -188,7 +188,7 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 
 		const FActiveAbilityData ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&ActiveAbilities != nullptr)
 #else
 		if (&ActiveAbilities != nullptr)
@@ -226,7 +226,7 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 					SetupInputInterface = nullptr;
 				}
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 				if constexpr (&SetupInputInterface != nullptr)
 #else
 				if (&SetupInputInterface != nullptr)

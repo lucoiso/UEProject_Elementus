@@ -24,7 +24,7 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 
 	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUDClass(
 		TEXT("/Game/Main/Blueprints/Widgets/BP_ScreenInformations"));
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&UserHUDClass.Class != nullptr)
 #else
 	if (&UserHUDClass.Class != nullptr)
