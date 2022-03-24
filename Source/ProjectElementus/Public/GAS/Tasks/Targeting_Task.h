@@ -23,6 +23,8 @@ class PROJECTELEMENTUS_API UTargeting_Task : public UAbilityTask
 	GENERATED_BODY()
 
 public:
+	UTargeting_Task(const FObjectInitializer& ObjectInitializer);
+
 	UPROPERTY(BlueprintAssignable)
 		FWaitTargetingDelegate ValidData;
 

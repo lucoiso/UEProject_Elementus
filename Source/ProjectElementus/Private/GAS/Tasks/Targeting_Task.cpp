@@ -6,6 +6,12 @@
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
 
+UTargeting_Task::UTargeting_Task(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	bTickingTask = false;
+}
+
 UTargeting_Task* UTargeting_Task::StartTargetingAndWaitData(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
 	const TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType,
 	const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
@@ -15,7 +21,6 @@ UTargeting_Task* UTargeting_Task::StartTargetingAndWaitData(UGameplayAbility* Ow
 	MyObj->TargetActorClass = TargetActorClass;
 	MyObj->ConfirmationType = ConfirmationType;
 	MyObj->TargetingParams = Parameters;
-	MyObj->bTickingTask = true;
 
 	return MyObj;
 }
@@ -86,6 +91,9 @@ void UTargeting_Task::Activate()
 					else if (ConfirmationType == EGameplayTargetingConfirmation::UserConfirmed)
 					{
 						TargetActor->BindToConfirmCancelInputs();
+
+						// Debugging
+						bTickingTask = TargetingParams.bDebug;
 					}
 				}
 			}
@@ -126,6 +134,7 @@ void UTargeting_Task::TickTask(float DeltaTime)
 {
 	Super::TickTask(DeltaTime);
 
+	// Debugging
 	if (TargetActor.IsValid() && TargetingParams.bDebug)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "ShouldProduceTargetData: " + FString::FromInt(TargetActor->ShouldProduceTargetData()));
@@ -137,5 +146,9 @@ void UTargeting_Task::TickTask(float DeltaTime)
 
 		TargetActor->ConfirmTargetingAndContinue();
 		TargetActor->bDebug = TargetingParams.bDebug;
+	}
+	else
+	{
+		EndTask();
 	}
 }
