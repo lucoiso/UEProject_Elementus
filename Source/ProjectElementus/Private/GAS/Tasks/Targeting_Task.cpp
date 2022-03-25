@@ -3,7 +3,6 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Tasks/Targeting_Task.h"
-#include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
 
 UTargeting_Task::UTargeting_Task(const FObjectInitializer& ObjectInitializer)
@@ -48,22 +47,22 @@ void UTargeting_Task::Activate()
 			FilterHandle.Filter = MakeShared<FGameplayTargetDataFilter>(TargetingParams.TargetFilter);
 			TargetActor->Filter = FilterHandle;
 
-			if (TargetActorClass.Get() == AGameplayAbilityTargetActor_SingleLineTrace::StaticClass())
+			if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_Trace>())
 			{
-				AGameplayAbilityTargetActor_SingleLineTrace* LineTraceObj = Cast<AGameplayAbilityTargetActor_SingleLineTrace>(TargetActor);
+				AGameplayAbilityTargetActor_Trace* TraceObj = Cast<AGameplayAbilityTargetActor_Trace>(TargetActor);
 
-				LineTraceObj->MaxRange = TargetingParams.Range;
-				LineTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
-			}
+				TraceObj->MaxRange = TargetingParams.Range;
+				TraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch; 
+				
+				if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_GroundTrace>())
+				{
+					AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
 
-			else if (TargetActorClass.Get() == AGameplayAbilityTargetActor_GroundTrace::StaticClass())
-			{
-				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
-
-				GroundTraceObj->MaxRange = TargetingParams.Range;
-				GroundTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
-				GroundTraceObj->CollisionRadius = TargetingParams.Radius;
-				GroundTraceObj->CollisionHeight = TargetingParams.Height;
+					GroundTraceObj->MaxRange = TargetingParams.Range;
+					GroundTraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
+					GroundTraceObj->CollisionRadius = TargetingParams.Radius;
+					GroundTraceObj->CollisionHeight = TargetingParams.Height;
+				}
 			}
 
 			TargetActor->FinishSpawning(FTransform::Identity);
@@ -141,8 +140,8 @@ void UTargeting_Task::TickTask(float DeltaTime)
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "ShouldProduceTargetDataOnServer: " + FString::FromInt(TargetActor->ShouldProduceTargetDataOnServer));
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "IsConfirmTargetingAllowed: " + FString::FromInt(TargetActor->IsConfirmTargetingAllowed()));
 		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "GetTargetLocation: " + TargetActor->GetTargetLocation().ToString());
-		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "TargetDataReadyDelegate.IsBound(): " + FString::FromInt(TargetActor->TargetDataReadyDelegate.IsBound()));
-		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "CanceledDelegate.IsBound(): " + FString::FromInt(TargetActor->CanceledDelegate.IsBound()));
+		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "TargetDataReadyDelegate.IsBound: " + FString::FromInt(TargetActor->TargetDataReadyDelegate.IsBound()));
+		GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "CanceledDelegate.IsBound: " + FString::FromInt(TargetActor->CanceledDelegate.IsBound()));
 
 		TargetActor->ConfirmTargetingAndContinue();
 		TargetActor->bDebug = TargetingParams.bDebug;

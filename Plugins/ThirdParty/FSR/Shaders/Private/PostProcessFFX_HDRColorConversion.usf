@@ -1,0 +1,122 @@
+//------------------------------------------------------------------------------
+// FidelityFX Super Resolution UE4 Plugin
+//
+// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//------------------------------------------------------------------------------
+
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/ScreenPass.ush"
+
+
+// =====================================================================================
+//
+// FIDELITYFX SETUP
+//
+// =====================================================================================
+#define A_HLSL 1
+#define A_GPU  1
+#include "ffx_a.ush"
+#include "ffx_fsr1.ush"
+#include "PostProcessFFX_Common.ush"
+#include "/Engine/Private/BlueNoise.ush"
+
+
+#if COMPUTE_SHADER
+#ifndef FSR_OUTPUTDEVICE
+#error FSR_OUTPUTDEVICE must be defined
+#endif
+
+Texture2D InputTexture;
+RWTexture2D<float4> OutputTexture;
+
+AF1 DitherAmount; // Amount of dither (0 to 1} ranged.
+
+// =====================================================================================
+//
+// COLOR CONVERSION CS
+//
+// =====================================================================================
+AF4 ConvertHDRColorToGamma2(AU2 gxy)
+{
+	AF4 Input = InputTexture.Load(ASU3(gxy, 0));
+	AF3 Color = Input.rgb;
+
+	// encode in Gamma2 perceptual space for EASU/RCAS consumption
+
+#if FSR_OUTPUTDEVICE == FSR_scRGB 
+
+	AF3 Gamma2Color = scRGBToGamma2(Color);
+
+#elif FSR_OUTPUTDEVICE == FSR_ST2084 // PQ
+
+	AF3 LinearColor = ST2084ToLinear(Color); // [0-10000]
+	AF3 NormalizedLinearColor = LinearColor * HDR_MAX_NITS_INV; // [0-1]
+	
+	#if ENABLE_PQ_DITHER
+	
+		AU2 BlueNoiseTileCoord = gxy % BlueNoise.Dimensions.xy; // 256x256
+		AU1 BlueNoiseSlice = 0;
+		AF3 PerPixelGrainTex = EvalBlueNoise(BlueNoiseTileCoord, BlueNoiseSlice);
+		
+		// Temporally Energy Preserving Dither for 10:10:10:2_UNORM / Gamma2 storage
+		FsrTepdC10F(NormalizedLinearColor, PerPixelGrainTex.r * DitherAmount);
+		AF3 Gamma2Color = NormalizedLinearColor; // Tepd() already converts to Gamma2
+
+	#else
+		AF3 Gamma2Color = LinearToGamma2(NormalizedLinearColor);
+	#endif // ENABLE_PQ_DITHER
+
+
+#elif FSR_OUTPUTDEVICE == FSR_LINEAR
+
+	// FidelityFX SuperResolution / SRTM: Simple Reversible Tonemapper
+	FsrSrtmF(Color); // [0, FP16_MAX) -> [0, 1]
+	AF3 Gamma2Color = LinearToGamma2(Color);
+
+#endif // FSR_OUTPUTDEVICE
+
+	return AF4(Gamma2Color, Input.a);
+}
+
+// =====================================================================================
+//
+// ENTRY POINT
+//
+// =====================================================================================
+[numthreads(THREADGROUP_SIZEX, THREADGROUP_SIZEY, 1)]
+void MainCS(uint3 LocalThreadId : SV_GroupThreadID, uint3 WorkGroupId : SV_GroupID, uint3 Dtid : SV_DispatchThreadID)
+{
+	// Do remapping of local xy in workgroup for a more PS-like swizzle pattern.
+	AU2 gxy = ARmp8x8(LocalThreadId.x) + AU2(WorkGroupId.x << 4u, WorkGroupId.y << 4u);
+
+	// process 8x8 region TopLeft (1/4)
+	OutputTexture[gxy] = ConvertHDRColorToGamma2(gxy);
+
+	// process 8x8 region TopRight (2/4)
+	gxy.x += 8u;
+	OutputTexture[gxy] = ConvertHDRColorToGamma2(gxy);
+
+	// process 8x8 region BottomRight (3/4)
+	gxy.y += 8u;
+	OutputTexture[gxy] = ConvertHDRColorToGamma2(gxy);
+
+	// process 8x8 region BottomLeft (4/4)
+	gxy.x -= 8u;
+	OutputTexture[gxy] = ConvertHDRColorToGamma2(gxy);
+}
+#endif // COMPUTE_SHADER

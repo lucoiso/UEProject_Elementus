@@ -50,6 +50,14 @@
 		{
 			"Name": "ModularGameplay",
 			"Enabled": true
+		},
+		{
+			"Name": "ConsoleVariables",
+			"Enabled": true
+		},
+		{
+			"Name": "FSR",
+			"Enabled": true
 		}
 	]
 }
