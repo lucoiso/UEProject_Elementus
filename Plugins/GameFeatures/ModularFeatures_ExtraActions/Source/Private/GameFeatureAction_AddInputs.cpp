@@ -149,6 +149,7 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 				default:
 					FunctionOwner.Reset();
 					InputComponent.Reset();
+					break;
 				}
 
 				IAbilityInputBinding* AbilityInterface = Cast<IAbilityInputBinding>(FunctionOwner);
@@ -249,7 +250,8 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 						break;
 
 					default:
-						FunctionOwner = nullptr;
+						FunctionOwner = (UObject*)nullptr;
+						break;
 					}
 
 					UEnhancedInputComponent* InputComponent =

@@ -77,6 +77,11 @@ void APEPlayerController::OnRep_PlayerState()
 
 void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action, const int32 InputID)
 {
+	if (!IsValid(GetPawnOrSpectator()))
+	{
+		return;
+	}
+
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 
 	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetActorLabel()))
@@ -98,6 +103,11 @@ void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action,
 
 void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const
 {
+	if (!IsValid(GetPawnOrSpectator()))
+	{
+		return;
+	}
+
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 
 	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetActorLabel()))
@@ -109,6 +119,11 @@ void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputA
 
 void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 {
+	if (!IsValid(GetPawnOrSpectator()))
+	{
+		return;
+	}
+
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
@@ -135,6 +150,11 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 
 void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 {
+	if (!IsValid(GetPawnOrSpectator()))
+	{
+		return;
+	}
+
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
@@ -151,6 +171,11 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 {
+	if (!IsValid(GetPawnOrSpectator()))
+	{
+		return;
+	}
+
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
 		__func__,
 		*Value.ToString(), Value.GetMagnitude());
@@ -161,23 +186,17 @@ void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 
 void APEPlayerController::Move(const FInputActionValue& Value)
 {
+	if (!IsValid(GetPawnOrSpectator()))
+	{
+		return;
+	}	
+
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
 		__func__,
 		*Value.ToString(), Value.GetMagnitude());
 
 	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
 	{
-		if (!IsValid(GetPawnOrSpectator()))
-		{
-			BeginSpectatingState();
-			StartSpectatingOnly();
-
-			HUDHandle->RemoveFromParent();
-			HUDHandle.Reset();
-
-			return;
-		}
-
 		const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
 
 		const FVector DirectionX = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -192,6 +211,11 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 
 void APEPlayerController::Jump(const FInputActionValue& Value)
 {
+	if (!IsValid(GetPawnOrSpectator()))
+	{
+		return;
+	}
+
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
 		__func__,
 		*Value.ToString(), Value.GetMagnitude());

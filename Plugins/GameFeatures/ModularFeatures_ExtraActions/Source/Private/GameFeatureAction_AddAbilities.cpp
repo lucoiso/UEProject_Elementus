@@ -142,33 +142,37 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 				if (!Ability.InputAction.IsNull())
 				{
 					IAbilityInputBinding* SetupInputInterface;
-					APawn* TargetPawn = Cast<APawn>(AbilitySystemComponent->GetAvatarActor());
+					APawn* TargetPawn = Cast<APawn>(TargetActor);
 
-					switch (InputBindingOwner)
+					if (IsValid(TargetPawn))
 					{
-					case EControllerOwner::Pawn:
-						SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn);
-						break;
+						switch (InputBindingOwner)
+						{
+						case EControllerOwner::Pawn:
+							SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn);
+							break;
 
-					case EControllerOwner::Controller:
-						SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn->GetController<AController>());
-						break;
+						case EControllerOwner::Controller:
+							SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn->GetController());
+							break;
 
-					default:
-						SetupInputInterface = nullptr;
-					}
+						default:
+							SetupInputInterface = (IAbilityInputBinding*)nullptr;
+							break;
+						}
 
 #if __cplusplus > 201402L // Check if C++ > C++14
-					if constexpr (&SetupInputInterface != nullptr)
+						if constexpr (&SetupInputInterface != nullptr)
 #else
-					if (&SetupInputInterface != nullptr)
+						if (&SetupInputInterface != nullptr)
 #endif
-					{
-						UInputAction* AbilityInput = Ability.InputAction.LoadSynchronous();
-						SetupInputInterface->SetupAbilityInput(AbilityInput,
-							InputID);
+						{
+							UInputAction* AbilityInput = Ability.InputAction.LoadSynchronous();
+							SetupInputInterface->SetupAbilityInput(AbilityInput,
+								InputID);
 
-						NewAbilityData.InputReference.Add(AbilityInput);
+							NewAbilityData.InputReference.Add(AbilityInput);
+						}
 					}
 				}
 
@@ -210,33 +214,37 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 				}
 
 				IAbilityInputBinding* SetupInputInterface;
-				APawn* TargetPawn = Cast<APawn>(AbilitySystemComponent->GetAvatarActor());
+				APawn* TargetPawn = Cast<APawn>(TargetActor);
 
-				switch (InputBindingOwner)
+				if (IsValid(TargetPawn))
 				{
-				case EControllerOwner::Pawn:
-					SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn);
-					break;
+					switch (InputBindingOwner)
+					{
+					case EControllerOwner::Pawn:
+						SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn);
+						break;
 
-				case EControllerOwner::Controller:
-					SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn->GetController<AController>());
-					break;
+					case EControllerOwner::Controller:
+						SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn->GetController());
+						break;
 
-				default:
-					SetupInputInterface = nullptr;
-				}
+					default:
+						SetupInputInterface = (IAbilityInputBinding*)nullptr;
+						break;
+					}
 
 #if __cplusplus > 201402L // Check if C++ > C++14
-				if constexpr (&SetupInputInterface != nullptr)
+					if constexpr (&SetupInputInterface != nullptr)
 #else
-				if (&SetupInputInterface != nullptr)
+					if (&SetupInputInterface != nullptr)
 #endif
-				{
-					for (const UInputAction* InputRef : ActiveAbilities.InputReference)
 					{
-						if (IsValid(InputRef))
+						for (const UInputAction* InputRef : ActiveAbilities.InputReference)
 						{
-							SetupInputInterface->RemoveAbilityInputBinding(InputRef);
+							if (IsValid(InputRef))
+							{
+								SetupInputInterface->RemoveAbilityInputBinding(InputRef);
+							}
 						}
 					}
 				}

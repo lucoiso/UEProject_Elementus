@@ -11,7 +11,7 @@
 	"MarketplaceURL": "",
 	"SupportURL": "",
 	"EngineVersion": "5.0",
-	"CanContainContent": true,
+	"CanContainContent": false,
 	"Installed": true,
 	"Modules": [
 		{
@@ -24,5 +24,7 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PostConfigInit"
 		}
-	]
+	],
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false
 }
