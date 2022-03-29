@@ -117,9 +117,20 @@ void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputA
 	}
 }
 
+void APEPlayerController::StartSpectatingOnly()
+{
+	Super::StartSpectatingOnly();
+
+	if (HUDHandle.IsValid())
+	{
+		HUDHandle->RemoveFromParent();
+		HUDHandle.Reset();
+	}
+}
+
 void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 {
-	if (!IsValid(GetPawnOrSpectator()))
+	if (!IsValid(GetPawn()))
 	{
 		return;
 	}
@@ -150,7 +161,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 
 void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 {
-	if (!IsValid(GetPawnOrSpectator()))
+	if (!IsValid(GetPawn()))
 	{
 		return;
 	}
@@ -211,7 +222,7 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 
 void APEPlayerController::Jump(const FInputActionValue& Value)
 {
-	if (!IsValid(GetPawnOrSpectator()))
+	if (!IsValid(GetPawn()))
 	{
 		return;
 	}

@@ -55,6 +55,8 @@ public:
 		virtual void RemoveAbilityInputBinding(const UInputAction* Action) const override;
 	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const;
 
+	virtual void StartSpectatingOnly() override;
+
 protected:
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;

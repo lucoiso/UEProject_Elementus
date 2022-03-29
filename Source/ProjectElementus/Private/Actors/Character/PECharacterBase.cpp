@@ -150,7 +150,10 @@ void APECharacterBase::BeginPlay()
 
 void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
+	if (EndPlayReason != EEndPlayReason::Destroyed)
+	{
+		UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
+	}
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -264,7 +267,8 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 
 void APECharacterBase::Die_Implementation()
 {
-	// TO DO
+	// TO DO	
+	GetController<APEPlayerController>()->StartSpectatingOnly();
 	Destroy();
 }
 
