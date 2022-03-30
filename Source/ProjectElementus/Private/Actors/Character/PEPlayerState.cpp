@@ -82,30 +82,22 @@ void APEPlayerState::BeginPlay()
 	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetActorLabel()))
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetSpeedRateAttribute()).
-			AddUObject(
-				this, &APEPlayerState::SpeedRateChanged_Callback);
+			AddUObject(this, &APEPlayerState::SpeedRateChanged_Callback);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetJumpRateAttribute()).
-			AddUObject(
-				this, &APEPlayerState::JumpRateChanged_Callback);
+			AddUObject(this, &APEPlayerState::JumpRateChanged_Callback);
 
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetHealthAttribute()).
-			AddUObject(
-				this, &APEPlayerState::HealthChanged_Callback);
-
+			AddUObject(this, &APEPlayerState::HealthChanged_Callback);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetStaminaAttribute()).
-			AddUObject(
-				this, &APEPlayerState::StaminaChanged_Callback);
+			AddUObject(this, &APEPlayerState::StaminaChanged_Callback);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetManaAttribute()).
-			AddUObject(
-				this, &APEPlayerState::ManaChanged_Callback);
+			AddUObject(this, &APEPlayerState::ManaChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(
-				this, &APEPlayerState::DeathStateChanged_Callback);
+			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::DeathStateChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(
-				this, &APEPlayerState::StunStateChanged_Callback);
+			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::StunStateChanged_Callback);
 
 		if (AttributesData.IsValid())
 		{
@@ -127,8 +119,7 @@ void APEPlayerState::BeginPlay()
 
 				AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 					Attributes->GetExperienceAttribute()).
-					AddUObject(
-						this, &APEPlayerState::ExperienceChanged_Callback);
+					AddUObject(this, &APEPlayerState::ExperienceChanged_Callback);
 			}
 		}
 	}
@@ -148,8 +139,8 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 		*CallbackTag.ToString(), NewCount);
 
 	if (NewCount != 0)
-	{
-		APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
+	{				
+		APECharacterBase* Player = GetPawn<APECharacterBase>();
 
 		/* This will be changed to a custom actor class */
 		if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
@@ -165,11 +156,9 @@ void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, c
 		__func__,
 		*CallbackTag.ToString(), NewCount);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
-
-	if (ensureMsgf(IsValid(Player) && IsValid(Player->GetController()), TEXT("%s have a invalid Player"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(GetPlayerController()), TEXT("%s have a invalid Player"), *GetActorLabel()))
 	{
-		Player->GetController()->SetIgnoreMoveInput(NewCount != 0);
+		GetOwningController()->SetIgnoreMoveInput(NewCount != 0);
 	}
 }
 
@@ -180,8 +169,9 @@ void APEPlayerState::HealthChanged_Callback(const FOnAttributeChangeData& Data) 
 	if (Data.NewValue <= 0.f)
 	{
 		AbilitySystemComponent->CancelAllAbilities();
-		AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(DeathEffect.LoadSynchronous()->GetDefaultObject()), 1.f,
-			AbilitySystemComponent->MakeEffectContext());
+		
+		AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(
+			DeathEffect.LoadSynchronous()->GetDefaultObject()), 1.f, AbilitySystemComponent->MakeEffectContext());
 	}
 }
 
@@ -219,7 +209,7 @@ void APEPlayerState::SpeedRateChanged_Callback(const FOnAttributeChangeData& Dat
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
+	const APECharacterBase* Player = GetPawn<APECharacterBase>();
 
 	if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 	{
@@ -236,7 +226,7 @@ void APEPlayerState::JumpRateChanged_Callback(const FOnAttributeChangeData& Data
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
+	const APECharacterBase* Player = GetPawn<APECharacterBase>();
 
 	if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 	{
@@ -371,8 +361,8 @@ void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
 		}
 		else // Reached max level
 		{
-			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetExperienceAttribute()).
-				RemoveAll(this);
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
+				Attributes->GetExperienceAttribute()).RemoveAll(this);
 		}
 	}
 }

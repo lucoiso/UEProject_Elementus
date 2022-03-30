@@ -118,7 +118,7 @@ public:
 		void RemoveAbility(TSubclassOf<UGameplayAbility> Ability);
 	virtual void RemoveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability);
 
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
 		void Die();
 	virtual void Die_Implementation();
 	bool Die_Validate();

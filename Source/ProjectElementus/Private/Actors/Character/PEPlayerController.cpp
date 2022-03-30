@@ -77,11 +77,6 @@ void APEPlayerController::OnRep_PlayerState()
 
 void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action, const int32 InputID)
 {
-	if (!IsValid(GetPawnOrSpectator()))
-	{
-		return;
-	}
-
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 
 	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetActorLabel()))
@@ -103,11 +98,6 @@ void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action,
 
 void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const
 {
-	if (!IsValid(GetPawnOrSpectator()))
-	{
-		return;
-	}
-
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 
 	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetActorLabel()))
@@ -212,6 +202,7 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 
 		const FVector DirectionX = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		const FVector DirectionY = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		
 		GetPawnOrSpectator()->AddMovementInput(DirectionX, Value[1]);
 		GetPawnOrSpectator()->AddMovementInput(DirectionY, Value[0]);
 

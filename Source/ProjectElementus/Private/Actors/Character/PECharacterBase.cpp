@@ -160,7 +160,7 @@ void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void APECharacterBase::InitializeAttributes(const bool bOnRep)
 {
-	APEPlayerState* State = Cast<APEPlayerState>(GetPlayerState());
+	APEPlayerState* State = GetPEPlayerState();
 
 	if (IsValid(State))
 	{
