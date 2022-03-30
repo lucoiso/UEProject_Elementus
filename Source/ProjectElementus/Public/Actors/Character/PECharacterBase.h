@@ -119,7 +119,7 @@ public:
 	virtual void RemoveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
-		void Die();
-	virtual void Die_Implementation();
-	bool Die_Validate();
+		void PerformDeath();
+	virtual void PerformDeath_Implementation();
+	bool PerformDeath_Validate();
 };

@@ -4,6 +4,7 @@
 
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PEPlayerController.h"
 
 #include "GAS/System/GASAbilitySystemComponent.h"
 #include "GAS/System/GASAttributeSet.h"
@@ -132,20 +133,44 @@ void APEPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+APEPlayerController* APEPlayerState::GetPEPlayerController() const
+{	
+	return Cast<APEPlayerController>(GetOwner());
+}
+
 void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
+	if (!HasAuthority()) 
+	{ 
+		return; 	
+	}
+	
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
 		__func__,
 		*CallbackTag.ToString(), NewCount);
 
 	if (NewCount != 0)
 	{				
-		APECharacterBase* Player = GetPawn<APECharacterBase>();
-
-		/* This will be changed to a custom actor class */
-		if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
+		APEPlayerController* Controller_Temp = GetPEPlayerController();
+		
+		if (ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Player"), *GetActorLabel()))
 		{
-			Player->Die();
+			APECharacterBase* Player_Temp = Controller_Temp->GetPawn<APECharacterBase>();
+			
+			if (ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetActorLabel()))
+			{
+				const FVector SpectatorLocation = Player_Temp->GetActorLocation();
+				const FRotator SpectatorRotation = Player_Temp->GetActorRotation();
+				
+				Player_Temp->PerformDeath();
+
+				Controller_Temp->ServerSetSpectatorLocation(SpectatorLocation, SpectatorRotation);
+			}			
+
+			Controller_Temp->ChangeState(NAME_Spectating);
+			Controller_Temp->ClientGotoState(NAME_Spectating);
+			
+			Controller_Temp->RemoveCustomHUD();
 		}
 	}
 }

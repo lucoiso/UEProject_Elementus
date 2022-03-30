@@ -50,6 +50,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	class APEPlayerController* GetPEPlayerController() const;
+
 	TWeakObjectPtr<UGASAbilitySystemComponent> AbilitySystemComponent;
 	TWeakObjectPtr<class UGASAttributeSet> Attributes;
 

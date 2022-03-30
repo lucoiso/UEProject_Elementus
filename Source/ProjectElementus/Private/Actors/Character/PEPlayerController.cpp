@@ -107,10 +107,8 @@ void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputA
 	}
 }
 
-void APEPlayerController::StartSpectatingOnly()
+void APEPlayerController::RemoveCustomHUD_Implementation()
 {
-	Super::StartSpectatingOnly();
-
 	if (HUDHandle.IsValid())
 	{
 		HUDHandle->RemoveFromParent();
@@ -130,7 +128,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
 		__func__, InputID);
 
-	const APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
+	const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
 
 	if (ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
 		TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
@@ -161,7 +159,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
 		__func__, InputID);
 
-	const APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
+	const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
 
 	if (ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
 		TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
@@ -222,7 +220,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value)
 		__func__,
 		*Value.ToString(), Value.GetMagnitude());
 
-	APECharacterBase* ControllerOwner = Cast<APECharacterBase>(GetCharacter());
+	APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
 
 	if (ensureMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
 	{

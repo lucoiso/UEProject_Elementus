@@ -4,7 +4,6 @@
 
 #include "Actors/Character/PECharacterBase.h"
 
-#include "Actors/Character/PEPlayerController.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "Camera/CameraComponent.h"
 
@@ -265,14 +264,13 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 	}
 }
 
-void APECharacterBase::Die_Implementation()
+void APECharacterBase::PerformDeath_Implementation()
 {
 	// TO DO	
-	GetController<APEPlayerController>()->StartSpectatingOnly();
 	Destroy();
 }
 
-bool APECharacterBase::Die_Validate()
+bool APECharacterBase::PerformDeath_Validate()
 {
 	return true;
 }
