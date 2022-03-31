@@ -56,22 +56,15 @@ public:
 	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const;
 
 	UFUNCTION(Client, Reliable)
-		void RemoveCustomHUD();
-	virtual void RemoveCustomHUD_Implementation();
+		void RemoveHUD();
+	virtual void RemoveHUD_Implementation();
 
 protected:
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom Properties | Management")
-		TSubclassOf<UUserWidget> HUDClass;
-
-	virtual void OnPossess(APawn* InPawn) override;
-	virtual void OnRep_PlayerState() override;
-
 private:
-	TWeakObjectPtr<UUserWidget> HUDHandle;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION()

@@ -8,7 +8,7 @@
 #include "InputAction.h"
 #include "AbilitySystemComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
-#include "Blueprint/UserWidget.h"
+#include "Management/PEHUD.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -21,16 +21,15 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+}
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUDClass(
-		TEXT("/Game/Main/Blueprints/Widgets/BP_ScreenInformations"));
-#if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&UserHUDClass.Class != nullptr)
-#else
-	if (&UserHUDClass.Class != nullptr)
-#endif
+void APEPlayerController::RemoveHUD_Implementation()
+{
+	APEHUD* HUD_Temp = GetHUD<APEHUD>();
+
+	if (ensureMsgf(IsValid(HUD_Temp), TEXT("%s have a invalid HUD"), *GetActorLabel()))
 	{
-		HUDClass = UserHUDClass.Class;
+		HUD_Temp->HideHUD();
 	}
 }
 
@@ -54,25 +53,6 @@ void APEPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
 	Super::EndPlay(EndPlayReason);
-}
-
-void APEPlayerController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-
-	if (IsLocalController())
-	{
-		HUDHandle = CreateWidget(this, HUDClass, FName("Main HUD"));
-		HUDHandle->AddToPlayerScreen();
-	}
-}
-
-void APEPlayerController::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-
-	HUDHandle = CreateWidget(this, HUDClass, FName("Main HUD"));
-	HUDHandle->AddToPlayerScreen();
 }
 
 void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action, const int32 InputID)
@@ -104,15 +84,6 @@ void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputA
 	{
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnPressedHandle);
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnReleasedHandle);
-	}
-}
-
-void APEPlayerController::RemoveCustomHUD_Implementation()
-{
-	if (HUDHandle.IsValid())
-	{
-		HUDHandle->RemoveFromParent();
-		HUDHandle.Reset();
 	}
 }
 

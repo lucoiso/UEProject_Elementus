@@ -153,7 +153,7 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 	{				
 		APEPlayerController* Controller_Temp = GetPEPlayerController();
 		
-		if (ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Player"), *GetActorLabel()))
+		if (ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetActorLabel()))
 		{
 			APECharacterBase* Player_Temp = Controller_Temp->GetPawn<APECharacterBase>();
 			
@@ -169,8 +169,8 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 
 			Controller_Temp->ChangeState(NAME_Spectating);
 			Controller_Temp->ClientGotoState(NAME_Spectating);
-			
-			Controller_Temp->RemoveCustomHUD();
+
+			Controller_Temp->RemoveHUD();
 		}
 	}
 }
