@@ -50,20 +50,17 @@ void AExplosiveActor::PerformExplosion()
 	{
 		const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation());
 
-		if (Hit.GetActor()->GetClass() == APECharacterBase::StaticClass())
+		if (Hit.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 		{
 			APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
 
 			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 			{
 				Player->LaunchCharacter(Velocity, false, false);
-				for (const TSubclassOf<UGameplayEffect>& Effect : ExplosionEffects)
+				
+				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetActorLabel()))
 				{
-					if (Player->HasAuthority())
-					{
-						Player->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
-							1.f, Player->GetAbilitySystemComponent()->MakeEffectContext());
-					}
+					ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
 				}
 			}
 		}
@@ -79,4 +76,26 @@ void AExplosiveActor::PerformExplosion()
 	{
 		Destroy();
 	}
+}
+
+void AExplosiveActor::ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetComp)
+{
+	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetActorLabel()))
+	{
+		if (GetLocalRole() != ROLE_Authority)
+		{
+			return;
+		}
+
+		for (const TSubclassOf<UGameplayEffect>& Effect : ExplosionEffects)
+		{
+			TargetComp->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
+				1.f, TargetComp->MakeEffectContext());
+		}
+	}
+}
+
+bool AExplosiveActor::ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetComp)
+{
+	return false;
 }

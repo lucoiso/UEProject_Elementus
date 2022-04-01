@@ -46,4 +46,10 @@ protected:
 	/* Visual Effect */
 	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
 		TArray<UNiagaraSystem*> ExplosionVFXs;
+
+private:
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom Functions | Behaviors")
+		void ApplyExplosibleEffect(UAbilitySystemComponent* TargetComp);
+	virtual void ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetComp);
+	bool ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetComp);
 };
