@@ -3,8 +3,10 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "TelekinesisAbility_Task.h"
+#include "ThrowableActor.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Actors/Character/PECharacterBase.h"
+#include "Abilities/GameplayAbilityTargetActor_Trace.h"
 
 UTelekinesisAbility_Task::UTelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -95,17 +97,36 @@ void UTelekinesisAbility_Task::ThrowObject()
 
 	bIsFinished = true;
 
-	UPrimitiveComponent* Throwable = PhysicsHandle->GetGrabbedComponent();
-	PhysicsHandle->ReleaseComponent();
+	UPrimitiveComponent* GrabbedPrimitive_Temp = PhysicsHandle->GetGrabbedComponent();
+	
+	if (ensureMsgf(IsValid(GrabbedPrimitive_Temp), TEXT("%s have a invalid Owner"), *GetName()))
+	{		
+		PhysicsHandle->ReleaseComponent();
+		
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(Ability->GetAvatarActorFromActorInfo());
+		QueryParams.AddIgnoredActor(GrabbedPrimitive_Temp->GetAttachmentRootActor());
+		
+		FVector StartLocation = TelekinesisOwner->GetCameraComponentLocation();
+		FVector EndLocation = StartLocation + (TelekinesisOwner->GetCameraForwardVector() * 999999.f);
+		
+		FHitResult HitResult;
+		FGameplayTargetDataFilterHandle DataFilterHandle;
+		
+		AGameplayAbilityTargetActor_Trace::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation, EndLocation, "None", QueryParams);
+		
+		const FVector Direction = ((HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation) - GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
+		const FVector Velocity = Direction * 2750.f;
+		
+		GrabbedPrimitive_Temp->SetAllPhysicsLinearVelocity(Velocity);
 
-	if (IsValid(Throwable))
-	{
-		const FVector Velocity = 2750.f * TelekinesisOwner->GetCameraForwardVector();
-		Throwable->SetAllPhysicsLinearVelocity(Velocity);
+		AThrowableActor* Throwable = Cast<AThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor());
+		if (IsValid(Throwable))
+		{
+			Throwable->ThrowSetup(Ability->GetAvatarActorFromActorInfo());
+		}
 	}
-	else
-	{
-		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
-		EndTask();
-	}
+
+	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	EndTask();
 }
