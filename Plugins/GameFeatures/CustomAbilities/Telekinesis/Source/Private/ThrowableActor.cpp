@@ -40,8 +40,9 @@ void AThrowableActor::ThrowSetup(AActor* Caller)
 void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {		
 	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
+	GetStaticMeshComponent()->AddForceAtLocation(NormalImpulse, Hit.ImpactPoint);
 	
-	if (OtherActor->GetClass()->IsChildOf<APECharacterBase>() && OtherActor != CallerActor.Get())
+	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacterBase>() && OtherActor != CallerActor.Get())
 	{
 		APECharacterBase* Player = Cast<APECharacterBase>(OtherActor);
 
