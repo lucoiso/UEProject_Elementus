@@ -77,7 +77,7 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false;
+	FollowCamera->bUsePawnControlRotation = true;
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 }
 
