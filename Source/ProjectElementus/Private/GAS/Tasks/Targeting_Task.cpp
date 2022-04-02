@@ -9,6 +9,7 @@ UTargeting_Task::UTargeting_Task(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	bTickingTask = false;
+	bIsFinished = false;
 }
 
 UTargeting_Task* UTargeting_Task::StartTargetingAndWaitData(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
@@ -52,8 +53,8 @@ void UTargeting_Task::Activate()
 				AGameplayAbilityTargetActor_Trace* TraceObj = Cast<AGameplayAbilityTargetActor_Trace>(TargetActor);
 
 				TraceObj->MaxRange = TargetingParams.Range;
-				TraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch; 
-				
+				TraceObj->bTraceAffectsAimPitch = TargetingParams.bTraceAffectsAimPitch;
+
 				if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_GroundTrace>())
 				{
 					AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
@@ -90,16 +91,17 @@ void UTargeting_Task::Activate()
 					else if (ConfirmationType == EGameplayTargetingConfirmation::UserConfirmed)
 					{
 						TargetActor->BindToConfirmCancelInputs();
-
 						// Debugging
 						bTickingTask = TargetingParams.bDebug;
+
+						return;
 					}
 				}
 			}
-
-			return;
 		}
-	}
+}
+
+	bIsFinished = true;
 
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 	EndTask();
@@ -112,11 +114,18 @@ void UTargeting_Task::OnTargetDataReadyCallback(const FGameplayAbilityTargetData
 
 void UTargeting_Task::OnTargetDataCancelledCallback(const FGameplayAbilityTargetDataHandle& Data)
 {
+	bIsFinished = true;
+
 	Cancelled.Broadcast(Data);
+
+	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	EndTask();
 }
 
 void UTargeting_Task::OnDestroy(bool AbilityEnded)
 {
+	bIsFinished = true;
+
 	if (TargetActor.IsValid())
 	{
 		TargetActor->TargetDataReadyDelegate.RemoveAll(this);
@@ -131,6 +140,12 @@ void UTargeting_Task::OnDestroy(bool AbilityEnded)
 
 void UTargeting_Task::TickTask(float DeltaTime)
 {
+	if (bIsFinished)
+	{
+		EndTask();
+		return;
+	}
+
 	Super::TickTask(DeltaTime);
 
 	// Debugging
@@ -148,6 +163,9 @@ void UTargeting_Task::TickTask(float DeltaTime)
 	}
 	else
 	{
+		bIsFinished = true;
+
+		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 		EndTask();
 	}
 }

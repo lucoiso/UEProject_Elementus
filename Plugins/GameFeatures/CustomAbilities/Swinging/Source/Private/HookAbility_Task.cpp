@@ -47,6 +47,8 @@ void UHookAbility_Task::Activate()
 		}
 	}
 
+	bIsFinished = true;
+
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 	EndTask();
 }
