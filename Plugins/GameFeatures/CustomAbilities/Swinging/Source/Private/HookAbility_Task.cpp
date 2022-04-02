@@ -69,7 +69,7 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 	{
 		HookLocation = HitDataHandle.GetActor()->GetActorLocation();
 
-		if (HitDataHandle.GetActor()->GetClass() != APECharacterBase::StaticClass())
+		if (!HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 		{
 			HitDataHandle.GetComponent()->AddImpulse(
 				2.5f * (HookOwner->GetActorLocation() - HitDataHandle.GetActor()->GetActorLocation()));

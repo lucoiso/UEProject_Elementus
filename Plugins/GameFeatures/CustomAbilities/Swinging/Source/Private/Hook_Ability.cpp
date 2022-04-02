@@ -65,6 +65,8 @@ void UHook_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilit
 	FGameplayCueParameters Params;
 	Params.Location = TargetHit->Location;
 	Params.TargetAttachComponent = TargetHit->GetComponent();
+	
+	TargetData->AddTargetDataToGameplayCueParameters(Params);
 
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging.Hook"), Params,
 		GetCurrentActorInfo()->AbilitySystemComponent.Get());

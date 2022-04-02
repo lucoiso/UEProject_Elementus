@@ -51,7 +51,7 @@ void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* 
 			constexpr float ImpulseMultiplier = 5.f;
 			
 			Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
-			GetStaticMeshComponent()->AddImpulse(NormalImpulse.GetSafeNormal() * (ImpulseMultiplier / -2.f));
+			GetStaticMeshComponent()->AddImpulse(NormalImpulse.GetSafeNormal());
 			
 			if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetActorLabel()))
 			{
