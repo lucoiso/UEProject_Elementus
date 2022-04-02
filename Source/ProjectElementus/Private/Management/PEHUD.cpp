@@ -10,7 +10,7 @@ APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
-	
+
 	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUDClass(
 		TEXT("/Game/Main/Blueprints/Widgets/BP_ScreenInformations"));
 #if __cplusplus > 201402L // Check if C++ > C++14
@@ -28,9 +28,9 @@ void APEHUD::BeginPlay()
 	if (ensureMsgf(IsValid(GetOwningPlayerController()), TEXT("%s have a invalid Controller"), *GetActorLabel()))
 	{
 		HUDHandle = CreateWidget(GetOwningPlayerController(), HUDClass, FName("Main HUD"));
-		HUDHandle->AddToPlayerScreen();		
+		HUDHandle->AddToPlayerScreen();
 	}
-	
+
 	Super::BeginPlay();
 }
 

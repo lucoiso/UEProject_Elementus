@@ -57,7 +57,7 @@ void AExplosiveActor::PerformExplosion()
 			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 			{
 				Player->LaunchCharacter(Velocity, false, false);
-				
+
 				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetActorLabel()))
 				{
 					ApplyExplosibleEffect(Player->GetAbilitySystemComponent());

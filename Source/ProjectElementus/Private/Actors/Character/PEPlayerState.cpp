@@ -134,38 +134,38 @@ void APEPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 APEPlayerController* APEPlayerState::GetPEPlayerController() const
-{	
+{
 	return Cast<APEPlayerController>(GetOwner());
 }
 
 void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
-	if (!HasAuthority()) 
-	{ 
-		return; 	
+	if (!HasAuthority())
+	{
+		return;
 	}
-	
+
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
 		__func__,
 		*CallbackTag.ToString(), NewCount);
 
 	if (NewCount != 0)
-	{				
+	{
 		APEPlayerController* Controller_Temp = GetPEPlayerController();
-		
+
 		if (ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetActorLabel()))
 		{
 			APECharacterBase* Player_Temp = Controller_Temp->GetPawn<APECharacterBase>();
-			
+
 			if (ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetActorLabel()))
 			{
 				const FVector SpectatorLocation = Player_Temp->GetActorLocation();
 				const FRotator SpectatorRotation = Player_Temp->GetActorRotation();
-				
+
 				Player_Temp->PerformDeath();
 
 				Controller_Temp->ServerSetSpectatorLocation(SpectatorLocation, SpectatorRotation);
-			}			
+			}
 
 			Controller_Temp->ChangeState(NAME_Spectating);
 			Controller_Temp->ClientGotoState(NAME_Spectating);
@@ -194,7 +194,7 @@ void APEPlayerState::HealthChanged_Callback(const FOnAttributeChangeData& Data) 
 	if (Data.NewValue <= 0.f)
 	{
 		AbilitySystemComponent->CancelAllAbilities();
-		
+
 		AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(
 			DeathEffect.LoadSynchronous()->GetDefaultObject()), 1.f, AbilitySystemComponent->MakeEffectContext());
 	}

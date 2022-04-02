@@ -50,6 +50,8 @@ private:
 	TEnumAsByte<EGameplayTargetingConfirmation::Type> ConfirmationType;
 	FTargetActorSpawnParams TargetingParams;
 
+	bool bIsFinished;
+
 	UFUNCTION()
 		virtual void OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& Data);
 

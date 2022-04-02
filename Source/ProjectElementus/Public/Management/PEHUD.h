@@ -9,24 +9,24 @@
 #include "PEHUD.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS(Blueprintable, NotPlaceable, Category = "Custom Classes | Management")
 class PROJECTELEMENTUS_API APEHUD : public AHUD
 {
 	GENERATED_BODY()
-	
+
 public:
 	APEHUD(const FObjectInitializer& ObjectInitializer);
-	
+
 	virtual void BeginPlay() override;
 
 	void HideHUD();
-	
+
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom Properties | Management")
-		TSubclassOf<UUserWidget> HUDClass;	
-	
+		TSubclassOf<UUserWidget> HUDClass;
+
 private:
 	TWeakObjectPtr<UUserWidget> HUDHandle;
 };

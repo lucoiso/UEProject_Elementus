@@ -63,10 +63,10 @@ void UTelekinesis_Ability::WaitTargetData_Callback_Implementation(const FGamepla
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 		return;
 	}
-		
+
 	const FGameplayAbilityTargetData* TargetData = TargetDataHandle.Get(0);
 	const FHitResult* TargetHit = TargetData->GetHitResult();
-	
+
 	if (!IsValid(TargetHit->GetActor()))
 	{
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);

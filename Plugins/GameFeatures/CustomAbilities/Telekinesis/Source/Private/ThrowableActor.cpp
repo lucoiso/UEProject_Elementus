@@ -23,14 +23,14 @@ AThrowableActor::AThrowableActor(const FObjectInitializer& ObjectInitializer)
 	SetMobility(EComponentMobility::Movable);
 
 	bReplicates = true;
-	GetStaticMeshComponent()->SetIsReplicated(true);	
+	GetStaticMeshComponent()->SetIsReplicated(true);
 }
 
 void AThrowableActor::ThrowSetup(AActor* Caller)
-{	
+{
 	CallerActor.Reset();
 	CallerActor = Caller;
-	
+
 	if (!GetStaticMeshComponent()->OnComponentHit.IsBound())
 	{
 		GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &AThrowableActor::OnThrowableHit);
@@ -38,10 +38,10 @@ void AThrowableActor::ThrowSetup(AActor* Caller)
 }
 
 void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{		
+{
 	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
 	GetStaticMeshComponent()->AddForceAtLocation(NormalImpulse, Hit.ImpactPoint);
-	
+
 	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacterBase>() && OtherActor != CallerActor.Get())
 	{
 		APECharacterBase* Player = Cast<APECharacterBase>(OtherActor);
@@ -49,16 +49,16 @@ void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* 
 		if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 		{
 			constexpr float ImpulseMultiplier = 5.f;
-			
+
 			Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
 			GetStaticMeshComponent()->AddImpulse(NormalImpulse.GetSafeNormal());
-			
+
 			if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetActorLabel()))
 			{
 				ApplyThrowableEffect(Player->GetAbilitySystemComponent());
-			}			
+			}
 		}
-	}	
+	}
 }
 
 void AThrowableActor::ApplyThrowableEffect_Implementation(UAbilitySystemComponent* TargetComp)

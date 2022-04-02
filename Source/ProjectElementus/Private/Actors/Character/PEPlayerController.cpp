@@ -159,7 +159,7 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 	if (!IsValid(GetPawnOrSpectator()))
 	{
 		return;
-	}	
+	}
 
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
 		__func__,
@@ -171,7 +171,7 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 
 		const FVector DirectionX = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		const FVector DirectionY = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		
+
 		GetPawnOrSpectator()->AddMovementInput(DirectionX, Value[1]);
 		GetPawnOrSpectator()->AddMovementInput(DirectionY, Value[0]);
 
