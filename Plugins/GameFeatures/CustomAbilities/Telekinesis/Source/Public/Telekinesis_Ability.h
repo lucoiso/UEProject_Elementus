@@ -30,9 +30,16 @@ private:
 		const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo) override;
 
-	virtual void WaitAddedTag_Callback_Implementation() override;
-
 	virtual void WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
 
+	UFUNCTION()
+		void GrabbingComplete(const bool ValidTarget);
+
+	virtual void WaitConfirmInput_Callback_Implementation() override;
+
+	virtual void WaitMontage_Callback_Implementation() override;
+
+	virtual void WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload) override;
+		
 	TWeakObjectPtr<UTelekinesisAbility_Task> AbilityTask;
 };

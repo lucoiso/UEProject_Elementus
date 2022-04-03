@@ -96,7 +96,10 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 		FTimerHandle TimerHandle;
 		TimerDelegate.BindLambda([this, Handle, ActorInfo, ActivationInfo]() -> void
 			{
-				EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+				if (IsActive())
+				{
+					EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+				}
 			});
 
 		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime,
@@ -376,6 +379,11 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 
 void UGASGameplayAbility::ActivateWaitConfirmInputTask()
 {
+	FGameplayAbilityActivationInfo Temp_ActvInfo = GetCurrentActivationInfo();
+	Temp_ActvInfo.ActivationMode = EGameplayAbilityActivationMode::Predicting;
+
+	SetCurrentActivationInfo(Temp_ActvInfo);
+
 	UAbilityTask_WaitConfirm* AbilityTask_WaitConfirm =
 		UAbilityTask_WaitConfirm::WaitConfirm(this);
 

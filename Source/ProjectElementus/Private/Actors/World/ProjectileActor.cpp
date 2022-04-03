@@ -26,7 +26,7 @@ AProjectileActor::AProjectileActor(const FObjectInitializer& ObjectInitializer)
 
 	ProjectileMovement->InitialSpeed = 2500.f;
 	ProjectileMovement->MaxSpeed = 3000.0f;
-	ProjectileMovement->bRotationFollowsVelocity = true;
+	ProjectileMovement->bRotationFollowsVelocity = false;
 	ProjectileMovement->bShouldBounce = true;
 	ProjectileMovement->Bounciness = 0.25f;
 	ProjectileMovement->ProjectileGravityScale = 0.025f;
@@ -50,7 +50,7 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
 
-	if (OtherActor->GetClass() == APECharacterBase::StaticClass())
+	if (OtherActor->GetClass()->IsChildOf<APECharacterBase>())
 	{
 		APECharacterBase* Character = Cast<APECharacterBase>(OtherActor);
 		if (ensureMsgf(IsValid(Character), TEXT("%s have a invalid Character"), *GetActorLabel()))

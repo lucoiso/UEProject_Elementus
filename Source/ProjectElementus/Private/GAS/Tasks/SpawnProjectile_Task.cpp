@@ -40,7 +40,9 @@ void USpawnProjectile_Task::Activate()
 #endif
 		{
 			AProjectileActor* SpawnedProjectile =
-				GetWorld()->SpawnActorDeferred<AProjectileActor>(ProjectileClass, ProjectileTransform);
+				GetWorld()->SpawnActorDeferred<AProjectileActor>(ProjectileClass, ProjectileTransform, 
+					Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(), 
+					ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 			SpawnedProjectile->DamageEffectSpecHandles = ProjectileEffectSpecs;
 

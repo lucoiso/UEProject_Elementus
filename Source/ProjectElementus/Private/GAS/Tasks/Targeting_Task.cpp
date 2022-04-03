@@ -91,6 +91,7 @@ void UTargeting_Task::Activate()
 					else if (ConfirmationType == EGameplayTargetingConfirmation::UserConfirmed)
 					{
 						TargetActor->BindToConfirmCancelInputs();
+						
 						// Debugging
 						bTickingTask = TargetingParams.bDebug;
 
@@ -109,15 +110,21 @@ void UTargeting_Task::Activate()
 
 void UTargeting_Task::OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& Data)
 {
-	ValidData.Broadcast(Data);
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		ValidData.Broadcast(Data);		
+	}
 }
 
 void UTargeting_Task::OnTargetDataCancelledCallback(const FGameplayAbilityTargetDataHandle& Data)
 {
 	bIsFinished = true;
-
-	Cancelled.Broadcast(Data);
-
+	
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		Cancelled.Broadcast(Data);
+	}
+	
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 	EndTask();
 }

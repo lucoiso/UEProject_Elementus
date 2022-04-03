@@ -41,12 +41,19 @@ void UTelekinesisAbility_Task::Activate()
 				PhysicsHandle->RegisterComponent();
 				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
 					NAME_None, TelekinesisTarget->GetActorLocation());
+				
+				if (ShouldBroadcastAbilityTaskDelegates())
+				{
+					OnGrabbingComplete.Broadcast(IsValid(PhysicsHandle->GetGrabbedComponent()));
+				}
 
-				PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+				if (IsValid(PhysicsHandle->GetGrabbedComponent()))
+				{
+					PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+					bTickingTask = true;
 
-				bTickingTask = true;
-
-				return;
+					return;
+				}
 			}
 		}
 	}
@@ -95,7 +102,7 @@ void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 void UTelekinesisAbility_Task::ThrowObject()
 {
-	UE_LOG(LogGameplayTasks, Warning, TEXT(" %s called"), __func__);
+	UE_LOG(LogGameplayTasks, Warning, TEXT(" %s called"), *FString(__func__));
 
 	bIsFinished = true;
 

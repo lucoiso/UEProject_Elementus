@@ -10,13 +10,14 @@
 UTelekinesis_Ability::UTelekinesis_Ability(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis.Grab"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis.Grab"));
+	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
+
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
-
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.BlockLeftHand"));
 
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging.Hook"));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.BlockLeftHand"));
 }
 
 void UTelekinesis_Ability::ActivateAbility
@@ -48,13 +49,6 @@ void UTelekinesis_Ability::InputPressed(const FGameplayAbilitySpecHandle Handle,
 	CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 }
 
-void UTelekinesis_Ability::WaitAddedTag_Callback_Implementation()
-{
-	AbilityTask->ThrowObject();
-
-	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
-}
-
 void UTelekinesis_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	if (!TargetDataHandle.IsValid(0))
@@ -75,6 +69,9 @@ void UTelekinesis_Ability::WaitTargetData_Callback_Implementation(const FGamepla
 
 	AbilityTask = UTelekinesisAbility_Task::TelekinesisAbilityMovement(this, FName("TelekinesisTask"),
 		TargetHit->GetActor());
+	
+	AbilityTask->OnGrabbingComplete.AddDynamic(this, &UTelekinesis_Ability::GrabbingComplete);
+
 	AbilityTask->ReadyForActivation();
 
 	FGameplayCueParameters Params;
@@ -83,8 +80,37 @@ void UTelekinesis_Ability::WaitTargetData_Callback_Implementation(const FGamepla
 
 	TargetData->AddTargetDataToGameplayCueParameters(Params);
 
-	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Telekinesis.Grab"), Params,
+	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Telekinesis"), Params,
 		GetCurrentActorInfo()->AbilitySystemComponent.Get());
+}
 
-	ActivateWaitAddedTagTask(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis.Throw"));
+void UTelekinesis_Ability::GrabbingComplete(const bool ValidTarget)
+{
+	if (ValidTarget)
+	{
+		ActivateWaitConfirmInputTask();
+		ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
+	}
+	else 
+	{
+		RemoveCooldownEffect(GetCurrentActorInfo()->AbilitySystemComponent.Get());
+		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+	}
+}
+
+void UTelekinesis_Ability::WaitConfirmInput_Callback_Implementation()
+{
+	ActivateWaitMontageTask();
+}
+
+void UTelekinesis_Ability::WaitMontage_Callback_Implementation()
+{
+	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+}
+
+void UTelekinesis_Ability::WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
+{
+	AbilityTask->ThrowObject();
+
+	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
 }

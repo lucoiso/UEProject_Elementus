@@ -97,7 +97,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
-		__func__, InputID);
+		*FString(__func__), InputID);
 
 	const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
 
@@ -128,7 +128,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
-		__func__, InputID);
+		*FString(__func__), InputID);
 
 	const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
 
@@ -147,7 +147,7 @@ void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 	}
 
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-		__func__,
+		*FString(__func__),
 		*Value.ToString(), Value.GetMagnitude());
 
 	AddYawInput(-1.f * Value[1] * BaseTurnRate * GetWorld()->GetDeltaSeconds());
@@ -162,7 +162,7 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 	}
 
 	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-		__func__,
+		*FString(__func__),
 		*Value.ToString(), Value.GetMagnitude());
 
 	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
@@ -188,7 +188,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value)
 	}
 
 	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-		__func__,
+		*FString(__func__),
 		*Value.ToString(), Value.GetMagnitude());
 
 	APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();

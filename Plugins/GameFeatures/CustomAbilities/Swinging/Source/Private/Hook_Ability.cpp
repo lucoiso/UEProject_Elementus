@@ -10,13 +10,14 @@
 UHook_Ability::UHook_Ability(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging.Hook"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging.Hook"));
-
+	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
+	
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.BlockLeftHand"));
 
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis.Grab"));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.BlockLeftHand"));
 }
 
 void UHook_Ability::ActivateAbility
@@ -68,7 +69,7 @@ void UHook_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilit
 
 	TargetData->AddTargetDataToGameplayCueParameters(Params);
 
-	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging.Hook"), Params,
+	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params,
 		GetCurrentActorInfo()->AbilitySystemComponent.Get());
 
 	if (Cast<APECharacterBase>(TargetHit->GetActor()))
