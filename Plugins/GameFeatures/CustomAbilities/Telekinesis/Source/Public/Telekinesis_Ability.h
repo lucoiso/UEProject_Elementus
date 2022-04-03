@@ -40,6 +40,6 @@ private:
 	virtual void WaitMontage_Callback_Implementation() override;
 
 	virtual void WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload) override;
-		
+
 	TWeakObjectPtr<UTelekinesisAbility_Task> AbilityTask;
 };

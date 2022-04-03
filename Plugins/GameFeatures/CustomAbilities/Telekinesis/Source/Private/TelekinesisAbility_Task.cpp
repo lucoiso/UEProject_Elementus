@@ -41,7 +41,7 @@ void UTelekinesisAbility_Task::Activate()
 				PhysicsHandle->RegisterComponent();
 				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
 					NAME_None, TelekinesisTarget->GetActorLocation());
-				
+
 				if (ShouldBroadcastAbilityTaskDelegates())
 				{
 					OnGrabbingComplete.Broadcast(IsValid(PhysicsHandle->GetGrabbedComponent()));

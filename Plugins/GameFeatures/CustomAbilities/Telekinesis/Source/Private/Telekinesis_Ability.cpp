@@ -69,7 +69,7 @@ void UTelekinesis_Ability::WaitTargetData_Callback_Implementation(const FGamepla
 
 	AbilityTask = UTelekinesisAbility_Task::TelekinesisAbilityMovement(this, FName("TelekinesisTask"),
 		TargetHit->GetActor());
-	
+
 	AbilityTask->OnGrabbingComplete.AddDynamic(this, &UTelekinesis_Ability::GrabbingComplete);
 
 	AbilityTask->ReadyForActivation();
@@ -91,7 +91,7 @@ void UTelekinesis_Ability::GrabbingComplete(const bool ValidTarget)
 		ActivateWaitConfirmInputTask();
 		ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
 	}
-	else 
+	else
 	{
 		RemoveCooldownEffect(GetCurrentActorInfo()->AbilitySystemComponent.Get());
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);

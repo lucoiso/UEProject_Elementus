@@ -11,7 +11,7 @@ UHook_Ability::UHook_Ability(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
-	
+
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));

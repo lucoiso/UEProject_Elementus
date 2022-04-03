@@ -91,7 +91,7 @@ void UTargeting_Task::Activate()
 					else if (ConfirmationType == EGameplayTargetingConfirmation::UserConfirmed)
 					{
 						TargetActor->BindToConfirmCancelInputs();
-						
+
 						// Debugging
 						bTickingTask = TargetingParams.bDebug;
 
@@ -100,7 +100,7 @@ void UTargeting_Task::Activate()
 				}
 			}
 		}
-}
+	}
 
 	bIsFinished = true;
 
@@ -112,19 +112,19 @@ void UTargeting_Task::OnTargetDataReadyCallback(const FGameplayAbilityTargetData
 {
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
-		ValidData.Broadcast(Data);		
+		ValidData.Broadcast(Data);
 	}
 }
 
 void UTargeting_Task::OnTargetDataCancelledCallback(const FGameplayAbilityTargetDataHandle& Data)
 {
 	bIsFinished = true;
-	
+
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
 		Cancelled.Broadcast(Data);
 	}
-	
+
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 	EndTask();
 }

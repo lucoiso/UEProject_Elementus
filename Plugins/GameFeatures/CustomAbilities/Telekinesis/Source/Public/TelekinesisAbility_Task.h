@@ -22,7 +22,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 		FTelekinesisManagement OnGrabbingComplete;
-	
+
 	/* Create a reference to manage this ability task */
 	static UTelekinesisAbility_Task* TelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
 		FName TaskInstanceName,
