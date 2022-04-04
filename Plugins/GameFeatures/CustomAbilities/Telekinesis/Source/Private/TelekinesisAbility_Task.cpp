@@ -46,6 +46,8 @@ void UTelekinesisAbility_Task::Activate()
 
 					if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 					{
+						PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
+
 						if (ShouldBroadcastAbilityTaskDelegates())
 						{
 							OnGrabbing.ExecuteIfBound(true);
