@@ -12,6 +12,8 @@ AProjectileActor::AProjectileActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	bReplicates = true;
+	bAlwaysRelevant = true;
+	SetReplicateMovement(true);
 
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Component"));
 	CollisionComponent->InitSphereRadius(12.5f);
@@ -26,7 +28,7 @@ AProjectileActor::AProjectileActor(const FObjectInitializer& ObjectInitializer)
 
 	ProjectileMovement->InitialSpeed = 2500.f;
 	ProjectileMovement->MaxSpeed = 3000.0f;
-	ProjectileMovement->bRotationFollowsVelocity = false;
+	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
 	ProjectileMovement->Bounciness = 0.25f;
 	ProjectileMovement->ProjectileGravityScale = 0.025f;

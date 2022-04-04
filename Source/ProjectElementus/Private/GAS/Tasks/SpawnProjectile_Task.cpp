@@ -33,38 +33,42 @@ void USpawnProjectile_Task::Activate()
 
 	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-#if __cplusplus > 201402L // Check if C++ > C++14
-		if constexpr (&ProjectileClass != nullptr)
-#else
-		if (&ProjectileClass != nullptr)
-#endif
+		if (Ability->GetCurrentActorInfo()->IsNetAuthority())
 		{
-			AProjectileActor* SpawnedProjectile =
-				GetWorld()->SpawnActorDeferred<AProjectileActor>(ProjectileClass, ProjectileTransform,
-					Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(),
-					ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-
-			SpawnedProjectile->DamageEffectSpecHandles = ProjectileEffectSpecs;
-
-			SpawnedProjectile->FinishSpawning(ProjectileTransform);
-
-			if (IsValid(SpawnedProjectile))
+#if __cplusplus > 201402L // Check if C++ > C++14
+			if constexpr (&ProjectileClass != nullptr)
+#else
+			if (&ProjectileClass != nullptr)
+#endif
 			{
-				SpawnedProjectile->FireInDirection(ProjectileFireDirection);
 
-				if (ShouldBroadcastAbilityTaskDelegates())
+				AProjectileActor* SpawnedProjectile =
+					GetWorld()->SpawnActorDeferred<AProjectileActor>(ProjectileClass, ProjectileTransform,
+						Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(),
+						ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+				SpawnedProjectile->DamageEffectSpecHandles = ProjectileEffectSpecs;
+
+				SpawnedProjectile->FinishSpawning(ProjectileTransform);
+
+				if (IsValid(SpawnedProjectile))
 				{
-					OnProjectileSpawn.Broadcast(SpawnedProjectile);
-				}				
+					SpawnedProjectile->FireInDirection(ProjectileFireDirection);
+
+					if (ShouldBroadcastAbilityTaskDelegates())
+					{
+						OnProjectileSpawn.Broadcast(SpawnedProjectile);
+					}
+				}
+				else if (ShouldBroadcastAbilityTaskDelegates())
+				{
+					OnSpawnFailed.Broadcast(nullptr);
+				}
 			}
 			else if (ShouldBroadcastAbilityTaskDelegates())
 			{
 				OnSpawnFailed.Broadcast(nullptr);
 			}
-		}
-		else if (ShouldBroadcastAbilityTaskDelegates())
-		{
-			OnSpawnFailed.Broadcast(nullptr);
 		}
 	}
 

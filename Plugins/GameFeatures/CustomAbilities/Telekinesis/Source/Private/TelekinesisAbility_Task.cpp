@@ -40,7 +40,7 @@ void UTelekinesisAbility_Task::Activate()
 			{
 				PhysicsHandle->RegisterComponent();
 				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-					NAME_None, TelekinesisTarget->GetActorLocation());				
+					NAME_None, TelekinesisTarget->GetActorLocation());
 
 				if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 				{
@@ -48,7 +48,7 @@ void UTelekinesisAbility_Task::Activate()
 					{
 						OnGrabbing.ExecuteIfBound(true);
 					}
-					
+
 					PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 					bTickingTask = true;
 
@@ -56,11 +56,11 @@ void UTelekinesisAbility_Task::Activate()
 				}
 			}
 		}
-	}
-	
-	if (ShouldBroadcastAbilityTaskDelegates())
-	{
-		OnGrabbing.ExecuteIfBound(false);
+
+		if (ShouldBroadcastAbilityTaskDelegates())
+		{
+			OnGrabbing.ExecuteIfBound(false);
+		}
 	}
 	
 	bIsFinished = true;

@@ -369,7 +369,7 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 	}
 
 	TargetParameters.Range = AbilityMaxRange;
-
+	
 	UTargeting_Task* AbilityTask_WaitTargetData =
 		UTargeting_Task::StartTargetingAndWaitData(this, "WaitTargetDataTask", TargetingConfirmation,
 			TargetActorClass, TargetParameters);

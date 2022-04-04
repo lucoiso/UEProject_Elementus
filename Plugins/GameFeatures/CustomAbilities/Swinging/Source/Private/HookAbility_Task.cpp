@@ -50,11 +50,11 @@ void UHookAbility_Task::Activate()
 				return;
 			}
 		}
-	}
 
-	if (ShouldBroadcastAbilityTaskDelegates())
-	{
-		OnHooking.ExecuteIfBound(false);
+		if (ShouldBroadcastAbilityTaskDelegates())
+		{
+			OnHooking.ExecuteIfBound(false);
+		}
 	}
 
 	bIsFinished = true;
