@@ -103,11 +103,6 @@ void UTelekinesis_Ability::WaitConfirmInput_Callback_Implementation()
 	ActivateWaitMontageTask();
 }
 
-void UTelekinesis_Ability::WaitMontage_Callback_Implementation()
-{
-	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
-}
-
 void UTelekinesis_Ability::WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
 {
 	AbilityTask->ThrowObject();
