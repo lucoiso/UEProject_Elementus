@@ -36,6 +36,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Custom GAS | Delegates")
 		FSpawnProjectileDelegate OnProjectileSpawn;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Custom GAS | Delegates")
+		FSpawnProjectileDelegate OnSpawnFailed;
 
 protected:
 	FTransform ProjectileTransform;

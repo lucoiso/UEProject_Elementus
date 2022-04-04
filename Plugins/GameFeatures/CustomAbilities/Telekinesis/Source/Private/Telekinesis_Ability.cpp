@@ -70,7 +70,7 @@ void UTelekinesis_Ability::WaitTargetData_Callback_Implementation(const FGamepla
 	AbilityTask = UTelekinesisAbility_Task::TelekinesisAbilityMovement(this, FName("TelekinesisTask"),
 		TargetHit->GetActor());
 
-	AbilityTask->OnGrabbingComplete.AddDynamic(this, &UTelekinesis_Ability::GrabbingComplete);
+	AbilityTask->OnGrabbing.BindDynamic(this, &UTelekinesis_Ability::GrabbingComplete);
 
 	AbilityTask->ReadyForActivation();
 

@@ -8,6 +8,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "HookAbility_Task.generated.h"
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FHookManagement, const bool, ValidTarget);
 /**
  *
  */
@@ -19,6 +20,8 @@ class UHookAbility_Task : public UAbilityTask
 public:
 	UHookAbility_Task(const FObjectInitializer& ObjectInitializer);
 
+	FHookManagement OnHooking;
+	
 	/* Create a reference to manage this ability task */
 	static UHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility,
 		FName TaskInstanceName,

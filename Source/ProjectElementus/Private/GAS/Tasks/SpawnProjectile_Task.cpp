@@ -51,12 +51,20 @@ void USpawnProjectile_Task::Activate()
 			if (IsValid(SpawnedProjectile))
 			{
 				SpawnedProjectile->FireInDirection(ProjectileFireDirection);
-			}
 
-			if (ShouldBroadcastAbilityTaskDelegates())
-			{
-				OnProjectileSpawn.Broadcast(SpawnedProjectile);
+				if (ShouldBroadcastAbilityTaskDelegates())
+				{
+					OnProjectileSpawn.Broadcast(SpawnedProjectile);
+				}				
 			}
+			else if (ShouldBroadcastAbilityTaskDelegates())
+			{
+				OnSpawnFailed.Broadcast(nullptr);
+			}
+		}
+		else if (ShouldBroadcastAbilityTaskDelegates())
+		{
+			OnSpawnFailed.Broadcast(nullptr);
 		}
 	}
 

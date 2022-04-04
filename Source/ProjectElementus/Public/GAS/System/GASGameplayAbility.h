@@ -228,6 +228,14 @@ protected:
 		const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo);
 
+	/* Default callback for SpawnProjectileWithTargetEffects function */
+	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Callbacks")
+		void SpawnProjectile_Callback(AProjectileActor* SpawnedProjectile);
+	
+	virtual void SpawnProjectile_Callback_Implementation(AProjectileActor* SpawnedProjectile)
+	{
+	}; // Override this function on children classes.
+
 	/* Remove the cooldown effect */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const;

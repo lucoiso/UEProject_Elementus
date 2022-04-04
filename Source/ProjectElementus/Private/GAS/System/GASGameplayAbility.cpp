@@ -285,6 +285,9 @@ void UGASGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APr
 		USpawnProjectile_Task::SpawnProjectile(this, ProjectileClass, ProjectileTransform, ProjectileFireDirection,
 			EffectSpecs);
 
+	SpawnProjectile_Task->OnProjectileSpawn.AddDynamic(this, &UGASGameplayAbility::SpawnProjectile_Callback);
+	SpawnProjectile_Task->OnSpawnFailed.AddDynamic(this, &UGASGameplayAbility::SpawnProjectile_Callback);
+
 	SpawnProjectile_Task->ReadyForActivation();
 }
 

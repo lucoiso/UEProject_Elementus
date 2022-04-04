@@ -8,7 +8,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "TelekinesisAbility_Task.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTelekinesisManagement, const bool, ValidTarget);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FTelekinesisManagement, const bool, ValidTarget);
 /**
  *
  */
@@ -20,8 +20,7 @@ class UTelekinesisAbility_Task : public UAbilityTask
 public:
 	UTelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(BlueprintAssignable)
-		FTelekinesisManagement OnGrabbingComplete;
+	FTelekinesisManagement OnGrabbing;
 
 	/* Create a reference to manage this ability task */
 	static UTelekinesisAbility_Task* TelekinesisAbilityMovement(UGameplayAbility* OwningAbility,

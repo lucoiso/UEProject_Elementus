@@ -40,15 +40,15 @@ void UTelekinesisAbility_Task::Activate()
 			{
 				PhysicsHandle->RegisterComponent();
 				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-					NAME_None, TelekinesisTarget->GetActorLocation());
-
-				if (ShouldBroadcastAbilityTaskDelegates())
-				{
-					OnGrabbingComplete.Broadcast(IsValid(PhysicsHandle->GetGrabbedComponent()));
-				}
+					NAME_None, TelekinesisTarget->GetActorLocation());				
 
 				if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 				{
+					if (ShouldBroadcastAbilityTaskDelegates())
+					{
+						OnGrabbing.ExecuteIfBound(true);
+					}
+					
 					PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 					bTickingTask = true;
 
@@ -57,7 +57,12 @@ void UTelekinesisAbility_Task::Activate()
 			}
 		}
 	}
-
+	
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		OnGrabbing.ExecuteIfBound(false);
+	}
+	
 	bIsFinished = true;
 
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());

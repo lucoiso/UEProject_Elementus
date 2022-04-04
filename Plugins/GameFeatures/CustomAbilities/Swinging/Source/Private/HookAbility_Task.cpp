@@ -41,10 +41,20 @@ void UHookAbility_Task::Activate()
 
 			if (IsValid(HitDataHandle.GetActor()))
 			{
+				if (ShouldBroadcastAbilityTaskDelegates())
+				{
+					OnHooking.ExecuteIfBound(true);
+				}
+
 				bTickingTask = true;
 				return;
 			}
 		}
+	}
+
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		OnHooking.ExecuteIfBound(false);
 	}
 
 	bIsFinished = true;
