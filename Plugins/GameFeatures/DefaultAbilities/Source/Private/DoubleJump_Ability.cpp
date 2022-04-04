@@ -20,9 +20,9 @@ UDoubleJump_Ability::UDoubleJump_Ability(const FObjectInitializer& ObjectInitial
 
 void UDoubleJump_Ability::ActivateAbility
 (const FGameplayAbilitySpecHandle Handle,
- const FGameplayAbilityActorInfo* ActorInfo,
- const FGameplayAbilityActivationInfo ActivationInfo,
- const FGameplayEventData* TriggerEventData)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -34,15 +34,13 @@ void UDoubleJump_Ability::ActivateAbility
 		return;
 	}
 
-	if (!Player->GetCharacterMovement()->IsFalling())
+	else if (!Player->GetCharacterMovement()->IsFalling())
 	{
 		Player->Jump();
-		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
-		return;
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
-
-	Player->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
-
-	// ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Default.DoubleJump"), FGameplayCueParameters(),
-	// ActorInfo->AbilitySystemComponent.Get());
+	else
+	{
+		Player->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
+	}
 }

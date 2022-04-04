@@ -14,15 +14,16 @@
 USTRUCT(BlueprintType, Category = "Custom GAS | Data")
 struct FFeatureLoadingInfo
 {
-	GENERATED_BODY()
+	GENERATED_USTRUCT_BODY()
 
+public:
 	/* If enabled, will load the game feature when the game starts */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bActivate;
+		bool bActivate;
 
 	/* Associated Game Feature to manage */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName GameFeatureName;
+		FName GameFeatureName;
 };
 
 USTRUCT(BlueprintType, Category = "Custom GAS | Data")
@@ -30,7 +31,8 @@ struct FWorldData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
+public:
 	/* Modular GameFeatures to load when the game initializes and all the actors was spawned - This will be used in multiplayer, which depends to wait player connection */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
-	FFeatureLoadingInfo DefaultGameFeaturesToInitialize;
+		FFeatureLoadingInfo DefaultGameFeaturesToInitialize;
 };

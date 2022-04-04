@@ -27,20 +27,29 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
-	void PerformExplosion();
+		void PerformExplosion();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	float ExplosionRadius;
+		float ExplosionRadius;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	float ExplosionMagnitude;
+		float ExplosionMagnitude;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+		bool bDestroyAfterExplosion = true;
 
 	/* Effects that will be apply to affected characters */
 	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
-	TArray<TSubclassOf<UGameplayEffect>> ExplosionEffects;
+		TArray<TSubclassOf<UGameplayEffect>> ExplosionEffects;
 
 	/* Visual Effect */
 	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
-	TArray<UNiagaraSystem*> ExplosionVFXs;
+		TArray<UNiagaraSystem*> ExplosionVFXs;
+
+private:
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom Functions | Behaviors")
+		void ApplyExplosibleEffect(UAbilitySystemComponent* TargetComp);
+	virtual void ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetComp);
+	bool ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetComp);
 };

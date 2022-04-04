@@ -6,11 +6,12 @@
 #include "ThrowableActor.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Actors/Character/PECharacterBase.h"
+#include "Abilities/GameplayAbilityTargetActor_Trace.h"
 
 UTelekinesisAbility_Task::UTelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bTickingTask = true;
+	bTickingTask = false;
 	bIsFinished = false;
 }
 
@@ -26,25 +27,51 @@ void UTelekinesisAbility_Task::Activate()
 {
 	Super::Activate();
 
-	APECharacterBase* TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
-	PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner, UPhysicsHandleComponent::StaticClass(),
-	                                                   FName("TelekinesisPhysicsHandle"));
-
-	if (IsValid(TelekinesisOwner) && IsValid(Cast<AThrowableActor>(TelekinesisTarget)) && PhysicsHandle.IsValid())
+	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		PhysicsHandle->RegisterComponent();
-		PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-		                                       NAME_None, TelekinesisTarget->GetActorLocation());
-		PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
-	}
+		if (Ability->GetActorInfo().IsNetAuthority())
+		{
+			TelekinesisOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
 
-	else
-	{
-		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+			if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+			{
+				PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(),
+					FName("TelekinesisPhysicsHandle"));
 
-		bIsFinished = true;
-		EndTask();
+				if (PhysicsHandle.IsValid())
+				{
+					PhysicsHandle->RegisterComponent();
+					PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
+						NAME_None, TelekinesisTarget->GetActorLocation());
+
+					if (IsValid(PhysicsHandle->GetGrabbedComponent()))
+					{
+						PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
+
+						if (ShouldBroadcastAbilityTaskDelegates())
+						{
+							OnGrabbing.ExecuteIfBound(true);
+						}
+
+						PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+						bTickingTask = true;
+
+						return;
+					}
+				}
+			}
+
+			if (ShouldBroadcastAbilityTaskDelegates())
+			{
+				OnGrabbing.ExecuteIfBound(false);
+			}
+		}
 	}
+	
+	bIsFinished = true;
+
+	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	EndTask();
 }
 
 void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
@@ -57,18 +84,16 @@ void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
 
 	Super::TickTask(DeltaTime);
 
-	const APECharacterBase* TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
-
-	if (IsValid(TelekinesisOwner) && PhysicsHandle.IsValid() && IsValid(PhysicsHandle->GetGrabbedComponent()))
+	if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 	{
 		PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 	}
 
 	else
 	{
-		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
-
 		bIsFinished = true;
+
+		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 		EndTask();
 	}
 }
@@ -76,32 +101,56 @@ void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
 void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	bIsFinished = true;
-	PhysicsHandle->ReleaseComponent();
+	
+	if (PhysicsHandle.IsValid() && IsValid(PhysicsHandle->GetGrabbedComponent()))
+	{
+		PhysicsHandle->ReleaseComponent();
+	}
+
+	PhysicsHandle.Reset();
+	
+	TelekinesisOwner.Reset();
+	TelekinesisTarget.Reset();
 
 	Super::OnDestroy(AbilityIsEnding);
 }
 
 void UTelekinesisAbility_Task::ThrowObject()
 {
-	UE_LOG(LogGameplayTasks, Warning, TEXT(" %s called"), __func__);
+	UE_LOG(LogGameplayTasks, Warning, TEXT(" %s called"), *FString(__func__));
 
 	bIsFinished = true;
 
-	UPrimitiveComponent* Throwable = PhysicsHandle->GetGrabbedComponent();
-	const APECharacterBase* TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
+	UPrimitiveComponent* GrabbedPrimitive_Temp = PhysicsHandle->GetGrabbedComponent();
 
-	PhysicsHandle->ReleaseComponent();
-
-	if (IsValid(TelekinesisOwner) && IsValid(Throwable))
+	if (ensureMsgf(IsValid(GrabbedPrimitive_Temp), TEXT("%s have a invalid Owner"), *GetName()))
 	{
-		const FVector Velocity = 2750.f * TelekinesisOwner->GetCameraForwardVector();
+		PhysicsHandle->ReleaseComponent();
 
-		Throwable->WakeAllRigidBodies();
-		Throwable->SetAllPhysicsLinearVelocity(Velocity);
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(Ability->GetAvatarActorFromActorInfo());
+		QueryParams.AddIgnoredActor(GrabbedPrimitive_Temp->GetAttachmentRootActor());
+
+		FVector StartLocation = TelekinesisOwner->GetCameraComponentLocation();
+		FVector EndLocation = StartLocation + (TelekinesisOwner->GetCameraForwardVector() * 999999.f);
+
+		FHitResult HitResult;
+		FGameplayTargetDataFilterHandle DataFilterHandle;
+
+		AGameplayAbilityTargetActor_Trace::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation, EndLocation, "None", QueryParams);
+
+		const FVector Direction = ((HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation) - GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
+		const FVector Velocity = Direction * 2750.f;
+
+		GrabbedPrimitive_Temp->SetAllPhysicsLinearVelocity(Velocity);
+
+		AThrowableActor* Throwable = Cast<AThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor());
+		if (IsValid(Throwable))
+		{
+			Throwable->ThrowSetup(Ability->GetAvatarActorFromActorInfo());
+		}
 	}
-	else
-	{
-		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
-		EndTask();
-	}
+
+	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	EndTask();
 }

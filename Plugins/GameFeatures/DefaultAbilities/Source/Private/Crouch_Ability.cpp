@@ -13,48 +13,25 @@ UCrouch_Ability::UCrouch_Ability(const FObjectInitializer& ObjectInitializer)
 
 void UCrouch_Ability::ActivateAbility
 (const FGameplayAbilitySpecHandle Handle,
- const FGameplayAbilityActorInfo* ActorInfo,
- const FGameplayAbilityActivationInfo ActivationInfo,
- const FGameplayEventData* TriggerEventData)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	APECharacterBase* Player = Cast<APECharacterBase>(ActorInfo->AvatarActor.Get());
+
 	if (!IsValid(Player))
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
-	if (!Player->CanCrouch())
+	else if (Player->CanCrouch())
 	{
-		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
-		if (Player->bIsCrouched)
-		{
-			Player->UnCrouch();
-		}
-
-		return;
-	}
-
-	Player->Crouch();
-}
-
-void UCrouch_Ability::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-                                   const FGameplayAbilityActivationInfo ActivationInfo)
-{
-	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
-
-	if (!IsActive())
-	{
-		return;
+		Player->bIsCrouched ?
+			Player->UnCrouch() :
+			Player->Crouch();
 	}
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-
-	APECharacterBase* Player = Cast<APECharacterBase>(ActorInfo->AvatarActor.Get());
-
-	if (IsValid(Player) && Player->bIsCrouched)
-	{
-		Player->UnCrouch();
-	}
 }

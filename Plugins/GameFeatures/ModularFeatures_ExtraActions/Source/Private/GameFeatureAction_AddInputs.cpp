@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
+#include "AbilityInputBinding.h"
 #include "Components/GameFrameworkComponentManager.h"
 
 void UGameFeatureAction_AddInputs::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
@@ -64,19 +65,8 @@ void UGameFeatureAction_AddInputs::AddToWorld(const FWorldContext& WorldContext)
 void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName EventName)
 {
 	/*UE_LOG(LogGameplayExtraFeatures, Warning,
-	       TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
-	       *Owner->GetActorLabel());*/
-
-	if (RequireTags.Num() != 0)
-	{
-		for (const FName Tag : RequireTags) 
-		{
-			if (Owner->ActorHasTag(Tag))
-			{
-				return;
-			}
-		}
-	}
+		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
+		   *Owner->GetActorLabel());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -87,8 +77,24 @@ void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName Eve
 	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName ==
 		UGameFrameworkComponentManager::NAME_GameActorReady)
 	{
+		if (ActiveExtensions.Contains(Owner))
+		{
+			return;
+		}
+
+		if (RequireTags.Num() != 0)
+		{
+			for (const FName Tag : RequireTags)
+			{
+				if (Owner->ActorHasTag(Tag))
+				{
+					return;
+				}
+			}
+		}
+
 		if (!InputMappingContext.IsNull())
-		{			
+		{
 			AddActorInputs(Owner);
 		}
 	}
@@ -143,7 +149,10 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 				default:
 					FunctionOwner.Reset();
 					InputComponent.Reset();
+					break;
 				}
+
+				IAbilityInputBinding* AbilityInterface = Cast<IAbilityInputBinding>(FunctionOwner);
 
 				if (FunctionOwner.IsValid() && InputComponent.IsValid())
 				{
@@ -155,17 +164,33 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 
 						if (!InputData.ActionInput.IsNull())
 						{
+							UInputAction* InputAction = InputData.ActionInput.LoadSynchronous();
+
 							for (const FFunctionStackedData& FunctionData : InputData.FunctionBindingData)
 							{
-								const UInputAction* InputAction = InputData.ActionInput.LoadSynchronous();
-
 								for (const ETriggerEvent& Trigger : FunctionData.Triggers)
 								{
 									const FInputBindingHandle& InputBindingHandle = InputComponent->BindAction(
-										InputAction, Trigger,
-										FunctionOwner.Get(), FunctionData.FunctionName);
+										InputAction, Trigger, FunctionOwner.Get(), FunctionData.FunctionName);
 
 									NewInputData.ActionBinding.Add(InputBindingHandle);
+								}
+							}
+#if __cplusplus > 201402L // Check if C++ > C++14
+							if constexpr (&AbilityInterface != nullptr)
+#else
+							if (&AbilityInterface != nullptr)
+#endif
+							{
+								if (InputData.AbilityBindingData.bSetupAbilityInput)
+								{
+									const uint32 InputID =
+										InputData.AbilityBindingData.InputIDEnumerationClass.LoadSynchronous()->GetValueByName(
+											InputData.AbilityBindingData.InputIDValueName, EGetByNameFlags::CheckAuthoredName);
+
+									AbilityInterface->SetupAbilityInput(InputAction, InputID);
+
+									AbilityActions.Add(InputAction);
 								}
 							}
 						}
@@ -183,8 +208,8 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 	if (IsValid(TargetActor) && !InputMappingContext.IsNull())
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Removing Enhanced Input Mapping %s from Actor %s."), *InputMappingContext.GetAssetName(),
-		       *TargetActor->GetActorLabel());
+			TEXT("Removing Enhanced Input Mapping %s from Actor %s."), *InputMappingContext.GetAssetName(),
+			*TargetActor->GetActorLabel());
 
 		APawn* TargetPawn = Cast<APawn>(TargetActor);
 		const APlayerController* PlayerController = TargetPawn->GetController<APlayerController>();
@@ -203,8 +228,8 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 				}
 
 				const FInputBindingData& ActiveInputData = ActiveExtensions.FindRef(TargetActor);
-				
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+
+#if __cplusplus > 201402L // Check if C++ > C++14
 				if constexpr (&ActiveInputData != nullptr)
 #else
 				if (&ActiveInputData != nullptr)
@@ -225,7 +250,8 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 						break;
 
 					default:
-						FunctionOwner = nullptr;
+						FunctionOwner = (UObject*)nullptr;
+						break;
 					}
 
 					UEnhancedInputComponent* InputComponent =
@@ -236,6 +262,20 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 						for (const FInputBindingHandle& BindHandle : ActiveInputData.ActionBinding)
 						{
 							InputComponent->RemoveBindingByHandle(BindHandle.GetHandle());
+						}
+
+						IAbilityInputBinding* AbilityInterface = Cast<IAbilityInputBinding>(FunctionOwner);
+#if __cplusplus > 201402L // Check if C++ > C++14
+						if constexpr (&AbilityInterface != nullptr)
+#else
+						if (&AbilityInterface != nullptr)
+#endif
+						{
+							for (TWeakObjectPtr<UInputAction> ActiveAbilityAction : AbilityActions)
+							{
+								AbilityInterface->RemoveAbilityInputBinding(ActiveAbilityAction.Get());
+								ActiveAbilityAction.Reset();
+							}
 						}
 					}
 				}

@@ -7,7 +7,6 @@
 #include "AbilitySystemInterface.h"
 #include "Components/GameFrameworkComponentManager.h"
 
-
 void UGameFeatureAction_AddEffects::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
 	if (!ensureAlways(ActiveExtensions.IsEmpty()) ||
@@ -64,19 +63,8 @@ void UGameFeatureAction_AddEffects::AddToWorld(const FWorldContext& WorldContext
 void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName EventName)
 {
 	/*UE_LOG(LogGameplayExtraFeatures, Warning,
-	       TEXT("Event %s sended by Actor %s for effects management."), *EventName.ToString(),
-	       *Owner->GetActorLabel());*/
-
-	if (RequireTags.Num() != 0)
-	{
-		for (const FName Tag : RequireTags)
-		{
-			if (Owner->ActorHasTag(Tag))
-			{
-				return;
-			}
-		}
-	}
+		   TEXT("Event %s sended by Actor %s for effects management."), *EventName.ToString(),
+		   *Owner->GetActorLabel());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -87,6 +75,22 @@ void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName Ev
 	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName ==
 		UGameFrameworkComponentManager::NAME_GameActorReady)
 	{
+		if (ActiveExtensions.Contains(Owner))
+		{
+			return;
+		}
+
+		if (RequireTags.Num() != 0)
+		{
+			for (const FName Tag : RequireTags)
+			{
+				if (Owner->ActorHasTag(Tag))
+				{
+					return;
+				}
+			}
+		}
+
 		for (const FEffectStackedData& Entry : Effects)
 		{
 			if (!Entry.EffectClass.IsNull())
@@ -102,15 +106,15 @@ void UGameFeatureAction_AddEffects::ApplyEffects(AActor* TargetActor, const FEff
 	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && !Effect.EffectClass.IsNull())
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Adding effect %s level %u to Actor %s with %u SetByCaller params."),
-		       *Effect.EffectClass.GetAssetName(), Effect.EffectLevel,
-		       *TargetActor->GetActorLabel(), Effect.SetByCallerParams.Num());
+			TEXT("Adding effect %s level %u to Actor %s with %u SetByCaller params."),
+			*Effect.EffectClass.GetAssetName(), Effect.EffectLevel,
+			*TargetActor->GetActorLabel(), Effect.SetByCallerParams.Num());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 		UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
-			                                                  ? InterfaceOwner->GetAbilitySystemComponent()
-			                                                  : TargetActor->FindComponentByClass<
-				                                                  UAbilitySystemComponent>();
+			? InterfaceOwner->GetAbilitySystemComponent()
+			: TargetActor->FindComponentByClass<
+			UAbilitySystemComponent>();
 
 		if (IsValid(AbilitySystemComponent))
 		{
@@ -141,11 +145,11 @@ void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 	if (IsValid(TargetActor))
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Removing effects from Actor %s."), *TargetActor->GetActorLabel());
+			TEXT("Removing effects from Actor %s."), *TargetActor->GetActorLabel());
 
 		TArray<FActiveGameplayEffectHandle> ActiveEffects = ActiveExtensions.FindRef(TargetActor);
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&ActiveEffects != nullptr)
 #else
 		if (&ActiveEffects != nullptr)
@@ -153,9 +157,9 @@ void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 		{
 			const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 			UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
-				                                                  ? InterfaceOwner->GetAbilitySystemComponent()
-				                                                  : TargetActor->FindComponentByClass<
-					                                                  UAbilitySystemComponent>();
+				? InterfaceOwner->GetAbilitySystemComponent()
+				: TargetActor->FindComponentByClass<
+				UAbilitySystemComponent>();
 
 			if (IsValid(AbilitySystemComponent))
 			{
@@ -163,7 +167,7 @@ void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 				{
 					if (EffectHandle.IsValid())
 					{
-						AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);						
+						AbilitySystemComponent->RemoveActiveGameplayEffect(EffectHandle);
 					}
 				}
 			}

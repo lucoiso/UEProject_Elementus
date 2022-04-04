@@ -8,6 +8,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "ThrowableActor.generated.h"
 
+class UGameplayEffect;
 /**
  *
  */
@@ -23,4 +24,22 @@ public:
 	{
 		return FPrimaryAssetId("Throwable Actor", GetFName());
 	}
+
+	void ThrowSetup(AActor* Caller);
+
+protected:
+	/* Effects that will be apply to affected characters on Hit */
+	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
+		TArray<TSubclassOf<UGameplayEffect>> HitEffects;
+
+private:
+	UFUNCTION()
+		void OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom Functions | Behaviors")
+		void ApplyThrowableEffect(UAbilitySystemComponent* TargetComp);
+	virtual void ApplyThrowableEffect_Implementation(UAbilitySystemComponent* TargetComp);
+	bool ApplyThrowableEffect_Validate(UAbilitySystemComponent* TargetComp);
+
+	TWeakObjectPtr<AActor> CallerActor;
 };

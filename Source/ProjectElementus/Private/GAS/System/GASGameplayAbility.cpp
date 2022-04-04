@@ -5,13 +5,13 @@
 #include "GAS/System/GASGameplayAbility.h"
 #include "GAS/System/GASAbilitySystemComponent.h"
 #include "GAS/Tasks/SpawnProjectile_Task.h"
+#include "GAS/Tasks/Targeting_Task.h"
 
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitConfirm.h"
 #include "Abilities/Tasks/AbilityTask_WaitCancel.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
-#include "Abilities/Tasks/AbilityTask_WaitTargetData.h"
 #include "Abilities/Tasks/AbilityTask_SpawnActor.h"
 
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
@@ -26,10 +26,10 @@
 
 UGASGameplayAbility::UGASGameplayAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	  AbilityActiveTime(0),
-	  AbilityMaxRange(0),
-	  bEndAbilityAfterActiveTime(false),
-	  bAutoActivateOnGrant(false)
+	AbilityActiveTime(0),
+	AbilityMaxRange(0),
+	bEndAbilityAfterActiveTime(false),
+	bAutoActivateOnGrant(false)
 {
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Stunned"));
@@ -52,10 +52,10 @@ void UGASGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorIn
 }
 
 void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
-                                      const FGameplayAbilityActorInfo* ActorInfo,
-                                      const FGameplayAbilityActivationInfo ActivationInfo,
-                                      FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate,
-                                      const FGameplayEventData* TriggerEventData)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate,
+	const FGameplayEventData* TriggerEventData)
 {
 	ABILITY_VLOG(this, Warning, TEXT("Trying pre-activate %s ability."), *GetName());
 
@@ -96,7 +96,10 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 		FTimerHandle TimerHandle;
 		TimerDelegate.BindLambda([this, Handle, ActorInfo, ActivationInfo]() -> void
 			{
-				EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+				if (IsActive())
+				{
+					EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+				}
 			});
 
 		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime,
@@ -105,20 +108,20 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 }
 
 void UGASGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                          const FGameplayAbilityActorInfo* ActorInfo,
-                                          const FGameplayAbilityActivationInfo ActivationInfo,
-                                          const FGameplayEventData* TriggerEventData)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
 {
 	ABILITY_VLOG(this, Warning, TEXT("%s ability successfully activated."), *GetName());
 
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);	
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
 void UGASGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
-                                     const FGameplayAbilityActorInfo* ActorInfo,
-                                     const FGameplayAbilityActivationInfo ActivationInfo,
-                                     const bool bReplicateEndAbility,
-                                     const bool bWasCancelled)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const bool bReplicateEndAbility,
+	const bool bWasCancelled)
 {
 	ABILITY_VLOG(this, Warning, TEXT("Ending %s ability."), *GetName());
 
@@ -142,8 +145,8 @@ void UGASGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 }
 
 void UGASGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag,
-                                               FGameplayCueParameters Parameters,
-                                               UAbilitySystemComponent* SourceAbilitySystem)
+	FGameplayCueParameters Parameters,
+	UAbilitySystemComponent* SourceAbilitySystem)
 {
 	ABILITY_VLOG(this, Warning, TEXT("Activating %s ability associated Gameplay Cues."), *GetName());
 
@@ -168,20 +171,20 @@ void UGASGameplayAbility::BP_ApplyAbilityEffectsToSelf()
 }
 
 void UGASGameplayAbility::ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHandle Handle,
-                                                    const FGameplayAbilityActorInfo* ActorInfo,
-                                                    const FGameplayAbilityActivationInfo ActivationInfo)
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	ABILITY_VLOG(this, Warning, TEXT("Applying %s ability effects to owner."), *GetName());
 
 	for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
 	{
-		const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(
+		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingGameplayEffectSpec(
 			Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
 		{
 			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key,
-			                                               StackedData.Value);
+				StackedData.Value);
 		}
 
 		if (SpecHandle.IsValid())
@@ -219,21 +222,21 @@ void UGASGameplayAbility::BP_ApplyAbilityEffectsToTarget(const FGameplayAbilityT
 }
 
 void UGASGameplayAbility::ApplyAbilityEffectsToTarget(const FGameplayAbilityTargetDataHandle TargetDataHandle,
-                                                      const FGameplayAbilitySpecHandle Handle,
-                                                      const FGameplayAbilityActorInfo* ActorInfo,
-                                                      const FGameplayAbilityActivationInfo ActivationInfo)
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	ABILITY_VLOG(this, Warning, TEXT("Applying %s ability effects to targets."), *GetName());
 
 	for (const FGameplayEffectGroupedData& EffectGroup : TargetAbilityEffects)
 	{
-		const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(
+		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingGameplayEffectSpec(
 			Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
 		{
 			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key,
-			                                               StackedData.Value);
+				StackedData.Value);
 		}
 
 		if (SpecHandle.IsValid())
@@ -250,15 +253,15 @@ void UGASGameplayAbility::BP_SpawnProjectileWithTargetEffects(
 	check(CurrentActorInfo);
 
 	SpawnProjectileWithTargetEffects(ProjectileClass, ProjectileTransform, ProjectileFireDirection, CurrentSpecHandle,
-	                                 CurrentActorInfo, CurrentActivationInfo);
+		CurrentActorInfo, CurrentActivationInfo);
 }
 
 void UGASGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<AProjectileActor> ProjectileClass,
-                                                           const FTransform ProjectileTransform,
-                                                           const FVector ProjectileFireDirection,
-                                                           const FGameplayAbilitySpecHandle Handle,
-                                                           const FGameplayAbilityActorInfo* ActorInfo,
-                                                           const FGameplayAbilityActivationInfo ActivationInfo)
+	const FTransform ProjectileTransform,
+	const FVector ProjectileFireDirection,
+	const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	ABILITY_VLOG(this, Warning, TEXT("Spawning %s ability projectile."), *GetName());
 
@@ -266,13 +269,13 @@ void UGASGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APr
 
 	for (const FGameplayEffectGroupedData& EffectGroup : TargetAbilityEffects)
 	{
-		const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(
+		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingGameplayEffectSpec(
 			Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
 		{
 			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key,
-			                                               StackedData.Value);
+				StackedData.Value);
 		}
 
 		EffectSpecs.Add(SpecHandle);
@@ -280,14 +283,17 @@ void UGASGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APr
 
 	USpawnProjectile_Task* SpawnProjectile_Task =
 		USpawnProjectile_Task::SpawnProjectile(this, ProjectileClass, ProjectileTransform, ProjectileFireDirection,
-		                                       EffectSpecs);
+			EffectSpecs);
+
+	SpawnProjectile_Task->OnProjectileSpawn.AddDynamic(this, &UGASGameplayAbility::SpawnProjectile_Callback);
+	SpawnProjectile_Task->OnSpawnFailed.AddDynamic(this, &UGASGameplayAbility::SpawnProjectile_Callback);
 
 	SpawnProjectile_Task->ReadyForActivation();
 }
 
 void UGASGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const
 {
-	if (IsValid(GetCooldownGameplayEffect()))
+	if (ensureMsgf(IsValid(GetCooldownGameplayEffect()), TEXT("%s have a invalid CooldownGameplayEffect"), *GetName()))
 	{
 		ABILITY_VLOG(this, Warning, TEXT("Removing %s ability cooldown."), *GetName());
 
@@ -295,42 +301,6 @@ void UGASGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAb
 		GetCooldownGameplayEffect()->GetOwnedGameplayTags(CooldownEffectTags);
 		SourceAbilitySystem->RemoveActiveEffectsWithAppliedTags(CooldownEffectTags);
 	}
-}
-
-void UGASGameplayAbility::DoAbilityLineTrace(FGASTraceDataHandle& TraceDataHandle, AActor* OwnerActor) const
-{
-	ABILITY_VLOG(this, Warning, TEXT("Performing %s ability line trace."), *GetName());
-
-	TraceDataHandle.Hit = FHitResult();
-	TraceDataHandle.MaxRange = AbilityMaxRange;
-	TraceDataHandle.QueryParams.AddIgnoredActor(OwnerActor);
-
-	TraceDataHandle.FilterHandle.Filter->SelfActor = OwnerActor;
-
-	USceneComponent* CameraComponent =
-		Cast<USceneComponent>(Cast<APECharacterBase>(OwnerActor)->GetFollowCamera());
-
-	if (!TraceDataHandle.Component.IsValid() && IsValid(CameraComponent))
-	{
-		TraceDataHandle.Component = CameraComponent;
-	}
-
-	const FVector Start = TraceDataHandle.Component->GetComponentLocation();
-	const FVector End = Start + (TraceDataHandle.Component->GetForwardVector() * AbilityMaxRange);
-
-#ifdef UE_BUILD_DEBUG
-	const FName TraceTag("LineTraceDebugTag");
-	TraceDataHandle.Component->GetWorld()->DebugDrawTraceTag = TraceTag;
-	TraceDataHandle.QueryParams.TraceTag = TraceTag;
-#endif // !UE_BUILD_DEBUG
-
-	AGameplayAbilityTargetActor_SingleLineTrace::LineTraceWithFilter(TraceDataHandle.Hit,
-	                                                                 TraceDataHandle.Component->GetWorld(),
-	                                                                 TraceDataHandle.FilterHandle,
-	                                                                 Start,
-	                                                                 End,
-	                                                                 TraceDataHandle.CollisionProfile,
-	                                                                 TraceDataHandle.QueryParams);
 }
 
 FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromSingleHitResult(
@@ -351,8 +321,7 @@ FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromMu
 
 	for (const FHitResult& HitResult : HitResults)
 	{
-		FGameplayAbilityTargetData_SingleTargetHit* NewData = new
-			FGameplayAbilityTargetData_SingleTargetHit(HitResult);
+		FGameplayAbilityTargetData_SingleTargetHit* NewData = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
 		TargetData.Add(NewData);
 	}
 
@@ -362,18 +331,14 @@ FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromMu
 FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromActorArray(
 	const TArray<AActor*> TargetActors)
 {
-	if (TargetActors.Num() > 0)
+	if (ensureMsgf(TargetActors.Num() != 0, TEXT("TargetActors is empty")))
 	{
 		FGameplayAbilityTargetData_ActorArray* NewData = new FGameplayAbilityTargetData_ActorArray();
 		NewData->TargetActorArray.Append(TargetActors);
+
 		return FGameplayAbilityTargetDataHandle(NewData);
 	}
 
-	return FGameplayAbilityTargetDataHandle();
-}
-
-FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromTransform(const FTransform TransformData)
-{
 	return FGameplayAbilityTargetDataHandle();
 }
 
@@ -391,11 +356,23 @@ void UGASGameplayAbility::ActivateWaitMontageTask()
 
 void UGASGameplayAbility::ActivateWaitTargetDataTask(
 	const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation,
-	const TSubclassOf<AGameplayAbilityTargetActor> TargetActorClass)
+	const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
+	FTargetActorSpawnParams TargetParameters)
 {
-	UAbilityTask_WaitTargetData* AbilityTask_WaitTargetData =
-		UAbilityTask_WaitTargetData::WaitTargetData(this, "WaitTargetDataTask", TargetingConfirmation,
-		                                            TargetActorClass);
+#if __cplusplus > 201402L // Check if C++ > C++14
+	if constexpr (&TargetParameters.StartLocation == nullptr)
+#else
+	if (&TargetParameters.StartLocation == nullptr)
+#endif
+	{
+		TargetParameters.StartLocation = MakeTargetLocationInfoFromOwnerActor();
+	}
+
+	TargetParameters.Range = AbilityMaxRange;
+	
+	UTargeting_Task* AbilityTask_WaitTargetData =
+		UTargeting_Task::StartTargetingAndWaitData(this, "WaitTargetDataTask", TargetingConfirmation,
+			TargetActorClass, TargetParameters);
 
 	AbilityTask_WaitTargetData->Cancelled.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
 	AbilityTask_WaitTargetData->ValidData.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
@@ -405,6 +382,11 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 
 void UGASGameplayAbility::ActivateWaitConfirmInputTask()
 {
+	FGameplayAbilityActivationInfo Temp_ActvInfo = GetCurrentActivationInfo();
+	Temp_ActvInfo.ActivationMode = EGameplayAbilityActivationMode::Predicting;
+
+	SetCurrentActivationInfo(Temp_ActvInfo);
+
 	UAbilityTask_WaitConfirm* AbilityTask_WaitConfirm =
 		UAbilityTask_WaitConfirm::WaitConfirm(this);
 
@@ -454,7 +436,7 @@ void UGASGameplayAbility::ActivateWaitGameplayEventTask(const FGameplayTag Event
 }
 
 void UGASGameplayAbility::ActivateSpawnActorTask(const FGameplayAbilityTargetDataHandle TargetDataHandle,
-                                                 const TSubclassOf<AActor> ActorClass)
+	const TSubclassOf<AActor> ActorClass)
 {
 	UAbilityTask_SpawnActor* AbilityTask_SpawnActor =
 		UAbilityTask_SpawnActor::SpawnActor(this, TargetDataHandle, ActorClass);

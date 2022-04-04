@@ -4,6 +4,7 @@
 
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PEPlayerController.h"
 
 #include "GAS/System/GASAbilitySystemComponent.h"
 #include "GAS/System/GASAttributeSet.h"
@@ -29,23 +30,35 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 
 	NetUpdateFrequency = 75.f;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> LevelingDataObject(
+	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingDataObject(
 		TEXT("/Game/Main/GAS/Data/DT_Leveling"));
-	if (LevelingDataObject.Object != nullptr)
+#if __cplusplus > 201402L // Check if C++ > C++14
+	if constexpr (&LevelingDataObject.Object != nullptr)
+#else
+	if (&LevelingDataObject.Object != nullptr)
+#endif
 	{
 		LevelingData = LevelingDataObject.Object;
 	}
-	
-	static ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaDataObject(
+
+	static const ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaDataObject(
 		TEXT("/Game/Main/GAS/Data/DT_Character_ATB_Default"));
-	if (AttributesMetaDataObject.Object != nullptr)
+#if __cplusplus > 201402L // Check if C++ > C++14
+	if constexpr (&AttributesMetaDataObject.Object != nullptr)
+#else
+	if (&AttributesMetaDataObject.Object != nullptr)
+#endif
 	{
 		AttributesData = AttributesMetaDataObject.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffectClass(
+	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffectClass(
 		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
-	if (DeathGameplayEffectClass.Class != nullptr)
+#if __cplusplus > 201402L // Check if C++ > C++14
+	if constexpr (&DeathGameplayEffectClass.Class != nullptr)
+#else
+	if (&DeathGameplayEffectClass.Class != nullptr)
+#endif
 	{
 		DeathEffect = DeathGameplayEffectClass.Class;
 	}
@@ -60,40 +73,32 @@ void APEPlayerState::PreInitializeComponents()
 
 void APEPlayerState::BeginPlay()
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called."), __func__);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called."), *FString(__func__));
 
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
 		this, UGameFrameworkComponentManager::NAME_GameActorReady);
 
 	Super::BeginPlay();
 
-	if (AbilitySystemComponent.IsValid())
+	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetActorLabel()))
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetSpeedRateAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::SpeedRateChanged_Callback);
+			AddUObject(this, &APEPlayerState::SpeedRateChanged_Callback);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetJumpRateAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::JumpRateChanged_Callback);
+			AddUObject(this, &APEPlayerState::JumpRateChanged_Callback);
 
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetHealthAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::HealthChanged_Callback);
-
+			AddUObject(this, &APEPlayerState::HealthChanged_Callback);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetStaminaAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::StaminaChanged_Callback);
+			AddUObject(this, &APEPlayerState::StaminaChanged_Callback);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetManaAttribute()).
-		                        AddUObject(
-			                        this, &APEPlayerState::ManaChanged_Callback);
+			AddUObject(this, &APEPlayerState::ManaChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::DeathStateChanged_Callback);
+			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::DeathStateChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::StunStateChanged_Callback);
+			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::StunStateChanged_Callback);
 
 		if (AttributesData.IsValid())
 		{
@@ -105,14 +110,17 @@ void APEPlayerState::BeginPlay()
 			const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
 				FName(*FString::FromInt(Attributes->GetLevel())), "");
 
-			if (LevelingInfo != nullptr)
+#if __cplusplus > 201402L // Check if C++ > C++14
+			if constexpr (&LevelingInfo != nullptr)
+#else
+			if (&LevelingInfo != nullptr)
+#endif
 			{
 				NextLevelRequirement = LevelingInfo->ExperienceNeeded;
 
 				AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 					Attributes->GetExperienceAttribute()).
-					AddUObject(
-						this, &APEPlayerState::ExperienceChanged_Callback);
+					AddUObject(this, &APEPlayerState::ExperienceChanged_Callback);
 			}
 		}
 	}
@@ -125,19 +133,44 @@ void APEPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+APEPlayerController* APEPlayerState::GetPEPlayerController() const
+{
+	return Cast<APEPlayerController>(GetOwner());
+}
+
 void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 __func__,
-	                 *CallbackTag.ToString(), NewCount);
+		*FString(__func__),
+		*CallbackTag.ToString(), NewCount);
 
 	if (NewCount != 0)
 	{
-		APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
+		APEPlayerController* Controller_Temp = GetPEPlayerController();
 
-		if (IsValid(Player))
+		if (ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetActorLabel()))
 		{
-			Player->Die();
+			APECharacterBase* Player_Temp = Controller_Temp->GetPawn<APECharacterBase>();
+
+			if (ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetActorLabel()))
+			{
+				const FVector SpectatorLocation = Player_Temp->GetActorLocation();
+				const FRotator SpectatorRotation = Player_Temp->GetActorRotation();
+
+				Player_Temp->PerformDeath();
+
+				Controller_Temp->ServerSetSpectatorLocation(SpectatorLocation, SpectatorRotation);
+			}
+
+			Controller_Temp->ChangeState(NAME_Spectating);
+			Controller_Temp->ClientGotoState(NAME_Spectating);
+
+			Controller_Temp->RemoveHUD();
 		}
 	}
 }
@@ -145,32 +178,31 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 __func__,
-	                 *CallbackTag.ToString(), NewCount);
+		*FString(__func__),
+		*CallbackTag.ToString(), NewCount);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
-
-	if (IsValid(Player) && IsValid(Player->GetController()))
+	if (ensureMsgf(IsValid(GetPlayerController()), TEXT("%s have a invalid Player"), *GetActorLabel()))
 	{
-		Player->GetController()->SetIgnoreMoveInput(NewCount != 0);
+		GetOwningController()->SetIgnoreMoveInput(NewCount != 0);
 	}
 }
 
 void APEPlayerState::HealthChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), *FString(__func__), Data.NewValue);
 
 	if (Data.NewValue <= 0.f)
 	{
 		AbilitySystemComponent->CancelAllAbilities();
-		AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(DeathEffect.LoadSynchronous()->GetDefaultObject()), 1.f,
-			AbilitySystemComponent->MakeEffectContext());
+
+		AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(
+			DeathEffect.LoadSynchronous()->GetDefaultObject()), 1.f, AbilitySystemComponent->MakeEffectContext());
 	}
 }
 
 void APEPlayerState::StaminaChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), *FString(__func__), Data.NewValue);
 
 	if (Data.NewValue == 0.f)
 	{
@@ -185,7 +217,7 @@ void APEPlayerState::StaminaChanged_Callback(const FOnAttributeChangeData& Data)
 
 void APEPlayerState::ManaChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), *FString(__func__), Data.NewValue);
 
 	if (Data.NewValue == 0.f)
 	{
@@ -200,138 +232,145 @@ void APEPlayerState::ManaChanged_Callback(const FOnAttributeChangeData& Data) co
 
 void APEPlayerState::SpeedRateChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), *FString(__func__), Data.NewValue);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
+	const APECharacterBase* Player = GetPawn<APECharacterBase>();
 
-	if (IsValid(Player))
+	if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 	{
 		UCharacterMovementComponent* MovComp = Player->GetCharacterMovement();
-
-		MovComp->MaxWalkSpeed = Data.NewValue * Player->GetDefaultWalkSpeed();
-		MovComp->MaxWalkSpeedCrouched = Data.NewValue * Player->GetDefaultCrouchSpeed();
+		if (ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetActorLabel()))
+		{
+			MovComp->MaxWalkSpeed = Data.NewValue * Player->GetDefaultWalkSpeed();
+			MovComp->MaxWalkSpeedCrouched = Data.NewValue * Player->GetDefaultCrouchSpeed();
+		}
 	}
 }
 
 void APEPlayerState::JumpRateChanged_Callback(const FOnAttributeChangeData& Data) const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, Data.NewValue);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), *FString(__func__), Data.NewValue);
 
-	const APECharacterBase* Player = Cast<APECharacterBase>(GetPawn());
+	const APECharacterBase* Player = GetPawn<APECharacterBase>();
 
-	if (IsValid(Player))
+	if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 	{
 		UCharacterMovementComponent* MovComp = Player->GetCharacterMovement();
-		MovComp->JumpZVelocity = Data.NewValue * Player->GetDefaultJumpVelocity();
+		if (ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetActorLabel()))
+		{
+			MovComp->JumpZVelocity = Data.NewValue * Player->GetDefaultJumpVelocity();
+		}
 	}
 }
 
 UAbilitySystemComponent* APEPlayerState::GetAbilitySystemComponent() const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
-
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), *FString(__func__));
 	return AbilitySystemComponent.Get();
 }
 
 UAttributeSet* APEPlayerState::GetAttributeSetBase() const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), *FString(__func__));
 	return Attributes.Get();
 }
 
 TArray<UAttributeSet*> APEPlayerState::GetAttributeSetArray() const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
-
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), *FString(__func__));
 	return AbilitySystemComponent.Get()->GetSpawnedAttributes();
 }
 
 #define RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, PropertyName) \
 {\
 	const float OutValue = Attributes.IsValid() ? Attributes->Get##PropertyName() : -1.f;\
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), __func__, OutValue);\
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), *FString(__func__), OutValue);\
 	return OutValue;\
 }
 
-float APEPlayerState::GetHealth() const
+const float APEPlayerState::GetHealth() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Health);
 }
 
-float APEPlayerState::GetMaxHealth() const
+const float APEPlayerState::GetMaxHealth() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, MaxHealth);
 }
 
-float APEPlayerState::GetStamina() const
+const float APEPlayerState::GetStamina() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Stamina);
 }
 
-float APEPlayerState::GetMaxStamina() const
+const float APEPlayerState::GetMaxStamina() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, MaxStamina);
 }
 
-float APEPlayerState::GetMana() const
+const float APEPlayerState::GetMana() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Mana);
 }
 
-float APEPlayerState::GetMaxMana() const
+const float APEPlayerState::GetMaxMana() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, MaxMana);
 }
 
-float APEPlayerState::GetAttackRate() const
+const float APEPlayerState::GetAttackRate() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, AttackRate);
 }
 
-float APEPlayerState::GetDefenseRate() const
+const float APEPlayerState::GetDefenseRate() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, DefenseRate);
 }
 
-float APEPlayerState::GetSpeedRate() const
+const float APEPlayerState::GetSpeedRate() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, SpeedRate);
 }
 
-float APEPlayerState::GetJumpRate() const
+const float APEPlayerState::GetJumpRate() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, JumpRate);
 }
 
-float APEPlayerState::GetExperience() const
+const float APEPlayerState::GetExperience() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Experience);
 }
 
-float APEPlayerState::GetLevelingRequirementExp() const
+const float APEPlayerState::GetLevelingRequirementExp() const
 {
-	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), __func__);
+	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called"), *FString(__func__));
 
 	return NextLevelRequirement;
 }
 
-float APEPlayerState::GetGold() const
+const float APEPlayerState::GetGold() const
 {
 	RETURN_ATTRIBUTE_LOGGED_VALUE(Attributes, Gold);
 }
-
 
 #define UPDATE_ATTRIBUTE_INFORMATIONS(AttributeSet, AttributePropery, LevelingInfo) \
 AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + LevelingInfo->Bonus##AttributePropery;
 
 void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
 {
-	if (LevelingData.IsValid())
+	if (ensureMsgf(Attributes.IsValid(), TEXT("%s have a invalid AttributeSet"), *GetActorLabel()) &&
+		ensureMsgf(LevelingData.IsValid(), TEXT("%s have a invalid LevelingData"), *GetActorLabel()))
 	{
 		const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
 			FName(*FString::FromInt(NewLevel)), "");
 
-		if (Attributes.IsValid() && LevelingInfo != nullptr)
+#if __cplusplus > 201402L // Check if C++ > C++14
+		if constexpr (&LevelingInfo != nullptr)
+#else
+		if (&LevelingInfo != nullptr)
+#endif
 		{
 			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, AttackRate, LevelingInfo);
 			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, MaxHealth, LevelingInfo);
@@ -347,15 +386,15 @@ void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
 		}
 		else // Reached max level
 		{
-			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetExperienceAttribute()).
-				RemoveAll(this);
+			AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
+				Attributes->GetExperienceAttribute()).RemoveAll(this);
 		}
 	}
 }
 
 void APEPlayerState::ExperienceChanged_Callback(const FOnAttributeChangeData& Data)
 {
-	if (Attributes.IsValid() && Data.NewValue >= NextLevelRequirement)
+	if (Data.NewValue >= NextLevelRequirement)
 	{
 		SetupCharacterLevel(Attributes->GetLevel() + 1);
 	}

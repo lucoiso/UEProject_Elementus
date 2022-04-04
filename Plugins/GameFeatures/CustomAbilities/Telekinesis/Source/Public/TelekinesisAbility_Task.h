@@ -8,6 +8,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "TelekinesisAbility_Task.generated.h"
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FTelekinesisManagement, const bool, ValidTarget);
 /**
  *
  */
@@ -19,10 +20,12 @@ class UTelekinesisAbility_Task : public UAbilityTask
 public:
 	UTelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer);
 
+	FTelekinesisManagement OnGrabbing;
+
 	/* Create a reference to manage this ability task */
 	static UTelekinesisAbility_Task* TelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-	                                                            FName TaskInstanceName,
-	                                                            const TWeakObjectPtr<AActor> Target);
+		FName TaskInstanceName,
+		const TWeakObjectPtr<AActor> Target);
 
 	virtual void Activate() override;
 
@@ -37,5 +40,6 @@ protected:
 	bool bIsFinished;
 
 	TWeakObjectPtr<class UPhysicsHandleComponent> PhysicsHandle;
+	TWeakObjectPtr<class APECharacterBase> TelekinesisOwner;
 	TWeakObjectPtr<AActor> TelekinesisTarget;
 };

@@ -17,21 +17,29 @@ AConsumableActor::AConsumableActor(const FObjectInitializer& ObjectInitializer)
 	ObjectVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Object VFX"));
 }
 
-void AConsumableActor::PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC)
+void AConsumableActor::PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
 {
 	if (ensureMsgf(IsValid(TargetABSC), TEXT("%s have a invalid target"), *GetActorLabel()))
 	{
-		if (TargetABSC->HasAllMatchingGameplayTags(RequirementsTags) && TargetABSC->IsOwnerActorAuthoritative())
+		if (!TargetABSC->IsOwnerActorAuthoritative())
 		{
-			TargetABSC->ApplyGameplayEffectToSelf(ObjectEffectClass.GetDefaultObject(), 1.f,
-			                                      TargetABSC->MakeEffectContext());
+			return;
 		}
 
-		Destroy();
+		if (TargetABSC->HasAllMatchingGameplayTags(RequirementsTags) || RequirementsTags.IsEmpty())
+		{
+			TargetABSC->ApplyGameplayEffectToSelf(ObjectEffectClass.GetDefaultObject(), 1.f,
+				TargetABSC->MakeEffectContext());
+
+			if (bDestroyAfterConsumption)
+			{
+				Destroy();
+			}
+		}
 	}
 }
 
-bool AConsumableActor::PerformConsumption_Validate(UAbilitySystemComponent* TargetABSC)
+bool AConsumableActor::PerformConsumption_Validate(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
 {
 	return true;
 }

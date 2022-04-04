@@ -3,8 +3,6 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Tasks/SpawnProjectile_Task.h"
-
-#include "Actors/Character/PECharacterBase.h"
 #include "Actors/World/ProjectileActor.h"
 
 USpawnProjectile_Task::USpawnProjectile_Task(const FObjectInitializer& ObjectInitializer)
@@ -14,10 +12,10 @@ USpawnProjectile_Task::USpawnProjectile_Task(const FObjectInitializer& ObjectIni
 }
 
 USpawnProjectile_Task* USpawnProjectile_Task::SpawnProjectile(UGameplayAbility* OwningAbility,
-                                                              const TSubclassOf<AProjectileActor> ClassToSpawn,
-                                                              const FTransform SpawnTransform,
-                                                              const FVector DirectionToFire,
-                                                              const TArray<FGameplayEffectSpecHandle> EffectSpecsArray)
+	const TSubclassOf<AProjectileActor> ClassToSpawn,
+	const FTransform SpawnTransform,
+	const FVector DirectionToFire,
+	const TArray<FGameplayEffectSpecHandle> EffectSpecsArray)
 {
 	USpawnProjectile_Task* MyObj = NewAbilityTask<USpawnProjectile_Task>(OwningAbility);
 
@@ -33,30 +31,43 @@ void USpawnProjectile_Task::Activate()
 {
 	Super::Activate();
 
-	if (IsValid(Ability) && Ability->GetCurrentActorInfo()->IsNetAuthority() && ProjectileClass != nullptr)
+	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		APECharacterBase* OwnerCharacter = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
-
-		if (IsValid(OwnerCharacter))
+		if (Ability->GetActorInfo().IsNetAuthority())
 		{
-			AProjectileActor* SpawnedProjectile =
-				GetWorld()->SpawnActorDeferred<AProjectileActor>(
-					ProjectileClass, ProjectileTransform,
-					OwnerCharacter, OwnerCharacter,
-					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding);
-
-			SpawnedProjectile->DamageEffectSpecHandles = ProjectileEffectSpecs;
-
-			SpawnedProjectile->FinishSpawning(ProjectileTransform);
-
-			if (IsValid(SpawnedProjectile))
+#if __cplusplus > 201402L // Check if C++ > C++14
+			if constexpr (&ProjectileClass != nullptr)
+#else
+			if (&ProjectileClass != nullptr)
+#endif
 			{
-				SpawnedProjectile->FireInDirection(ProjectileFireDirection);
+
+				AProjectileActor* SpawnedProjectile =
+					GetWorld()->SpawnActorDeferred<AProjectileActor>(ProjectileClass, ProjectileTransform,
+						Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(),
+						ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+				SpawnedProjectile->DamageEffectSpecHandles = ProjectileEffectSpecs;
+
+				SpawnedProjectile->FinishSpawning(ProjectileTransform);
+
+				if (IsValid(SpawnedProjectile))
+				{
+					SpawnedProjectile->FireInDirection(ProjectileFireDirection);
+
+					if (ShouldBroadcastAbilityTaskDelegates())
+					{
+						OnProjectileSpawn.Broadcast(SpawnedProjectile);
+					}
+				}
+				else if (ShouldBroadcastAbilityTaskDelegates())
+				{
+					OnSpawnFailed.Broadcast(nullptr);
+				}
 			}
-
-			if (ShouldBroadcastAbilityTaskDelegates())
+			else if (ShouldBroadcastAbilityTaskDelegates())
 			{
-				OnProjectileSpawn.Broadcast(SpawnedProjectile);
+				OnSpawnFailed.Broadcast(nullptr);
 			}
 		}
 	}

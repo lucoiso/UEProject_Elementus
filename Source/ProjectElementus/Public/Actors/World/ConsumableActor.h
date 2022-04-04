@@ -26,20 +26,20 @@ public:
 	}
 
 	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable, Category = "Custom Functions | Behaviors")
-	void PerformConsumption(class UAbilitySystemComponent* TargetABSC);
-	void PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC);
-	bool PerformConsumption_Validate(UAbilitySystemComponent* TargetABSC);
+		void PerformConsumption(class UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
+	void PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
+	bool PerformConsumption_Validate(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	UStaticMeshComponent* ObjectMesh;
+		UStaticMeshComponent* ObjectMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	class UNiagaraComponent* ObjectVFX;
+		class UNiagaraComponent* ObjectVFX;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	TSubclassOf<class UGameplayEffect> ObjectEffectClass;
+		TSubclassOf<class UGameplayEffect> ObjectEffectClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	FGameplayTagContainer RequirementsTags;
+		FGameplayTagContainer RequirementsTags;
 };

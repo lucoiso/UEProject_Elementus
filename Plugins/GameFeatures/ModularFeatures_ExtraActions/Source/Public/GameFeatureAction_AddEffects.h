@@ -14,29 +14,31 @@ class UGameplayEffect;
 struct FActiveGameplayEffectHandle;
 struct FGameplayTag;
 struct FComponentRequestHandle;
+
 /**
- * 
+ *
  */
 USTRUCT(BlueprintType, Category = "GFA Extra Actions | Modular Structs")
 struct FEffectStackedData
 {
 	GENERATED_BODY()
 
+public:
 	/* Gameplay Effect Class */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSoftClassPtr<UGameplayEffect> EffectClass;
-	
+		TSoftClassPtr<UGameplayEffect> EffectClass;
+
 	/* Gameplay Effect level */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 EffectLevel = 1;
-	
+		int32 EffectLevel = 1;
+
 	/* Set By Caller parameters */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (TitleProperty = "{SetByCaller Tag} -> {SetByCaller Value}"))
-	TMap<FGameplayTag, float> SetByCallerParams;
+		TMap<FGameplayTag, float> SetByCallerParams;
 };
 
 /**
- * 
+ *
  */
 UCLASS(MinimalAPI, meta = (DisplayName = "Add Effects"))
 class UGameFeatureAction_AddEffects final : public UGameFeatureAction_WorldActionBase
@@ -45,16 +47,16 @@ class UGameFeatureAction_AddEffects final : public UGameFeatureAction_WorldActio
 
 public:
 	/* Target actor to which gameplay effects will be given */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (OnlyPlaceable))
-	TSoftClassPtr<AActor> TargetActorClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
+		TSoftClassPtr<AActor> TargetActorClass;
 
 	/* Tags required on the target to apply this action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
-	TArray<FName> RequireTags;
+		TArray<FName> RequireTags;
 
 	/* Gameplay Effects stacked informations */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(DisplayName="Effects Mapping", ShowOnlyInnerProperties))
-	TArray<FEffectStackedData> Effects;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (DisplayName = "Effects Mapping", ShowOnlyInnerProperties))
+		TArray<FEffectStackedData> Effects;
 
 protected:
 	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;

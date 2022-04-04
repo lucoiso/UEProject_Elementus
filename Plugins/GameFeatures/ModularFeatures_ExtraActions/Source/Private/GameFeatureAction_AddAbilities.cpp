@@ -29,7 +29,6 @@ void UGameFeatureAction_AddAbilities::OnGameFeatureDeactivating(FGameFeatureDeac
 	ResetExtension();
 }
 
-
 void UGameFeatureAction_AddAbilities::ResetExtension()
 {
 	while (!ActiveExtensions.IsEmpty())
@@ -68,19 +67,8 @@ void UGameFeatureAction_AddAbilities::AddToWorld(const FWorldContext& WorldConte
 void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName EventName)
 {
 	/*UE_LOG(LogGameplayExtraFeatures, Warning,
-	       TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
-	       *Owner->GetActorLabel());*/
-
-	if (RequireTags.Num() != 0)
-	{
-		for (const FName Tag : RequireTags)
-		{
-			if (Owner->ActorHasTag(Tag))
-			{
-				return;
-			}
-		}
-	}
+		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
+		   *Owner->GetActorLabel());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -91,6 +79,22 @@ void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName 
 	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName ==
 		UGameFrameworkComponentManager::NAME_GameActorReady)
 	{
+		if (ActiveExtensions.Contains(Owner))
+		{
+			return;
+		}
+
+		if (RequireTags.Num() != 0)
+		{
+			for (const FName Tag : RequireTags)
+			{
+				if (Owner->ActorHasTag(Tag))
+				{
+					return;
+				}
+			}
+		}
+
 		for (const FAbilityMapping& Entry : Abilities)
 		{
 			if (!Entry.AbilityClass.IsNull())
@@ -102,32 +106,32 @@ void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName 
 }
 
 void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* TargetActor,
-                                                                       const FAbilityMapping& Ability)
+	const FAbilityMapping& Ability)
 {
 	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Adding ability %s to Actor %s."), *Ability.AbilityClass.GetAssetName(),
-		       *TargetActor->GetActorLabel());
+			TEXT("Adding ability %s to Actor %s."), *Ability.AbilityClass.GetAssetName(),
+			*TargetActor->GetActorLabel());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 		UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
-			                                                  ? InterfaceOwner->GetAbilitySystemComponent()
-			                                                  : TargetActor->FindComponentByClass<
-				                                                  UAbilitySystemComponent>();
+			? InterfaceOwner->GetAbilitySystemComponent()
+			: TargetActor->FindComponentByClass<
+			UAbilitySystemComponent>();
 
 		if (IsValid(AbilitySystemComponent))
 		{
 			FActiveAbilityData NewAbilityData = ActiveExtensions.FindOrAdd(TargetActor);
 
-			const int32 InputID = InputIDEnumerationClass.LoadSynchronous()->GetValueByName(
+			const uint32 InputID = InputIDEnumerationClass.LoadSynchronous()->GetValueByName(
 				Ability.InputIDValueName, EGetByNameFlags::CheckAuthoredName);
 
 			const FGameplayAbilitySpec NewAbilitySpec =
 				FGameplayAbilitySpec(Ability.AbilityClass.LoadSynchronous(),
-				                     Ability.AbilityLevel,
-				                     InputID,
-				                     TargetActor);
+					Ability.AbilityLevel,
+					InputID,
+					TargetActor);
 
 			const FGameplayAbilitySpecHandle NewSpecHandle = AbilitySystemComponent->GiveAbility(NewAbilitySpec);
 
@@ -138,29 +142,37 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 				if (!Ability.InputAction.IsNull())
 				{
 					IAbilityInputBinding* SetupInputInterface;
-					APawn* TargetPawn = Cast<APawn>(AbilitySystemComponent->GetAvatarActor());
+					APawn* TargetPawn = Cast<APawn>(TargetActor);
 
-					switch (InputBindingOwner)
+					if (IsValid(TargetPawn))
 					{
-					case EControllerOwner::Pawn:
-						SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn);
-						break;
+						switch (InputBindingOwner)
+						{
+						case EControllerOwner::Pawn:
+							SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn);
+							break;
 
-					case EControllerOwner::Controller:
-						SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn->GetController<AController>());
-						break;
+						case EControllerOwner::Controller:
+							SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn->GetController());
+							break;
 
-					default:
-						SetupInputInterface = nullptr;
-					}
+						default:
+							SetupInputInterface = (IAbilityInputBinding*)nullptr;
+							break;
+						}
 
-					if (SetupInputInterface != nullptr)
-					{
-						UInputAction* AbilityInput = Ability.InputAction.LoadSynchronous();
-						SetupInputInterface->SetupAbilityInput(AbilityInput,
-						                                       InputID);
+#if __cplusplus > 201402L // Check if C++ > C++14
+						if constexpr (&SetupInputInterface != nullptr)
+#else
+						if (&SetupInputInterface != nullptr)
+#endif
+						{
+							UInputAction* AbilityInput = Ability.InputAction.LoadSynchronous();
+							SetupInputInterface->SetupAbilityInput(AbilityInput,
+								InputID);
 
-						NewAbilityData.InputReference.Add(AbilityInput);
+							NewAbilityData.InputReference.Add(AbilityInput);
+						}
 					}
 				}
 
@@ -175,12 +187,12 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 	if (IsValid(TargetActor) && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-		       TEXT("Removing associated abilities from Actor %s."),
-		       *TargetActor->GetActorLabel());
+			TEXT("Removing associated abilities from Actor %s."),
+			*TargetActor->GetActorLabel());
 
-		FActiveAbilityData ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
+		const FActiveAbilityData ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&ActiveAbilities != nullptr)
 #else
 		if (&ActiveAbilities != nullptr)
@@ -188,39 +200,52 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 		{
 			const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 			UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
-				                                                  ? InterfaceOwner->GetAbilitySystemComponent()
-				                                                  : TargetActor->FindComponentByClass<
-					                                                  UAbilitySystemComponent>();
+				? InterfaceOwner->GetAbilitySystemComponent()
+				: TargetActor->FindComponentByClass<UAbilitySystemComponent>();
 
 			if (IsValid(AbilitySystemComponent))
 			{
 				for (const FGameplayAbilitySpecHandle& SpecHandle : ActiveAbilities.SpecHandle)
 				{
-					AbilitySystemComponent->SetRemoveAbilityOnEnd(SpecHandle);
+					if (SpecHandle.IsValid())
+					{
+						AbilitySystemComponent->SetRemoveAbilityOnEnd(SpecHandle);
+					}
 				}
 
 				IAbilityInputBinding* SetupInputInterface;
-				APawn* TargetPawn = Cast<APawn>(AbilitySystemComponent->GetAvatarActor());
+				APawn* TargetPawn = Cast<APawn>(TargetActor);
 
-				switch (InputBindingOwner)
+				if (IsValid(TargetPawn))
 				{
-				case EControllerOwner::Pawn:
-					SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn);
-					break;
-
-				case EControllerOwner::Controller:
-					SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn->GetController<AController>());
-					break;
-
-				default:
-					SetupInputInterface = nullptr;
-				}
-
-				if (SetupInputInterface != nullptr)
-				{
-					for (const UInputAction* InputRef : ActiveAbilities.InputReference)
+					switch (InputBindingOwner)
 					{
-						SetupInputInterface->RemoveAbilityInputBinding(InputRef);
+					case EControllerOwner::Pawn:
+						SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn);
+						break;
+
+					case EControllerOwner::Controller:
+						SetupInputInterface = Cast<IAbilityInputBinding>(TargetPawn->GetController());
+						break;
+
+					default:
+						SetupInputInterface = (IAbilityInputBinding*)nullptr;
+						break;
+					}
+
+#if __cplusplus > 201402L // Check if C++ > C++14
+					if constexpr (&SetupInputInterface != nullptr)
+#else
+					if (&SetupInputInterface != nullptr)
+#endif
+					{
+						for (const UInputAction* InputRef : ActiveAbilities.InputReference)
+						{
+							if (IsValid(InputRef))
+							{
+								SetupInputInterface->RemoveAbilityInputBinding(InputRef);
+							}
+						}
 					}
 				}
 			}

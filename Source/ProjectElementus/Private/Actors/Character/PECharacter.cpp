@@ -19,15 +19,19 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 
 void APECharacter::BindASCInput()
 {
-	if (!bInputBound && AbilitySystemComponent.IsValid() && IsValid(InputComponent))
+	if (!bInputBound && IsValid(InputComponent))
 	{
-		const FGameplayAbilityInputBinds Binds(
-			"Confirm", "Cancel", "EGASAbilityInputID",
-			InputIDEnumerationClass->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName),
-			InputIDEnumerationClass->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName));
+		if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetActorLabel()))
+		{
+			const FGameplayAbilityInputBinds Binds(
+				"Confirm", "Cancel", InputIDEnumerationClass->GetFName().ToString(),
+				InputIDEnumerationClass->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName),
+				InputIDEnumerationClass->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName));
 
-		AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, Binds);
-		bInputBound = true;
+			AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, Binds);
+
+			bInputBound = true;
+		}
 	}
 }
 
@@ -36,6 +40,7 @@ void APECharacter::PossessedBy(AController* InputController)
 	Super::PossessedBy(InputController);
 
 	InitializeAttributes(false);
+	BindASCInput();
 }
 
 void APECharacter::OnRep_PlayerState()
@@ -43,6 +48,7 @@ void APECharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitializeAttributes(true);
+	BindASCInput();
 }
 
 void APECharacter::OnRep_Controller()
@@ -75,7 +81,7 @@ void APECharacter::Landed(const FHitResult& Hit)
 			*AbilitySystemComponent->FindAbilitySpecFromInputID(
 				InputIDEnumerationClass->GetValueByName("Jump", EGetByNameFlags::CheckAuthoredName));
 
-#if __cplusplus > 201402L // Detect if compiler version is > c++14
+#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&AbilitySpec != nullptr)
 #else
 		if (&AbilitySpec != nullptr)

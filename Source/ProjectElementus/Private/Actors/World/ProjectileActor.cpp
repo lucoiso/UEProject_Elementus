@@ -12,6 +12,8 @@ AProjectileActor::AProjectileActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	bReplicates = true;
+	bAlwaysRelevant = true;
+	SetReplicateMovement(true);
 
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Component"));
 	CollisionComponent->InitSphereRadius(12.5f);
@@ -45,25 +47,23 @@ void AProjectileActor::FireInDirection(const FVector Direction)
 }
 
 void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor,
-                                                      UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-                                                      const FHitResult& Hit)
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+	const FHitResult& Hit)
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
-	APECharacterBase* Character = Cast<APECharacterBase>(OtherActor);
 
-	if (OtherComp->IsSimulatingPhysics() && !IsValid(Character))
+	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacterBase>())
+	{
+		APECharacterBase* Character = Cast<APECharacterBase>(OtherActor);
+		if (ensureMsgf(IsValid(Character), TEXT("%s have a invalid Character"), *GetActorLabel()))
+		{
+			Character->LaunchCharacter(ImpulseVelocity, true, true);
+			ApplyProjectileEffect(Character->GetAbilitySystemComponent());
+		}
+	}
+	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(ImpulseVelocity, Hit.ImpactPoint, Hit.BoneName);
-	}
-	else if (IsValid(Character))
-	{
-		Character->LaunchCharacter(ImpulseVelocity, true, true);
-
-		UAbilitySystemComponent* AbilitySystem = Character->GetAbilitySystemComponent();
-		if (IsValid(AbilitySystem))
-		{
-			ApplyProjectileEffect(AbilitySystem);
-		}
 	}
 
 	Destroy();
@@ -71,13 +71,17 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 
 void AProjectileActor::ApplyProjectileEffect_Implementation(UAbilitySystemComponent* TargetComp)
 {
-	if (GetLocalRole() != ROLE_Authority || !IsValid(TargetComp))
+	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetActorLabel()))
 	{
-		return;
-	}
-	for (FGameplayEffectSpecHandle SpecHandle : DamageEffectSpecHandles)
-	{
-		TargetComp->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		if (GetLocalRole() != ROLE_Authority)
+		{
+			return;
+		}
+
+		for (const FGameplayEffectSpecHandle& SpecHandle : DamageEffectSpecHandles)
+		{
+			TargetComp->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
 	}
 }
 

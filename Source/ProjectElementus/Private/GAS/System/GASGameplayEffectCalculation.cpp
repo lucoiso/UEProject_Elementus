@@ -49,21 +49,21 @@ void UGASGameplayEffectCalculation::Execute_Implementation(
 
 	float BaseDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().DamageDef, EvaluationParameters,
-	                                                           BaseDamage);
+		BaseDamage);
 	BaseDamage += FMath::Max<float>(
 		Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
 
 	float AttackRate = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef,
-	                                                           EvaluationParameters, AttackRate);
+		EvaluationParameters, AttackRate);
 	AttackRate = FMath::Max<float>(AttackRate, 0.0f);
 
 	float DefenseRate = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef,
-	                                                           EvaluationParameters, DefenseRate);
+		EvaluationParameters, DefenseRate);
 	DefenseRate = FMath::Max<float>(DefenseRate, 0.0f);
 
-	auto CalculateDamage = [BaseDamage, AttackRate, DefenseRate]() -> float
+	const auto CalculateDamage = [BaseDamage, AttackRate, DefenseRate]() -> float
 	{
 		float DamageDone = BaseDamage + (AttackRate / DefenseRate * FMath::FRandRange(1.f, BaseDamage));
 
@@ -77,6 +77,6 @@ void UGASGameplayEffectCalculation::Execute_Implementation(
 
 	OutExecutionOutput.AddOutputModifier(
 		FGameplayModifierEvaluatedData(GetAttributesStatics().DamageProperty,
-		                               EGameplayModOp::Additive,
-		                               CalculateDamage()));
+			EGameplayModOp::Additive,
+			CalculateDamage()));
 }

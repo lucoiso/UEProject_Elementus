@@ -29,104 +29,104 @@ private:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
-	                                 const FGameplayAttributeData& MaxAttribute,
-	                                 float NewMaxValue,
-	                                 const FGameplayAttribute& AffectedAttributeProperty) const;
+		const FGameplayAttributeData& MaxAttribute,
+		float NewMaxValue,
+		const FGameplayAttribute& AffectedAttributeProperty) const;
 
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes")
-	FGameplayAttributeData Damage;
+		FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Damage)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Health)
-	FGameplayAttributeData Health;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Health)
+		FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Health)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxHealth)
-	FGameplayAttributeData MaxHealth;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxHealth)
+		FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, MaxHealth)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Stamina)
-	FGameplayAttributeData Stamina;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Stamina)
+		FGameplayAttributeData Stamina;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Stamina)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxStamina)
-	FGameplayAttributeData MaxStamina;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxStamina)
+		FGameplayAttributeData MaxStamina;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, MaxStamina)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Mana)
-	FGameplayAttributeData Mana;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Mana)
+		FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Mana)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxMana)
-	FGameplayAttributeData MaxMana;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxMana)
+		FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, MaxMana)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_AttackRate)
-	FGameplayAttributeData AttackRate;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_AttackRate)
+		FGameplayAttributeData AttackRate;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, AttackRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_DefenseRate)
-	FGameplayAttributeData DefenseRate;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_DefenseRate)
+		FGameplayAttributeData DefenseRate;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, DefenseRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_SpeedRate)
-	FGameplayAttributeData SpeedRate;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_SpeedRate)
+		FGameplayAttributeData SpeedRate;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, SpeedRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_JumpRate)
-	FGameplayAttributeData JumpRate;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_JumpRate)
+		FGameplayAttributeData JumpRate;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, JumpRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Level)
-	FGameplayAttributeData Level;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Level)
+		FGameplayAttributeData Level;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Level)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Experience)
-	FGameplayAttributeData Experience;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Experience)
+		FGameplayAttributeData Experience;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Experience)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Gold)
-	FGameplayAttributeData Gold;
+		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Gold)
+		FGameplayAttributeData Gold;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Gold)
 
 protected:
 	UFUNCTION()
-	void OnRep_Health(const FGameplayAttributeData& OldValue) const;
+		void OnRep_Health(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_MaxHealth(const FGameplayAttributeData& OldValue) const;
+		void OnRep_MaxHealth(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_Mana(const FGameplayAttributeData& OldValue) const;
+		void OnRep_Mana(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_MaxMana(const FGameplayAttributeData& OldValue) const;
+		void OnRep_MaxMana(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_Stamina(const FGameplayAttributeData& OldValue) const;
+		void OnRep_Stamina(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_MaxStamina(const FGameplayAttributeData& OldValue) const;
+		void OnRep_MaxStamina(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_AttackRate(const FGameplayAttributeData& OldValue) const;
+		void OnRep_AttackRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_DefenseRate(const FGameplayAttributeData& OldValue) const;
+		void OnRep_DefenseRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_SpeedRate(const FGameplayAttributeData& OldValue) const;
+		void OnRep_SpeedRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_JumpRate(const FGameplayAttributeData& OldValue) const;
+		void OnRep_JumpRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_Level(const FGameplayAttributeData& OldValue) const;
+		void OnRep_Level(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_Experience(const FGameplayAttributeData& OldValue) const;
+		void OnRep_Experience(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-	void OnRep_Gold(const FGameplayAttributeData& OldValue) const;
+		void OnRep_Gold(const FGameplayAttributeData& OldValue) const;
 };

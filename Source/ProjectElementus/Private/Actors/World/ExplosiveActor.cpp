@@ -26,19 +26,19 @@ void AExplosiveActor::PerformExplosion()
 	QueryParams.AddIgnoredActor(this);
 	QueryParams.MobilityType = EQueryMobilityType::Dynamic;
 
-#ifdef UE_BUILD_DEBUG
+#if UE_BUILD_DEBUG
 	const FName TraceTag("SphereTraceDebugTag");
 	GetWorld()->DebugDrawTraceTag = TraceTag;
 	QueryParams.TraceTag = TraceTag;
 #endif // !UE_BUILD_DEBUG
 
 	GetWorld()->SweepMultiByObjectType(HitOut,
-	                                   GetActorLocation(),
-	                                   GetActorLocation(),
-	                                   FQuat(FRotator(0.f)),
-	                                   FCollisionObjectQueryParams::AllDynamicObjects,
-	                                   FCollisionShape::MakeSphere(ExplosionRadius),
-	                                   QueryParams);
+		GetActorLocation(),
+		GetActorLocation(),
+		FQuat(FRotator(0.f)),
+		FCollisionObjectQueryParams::AllDynamicObjects,
+		FCollisionShape::MakeSphere(ExplosionRadius),
+		QueryParams);
 
 	for (UNiagaraSystem* NiagaraSystem : ExplosionVFXs)
 	{
@@ -49,17 +49,18 @@ void AExplosiveActor::PerformExplosion()
 	for (const FHitResult& Hit : HitOut)
 	{
 		const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation());
-		APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
 
-		if (IsValid(Player))
+		if (Hit.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 		{
-			Player->LaunchCharacter(Velocity, false, false);
-			for (const TSubclassOf<UGameplayEffect>& Effect : ExplosionEffects)
+			APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
+
+			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 			{
-				if (Player->HasAuthority())
+				Player->LaunchCharacter(Velocity, false, false);
+
+				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetActorLabel()))
 				{
-					Player->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
-						1.f, Player->GetAbilitySystemComponent()->MakeEffectContext());
+					ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
 				}
 			}
 		}
@@ -71,5 +72,30 @@ void AExplosiveActor::PerformExplosion()
 		}
 	}
 
-	Destroy();
+	if (bDestroyAfterExplosion)
+	{
+		Destroy();
+	}
+}
+
+void AExplosiveActor::ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetComp)
+{
+	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetActorLabel()))
+	{
+		if (GetLocalRole() != ROLE_Authority)
+		{
+			return;
+		}
+
+		for (const TSubclassOf<UGameplayEffect>& Effect : ExplosionEffects)
+		{
+			TargetComp->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
+				1.f, TargetComp->MakeEffectContext());
+		}
+	}
+}
+
+bool AExplosiveActor::ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetComp)
+{
+	return false;
 }

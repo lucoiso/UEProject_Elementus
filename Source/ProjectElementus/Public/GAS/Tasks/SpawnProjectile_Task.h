@@ -26,16 +26,19 @@ public:
 	/* Create a reference to manage this ability task */
 	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility",
 		BlueprintInternalUseOnly = "true"), Category = "Custom GAS | Tasks")
-	static USpawnProjectile_Task* SpawnProjectile(UGameplayAbility* OwningAbility,
-	                                              TSubclassOf<AProjectileActor> ClassToSpawn,
-	                                              const FTransform SpawnTransform,
-	                                              const FVector DirectionToFire,
-	                                              const TArray<FGameplayEffectSpecHandle> EffectSpecsArray);
+		static USpawnProjectile_Task* SpawnProjectile(UGameplayAbility* OwningAbility,
+			TSubclassOf<AProjectileActor> ClassToSpawn,
+			const FTransform SpawnTransform,
+			const FVector DirectionToFire,
+			const TArray<FGameplayEffectSpecHandle> EffectSpecsArray);
 
 	virtual void Activate() override;
 
 	UPROPERTY(BlueprintAssignable, Category = "Custom GAS | Delegates")
-	FSpawnProjectileDelegate OnProjectileSpawn;
+		FSpawnProjectileDelegate OnProjectileSpawn;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Custom GAS | Delegates")
+		FSpawnProjectileDelegate OnSpawnFailed;
 
 protected:
 	FTransform ProjectileTransform;

@@ -24,12 +24,12 @@ private:
 	bool bCharacterAbilitiesGiven = false;
 
 public:
-	FORCEINLINE bool IsStartupEffectAlreadyApplied() const
+	FORCEINLINE const bool IsStartupEffectAlreadyApplied() const
 	{
 		return bStartupEffectsApplied;
 	};
 
-	FORCEINLINE bool IsAbilitiesAlreadyGiven() const
+	FORCEINLINE const bool IsAbilitiesAlreadyGiven() const
 	{
 		return bCharacterAbilitiesGiven;
 	};

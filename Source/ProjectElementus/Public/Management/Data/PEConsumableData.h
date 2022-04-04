@@ -28,14 +28,14 @@ public:
 	}
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	TSoftObjectPtr<UStaticMesh> ObjectMesh;
+		TSoftObjectPtr<UStaticMesh> ObjectMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
+		TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	TSoftClassPtr<UGameplayEffect> ObjectEffectClass;
+		TSoftClassPtr<UGameplayEffect> ObjectEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-	FGameplayTagContainer RequirementsTags;
+		FGameplayTagContainer RequirementsTags;
 };

@@ -9,7 +9,6 @@ public class ModularFeatures_ExtraActions : ModuleRules
     public ModularFeatures_ExtraActions(ReadOnlyTargetRules target) : base(target)
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-        CppStandard = CppStandardVersion.Cpp17;
 
         PublicDependencyModuleNames.AddRange(new[]
         {
@@ -21,7 +20,7 @@ public class ModularFeatures_ExtraActions : ModuleRules
             "GameplayAbilities",
             "GameplayTags",
             "GameplayTasks",
-            "GameFeatures",            
+            "GameFeatures",
             "ModularGameplay",
         });
     }

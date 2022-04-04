@@ -12,34 +12,35 @@
 class UGameplayAbility;
 class UInputAction;
 struct FComponentRequestHandle;
+
 /**
- * 
+ *
  */
 USTRUCT(BlueprintType, Category = "GFA Extra Actions | Modular Structs")
 struct FAbilityMapping
 {
 	GENERATED_BODY()
 
+public:
 	/* Ability class to be added */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSoftClassPtr<UGameplayAbility> AbilityClass;
+		TSoftClassPtr<UGameplayAbility> AbilityClass;
 
 	/* Enhanced Input Action to bind ability activation */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSoftObjectPtr<UInputAction> InputAction;
+		TSoftObjectPtr<UInputAction> InputAction;
 
 	/* Ability Level */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 AbilityLevel = 1;
+		int32 AbilityLevel = 1;
 
 	/* InputID Value Name associated by Enumeration Class */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Value Name"))
-	FName InputIDValueName;
+		FName InputIDValueName;
 };
 
-
 /**
- * 
+ *
  */
 UCLASS(MinimalAPI, meta = (DisplayName = "Add Abilities"))
 class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldActionBase
@@ -48,24 +49,24 @@ class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldAct
 
 public:
 	/* Target actor to which abilities will be given */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (OnlyPlaceable))
-	TSoftClassPtr<AActor> TargetActorClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
+		TSoftClassPtr<AActor> TargetActorClass;
 
 	/* Tags required on the target to apply this action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
-	TArray<FName> RequireTags;
+		TArray<FName> RequireTags;
 
 	/* Determines whether the binding will be performed within the controller class or within the pawn */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings")
-	EControllerOwner InputBindingOwner = EControllerOwner::Controller;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+		EControllerOwner InputBindingOwner = EControllerOwner::Controller;
 
 	/* Enumeration class that will be used by the Ability System Component to manage abilities inputs */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta = (DisplayName = "InputID Enumeration Class"))
-	TSoftObjectPtr<UEnum> InputIDEnumerationClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (DisplayName = "InputID Enumeration Class"))
+		TSoftObjectPtr<UEnum> InputIDEnumerationClass;
 
 	/* Abilities to be added */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Settings", meta=(DisplayName="Ability Mapping", ShowOnlyInnerProperties))
-	TArray<FAbilityMapping> Abilities;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (DisplayName = "Ability Mapping", ShowOnlyInnerProperties))
+		TArray<FAbilityMapping> Abilities;
 
 protected:
 	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
@@ -77,11 +78,11 @@ private:
 	void ResetExtension();
 
 	UFUNCTION(Server, Reliable)
-	void AddActorAbilities(AActor* TargetActor, const FAbilityMapping& Ability);
+		void AddActorAbilities(AActor* TargetActor, const FAbilityMapping& Ability);
 	void AddActorAbilities_Implementation(AActor* TargetActor, const FAbilityMapping& Ability);
 
 	UFUNCTION(Server, Reliable)
-	void RemoveActorAbilities(AActor* TargetActor);
+		void RemoveActorAbilities(AActor* TargetActor);
 	void RemoveActorAbilities_Implementation(AActor* TargetActor);
 
 	struct FActiveAbilityData
