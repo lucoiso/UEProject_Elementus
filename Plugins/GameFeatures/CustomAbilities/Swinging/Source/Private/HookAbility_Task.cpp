@@ -29,31 +29,34 @@ void UHookAbility_Task::Activate()
 
 	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		HookOwner = Cast<APECharacterBase>(GetAvatarActor());
-
-		if (ensureMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+		if (Ability->GetActorInfo().IsNetAuthority())
 		{
-			HitTarget = Cast<APECharacterBase>(HitDataHandle.GetActor());
-			if (!HitTarget.IsValid())
-			{
-				HitTarget.Reset();
-			}
+			HookOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
 
-			if (IsValid(HitDataHandle.GetActor()))
+			if (ensureMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 			{
-				if (ShouldBroadcastAbilityTaskDelegates())
+				HitTarget = Cast<APECharacterBase>(HitDataHandle.GetActor());
+				if (!HitTarget.IsValid())
 				{
-					OnHooking.ExecuteIfBound(true);
+					HitTarget.Reset();
 				}
 
-				bTickingTask = true;
-				return;
-			}
-		}
+				if (IsValid(HitDataHandle.GetActor()))
+				{
+					if (ShouldBroadcastAbilityTaskDelegates())
+					{
+						OnHooking.ExecuteIfBound(true);
+					}
 
-		if (ShouldBroadcastAbilityTaskDelegates())
-		{
-			OnHooking.ExecuteIfBound(false);
+					bTickingTask = true;
+					return;
+				}
+			}
+
+			if (ShouldBroadcastAbilityTaskDelegates())
+			{
+				OnHooking.ExecuteIfBound(false);
+			}
 		}
 	}
 

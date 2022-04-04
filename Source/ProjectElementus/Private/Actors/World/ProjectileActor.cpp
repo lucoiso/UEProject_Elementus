@@ -52,7 +52,7 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
 
-	if (OtherActor->GetClass()->IsChildOf<APECharacterBase>())
+	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacterBase>())
 	{
 		APECharacterBase* Character = Cast<APECharacterBase>(OtherActor);
 		if (ensureMsgf(IsValid(Character), TEXT("%s have a invalid Character"), *GetActorLabel()))
@@ -61,7 +61,7 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 			ApplyProjectileEffect(Character->GetAbilitySystemComponent());
 		}
 	}
-	else if (OtherComp->IsSimulatingPhysics())
+	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(ImpulseVelocity, Hit.ImpactPoint, Hit.BoneName);
 	}

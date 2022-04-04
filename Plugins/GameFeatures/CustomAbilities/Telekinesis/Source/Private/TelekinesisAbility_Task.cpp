@@ -29,37 +29,40 @@ void UTelekinesisAbility_Task::Activate()
 
 	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		TelekinesisOwner = Cast<APECharacterBase>(GetAvatarActor());
-
-		if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+		if (Ability->GetActorInfo().IsNetAuthority())
 		{
-			PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(),
-				FName("TelekinesisPhysicsHandle"));
+			TelekinesisOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
 
-			if (PhysicsHandle.IsValid())
+			if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 			{
-				PhysicsHandle->RegisterComponent();
-				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-					NAME_None, TelekinesisTarget->GetActorLocation());
+				PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(),
+					FName("TelekinesisPhysicsHandle"));
 
-				if (IsValid(PhysicsHandle->GetGrabbedComponent()))
+				if (PhysicsHandle.IsValid())
 				{
-					if (ShouldBroadcastAbilityTaskDelegates())
+					PhysicsHandle->RegisterComponent();
+					PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
+						NAME_None, TelekinesisTarget->GetActorLocation());
+
+					if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 					{
-						OnGrabbing.ExecuteIfBound(true);
+						if (ShouldBroadcastAbilityTaskDelegates())
+						{
+							OnGrabbing.ExecuteIfBound(true);
+						}
+
+						PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+						bTickingTask = true;
+
+						return;
 					}
-
-					PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
-					bTickingTask = true;
-
-					return;
 				}
 			}
-		}
 
-		if (ShouldBroadcastAbilityTaskDelegates())
-		{
-			OnGrabbing.ExecuteIfBound(false);
+			if (ShouldBroadcastAbilityTaskDelegates())
+			{
+				OnGrabbing.ExecuteIfBound(false);
+			}
 		}
 	}
 	
@@ -96,9 +99,14 @@ void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
 void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	bIsFinished = true;
-	PhysicsHandle->ReleaseComponent();
+	
+	if (PhysicsHandle.IsValid() && IsValid(PhysicsHandle->GetGrabbedComponent()))
+	{
+		PhysicsHandle->ReleaseComponent();
+	}
 
 	PhysicsHandle.Reset();
+	
 	TelekinesisOwner.Reset();
 	TelekinesisTarget.Reset();
 
