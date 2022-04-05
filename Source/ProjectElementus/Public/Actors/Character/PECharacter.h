@@ -19,11 +19,6 @@ class APECharacter : public APECharacterBase
 public:
 	APECharacter(const FObjectInitializer& ObjectInitializer);
 
-private:
-	bool bInputBound = false;
-
-	void BindASCInput();
-
 protected:
 	virtual void PossessedBy(AController* InputController) override;
 

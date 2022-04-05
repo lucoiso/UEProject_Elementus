@@ -17,30 +17,11 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	AIControllerClass = APEAIController::StaticClass();
 }
 
-void APECharacter::BindASCInput()
-{
-	if (!bInputBound && IsValid(InputComponent))
-	{
-		if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetActorLabel()))
-		{
-			const FGameplayAbilityInputBinds Binds(
-				"Confirm", "Cancel", InputIDEnumerationClass->GetFName().ToString(),
-				InputIDEnumerationClass->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName),
-				InputIDEnumerationClass->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName));
-
-			AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, Binds);
-
-			bInputBound = true;
-		}
-	}
-}
-
 void APECharacter::PossessedBy(AController* InputController)
 {
 	Super::PossessedBy(InputController);
 
 	InitializeAttributes(false);
-	BindASCInput();
 }
 
 void APECharacter::OnRep_PlayerState()
@@ -48,7 +29,6 @@ void APECharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitializeAttributes(true);
-	BindASCInput();
 }
 
 void APECharacter::OnRep_Controller()
