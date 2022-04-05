@@ -50,14 +50,14 @@ void UGameFeatureAction_AddAbilities::AddToWorld(const FWorldContext& WorldConte
 		UGameFrameworkComponentManager* ComponentManager = UGameInstance::GetSubsystem<
 			UGameFrameworkComponentManager>(GameInstance);
 
-		if (IsValid(ComponentManager) && !TargetActorClass.IsNull())
+		if (IsValid(ComponentManager) && !TargetPawnClass.IsNull())
 		{
 			const UGameFrameworkComponentManager::FExtensionHandlerDelegate ExtensionHandlerDelegate =
 				UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(
 					this, &UGameFeatureAction_AddAbilities::HandleActorExtension);
 
 			const TSharedPtr<FComponentRequestHandle> RequestHandle =
-				ComponentManager->AddExtensionHandler(TargetActorClass, ExtensionHandlerDelegate);
+				ComponentManager->AddExtensionHandler(TargetPawnClass, ExtensionHandlerDelegate);
 
 			ActiveRequests.Add(RequestHandle);
 		}
@@ -168,7 +168,7 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 #endif
 						{
 							UInputAction* AbilityInput = Ability.InputAction.LoadSynchronous();
-							SetupInputInterface->SetupAbilityInput(AbilityInput,
+							SetupInputInterface->SetupAbilityInputBinding(AbilityInput,
 								InputID);
 
 							NewAbilityData.InputReference.Add(AbilityInput);

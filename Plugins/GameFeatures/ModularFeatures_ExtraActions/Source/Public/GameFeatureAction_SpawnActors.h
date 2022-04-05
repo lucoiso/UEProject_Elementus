@@ -30,7 +30,7 @@ public:
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "Spawn Actors"))
+UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Spawn Actors"))
 class UGameFeatureAction_SpawnActors final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()

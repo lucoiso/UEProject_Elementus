@@ -48,8 +48,8 @@ public:
 	APEPlayerController(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(Client, Reliable)
-		virtual void SetupAbilityInput(UInputAction* Action, const int32 InputID) override;
-	virtual void SetupAbilityInput_Implementation(UInputAction* Action, const int32 InputID);
+		virtual void SetupAbilityInputBinding(UInputAction* Action, const int32 InputID) override;
+	virtual void SetupAbilityInputBinding_Implementation(UInputAction* Action, const int32 InputID);
 
 	UFUNCTION(Client, Reliable)
 		virtual void RemoveAbilityInputBinding(const UInputAction* Action) const override;

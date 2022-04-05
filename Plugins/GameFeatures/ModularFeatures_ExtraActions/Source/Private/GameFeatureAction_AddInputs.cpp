@@ -188,7 +188,7 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 										InputData.AbilityBindingData.InputIDEnumerationClass.LoadSynchronous()->GetValueByName(
 											InputData.AbilityBindingData.InputIDValueName, EGetByNameFlags::CheckAuthoredName);
 
-									AbilityInterface->SetupAbilityInput(InputAction, InputID);
+									AbilityInterface->SetupAbilityInputBinding(InputAction, InputID);
 
 									AbilityActions.Add(InputAction);
 								}

@@ -15,7 +15,7 @@ struct FComponentRequestHandle;
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "Add Attribute"))
+UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Add Attribute"))
 class UGameFeatureAction_AddAttribute final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()
@@ -23,7 +23,7 @@ class UGameFeatureAction_AddAttribute final : public UGameFeatureAction_WorldAct
 public:
 	/* Target actor to which attribute will be given */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
-		TSoftClassPtr<AActor> TargetActorClass;
+		TSoftClassPtr<AActor> TargetPawnClass;
 
 	/* Tags required on the target to apply this action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")

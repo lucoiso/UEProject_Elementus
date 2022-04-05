@@ -56,7 +56,7 @@ void APEPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void APEPlayerController::SetupAbilityInput_Implementation(UInputAction* Action, const int32 InputID)
+void APEPlayerController::SetupAbilityInputBinding_Implementation(UInputAction* Action, const int32 InputID)
 {
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 

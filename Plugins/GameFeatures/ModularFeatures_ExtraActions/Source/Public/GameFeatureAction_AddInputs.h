@@ -73,7 +73,7 @@ public:
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "Add Enhanced Input Mapping"))
+UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Add Enhanced Input Mapping"))
 class UGameFeatureAction_AddInputs final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()

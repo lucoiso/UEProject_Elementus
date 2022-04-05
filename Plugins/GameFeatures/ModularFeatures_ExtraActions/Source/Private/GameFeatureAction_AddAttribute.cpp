@@ -46,14 +46,14 @@ void UGameFeatureAction_AddAttribute::AddToWorld(const FWorldContext& WorldConte
 		UGameFrameworkComponentManager* ComponentManager = UGameInstance::GetSubsystem<
 			UGameFrameworkComponentManager>(GameInstance);
 
-		if (IsValid(ComponentManager) && !TargetActorClass.IsNull())
+		if (IsValid(ComponentManager) && !TargetPawnClass.IsNull())
 		{
 			const UGameFrameworkComponentManager::FExtensionHandlerDelegate ExtensionHandlerDelegate =
 				UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(
 					this, &UGameFeatureAction_AddAttribute::HandleActorExtension);
 
 			const TSharedPtr<FComponentRequestHandle> RequestHandle =
-				ComponentManager->AddExtensionHandler(TargetActorClass, ExtensionHandlerDelegate);
+				ComponentManager->AddExtensionHandler(TargetPawnClass, ExtensionHandlerDelegate);
 
 			ActiveRequests.Add(RequestHandle);
 		}

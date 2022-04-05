@@ -42,7 +42,7 @@ public:
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "Add Abilities"))
+UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Add Abilities"))
 class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()
@@ -50,7 +50,7 @@ class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldAct
 public:
 	/* Target actor to which abilities will be given */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
-		TSoftClassPtr<AActor> TargetActorClass;
+		TSoftClassPtr<APawn> TargetPawnClass;
 
 	/* Tags required on the target to apply this action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")

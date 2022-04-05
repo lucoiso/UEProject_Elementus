@@ -11,6 +11,7 @@
 /**
  *
  */
+ /* Your pawn or controller need this inferface to accept ability input bindings */
 UINTERFACE(MinimalAPI, BlueprintType, Category = "GFA Extra Actions | Modular Interfaces")
 class UAbilityInputBinding : public UInterface
 {
@@ -25,7 +26,7 @@ class MODULARFEATURES_EXTRAACTIONS_API IAbilityInputBinding
 public:
 	/* This function is needed for setup ability input binding inside your controller or pawn */
 	UFUNCTION(Category = "GFA Extra Actions | Modular Interfaces")
-		virtual void SetupAbilityInput(class UInputAction* Action, const int32 InputID)
+		virtual void SetupAbilityInputBinding(class UInputAction* Action, const int32 InputID)
 	{
 	};
 

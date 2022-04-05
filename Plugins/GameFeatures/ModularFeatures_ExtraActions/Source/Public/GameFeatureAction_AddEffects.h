@@ -40,7 +40,7 @@ public:
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "Add Effects"))
+UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Add Effects"))
 class UGameFeatureAction_AddEffects final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()
@@ -48,7 +48,7 @@ class UGameFeatureAction_AddEffects final : public UGameFeatureAction_WorldActio
 public:
 	/* Target actor to which gameplay effects will be given */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
-		TSoftClassPtr<AActor> TargetActorClass;
+		TSoftClassPtr<AActor> TargetPawnClass;
 
 	/* Tags required on the target to apply this action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
