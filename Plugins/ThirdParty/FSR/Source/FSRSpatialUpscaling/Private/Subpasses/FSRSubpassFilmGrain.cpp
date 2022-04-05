@@ -52,7 +52,7 @@ static FFSRPassParameters_Grain GetFilmGrainParameters(const FViewInfo& View, co
 
 	FFSRPassParameters_Grain Parameters;
 	Parameters.GrainRandomFull = FVector4f(GrainRandomFullValue.X, GrainRandomFullValue.Y, 0, 0);
-	Parameters.GrainScaleBiasJitter = FVector4f(GrainScaleBiasJitter, 0);
+	Parameters.GrainScaleBiasJitter = FVector4f(GrainScaleBiasJitter.X, GrainScaleBiasJitter.Y, GrainScaleBiasJitter.Z, 0);
 	return Parameters;
 }
 
