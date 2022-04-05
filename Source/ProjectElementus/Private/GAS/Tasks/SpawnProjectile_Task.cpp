@@ -41,7 +41,6 @@ void USpawnProjectile_Task::Activate()
 			if (&ProjectileClass != nullptr)
 #endif
 			{
-
 				AProjectileActor* SpawnedProjectile =
 					GetWorld()->SpawnActorDeferred<AProjectileActor>(ProjectileClass, ProjectileTransform,
 						Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(),
