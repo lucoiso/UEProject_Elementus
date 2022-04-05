@@ -9,7 +9,7 @@
 
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Abilities/Tasks/AbilityTask_WaitConfirm.h"
+#include "Abilities/Tasks/AbilityTask_WaitConfirmCancel.h"
 #include "Abilities/Tasks/AbilityTask_WaitCancel.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_SpawnActor.h"
@@ -387,10 +387,11 @@ void UGASGameplayAbility::ActivateWaitConfirmInputTask()
 
 	SetCurrentActivationInfo(Temp_ActvInfo);
 
-	UAbilityTask_WaitConfirm* AbilityTask_WaitConfirm =
-		UAbilityTask_WaitConfirm::WaitConfirm(this);
+	UAbilityTask_WaitConfirmCancel* AbilityTask_WaitConfirm =
+		UAbilityTask_WaitConfirmCancel::WaitConfirmCancel(this);
 
 	AbilityTask_WaitConfirm->OnConfirm.AddDynamic(this, &UGASGameplayAbility::WaitConfirmInput_Callback);
+	// AbilityTask_WaitConfirm->OnCancel.AddDynamic(this, &UGASGameplayAbility::WaitCancelInput_Callback);
 
 	AbilityTask_WaitConfirm->ReadyForActivation();
 }
