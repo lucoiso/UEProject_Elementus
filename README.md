@@ -2,7 +2,7 @@
 
 **This project is being built on Unreal Engine 5.**
 
-![image](https://user-images.githubusercontent.com/77353979/156900459-40a40db1-da1b-44de-a11b-514bde09d73f.png)
+![HighresScreenshot00000](https://user-images.githubusercontent.com/77353979/161658303-65df6997-59bd-4354-9b15-96c5f68981ff.png)
 
 Project Elementus is a template that can be used to start projects that will use some new features that come with Unreal Engine 5 as well as powerful existing features like the Gameplay Ability System and others!
 
