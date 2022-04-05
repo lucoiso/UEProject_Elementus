@@ -4,6 +4,7 @@
 
 #include "GAS/System/GASGameplayEffectCalculation.h"
 #include "GAS/System/GASAttributeSet.h"
+
 #include "AbilitySystemComponent.h"
 
 struct FDamageAttributesStatics

@@ -3,10 +3,12 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/System/GASAttributeSet.h"
-#include "AbilitySystemComponent.h"
-#include "Runtime/Engine/Public/Net/UnrealNetwork.h"
+
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
+
+#include "AbilitySystemComponent.h"
+#include "Runtime/Engine/Public/Net/UnrealNetwork.h"
 
 UGASAttributeSet::UGASAttributeSet(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

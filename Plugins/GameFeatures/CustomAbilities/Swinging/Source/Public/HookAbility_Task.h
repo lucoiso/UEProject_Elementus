@@ -21,7 +21,7 @@ public:
 	UHookAbility_Task(const FObjectInitializer& ObjectInitializer);
 
 	FHookManagement OnHooking;
-	
+
 	/* Create a reference to manage this ability task */
 	static UHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility,
 		FName TaskInstanceName,

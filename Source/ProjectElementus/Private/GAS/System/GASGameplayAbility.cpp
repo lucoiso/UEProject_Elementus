@@ -21,7 +21,6 @@
 #include "Actors/World/ProjectileActor.h"
 
 #include "Camera/CameraComponent.h"
-
 #include "GameplayEffect.h"
 
 UGASGameplayAbility::UGASGameplayAbility(const FObjectInitializer& ObjectInitializer)

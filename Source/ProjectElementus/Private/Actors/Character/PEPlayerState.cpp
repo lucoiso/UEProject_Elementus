@@ -11,7 +11,6 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
-
 #include "Management/Data/GASAbilityData.h"
 
 DEFINE_LOG_CATEGORY(LogPlayerState);

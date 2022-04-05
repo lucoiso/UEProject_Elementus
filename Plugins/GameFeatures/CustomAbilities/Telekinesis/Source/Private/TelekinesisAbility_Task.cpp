@@ -67,7 +67,7 @@ void UTelekinesisAbility_Task::Activate()
 			}
 		}
 	}
-	
+
 	bIsFinished = true;
 
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
@@ -101,14 +101,14 @@ void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
 void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	bIsFinished = true;
-	
+
 	if (PhysicsHandle.IsValid() && IsValid(PhysicsHandle->GetGrabbedComponent()))
 	{
 		PhysicsHandle->ReleaseComponent();
 	}
 
 	PhysicsHandle.Reset();
-	
+
 	TelekinesisOwner.Reset();
 	TelekinesisTarget.Reset();
 

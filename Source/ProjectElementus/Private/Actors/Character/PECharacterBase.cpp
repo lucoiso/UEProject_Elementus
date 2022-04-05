@@ -42,7 +42,7 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	}
 
 	static const ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(
-		TEXT("/Game/Main/Character/Animations/ThirdPerson_AnimBP"));
+		TEXT("/Game/Main/Character/Animations/ABP_Character"));
 #if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&AnimationClass.Class != nullptr)
 #else
