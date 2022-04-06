@@ -24,7 +24,5 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PostConfigInit"
 		}
-	],
-	"IsBetaVersion": false,
-	"IsExperimentalVersion": false
+	]
 }
