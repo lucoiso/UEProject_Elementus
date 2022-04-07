@@ -78,7 +78,7 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 
 	FVector HookLocation = HitDataHandle.Location;
 
-	const float Multiplier = (2.75f + DeltaTime);
+	const float Multiplier = (2.f + DeltaTime);
 
 	if (IsValid(HitDataHandle.GetActor()) &&
 		HitDataHandle.GetActor()->IsRootComponentMovable() &&
@@ -93,21 +93,19 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 		}
 	}
 
-	FVector Dif = HookLocation - HookOwner->GetActorLocation();
+	const FVector Dif = HookLocation - HookOwner->GetActorLocation();
 
 	if (Dif.Size() <= 250.f)
 	{
-		Dif = HookLocation - HookOwner->GetActorLocation();
-		const float Dot = Dif.DotProduct(Dif, HookOwner->GetVelocity());
-		Dif.Normalize();
-		const FVector Force = Dif * Dot * (Multiplier * -1.f);
+		const float Dot = FVector::DotProduct(Dif, HookOwner->GetVelocity());
+		const FVector Force = Dif.GetSafeNormal() * Dot * (Multiplier * -1.f);
 
 		HookOwner->GetCharacterMovement()->AddForce(Force);
 	}
 
 	else
 	{
-		const FVector HookVelocity = FVector(0.5f, 0.5f, 1.f) * Dif.GetClampedToMaxSize(50.f);
+		const FVector HookVelocity = FVector(0.75f, 0.75f, 1.f) * Dif.GetClampedToMaxSize(17.5f) * Multiplier;
 
 		if (HitTarget.IsValid())
 		{
