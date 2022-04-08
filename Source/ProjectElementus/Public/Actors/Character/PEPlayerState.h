@@ -114,5 +114,5 @@ private:
 	float NextLevelRequirement = 0.f;
 	void ExperienceChanged_Callback(const FOnAttributeChangeData& Data);
 
-	TSoftClassPtr<UGameplayEffect> DeathEffect;
+	TSubclassOf<UGameplayEffect> DeathEffect;
 };

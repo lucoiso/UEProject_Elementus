@@ -29,37 +29,37 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 
 	NetUpdateFrequency = 75.f;
 
-	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingDataObject(
+	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingData_ObjRef(
 		TEXT("/Game/Main/GAS/Data/DT_Leveling"));
 #if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&LevelingDataObject.Object != nullptr)
+	if constexpr (&LevelingData_ObjRef.Object != nullptr)
 #else
-	if (&LevelingDataObject.Object != nullptr)
+	if (&LevelingData_ObjRef.Object != nullptr)
 #endif
 	{
-		LevelingData = LevelingDataObject.Object;
+		LevelingData = LevelingData_ObjRef.Object;
 	}
 
-	static const ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaDataObject(
+	static const ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaData_ObjRef(
 		TEXT("/Game/Main/GAS/Data/DT_Character_ATB_Default"));
 #if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&AttributesMetaDataObject.Object != nullptr)
+	if constexpr (&AttributesMetaData_ObjRef.Object != nullptr)
 #else
-	if (&AttributesMetaDataObject.Object != nullptr)
+	if (&AttributesMetaData_ObjRef.Object != nullptr)
 #endif
 	{
-		AttributesData = AttributesMetaDataObject.Object;
+		AttributesData = AttributesMetaData_ObjRef.Object;
 	}
 
-	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffectClass(
+	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffect_ClassRef(
 		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
 #if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&DeathGameplayEffectClass.Class != nullptr)
+	if constexpr (&DeathGameplayEffect_ClassRef.Class != nullptr)
 #else
-	if (&DeathGameplayEffectClass.Class != nullptr)
+	if (&DeathGameplayEffect_ClassRef.Class != nullptr)
 #endif
 	{
-		DeathEffect = DeathGameplayEffectClass.Class;
+		DeathEffect = DeathGameplayEffect_ClassRef.Class;
 	}
 }
 
@@ -195,7 +195,7 @@ void APEPlayerState::HealthChanged_Callback(const FOnAttributeChangeData& Data) 
 		AbilitySystemComponent->CancelAllAbilities();
 
 		AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(
-			DeathEffect.LoadSynchronous()->GetDefaultObject()), 1.f, AbilitySystemComponent->MakeEffectContext());
+			DeathEffect->GetDefaultObject()), 1.f, AbilitySystemComponent->MakeEffectContext());
 	}
 }
 
@@ -231,6 +231,11 @@ void APEPlayerState::ManaChanged_Callback(const FOnAttributeChangeData& Data) co
 
 void APEPlayerState::SpeedRateChanged_Callback(const FOnAttributeChangeData& Data) const
 {
+	if (!IsValid(GetPawn()))
+	{
+		return;
+	}
+
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), *FString(__func__), Data.NewValue);
 
 	const APECharacterBase* Player = GetPawn<APECharacterBase>();
@@ -248,6 +253,11 @@ void APEPlayerState::SpeedRateChanged_Callback(const FOnAttributeChangeData& Dat
 
 void APEPlayerState::JumpRateChanged_Callback(const FOnAttributeChangeData& Data) const
 {
+	if (!IsValid(GetPawn()))
+	{
+		return;
+	}
+
 	PLAYERSTATE_VLOG(this, Warning, TEXT(" %s called with %f value"), *FString(__func__), Data.NewValue);
 
 	const APECharacterBase* Player = GetPawn<APECharacterBase>();
