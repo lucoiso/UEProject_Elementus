@@ -37,7 +37,7 @@ protected:
 		float ExplosionMagnitude;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		bool bDestroyAfterExplosion = true;
+		bool bDestroyAfterExplosion;
 
 	/* Effects that will be apply to affected characters */
 	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")

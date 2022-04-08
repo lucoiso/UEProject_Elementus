@@ -5,6 +5,8 @@
 #include "Actors/World/ExplosiveActor.h"
 #include "Actors/Character/PECharacterBase.h"
 
+#include "Components/PrimitiveComponent.h"
+
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
@@ -13,7 +15,10 @@
 #include "GameplayEffect.h"
 
 AExplosiveActor::AExplosiveActor(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+	: Super(ObjectInitializer),
+	ExplosionRadius(100.f),
+	ExplosionMagnitude(1000.f),
+	bDestroyAfterExplosion(true)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -48,7 +53,7 @@ void AExplosiveActor::PerformExplosion()
 
 	for (const FHitResult& Hit : HitOut)
 	{
-		const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation());
+		const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
 		if (Hit.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 		{
@@ -56,7 +61,7 @@ void AExplosiveActor::PerformExplosion()
 
 			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
 			{
-				Player->LaunchCharacter(Velocity, false, false);
+				Player->LaunchCharacter(Velocity, true, true);
 
 				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetActorLabel()))
 				{
