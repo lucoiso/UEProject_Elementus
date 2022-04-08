@@ -111,10 +111,10 @@ void UGameFeatureAction_AddEffects::ApplyEffects(AActor* TargetActor, const FEff
 			*TargetActor->GetActorLabel(), Effect.SetByCallerParams.Num());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
+
 		UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
 			? InterfaceOwner->GetAbilitySystemComponent()
-			: TargetActor->FindComponentByClass<
-			UAbilitySystemComponent>();
+			: TargetActor->FindComponentByClass<UAbilitySystemComponent>();
 
 		if (IsValid(AbilitySystemComponent))
 		{
@@ -130,6 +130,7 @@ void UGameFeatureAction_AddEffects::ApplyEffects(AActor* TargetActor, const FEff
 				{
 					SpecHandle.Data.Get()->SetSetByCallerMagnitude(SetByCallerParam.Key, SetByCallerParam.Value);
 				}
+
 				const FActiveGameplayEffectHandle& NewActiveEffect = AbilitySystemComponent->
 					ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 				SpecData.Add(NewActiveEffect);
@@ -149,17 +150,13 @@ void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 
 		TArray<FActiveGameplayEffectHandle> ActiveEffects = ActiveExtensions.FindRef(TargetActor);
 
-#if __cplusplus > 201402L // Check if C++ > C++14
-		if constexpr (&ActiveEffects != nullptr)
-#else
-		if (&ActiveEffects != nullptr)
-#endif
+		if (!ActiveEffects.IsEmpty())
 		{
 			const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
+
 			UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
 				? InterfaceOwner->GetAbilitySystemComponent()
-				: TargetActor->FindComponentByClass<
-				UAbilitySystemComponent>();
+				: TargetActor->FindComponentByClass<UAbilitySystemComponent>();
 
 			if (IsValid(AbilitySystemComponent))
 			{

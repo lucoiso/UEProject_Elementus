@@ -104,10 +104,10 @@ void UGameFeatureAction_AddAttribute::AddAttribute_Implementation(AActor* Target
 			*TargetActor->GetActorLabel());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
+
 		UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
 			? InterfaceOwner->GetAbilitySystemComponent()
-			: TargetActor->FindComponentByClass<
-			UAbilitySystemComponent>();
+			: TargetActor->FindComponentByClass<UAbilitySystemComponent>();
 
 		if (IsValid(AbilitySystemComponent))
 		{
@@ -142,10 +142,10 @@ void UGameFeatureAction_AddAttribute::RemoveAttribute_Implementation(AActor* Tar
 			*TargetActor->GetActorLabel());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
+
 		UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
 			? InterfaceOwner->GetAbilitySystemComponent()
-			: TargetActor->FindComponentByClass<
-			UAbilitySystemComponent>();
+			: TargetActor->FindComponentByClass<UAbilitySystemComponent>();
 
 		if (IsValid(AbilitySystemComponent))
 		{

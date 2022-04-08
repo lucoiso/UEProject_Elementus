@@ -115,10 +115,10 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 			*TargetActor->GetActorLabel());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
+
 		UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
 			? InterfaceOwner->GetAbilitySystemComponent()
-			: TargetActor->FindComponentByClass<
-			UAbilitySystemComponent>();
+			: TargetActor->FindComponentByClass<UAbilitySystemComponent>();
 
 		if (IsValid(AbilitySystemComponent))
 		{
@@ -161,11 +161,7 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 							break;
 						}
 
-#if __cplusplus > 201402L // Check if C++ > C++14
-						if constexpr (&SetupInputInterface != nullptr)
-#else
-						if (&SetupInputInterface != nullptr)
-#endif
+						if (SetupInputInterface != nullptr)
 						{
 							UInputAction* AbilityInput = Ability.InputAction.LoadSynchronous();
 							SetupInputInterface->SetupAbilityInputBinding(AbilityInput,
@@ -199,6 +195,7 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 #endif
 		{
 			const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
+
 			UAbilitySystemComponent* AbilitySystemComponent = InterfaceOwner != nullptr
 				? InterfaceOwner->GetAbilitySystemComponent()
 				: TargetActor->FindComponentByClass<UAbilitySystemComponent>();
@@ -233,11 +230,7 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 						break;
 					}
 
-#if __cplusplus > 201402L // Check if C++ > C++14
-					if constexpr (&SetupInputInterface != nullptr)
-#else
-					if (&SetupInputInterface != nullptr)
-#endif
+					if (SetupInputInterface != nullptr)
 					{
 						for (const UInputAction* InputRef : ActiveAbilities.InputReference)
 						{

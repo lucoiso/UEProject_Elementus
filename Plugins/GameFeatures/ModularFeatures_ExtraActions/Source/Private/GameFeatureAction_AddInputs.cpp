@@ -176,11 +176,8 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 									NewInputData.ActionBinding.Add(InputBindingHandle);
 								}
 							}
-#if __cplusplus > 201402L // Check if C++ > C++14
-							if constexpr (&AbilityInterface != nullptr)
-#else
-							if (&AbilityInterface != nullptr)
-#endif
+
+							if (AbilityInterface != nullptr)
 							{
 								if (InputData.AbilityBindingData.bSetupAbilityInput)
 								{
@@ -265,11 +262,8 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 						}
 
 						IAbilityInputBinding* AbilityInterface = Cast<IAbilityInputBinding>(FunctionOwner);
-#if __cplusplus > 201402L // Check if C++ > C++14
-						if constexpr (&AbilityInterface != nullptr)
-#else
-						if (&AbilityInterface != nullptr)
-#endif
+
+						if (AbilityInterface != nullptr)
 						{
 							for (TWeakObjectPtr<UInputAction> ActiveAbilityAction : AbilityActions)
 							{
