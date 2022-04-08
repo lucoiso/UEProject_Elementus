@@ -11,15 +11,15 @@ APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUDClass(
+	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUD_ClassRef(
 		TEXT("/Game/Main/Blueprints/Widgets/BP_ScreenInformations"));
 #if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&UserHUDClass.Class != nullptr)
+	if constexpr (&UserHUD_ClassRef.Class != nullptr)
 #else
-	if (&UserHUDClass.Class != nullptr)
+	if (&UserHUD_ClassRef.Class != nullptr)
 #endif
 	{
-		HUDClass = UserHUDClass.Class;
+		HUDClass = UserHUD_ClassRef.Class;
 	}
 }
 

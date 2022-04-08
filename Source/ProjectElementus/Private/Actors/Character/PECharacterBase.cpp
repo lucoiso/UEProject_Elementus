@@ -30,26 +30,26 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
-	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(
+	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(
 		TEXT("/Game/Main/Character/Mesh/SK_Mannequin"));
 #if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&SkeletalMesh.Object != nullptr)
+	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
 #else
-	if (&SkeletalMesh.Object != nullptr)
+	if (&SkeletalMesh_ObjRef.Object != nullptr)
 #endif
 	{
-		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
+		GetMesh()->SetSkeletalMesh(SkeletalMesh_ObjRef.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(
+	static const ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(
 		TEXT("/Game/Main/Character/Animations/ABP_Character"));
 #if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&AnimationClass.Class != nullptr)
+	if constexpr (&Animation_ClassRef.Class != nullptr)
 #else
-	if (&AnimationClass.Class != nullptr)
+	if (&Animation_ClassRef.Class != nullptr)
 #endif
 	{
-		GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
+		GetMesh()->SetAnimInstanceClass(Animation_ClassRef.Class);
 	}
 
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
