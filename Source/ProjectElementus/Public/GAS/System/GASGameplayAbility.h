@@ -231,7 +231,7 @@ protected:
 	/* Default callback for SpawnProjectileWithTargetEffects function */
 	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Callbacks")
 		void SpawnProjectile_Callback(AProjectileActor* SpawnedProjectile);
-	
+
 	virtual void SpawnProjectile_Callback_Implementation(AProjectileActor* SpawnedProjectile)
 	{
 	}; // Override this function on children classes.
