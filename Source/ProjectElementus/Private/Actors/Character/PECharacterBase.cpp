@@ -200,7 +200,7 @@ void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbi
 			return;
 		}
 
-		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec* AbilitySpec) -> void
+		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec& AbilitySpec) -> void
 		{
 #if __cplusplus > 201402L // Check if C++ > C++14
 			if constexpr (&AbilitySpec != nullptr)
@@ -208,19 +208,19 @@ void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbi
 			if (&AbilitySpec != nullptr)
 #endif
 			{
-				RemoveAbility(AbilitySpec->Ability->GetClass());
+				RemoveAbility(AbilitySpec.Ability->GetClass());
 			}
 		};
 
 		if (bTryRemoveExistingAbilityWithClass)
 		{
-			const FGameplayAbilitySpec* AbilitySpec = GetAbilitySystemComponent()->FindAbilitySpecFromClass(Ability);
+			const FGameplayAbilitySpec& AbilitySpec = *GetAbilitySystemComponent()->FindAbilitySpecFromClass(Ability);
 			RemoveAbility_Lambda(AbilitySpec);
 		}
 
 		if (bTryRemoveExistingAbilityWithInput)
 		{
-			const FGameplayAbilitySpec* AbilitySpec = GetAbilitySystemComponent()->FindAbilitySpecFromInputID(InputID);
+			const FGameplayAbilitySpec& AbilitySpec = *GetAbilitySystemComponent()->FindAbilitySpecFromInputID(InputID);
 			RemoveAbility_Lambda(AbilitySpec);
 		}
 
@@ -245,7 +245,7 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 			return;
 		}
 
-		const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
+		const FGameplayAbilitySpec& AbilitySpec = *AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
 
 #if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&AbilitySpec != nullptr)
@@ -256,7 +256,7 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 			return;
 		}
 
-		AbilitySystemComponent->ClearAbility(AbilitySpec->Handle);
+		AbilitySystemComponent->ClearAbility(AbilitySpec.Handle);
 
 		if (AbilitySystemComponent->FindAbilitySpecFromClass(Ability) == nullptr)
 		{

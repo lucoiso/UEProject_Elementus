@@ -35,11 +35,7 @@ void USpawnProjectile_Task::Activate()
 	{
 		if (Ability->GetActorInfo().IsNetAuthority())
 		{
-#if __cplusplus > 201402L // Check if C++ > C++14
-			if constexpr (&ProjectileClass != nullptr)
-#else
-			if (&ProjectileClass != nullptr)
-#endif
+			if (ProjectileClass != nullptr)
 			{
 				AProjectileActor* SpawnedProjectile =
 					GetWorld()->SpawnActorDeferred<AProjectileActor>(ProjectileClass, ProjectileTransform,

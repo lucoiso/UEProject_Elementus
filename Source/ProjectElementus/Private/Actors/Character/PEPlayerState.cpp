@@ -106,7 +106,7 @@ void APEPlayerState::BeginPlay()
 
 		if (LevelingData.IsValid())
 		{
-			const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
+			const FGASLevelingData& LevelingInfo = *LevelingData->FindRow<FGASLevelingData>(
 				FName(*FString::FromInt(Attributes->GetLevel())), "");
 
 #if __cplusplus > 201402L // Check if C++ > C++14
@@ -115,7 +115,7 @@ void APEPlayerState::BeginPlay()
 			if (&LevelingInfo != nullptr)
 #endif
 			{
-				NextLevelRequirement = LevelingInfo->ExperienceNeeded;
+				NextLevelRequirement = LevelingInfo.ExperienceNeeded;
 
 				AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 					Attributes->GetExperienceAttribute()).
@@ -365,14 +365,14 @@ const float APEPlayerState::GetGold() const
 }
 
 #define UPDATE_ATTRIBUTE_INFORMATIONS(AttributeSet, AttributePropery, LevelingInfo) \
-AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + LevelingInfo->Bonus##AttributePropery;
+AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + LevelingInfo.Bonus##AttributePropery;
 
 void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
 {
 	if (ensureMsgf(Attributes.IsValid(), TEXT("%s have a invalid AttributeSet"), *GetActorLabel()) &&
 		ensureMsgf(LevelingData.IsValid(), TEXT("%s have a invalid LevelingData"), *GetActorLabel()))
 	{
-		const FGASLevelingData* LevelingInfo = LevelingData->FindRow<FGASLevelingData>(
+		const FGASLevelingData& LevelingInfo = *LevelingData->FindRow<FGASLevelingData>(
 			FName(*FString::FromInt(NewLevel)), "");
 
 #if __cplusplus > 201402L // Check if C++ > C++14
@@ -388,7 +388,7 @@ void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
 			UPDATE_ATTRIBUTE_INFORMATIONS(Attributes, DefenseRate, LevelingInfo);
 
 			const float NewExperience = Attributes->GetExperience() - NextLevelRequirement;
-			NextLevelRequirement = LevelingInfo->ExperienceNeeded;
+			NextLevelRequirement = LevelingInfo.ExperienceNeeded;
 
 			Attributes->SetLevel(NewLevel);
 			Attributes->SetExperience(NewExperience);

@@ -186,7 +186,7 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 			TEXT("Removing associated abilities from Actor %s."),
 			*TargetActor->GetActorLabel());
 
-		const FActiveAbilityData ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
+		const FActiveAbilityData& ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
 
 #if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&ActiveAbilities != nullptr)
