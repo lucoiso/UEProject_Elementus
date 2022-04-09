@@ -25,15 +25,15 @@ struct FEffectStackedData
 
 public:
 	/* Gameplay Effect Class */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		TSoftClassPtr<UGameplayEffect> EffectClass;
 
 	/* Gameplay Effect level */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		int32 EffectLevel = 1;
 
 	/* Set By Caller parameters */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (TitleProperty = "{SetByCaller Tag} -> {SetByCaller Value}"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (TitleProperty = "{SetByCaller Tag} -> {SetByCaller Value}"))
 		TMap<FGameplayTag, float> SetByCallerParams;
 };
 
@@ -46,9 +46,9 @@ class UGameFeatureAction_AddEffects final : public UGameFeatureAction_WorldActio
 	GENERATED_BODY()
 
 public:
-	/* Target actor to which gameplay effects will be given */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
-		TSoftClassPtr<AActor> TargetPawnClass;
+	/* Target pawn to which gameplay effects will be given */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowedClasses = "Pawn", OnlyPlaceable = "true"))
+		TSoftClassPtr<APawn> TargetPawnClass;
 
 	/* Tags required on the target to apply this action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")

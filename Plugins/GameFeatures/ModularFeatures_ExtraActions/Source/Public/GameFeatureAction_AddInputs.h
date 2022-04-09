@@ -24,11 +24,11 @@ struct FFunctionStackedData
 
 public:
 	/* UFunction name */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		FName FunctionName;
 
 	/* Input Trigger event type */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		TArray<ETriggerEvent> Triggers;
 };
 
@@ -39,7 +39,7 @@ struct FAbilityInputBindingData
 
 public:
 	/* Should this action setup call SetupAbilityInput/RemoveAbilityInputBinding using the IAbilityInputBinding interface? */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		bool bSetupAbilityInput;
 
 	/* Enumeration class that will be used by the Ability System Component to manage abilities inputs */
@@ -47,7 +47,7 @@ public:
 		TSoftObjectPtr<UEnum> InputIDEnumerationClass;
 
 	/* Should this action setup call SetupAbilityInput/RemoveAbilityInputBinding using the IAbilityInputBinding interface? */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Value Name"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (DisplayName = "InputID Value Name"))
 		FName InputIDValueName;
 };
 
@@ -58,15 +58,15 @@ struct FInputMappingStack
 
 public:
 	/* Enhanced Input Action to bind with these settings */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		TSoftObjectPtr<UInputAction> ActionInput;
 
 	/* Settings to bind this Action Input to a Ability System Component */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		FAbilityInputBindingData AbilityBindingData;
 
 	/* UFunction and Triggers to bind activation by Enhanced Input */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "UFunction Bindings"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (DisplayName = "UFunction Bindings"))
 		TArray<FFunctionStackedData> FunctionBindingData;
 };
 
@@ -80,7 +80,7 @@ class UGameFeatureAction_AddInputs final : public UGameFeatureAction_WorldAction
 
 public:
 	/* Target pawn to which Input Mapping will be given */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowedClasses = "Pawn"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowedClasses = "Pawn", OnlyPlaceable = "true"))
 		TSoftClassPtr<APawn> TargetPawnClass;
 
 	/* Tags required on the target to apply this action */

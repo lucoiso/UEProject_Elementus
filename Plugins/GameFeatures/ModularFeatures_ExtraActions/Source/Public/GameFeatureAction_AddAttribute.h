@@ -21,9 +21,9 @@ class UGameFeatureAction_AddAttribute final : public UGameFeatureAction_WorldAct
 	GENERATED_BODY()
 
 public:
-	/* Target actor to which attribute will be given */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
-		TSoftClassPtr<AActor> TargetPawnClass;
+	/* Target pawn to which attribute will be given */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowedClasses = "Pawn", OnlyPlaceable = "true"))
+		TSoftClassPtr<APawn> TargetPawnClass;
 
 	/* Tags required on the target to apply this action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")

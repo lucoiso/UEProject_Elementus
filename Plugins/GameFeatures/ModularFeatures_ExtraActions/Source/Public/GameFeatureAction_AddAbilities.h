@@ -23,19 +23,19 @@ struct FAbilityMapping
 
 public:
 	/* Ability class to be added */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		TSoftClassPtr<UGameplayAbility> AbilityClass;
 
 	/* Enhanced Input Action to bind ability activation */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		TSoftObjectPtr<UInputAction> InputAction;
 
 	/* Ability Level */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 		int32 AbilityLevel = 1;
 
 	/* InputID Value Name associated by Enumeration Class */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Value Name"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (DisplayName = "InputID Value Name"))
 		FName InputIDValueName;
 };
 
@@ -48,8 +48,8 @@ class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldAct
 	GENERATED_BODY()
 
 public:
-	/* Target actor to which abilities will be given */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (OnlyPlaceable))
+	/* Target pawn to which abilities will be given */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowedClasses = "Pawn", OnlyPlaceable = "true"))
 		TSoftClassPtr<APawn> TargetPawnClass;
 
 	/* Tags required on the target to apply this action */
