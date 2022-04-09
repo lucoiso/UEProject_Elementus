@@ -16,3 +16,4 @@ enc_temp_folder
 *.xcodeproj
 *.xcworkspace
 *.ipch
+*.TMP
