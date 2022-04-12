@@ -28,19 +28,23 @@
 			]
 		},
 		{
-			"Name": "GameplayAbilities",
-			"Enabled": true
-		},
-		{
-			"Name": "EnhancedInput",
-			"Enabled": true
-		},
-		{
 			"Name": "ControlRig",
 			"Enabled": true
 		},
 		{
 			"Name": "FullBodyIK",
+			"Enabled": true
+		},
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true
+		},
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "EnhancedInput",
 			"Enabled": true
 		},
 		{
