@@ -14,7 +14,7 @@ struct FWorldContext;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogGameplayExtraFeatures, Display, All);
 
-UENUM(BlueprintType, Category = "GFA Extra Actions | Enums")
+UENUM(BlueprintType, Category = "MF Extra Actions | Enums")
 enum class EControllerOwner :uint8
 {
 	Pawn,

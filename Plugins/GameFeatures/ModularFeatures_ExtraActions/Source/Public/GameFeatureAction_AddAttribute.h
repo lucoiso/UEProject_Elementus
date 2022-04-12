@@ -15,7 +15,7 @@ struct FComponentRequestHandle;
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Add Attribute"))
+UCLASS(MinimalAPI, meta = (DisplayName = "MF Extra Actions: Add Attribute"))
 class UGameFeatureAction_AddAttribute final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()

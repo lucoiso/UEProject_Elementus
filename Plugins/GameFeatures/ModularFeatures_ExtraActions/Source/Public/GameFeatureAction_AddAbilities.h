@@ -16,7 +16,7 @@ struct FComponentRequestHandle;
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "GFA Extra Actions | Modular Structs")
+USTRUCT(BlueprintType, Category = "MF Extra Actions | Modular Structs")
 struct FAbilityMapping
 {
 	GENERATED_BODY()
@@ -42,7 +42,7 @@ public:
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Add Abilities"))
+UCLASS(MinimalAPI, meta = (DisplayName = "MF Extra Actions: Add Abilities"))
 class UGameFeatureAction_AddAbilities final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()

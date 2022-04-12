@@ -12,7 +12,7 @@ struct FComponentRequestHandle;
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "GFA Extra Actions | Modular Structs")
+USTRUCT(BlueprintType, Category = "MF Extra Actions | Modular Structs")
 struct FActorSpawnSettings
 {
 	GENERATED_BODY()
@@ -30,7 +30,7 @@ public:
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Spawn Actors"))
+UCLASS(MinimalAPI, meta = (DisplayName = "MF Extra Actions: Spawn Actors"))
 class UGameFeatureAction_SpawnActors final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()

@@ -17,7 +17,7 @@ struct FComponentRequestHandle;
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "GFA Extra Actions | Modular Structs")
+USTRUCT(BlueprintType, Category = "MF Extra Actions | Modular Structs")
 struct FEffectStackedData
 {
 	GENERATED_BODY()
@@ -39,7 +39,7 @@ public:
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Add Effects"))
+UCLASS(MinimalAPI, meta = (DisplayName = "MF Extra Actions: Add Effects"))
 class UGameFeatureAction_AddEffects final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()

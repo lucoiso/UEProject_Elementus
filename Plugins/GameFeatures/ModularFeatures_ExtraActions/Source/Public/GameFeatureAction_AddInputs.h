@@ -17,7 +17,7 @@ struct FComponentRequestHandle;
  *
  */
 
-USTRUCT(BlueprintType, Category = "GFA Extra Actions | Modular Structs")
+USTRUCT(BlueprintType, Category = "MF Extra Actions | Modular Structs")
 struct FFunctionStackedData
 {
 	GENERATED_BODY()
@@ -32,7 +32,7 @@ public:
 		TArray<ETriggerEvent> Triggers;
 };
 
-USTRUCT(BlueprintType, Category = "GFA Extra Actions | Modular Structs")
+USTRUCT(BlueprintType, Category = "MF Extra Actions | Modular Structs")
 struct FAbilityInputBindingData
 {
 	GENERATED_BODY()
@@ -51,7 +51,7 @@ public:
 		FName InputIDValueName;
 };
 
-USTRUCT(BlueprintType, Category = "GFA Extra Actions | Modular Structs")
+USTRUCT(BlueprintType, Category = "MF Extra Actions | Modular Structs")
 struct FInputMappingStack
 {
 	GENERATED_BODY()
@@ -73,7 +73,7 @@ public:
 /**
  *
  */
-UCLASS(MinimalAPI, meta = (DisplayName = "GFA Extra Actions: Add Enhanced Input Mapping"))
+UCLASS(MinimalAPI, meta = (DisplayName = "MF Extra Actions: Add Enhanced Input Mapping"))
 class UGameFeatureAction_AddInputs final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()
