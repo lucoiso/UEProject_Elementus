@@ -1,6 +1,6 @@
 # Plugin: Modular Features Extra Actions
 
-![image](https://user-images.githubusercontent.com/77353979/161829306-28db152a-0ddf-4c8a-a23c-3c3cb8e8dcdb.png)
+![image](https://user-images.githubusercontent.com/77353979/163046114-e8f33b34-456c-47a2-942a-1cbffcfcf6b6.png)
 
 ## The plugin:
 
@@ -43,9 +43,9 @@ C++ Functions:
 > Send Extension Event:  
 > ```UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this, UGameFrameworkComponentManager::NAME_GameActorReady);```
     
-## GFA Extra Actions: Add Abilities
+## MF Extra Actions: Add Abilities
 
-![image](https://user-images.githubusercontent.com/77353979/161823255-1da59111-2fd3-4ada-a060-3194ff6767a6.png)  
+![image](https://user-images.githubusercontent.com/77353979/163046339-31f39258-f81d-4c36-9c87-25667d6ec9c3.png)
 _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elementus)_
 
 1. Target Pawn Class: Pawn class that will receive the abilities.
@@ -58,9 +58,9 @@ _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elemen
 5.3. Ability Level: Ability level to add to target ability system component.  
 5.4. InputID Value Name: The same as Display Name in your InputID Enumeration Class.  
 
-## GFA Extra Actions: Add Attribute
+## MF Extra Actions: Add Attribute
 
-![image](https://user-images.githubusercontent.com/77353979/161825892-dc85b43a-1d4b-4d52-8726-4071a53fadcd.png)  
+![image](https://user-images.githubusercontent.com/77353979/163046427-a5f182ff-312e-4f57-8f52-3baf889c1858.png)  
 _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elementus)_
 
 1. Target Pawn Class: Pawn class that will receive the abilities.
@@ -68,9 +68,9 @@ _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elemen
 3. Attribute: AttributeSet class to add.
 4. Initialization Data: DataTable containing Attributes MetaData to initialize attributes.
 
-## GFA Extra Actions: Add Effects
+## MF Extra Actions: Add Effects
 
-![image](https://user-images.githubusercontent.com/77353979/161826293-7d956769-10cf-4505-bcf4-462564100a98.png)
+![image](https://user-images.githubusercontent.com/77353979/163046543-4fa03e29-cffc-4888-945c-da4120161ee7.png)
 _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elementus)_
 
 1. Target Pawn Class: Pawn class that will receive the abilities.
@@ -82,9 +82,9 @@ _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elemen
 3.3.1. Key (Gameplay Tag): Set By Caller tag.  
 3.3.1. Value (Float): Set By Caller float value.  
 
-## GFA Extra Actions: Add Enhanced Input Mapping
+## MF Extra Actions: Add Enhanced Input Mapping
 
-![image](https://user-images.githubusercontent.com/77353979/161827205-d2e3121e-8eed-43ab-8310-a83753b34a05.png)  
+![image](https://user-images.githubusercontent.com/77353979/163046626-8e5a0295-2770-4dc8-bc2c-6052b826d3d8.png)
 _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elementus)_
 
 1. Target Pawn Class: Pawn class that will receive the abilities.
@@ -102,9 +102,9 @@ _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elemen
 6.3.1. Function Name: UFunction name that this Input Action will bind.  
 6.3.2. Triggers: Trigger array referred to binding management.  
 
-## GFA Extra Actions: Spawn Actors
+## MF Extra Actions: Spawn Actors
 
-![image](https://user-images.githubusercontent.com/77353979/161828287-f480dba0-79a2-485a-8643-ff909d76a7e5.png)
+![image](https://user-images.githubusercontent.com/77353979/163046662-4c19e978-4de8-47f4-8ae6-b422ada74a2b.png)
 _Screenshot from [Project Elementus](https://github.com/lucoiso/UEProject_Elementus)_
 
 1. Target Level: Map where this actor will be spawned.
