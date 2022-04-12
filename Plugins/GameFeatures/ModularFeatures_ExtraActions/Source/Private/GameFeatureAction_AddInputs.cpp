@@ -9,6 +9,7 @@
 #include "AbilityInputBinding.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/PlayerController.h"
+#include "Engine/LocalPlayer.h"
 
 void UGameFeatureAction_AddInputs::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
