@@ -167,7 +167,7 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 		AbilitySystemComponent = Cast<UGASAbilitySystemComponent>(State->GetAbilitySystemComponent());
 		Attributes = Cast<UGASAttributeSet>(State->GetAttributeSetBase());
 
-		if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetActorLabel()))
+		if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 		{
 			bOnRep
 				? AbilitySystemComponent->InitAbilityActorInfo(State, this)
@@ -187,7 +187,7 @@ void APECharacterBase::InitializeAttributes(const bool bOnRep)
 void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
 	const bool bTryRemoveExistingAbilityWithInput = true, const bool bTryRemoveExistingAbilityWithClass = true)
 {
-	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetActorLabel()))
+	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority || !IsValid(Ability))
 		{
@@ -237,7 +237,7 @@ void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbi
 
 void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
 {
-	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetActorLabel()))
+	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority || CharacterAbilities.Num() <= 0 ||
 			!IsValid(Ability))

@@ -59,11 +59,11 @@ void AExplosiveActor::PerformExplosion()
 		{
 			APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
 
-			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
+			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				Player->LaunchCharacter(Velocity, true, true);
 
-				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetActorLabel()))
+				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 				{
 					ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
 				}
@@ -85,7 +85,7 @@ void AExplosiveActor::PerformExplosion()
 
 void AExplosiveActor::ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetComp)
 {
-	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

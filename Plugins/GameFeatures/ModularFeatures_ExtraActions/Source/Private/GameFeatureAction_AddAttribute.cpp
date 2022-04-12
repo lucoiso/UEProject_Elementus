@@ -64,7 +64,7 @@ void UGameFeatureAction_AddAttribute::HandleActorExtension(AActor* Owner, FName 
 {
 	/*UE_LOG(LogGameplayExtraFeatures, Warning,
 		   TEXT("Event %s sended by Actor %s for attribute management."), *EventName.ToString(),
-		   *Owner->GetActorLabel());*/
+		   *Owner->GetName());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -101,7 +101,7 @@ void UGameFeatureAction_AddAttribute::AddAttribute_Implementation(AActor* Target
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 			TEXT("Adding attribute %s to Actor %s."), *Attribute.GetAssetName(),
-			*TargetActor->GetActorLabel());
+			*TargetActor->GetName());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 
@@ -139,7 +139,7 @@ void UGameFeatureAction_AddAttribute::RemoveAttribute_Implementation(AActor* Tar
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 			TEXT("Removing attribute %s from Actor %s."), *Attribute.GetAssetName(),
-			*TargetActor->GetActorLabel());
+			*TargetActor->GetName());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 
@@ -157,7 +157,7 @@ void UGameFeatureAction_AddAttribute::RemoveAttribute_Implementation(AActor* Tar
 				AbilitySystemComponent->ForceReplication();
 
 				UE_LOG(LogGameplayExtraFeatures, Warning, TEXT("Attribute %s removed from Actor %s."),
-					*Attribute.GetAssetName(), *TargetActor->GetActorLabel());
+					*Attribute.GetAssetName(), *TargetActor->GetName());
 			}
 		}
 	}

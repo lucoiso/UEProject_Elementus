@@ -64,7 +64,7 @@ void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName Ev
 {
 	/*UE_LOG(LogGameplayExtraFeatures, Warning,
 		   TEXT("Event %s sended by Actor %s for effects management."), *EventName.ToString(),
-		   *Owner->GetActorLabel());*/
+		   *Owner->GetName());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -108,7 +108,7 @@ void UGameFeatureAction_AddEffects::ApplyEffects(AActor* TargetActor, const FEff
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 			TEXT("Adding effect %s level %u to Actor %s with %u SetByCaller params."),
 			*Effect.EffectClass.GetAssetName(), Effect.EffectLevel,
-			*TargetActor->GetActorLabel(), Effect.SetByCallerParams.Num());
+			*TargetActor->GetName(), Effect.SetByCallerParams.Num());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 
@@ -146,7 +146,7 @@ void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 	if (IsValid(TargetActor))
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
-			TEXT("Removing effects from Actor %s."), *TargetActor->GetActorLabel());
+			TEXT("Removing effects from Actor %s."), *TargetActor->GetName());
 
 		TArray<FActiveGameplayEffectHandle> ActiveEffects = ActiveExtensions.FindRef(TargetActor);
 

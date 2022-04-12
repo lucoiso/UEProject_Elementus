@@ -46,14 +46,14 @@ void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* 
 	{
 		APECharacterBase* Player = Cast<APECharacterBase>(OtherActor);
 
-		if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
+		if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 		{
 			constexpr float ImpulseMultiplier = 5.f;
 
 			Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
 			GetStaticMeshComponent()->AddImpulse(NormalImpulse.GetSafeNormal());
 
-			if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetActorLabel()))
+			if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 			{
 				ApplyThrowableEffect(Player->GetAbilitySystemComponent());
 			}
@@ -63,7 +63,7 @@ void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* 
 
 void AThrowableActor::ApplyThrowableEffect_Implementation(UAbilitySystemComponent* TargetComp)
 {
-	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

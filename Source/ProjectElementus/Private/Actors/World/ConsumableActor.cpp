@@ -19,7 +19,7 @@ AConsumableActor::AConsumableActor(const FObjectInitializer& ObjectInitializer)
 
 void AConsumableActor::PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
 {
-	if (ensureMsgf(IsValid(TargetABSC), TEXT("%s have a invalid target"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(TargetABSC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (!TargetABSC->IsOwnerActorAuthoritative())
 		{

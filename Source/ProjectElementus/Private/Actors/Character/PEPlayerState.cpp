@@ -79,7 +79,7 @@ void APEPlayerState::BeginPlay()
 
 	Super::BeginPlay();
 
-	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetActorLabel()))
+	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetSpeedRateAttribute()).
 			AddUObject(this, &APEPlayerState::SpeedRateChanged_Callback);
@@ -152,11 +152,11 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 	{
 		APEPlayerController* Controller_Temp = GetPEPlayerController();
 
-		if (ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetActorLabel()))
+		if (ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
 			APECharacterBase* Player_Temp = Controller_Temp->GetPawn<APECharacterBase>();
 
-			if (ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetActorLabel()))
+			if (ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				const FVector SpectatorLocation = Player_Temp->GetActorLocation();
 				const FRotator SpectatorRotation = Player_Temp->GetActorRotation();
@@ -180,7 +180,7 @@ void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, c
 		*FString(__func__),
 		*CallbackTag.ToString(), NewCount);
 
-	if (ensureMsgf(IsValid(GetPlayerController()), TEXT("%s have a invalid Player"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(GetPlayerController()), TEXT("%s have a invalid Player"), *GetName()))
 	{
 		GetOwningController()->SetIgnoreMoveInput(NewCount != 0);
 	}
@@ -240,10 +240,10 @@ void APEPlayerState::SpeedRateChanged_Callback(const FOnAttributeChangeData& Dat
 
 	const APECharacterBase* Player = GetPawn<APECharacterBase>();
 
-	if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 	{
 		UCharacterMovementComponent* MovComp = Player->GetCharacterMovement();
-		if (ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetActorLabel()))
+		if (ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
 		{
 			MovComp->MaxWalkSpeed = Data.NewValue * Player->GetDefaultWalkSpeed();
 			MovComp->MaxWalkSpeedCrouched = Data.NewValue * Player->GetDefaultCrouchSpeed();
@@ -262,10 +262,10 @@ void APEPlayerState::JumpRateChanged_Callback(const FOnAttributeChangeData& Data
 
 	const APECharacterBase* Player = GetPawn<APECharacterBase>();
 
-	if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 	{
 		UCharacterMovementComponent* MovComp = Player->GetCharacterMovement();
-		if (ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetActorLabel()))
+		if (ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
 		{
 			MovComp->JumpZVelocity = Data.NewValue * Player->GetDefaultJumpVelocity();
 		}
@@ -369,8 +369,8 @@ AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + Levelin
 
 void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
 {
-	if (ensureMsgf(Attributes.IsValid(), TEXT("%s have a invalid AttributeSet"), *GetActorLabel()) &&
-		ensureMsgf(LevelingData.IsValid(), TEXT("%s have a invalid LevelingData"), *GetActorLabel()))
+	if (ensureMsgf(Attributes.IsValid(), TEXT("%s have a invalid AttributeSet"), *GetName()) &&
+		ensureMsgf(LevelingData.IsValid(), TEXT("%s have a invalid LevelingData"), *GetName()))
 	{
 		const FGASLevelingData& LevelingInfo = *LevelingData->FindRow<FGASLevelingData>(
 			FName(*FString::FromInt(NewLevel)), "");

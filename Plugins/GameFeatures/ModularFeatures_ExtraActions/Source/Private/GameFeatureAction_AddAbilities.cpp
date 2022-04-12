@@ -68,7 +68,7 @@ void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName 
 {
 	/*UE_LOG(LogGameplayExtraFeatures, Warning,
 		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
-		   *Owner->GetActorLabel());*/
+		   *Owner->GetName());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -112,7 +112,7 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 			TEXT("Adding ability %s to Actor %s."), *Ability.AbilityClass.GetAssetName(),
-			*TargetActor->GetActorLabel());
+			*TargetActor->GetName());
 
 		const IAbilitySystemInterface* InterfaceOwner = Cast<IAbilitySystemInterface>(TargetActor);
 
@@ -184,7 +184,7 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 			TEXT("Removing associated abilities from Actor %s."),
-			*TargetActor->GetActorLabel());
+			*TargetActor->GetName());
 
 		const FActiveAbilityData& ActiveAbilities = ActiveExtensions.FindRef(TargetActor);
 

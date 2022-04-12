@@ -66,7 +66,7 @@ void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName Eve
 {
 	/*UE_LOG(LogGameplayExtraFeatures, Warning,
 		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
-		   *Owner->GetActorLabel());*/
+		   *Owner->GetName());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
@@ -106,7 +106,7 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 			TEXT("Adding Enhanced Input Mapping %s to Actor %s."), *InputMappingContext.GetAssetName(),
-			*TargetActor->GetActorLabel());
+			*TargetActor->GetName());
 
 		APawn* TargetPawn = Cast<APawn>(TargetActor);
 		const APlayerController* PlayerController = TargetPawn->GetController<APlayerController>();
@@ -160,7 +160,7 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 					{
 						UE_LOG(LogGameplayExtraFeatures, Warning,
 							TEXT("Binding Action Input %s to Actor %s."), *InputData.ActionInput.GetAssetName(),
-							*TargetActor->GetActorLabel());
+							*TargetActor->GetName());
 
 						if (!InputData.ActionInput.IsNull())
 						{
@@ -206,7 +206,7 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 	{
 		UE_LOG(LogGameplayExtraFeatures, Warning,
 			TEXT("Removing Enhanced Input Mapping %s from Actor %s."), *InputMappingContext.GetAssetName(),
-			*TargetActor->GetActorLabel());
+			*TargetActor->GetName());
 
 		APawn* TargetPawn = Cast<APawn>(TargetActor);
 		const APlayerController* PlayerController = TargetPawn->GetController<APlayerController>();

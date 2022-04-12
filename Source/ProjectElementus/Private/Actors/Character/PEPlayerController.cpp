@@ -28,7 +28,7 @@ void APEPlayerController::RemoveHUD_Implementation()
 {
 	APEHUD* HUD_Temp = GetHUD<APEHUD>();
 
-	if (ensureMsgf(IsValid(HUD_Temp), TEXT("%s have a invalid HUD"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(HUD_Temp), TEXT("%s have a invalid HUD"), *GetName()))
 	{
 		HUD_Temp->HideHUD();
 	}
@@ -60,7 +60,7 @@ void APEPlayerController::SetupAbilityInputBinding_Implementation(UInputAction* 
 {
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 
-	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
 		FAbilityInputData AbilityBinding
 		{
@@ -81,7 +81,7 @@ void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputA
 {
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 
-	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnPressedHandle);
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnReleasedHandle);
@@ -103,7 +103,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 	const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
 
 	if (ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
+		TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputPressed(InputID);
 
@@ -136,7 +136,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 	const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
 
 	if (ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
+		TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
 	}
@@ -196,7 +196,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value)
 
 	APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
 
-	if (ensureMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetActorLabel()))
+	if (ensureMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
 		if (ControllerOwner->CanJump() && !IsMoveInputIgnored())
 		{
