@@ -5,14 +5,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTags.h"
+#include "GameplayTagContainer.h"
 #include "GameplayEffectTypes.h"
 #include "GameFeatureAction_WorldActionBase.h"
 #include "GameFeatureAction_AddEffects.generated.h"
 
 class UGameplayEffect;
 struct FActiveGameplayEffectHandle;
-struct FGameplayTag;
 struct FComponentRequestHandle;
 
 /**

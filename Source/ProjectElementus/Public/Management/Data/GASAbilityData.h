@@ -5,7 +5,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTags.h"
+#include "GameplayTagContainer.h"
 #include "GASAbilityData.generated.h"
 
 class UGameplayEffect;
