@@ -8,6 +8,7 @@
 #include "InputMappingContext.h"
 #include "AbilityInputBinding.h"
 #include "Components/GameFrameworkComponentManager.h"
+#include "GameFramework/PlayerController.h"
 
 void UGameFeatureAction_AddInputs::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
