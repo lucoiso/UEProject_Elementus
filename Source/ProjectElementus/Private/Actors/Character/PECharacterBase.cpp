@@ -31,7 +31,7 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
 	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(
-		TEXT("/Game/Main/Character/Mesh/SK_Mannequin"));
+		TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny"));
 #if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
 #else
@@ -42,7 +42,7 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	}
 
 	static const ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(
-		TEXT("/Game/Main/Character/Animations/ABP_Character"));
+		TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
 #if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&Animation_ClassRef.Class != nullptr)
 #else
