@@ -26,12 +26,10 @@ void UCrouch_Ability::ActivateAbility
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
-	else if (Player->CanCrouch())
-	{
-		Player->bIsCrouched ?
-			Player->UnCrouch() :
-			Player->Crouch();
-	}
+	
+	Player->CanCrouch() && !Player->bIsCrouched ?
+		Player->Crouch() :
+		Player->UnCrouch();
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }
