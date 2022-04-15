@@ -365,11 +365,6 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 
 void UGASGameplayAbility::ActivateWaitConfirmInputTask()
 {
-	FGameplayAbilityActivationInfo Temp_ActvInfo = GetCurrentActivationInfo();
-	Temp_ActvInfo.ActivationMode = EGameplayAbilityActivationMode::Predicting;
-
-	SetCurrentActivationInfo(Temp_ActvInfo);
-
 	UAbilityTask_WaitConfirmCancel* AbilityTask_WaitConfirm =
 		UAbilityTask_WaitConfirmCancel::WaitConfirmCancel(this);
 
