@@ -64,6 +64,7 @@ void UTelekinesis_Ability::WaitTargetData_Callback_Implementation(const FGamepla
 	if (!IsValid(TargetHit->GetActor()))
 	{
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+		RemoveCooldownEffect(GetCurrentActorInfo()->AbilitySystemComponent.Get());
 		return;
 	}
 
@@ -93,8 +94,8 @@ void UTelekinesis_Ability::GrabbingComplete(const bool ValidTarget)
 	}
 	else
 	{
-		RemoveCooldownEffect(GetCurrentActorInfo()->AbilitySystemComponent.Get());
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+		RemoveCooldownEffect(GetCurrentActorInfo()->AbilitySystemComponent.Get());
 	}
 }
 
