@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "Management/Data/GASAbilityData.h"
 #include "GASAbilitySystemComponent.generated.h"
 
 /**
@@ -43,4 +44,10 @@ public:
 	{
 		bCharacterAbilitiesGiven = NewValue;
 	};
+
+	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
+		void ApplyEffectGroupedDataToSelf(FGameplayEffectGroupedData GroupedData);
+
+	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
+		void ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC);
 };
