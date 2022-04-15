@@ -60,9 +60,9 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 
 	Super::PreActivate(Handle, ActorInfo, ActivationInfo, OnGameplayAbilityEndedDelegate, TriggerEventData);
 
-	if (!CommitCheck(Handle, ActorInfo, ActivationInfo) || !HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+	if (!CommitCheck(Handle, ActorInfo, ActivationInfo) || !ActorInfo->IsNetAuthority())
 	{
-		ABILITY_VLOG(this, Warning, TEXT("%s is being cancelled before activation."), *GetName());
+		ABILITY_VLOG(this, Warning, TEXT("%s failed to pre-activate."), *GetName());
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 	}
 
@@ -93,7 +93,7 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 	{
 		FTimerDelegate TimerDelegate;
 		FTimerHandle TimerHandle;
-		TimerDelegate.BindLambda([this, Handle, ActorInfo, ActivationInfo]() -> void
+		TimerDelegate.BindLambda([=]() -> void
 			{
 				if (IsActive())
 				{
