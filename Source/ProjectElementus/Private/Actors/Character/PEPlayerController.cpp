@@ -109,13 +109,11 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 
 		if (InputID == ControllerOwner->InputIDEnumerationClass->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName))
 		{
-			ControllerOwner->GetAbilitySystemComponent()->GenericLocalConfirmCallbacks.Broadcast();
 			ControllerOwner->GetAbilitySystemComponent()->LocalInputConfirm();
 		}
 
 		else if (InputID == ControllerOwner->InputIDEnumerationClass->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName))
 		{
-			ControllerOwner->GetAbilitySystemComponent()->GenericLocalCancelCallbacks.Broadcast();
 			ControllerOwner->GetAbilitySystemComponent()->LocalInputCancel();
 		}
 	}
