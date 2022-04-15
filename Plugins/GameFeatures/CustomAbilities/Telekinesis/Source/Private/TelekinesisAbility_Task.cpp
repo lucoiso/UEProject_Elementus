@@ -29,42 +29,39 @@ void UTelekinesisAbility_Task::Activate()
 
 	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		if (Ability->GetActorInfo().IsNetAuthority())
+		TelekinesisOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
+
+		if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 		{
-			TelekinesisOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
+			PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(),
+				FName("TelekinesisPhysicsHandle"));
 
-			if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+			if (PhysicsHandle.IsValid())
 			{
-				PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(),
-					FName("TelekinesisPhysicsHandle"));
+				PhysicsHandle->RegisterComponent();
+				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
+					NAME_None, TelekinesisTarget->GetActorLocation());
 
-				if (PhysicsHandle.IsValid())
+				if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 				{
-					PhysicsHandle->RegisterComponent();
-					PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-						NAME_None, TelekinesisTarget->GetActorLocation());
+					PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
 
-					if (IsValid(PhysicsHandle->GetGrabbedComponent()))
+					if (ShouldBroadcastAbilityTaskDelegates())
 					{
-						PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
-
-						if (ShouldBroadcastAbilityTaskDelegates())
-						{
-							OnGrabbing.ExecuteIfBound(true);
-						}
-
-						PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
-						bTickingTask = true;
-
-						return;
+						OnGrabbing.ExecuteIfBound(true);
 					}
+
+					PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+					bTickingTask = true;
+
+					return;
 				}
 			}
+		}
 
-			if (ShouldBroadcastAbilityTaskDelegates())
-			{
-				OnGrabbing.ExecuteIfBound(false);
-			}
+		if (ShouldBroadcastAbilityTaskDelegates())
+		{
+			OnGrabbing.ExecuteIfBound(false);
 		}
 	}
 
