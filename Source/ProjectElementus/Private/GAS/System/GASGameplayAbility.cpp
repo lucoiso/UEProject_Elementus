@@ -60,7 +60,7 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 
 	Super::PreActivate(Handle, ActorInfo, ActivationInfo, OnGameplayAbilityEndedDelegate, TriggerEventData);
 
-	if (!CommitCheck(Handle, ActorInfo, ActivationInfo) || !ActorInfo->IsNetAuthority())
+	if (!CommitCheck(Handle, ActorInfo, ActivationInfo) || !HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
 	{
 		ABILITY_VLOG(this, Warning, TEXT("%s failed to pre-activate."), *GetName());
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
@@ -264,25 +264,9 @@ void UGASGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APr
 {
 	ABILITY_VLOG(this, Warning, TEXT("Spawning %s ability projectile."), *GetName());
 
-	TArray<FGameplayEffectSpecHandle> EffectSpecs;
-
-	for (const FGameplayEffectGroupedData& EffectGroup : TargetAbilityEffects)
-	{
-		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingGameplayEffectSpec(
-			Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
-
-		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
-		{
-			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key,
-				StackedData.Value);
-		}
-
-		EffectSpecs.Add(SpecHandle);
-	}
-
 	USpawnProjectile_Task* SpawnProjectile_Task =
-		USpawnProjectile_Task::SpawnProjectile(this, ProjectileClass, ProjectileTransform, ProjectileFireDirection,
-			EffectSpecs);
+		USpawnProjectile_Task::SpawnProjectile(this, ProjectileClass, ProjectileTransform, 
+			ProjectileFireDirection, TargetAbilityEffects);
 
 	SpawnProjectile_Task->OnProjectileSpawn.AddDynamic(this, &UGASGameplayAbility::SpawnProjectile_Callback);
 	SpawnProjectile_Task->OnSpawnFailed.AddDynamic(this, &UGASGameplayAbility::SpawnProjectile_Callback);

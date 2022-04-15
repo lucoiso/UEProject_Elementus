@@ -4,10 +4,10 @@
 
 #include "Actors/World/ProjectileActor.h"
 #include "Actors/Character/PECharacterBase.h"
+#include "GAS/System/GASAbilitySystemComponent.h"
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "AbilitySystemComponent.h"
 
 AProjectileActor::AProjectileActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -70,23 +70,19 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 	Destroy();
 }
 
-void AProjectileActor::ApplyProjectileEffect_Implementation(UAbilitySystemComponent* TargetABSC)
+void AProjectileActor::ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC)
 {
-	if (ensureMsgf(IsValid(TargetABSC) && TargetABSC->GetOwnerActor()->HasAuthority(), TEXT("%s have a invalid target"), *GetName()))
+	UGASAbilitySystemComponent* TargetGASC = Cast<UGASAbilitySystemComponent>(TargetABSC);
+	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{
 			return;
 		}
 
-		for (const FGameplayEffectSpecHandle& SpecHandle : DamageEffectSpecHandles)
+		for (const FGameplayEffectGroupedData& Effect : ProjectileEffects)
 		{
-			TargetABSC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			TargetGASC->ApplyEffectGroupedDataToSelf(Effect);
 		}
 	}
-}
-
-bool AProjectileActor::ApplyProjectileEffect_Validate(UAbilitySystemComponent* TargetABSC)
-{
-	return true;
 }

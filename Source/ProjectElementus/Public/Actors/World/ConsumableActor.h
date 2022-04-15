@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Management/Data/GASAbilityData.h"
 #include "GameFramework/Actor.h"
 #include "ConsumableActor.generated.h"
 
@@ -25,10 +26,8 @@ public:
 		return FPrimaryAssetId("Consumable Actor", GetFName());
 	}
 
-	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable, Category = "Custom Functions | Behaviors")
+	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
 		void PerformConsumption(class UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
-	void PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
-	bool PerformConsumption_Validate(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
@@ -38,7 +37,7 @@ protected:
 		class UNiagaraComponent* ObjectVFX;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		TSubclassOf<class UGameplayEffect> ObjectEffectClass;
+		TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		FGameplayTagContainer RequirementsTags;

@@ -6,7 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GameplayEffectTypes.h"
+#include "Management/Data/GASAbilityData.h"
 #include "ProjectileActor.generated.h"
 
 class UAbilitySystemComponent;
@@ -41,8 +41,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Custom Properties | Defaults")
-		TArray<FGameplayEffectSpecHandle> DamageEffectSpecHandles;
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Custom Properties | Defaults")
+		TArray<FGameplayEffectGroupedData> ProjectileEffects;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
 		virtual void FireInDirection(const FVector Direction);
@@ -53,8 +53,5 @@ protected:
 			FVector NormalImpulse, const FHitResult& Hit);
 
 private:
-	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom Functions | Behaviors")
-		void ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC);
-	void ApplyProjectileEffect_Implementation(UAbilitySystemComponent* TargetABSC);
-	bool ApplyProjectileEffect_Validate(UAbilitySystemComponent* TargetABSC);
+	void ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC);
 };

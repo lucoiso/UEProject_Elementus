@@ -3,8 +3,9 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/World/ConsumableActor.h"
+#include "GAS/System/GASAbilitySystemComponent.h"
+
 #include "Components/StaticMeshComponent.h"
-#include "AbilitySystemComponent.h"
 #include "NiagaraComponent.h"
 
 AConsumableActor::AConsumableActor(const FObjectInitializer& ObjectInitializer)
@@ -17,19 +18,22 @@ AConsumableActor::AConsumableActor(const FObjectInitializer& ObjectInitializer)
 	ObjectVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Object VFX"));
 }
 
-void AConsumableActor::PerformConsumption_Implementation(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
+void AConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
 {
-	if (ensureMsgf(IsValid(TargetABSC) && TargetABSC->GetOwnerActor()->HasAuthority(), TEXT("%s have a invalid target"), *GetName()))
+	UGASAbilitySystemComponent* TargetGASC = Cast<UGASAbilitySystemComponent>(TargetABSC);
+	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
-		if (!TargetABSC->IsOwnerActorAuthoritative())
+		if (GetLocalRole() != ROLE_Authority)
 		{
 			return;
 		}
 
-		if (TargetABSC->HasAllMatchingGameplayTags(RequirementsTags) || RequirementsTags.IsEmpty())
+		if (TargetGASC->HasAllMatchingGameplayTags(RequirementsTags) || RequirementsTags.IsEmpty())
 		{
-			TargetABSC->ApplyGameplayEffectToSelf(ObjectEffectClass.GetDefaultObject(), 1.f,
-				TargetABSC->MakeEffectContext());
+			for (const FGameplayEffectGroupedData& Effect : ConsumableEffects)
+			{
+				TargetGASC->ApplyEffectGroupedDataToSelf(Effect);
+			}
 
 			if (bDestroyAfterConsumption)
 			{
@@ -37,9 +41,4 @@ void AConsumableActor::PerformConsumption_Implementation(UAbilitySystemComponent
 			}
 		}
 	}
-}
-
-bool AConsumableActor::PerformConsumption_Validate(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
-{
-	return true;
 }

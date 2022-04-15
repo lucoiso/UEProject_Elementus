@@ -6,10 +6,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Management/Data/GASAbilityData.h"
 #include "ExplosiveActor.generated.h"
 
 class UNiagaraSystem;
 class UGameplayEffect;
+class UAbilitySystemComponent;
 /**
  *
  */
@@ -30,26 +32,23 @@ public:
 		void PerformExplosion();
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Properties | Defaults")
 		float ExplosionRadius;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Properties | Defaults")
 		float ExplosionMagnitude;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		bool bDestroyAfterExplosion;
 
 	/* Effects that will be apply to affected characters */
-	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
-		TArray<TSubclassOf<UGameplayEffect>> ExplosionEffects;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+		TArray<FGameplayEffectGroupedData> ExplosionEffects;
 
 	/* Visual Effect */
-	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		TArray<UNiagaraSystem*> ExplosionVFXs;
 
 private:
-	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom Functions | Behaviors")
-		void ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC);
-	virtual void ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetABSC);
-	bool ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetABSC);
+	void ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC);
 };

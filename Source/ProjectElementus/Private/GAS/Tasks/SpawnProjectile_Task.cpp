@@ -15,14 +15,14 @@ USpawnProjectile_Task* USpawnProjectile_Task::SpawnProjectile(UGameplayAbility* 
 	const TSubclassOf<AProjectileActor> ClassToSpawn,
 	const FTransform SpawnTransform,
 	const FVector DirectionToFire,
-	const TArray<FGameplayEffectSpecHandle> EffectSpecsArray)
+	TArray<FGameplayEffectGroupedData> EffectDataArray)
 {
 	USpawnProjectile_Task* MyObj = NewAbilityTask<USpawnProjectile_Task>(OwningAbility);
 
 	MyObj->ProjectileClass = ClassToSpawn;
 	MyObj->ProjectileTransform = SpawnTransform;
 	MyObj->ProjectileFireDirection = DirectionToFire;
-	MyObj->ProjectileEffectSpecs = EffectSpecsArray;
+	MyObj->ProjectileEffectArr = EffectDataArray;
 
 	return MyObj;
 }
@@ -42,7 +42,7 @@ void USpawnProjectile_Task::Activate()
 						Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(),
 						ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-				SpawnedProjectile->DamageEffectSpecHandles = ProjectileEffectSpecs;
+				SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
 
 				SpawnedProjectile->FinishSpawning(ProjectileTransform);
 

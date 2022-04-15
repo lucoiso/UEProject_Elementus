@@ -4,6 +4,7 @@
 
 #include "Actors/World/ExplosiveActor.h"
 #include "Actors/Character/PECharacterBase.h"
+#include "GAS/System/GASAbilitySystemComponent.h"
 
 #include "Components/PrimitiveComponent.h"
 
@@ -11,7 +12,6 @@
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
 
-#include "AbilitySystemComponent.h"
 #include "GameplayEffect.h"
 
 AExplosiveActor::AExplosiveActor(const FObjectInitializer& ObjectInitializer)
@@ -53,27 +53,30 @@ void AExplosiveActor::PerformExplosion()
 
 	for (const FHitResult& Hit : HitOut)
 	{
-		const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-
-		if (Hit.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
+		if (IsValid(Hit.GetActor()))
 		{
-			APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
+			const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
-			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
+			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 			{
-				Player->LaunchCharacter(Velocity, true, true);
+				APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
 
-				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+				if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 				{
-					ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
+					Player->LaunchCharacter(Velocity, true, true);
+
+					if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+					{
+						ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
+					}
 				}
 			}
-		}
 
-		else if (Hit.GetActor()->IsRootComponentMovable())
-		{
-			Hit.GetComponent()->AddForce(Velocity);
-			Hit.GetComponent()->AddImpulse(Velocity);
+			else if (Hit.GetActor()->IsRootComponentMovable())
+			{
+				Hit.GetComponent()->AddForce(Velocity);
+				Hit.GetComponent()->AddImpulse(Velocity);
+			}
 		}
 	}
 
@@ -83,24 +86,19 @@ void AExplosiveActor::PerformExplosion()
 	}
 }
 
-void AExplosiveActor::ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetABSC)
+void AExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
 {
-	if (ensureMsgf(IsValid(TargetABSC) && TargetABSC->GetOwnerActor()->HasAuthority(), TEXT("%s have a invalid target"), *GetName()))
+	UGASAbilitySystemComponent* TargetGASC = Cast<UGASAbilitySystemComponent>(TargetABSC);
+	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{
 			return;
 		}
-
-		for (const TSubclassOf<UGameplayEffect>& Effect : ExplosionEffects)
+		
+		for (const FGameplayEffectGroupedData& Effect : ExplosionEffects)
 		{
-			TargetABSC->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
-				1.f, TargetABSC->MakeEffectContext());
+			TargetGASC->ApplyEffectGroupedDataToSelf(Effect);
 		}
 	}
-}
-
-bool AExplosiveActor::ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetABSC)
-{
-	return false;
 }

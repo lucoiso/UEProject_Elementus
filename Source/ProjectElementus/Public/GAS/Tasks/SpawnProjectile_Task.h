@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
+#include "Management/Data/GASAbilityData.h"
 #include "SpawnProjectile_Task.generated.h"
 
 class AProjectileActor;
@@ -30,7 +31,7 @@ public:
 			TSubclassOf<AProjectileActor> ClassToSpawn,
 			const FTransform SpawnTransform,
 			const FVector DirectionToFire,
-			const TArray<FGameplayEffectSpecHandle> EffectSpecsArray);
+			const TArray<FGameplayEffectGroupedData> EffectDataArray);
 
 	virtual void Activate() override;
 
@@ -44,5 +45,5 @@ protected:
 	FTransform ProjectileTransform;
 	FVector ProjectileFireDirection;
 	TSubclassOf<AProjectileActor> ProjectileClass;
-	TArray<FGameplayEffectSpecHandle> ProjectileEffectSpecs;
+	TArray<FGameplayEffectGroupedData> ProjectileEffectArr;
 };
