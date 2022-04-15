@@ -27,7 +27,7 @@ public:
 	{
 		return FPrimaryAssetId("Explosive Actor", GetFName());
 	}
-	
+
 	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
 		void PerformExplosion();
 

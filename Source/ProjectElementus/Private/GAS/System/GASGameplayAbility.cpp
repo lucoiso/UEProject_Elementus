@@ -265,7 +265,7 @@ void UGASGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APr
 	ABILITY_VLOG(this, Warning, TEXT("Spawning %s ability projectile."), *GetName());
 
 	USpawnProjectile_Task* SpawnProjectile_Task =
-		USpawnProjectile_Task::SpawnProjectile(this, ProjectileClass, ProjectileTransform, 
+		USpawnProjectile_Task::SpawnProjectile(this, ProjectileClass, ProjectileTransform,
 			ProjectileFireDirection, TargetAbilityEffects);
 
 	SpawnProjectile_Task->OnProjectileSpawn.AddDynamic(this, &UGASGameplayAbility::SpawnProjectile_Callback);

@@ -94,7 +94,7 @@ void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
 void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
-	
+
 	bIsFinished = true;
 
 	if (PhysicsHandle.IsValid() && IsValid(PhysicsHandle->GetGrabbedComponent()))

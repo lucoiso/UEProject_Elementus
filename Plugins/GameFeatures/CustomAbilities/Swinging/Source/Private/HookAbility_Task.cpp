@@ -114,7 +114,7 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 void UHookAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
-	
+
 	bIsFinished = true;
 
 	HitTarget.Reset();

@@ -95,7 +95,7 @@ void AExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
 		{
 			return;
 		}
-		
+
 		for (const FGameplayEffectGroupedData& Effect : ExplosionEffects)
 		{
 			TargetGASC->ApplyEffectGroupedDataToSelf(Effect);

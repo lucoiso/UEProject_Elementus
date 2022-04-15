@@ -126,7 +126,7 @@ void UTargeting_Task::OnTargetDataCancelledCallback(const FGameplayAbilityTarget
 void UTargeting_Task::OnDestroy(bool AbilityEnded)
 {
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
-	
+
 	bIsFinished = true;
 
 	if (TargetActor.IsValid())

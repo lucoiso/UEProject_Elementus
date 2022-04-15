@@ -26,7 +26,7 @@ void UCrouch_Ability::ActivateAbility
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
-	
+
 	Player->CanCrouch() && !Player->bIsCrouched ?
 		Player->Crouch() :
 		Player->UnCrouch();

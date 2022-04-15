@@ -12,7 +12,7 @@ UGASAbilitySystemComponent::UGASAbilitySystemComponent(const FObjectInitializer&
 }
 
 void UGASAbilitySystemComponent::ApplyEffectGroupedDataToSelf(FGameplayEffectGroupedData GroupedData)
-{	
+{
 	if (IsOwnerActorAuthoritative())
 	{
 		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
