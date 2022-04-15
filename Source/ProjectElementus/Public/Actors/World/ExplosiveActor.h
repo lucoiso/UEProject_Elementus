@@ -25,7 +25,7 @@ public:
 	{
 		return FPrimaryAssetId("Explosive Actor", GetFName());
 	}
-
+	
 	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
 		void PerformExplosion();
 
@@ -49,7 +49,7 @@ protected:
 
 private:
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom Functions | Behaviors")
-		void ApplyExplosibleEffect(UAbilitySystemComponent* TargetComp);
-	virtual void ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetComp);
-	bool ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetComp);
+		void ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC);
+	virtual void ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetABSC);
+	bool ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetABSC);
 };

@@ -83,9 +83,9 @@ void AExplosiveActor::PerformExplosion()
 	}
 }
 
-void AExplosiveActor::ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetComp)
+void AExplosiveActor::ApplyExplosibleEffect_Implementation(UAbilitySystemComponent* TargetABSC)
 {
-	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetName()))
+	if (ensureMsgf(IsValid(TargetABSC) && TargetABSC->GetOwnerActor()->HasAuthority(), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{
@@ -94,13 +94,13 @@ void AExplosiveActor::ApplyExplosibleEffect_Implementation(UAbilitySystemCompone
 
 		for (const TSubclassOf<UGameplayEffect>& Effect : ExplosionEffects)
 		{
-			TargetComp->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
-				1.f, TargetComp->MakeEffectContext());
+			TargetABSC->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
+				1.f, TargetABSC->MakeEffectContext());
 		}
 	}
 }
 
-bool AExplosiveActor::ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetComp)
+bool AExplosiveActor::ApplyExplosibleEffect_Validate(UAbilitySystemComponent* TargetABSC)
 {
 	return false;
 }

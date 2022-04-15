@@ -54,7 +54,7 @@ protected:
 
 private:
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Custom Functions | Behaviors")
-		void ApplyProjectileEffect(UAbilitySystemComponent* TargetComp);
-	void ApplyProjectileEffect_Implementation(UAbilitySystemComponent* TargetComp);
-	bool ApplyProjectileEffect_Validate(UAbilitySystemComponent* TargetComp);
+		void ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC);
+	void ApplyProjectileEffect_Implementation(UAbilitySystemComponent* TargetABSC);
+	bool ApplyProjectileEffect_Validate(UAbilitySystemComponent* TargetABSC);
 };

@@ -70,9 +70,9 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 	Destroy();
 }
 
-void AProjectileActor::ApplyProjectileEffect_Implementation(UAbilitySystemComponent* TargetComp)
+void AProjectileActor::ApplyProjectileEffect_Implementation(UAbilitySystemComponent* TargetABSC)
 {
-	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetName()))
+	if (ensureMsgf(IsValid(TargetABSC) && TargetABSC->GetOwnerActor()->HasAuthority(), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{
@@ -81,12 +81,12 @@ void AProjectileActor::ApplyProjectileEffect_Implementation(UAbilitySystemCompon
 
 		for (const FGameplayEffectSpecHandle& SpecHandle : DamageEffectSpecHandles)
 		{
-			TargetComp->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			TargetABSC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 		}
 	}
 }
 
-bool AProjectileActor::ApplyProjectileEffect_Validate(UAbilitySystemComponent* TargetComp)
+bool AProjectileActor::ApplyProjectileEffect_Validate(UAbilitySystemComponent* TargetABSC)
 {
 	return true;
 }
