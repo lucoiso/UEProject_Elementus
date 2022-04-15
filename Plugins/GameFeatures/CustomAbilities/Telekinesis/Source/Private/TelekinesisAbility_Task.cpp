@@ -69,8 +69,6 @@ void UTelekinesisAbility_Task::Activate()
 	}
 
 	bIsFinished = true;
-
-	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 	EndTask();
 }
 
@@ -92,14 +90,14 @@ void UTelekinesisAbility_Task::TickTask(const float DeltaTime)
 	else
 	{
 		bIsFinished = true;
-
-		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 		EndTask();
 	}
 }
 
 void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
+	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	
 	bIsFinished = true;
 
 	if (PhysicsHandle.IsValid() && IsValid(PhysicsHandle->GetGrabbedComponent()))
@@ -151,6 +149,5 @@ void UTelekinesisAbility_Task::ThrowObject()
 		}
 	}
 
-	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 	EndTask();
 }

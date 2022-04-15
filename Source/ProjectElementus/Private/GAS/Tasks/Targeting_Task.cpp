@@ -100,7 +100,6 @@ void UTargeting_Task::Activate()
 
 	bIsFinished = true;
 
-	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 	EndTask();
 }
 
@@ -121,12 +120,13 @@ void UTargeting_Task::OnTargetDataCancelledCallback(const FGameplayAbilityTarget
 		Cancelled.Broadcast(Data);
 	}
 
-	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 	EndTask();
 }
 
 void UTargeting_Task::OnDestroy(bool AbilityEnded)
 {
+	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	
 	bIsFinished = true;
 
 	if (TargetActor.IsValid())
@@ -168,7 +168,6 @@ void UTargeting_Task::TickTask(float DeltaTime)
 	{
 		bIsFinished = true;
 
-		UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 		EndTask();
 	}
 }
