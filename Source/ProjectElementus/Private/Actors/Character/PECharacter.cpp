@@ -57,7 +57,7 @@ void APECharacter::Landed(const FHitResult& Hit)
 
 	if (AbilitySystemComponent->HasMatchingGameplayTag(DoubleJumpTag))
 	{
-		const FGameplayAbilitySpec& AbilitySpec =
+		const FGameplayAbilitySpec AbilitySpec =
 			*AbilitySystemComponent->FindAbilitySpecFromInputID(
 				InputIDEnumerationClass->GetValueByName("Jump", EGetByNameFlags::CheckAuthoredName));
 

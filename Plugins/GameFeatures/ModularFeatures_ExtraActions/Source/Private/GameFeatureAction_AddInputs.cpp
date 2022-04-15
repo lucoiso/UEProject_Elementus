@@ -226,7 +226,7 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 					return;
 				}
 
-				const FInputBindingData& ActiveInputData = ActiveExtensions.FindRef(TargetActor);
+				const FInputBindingData ActiveInputData = ActiveExtensions.FindRef(TargetActor);
 
 #if __cplusplus > 201402L // Check if C++ > C++14
 				if constexpr (&ActiveInputData != nullptr)

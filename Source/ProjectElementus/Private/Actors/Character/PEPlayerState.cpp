@@ -106,7 +106,7 @@ void APEPlayerState::BeginPlay()
 
 		if (LevelingData.IsValid())
 		{
-			const FGASLevelingData& LevelingInfo = *LevelingData->FindRow<FGASLevelingData>(
+			const FGASLevelingData LevelingInfo = *LevelingData->FindRow<FGASLevelingData>(
 				FName(*FString::FromInt(Attributes->GetLevel())), "");
 
 #if __cplusplus > 201402L // Check if C++ > C++14
@@ -372,7 +372,7 @@ void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
 	if (ensureMsgf(Attributes.IsValid(), TEXT("%s have a invalid AttributeSet"), *GetName()) &&
 		ensureMsgf(LevelingData.IsValid(), TEXT("%s have a invalid LevelingData"), *GetName()))
 	{
-		const FGASLevelingData& LevelingInfo = *LevelingData->FindRow<FGASLevelingData>(
+		const FGASLevelingData LevelingInfo = *LevelingData->FindRow<FGASLevelingData>(
 			FName(*FString::FromInt(NewLevel)), "");
 
 #if __cplusplus > 201402L // Check if C++ > C++14
