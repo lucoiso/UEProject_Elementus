@@ -81,12 +81,11 @@ void UHook_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilit
 	if (Cast<APECharacterBase>(TargetHit->GetActor()))
 	{
 		FTimerDelegate TimerDelegate;
-		FTimerHandle TimerHandle;
-		TimerDelegate.BindLambda([this]() -> void
+		TimerDelegate.BindLambda([=]() -> void
 			{
 				EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
 			});
 
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime, false);
+		GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime, false);
 	}
 }
