@@ -92,7 +92,6 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 	if (bEndAbilityAfterActiveTime)
 	{
 		FTimerDelegate TimerDelegate;
-		FTimerHandle TimerHandle;
 		TimerDelegate.BindLambda([=]() -> void
 			{
 				if (IsActive())
@@ -101,7 +100,7 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 				}
 			});
 
-		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, AbilityActiveTime,
+		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime,
 			false);
 	}
 }
@@ -140,6 +139,11 @@ void UGASGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 			ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
 				EffectGroup.EffectClass, ActorInfo->AbilitySystemComponent.Get());
 		}
+	}
+
+	if (CancelationTimerHandle.IsValid())
+	{
+		CancelationTimerHandle.Invalidate();
 	}
 }
 
