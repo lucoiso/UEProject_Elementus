@@ -13,11 +13,11 @@ Inspired by some features from UE5's Valley of the Ancient sample, this plugin i
 5. Spawn Actors;
 
 **Example Project:**
-There's a project with already built functions using multiplayer that i created using this plugin: [Project Elementus](https://github.com/lucoiso/UEProject_Elementus)
+There's a project with already built functions using multiplayer that i created using this plugin: [Project Elementus](https://github.com/lucoiso/UEProject_Elementus)  
+**Post on Unreal Engine Forum:** [[FREE] ModularFeatures_ExtraActions plugin - Modular GAS, Enhanced Input and more](https://forums.unrealengine.com/t/free-modularfeatures-extraactions-plugin-modular-gas-enhanced-input-and-more/495400)  
+**Product in the Marketplace:** [Modular Game Features - Extra Actions in Code Plugins - UE Marketplace (unrealengine.com)](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions)
 
 **This project is being built on Unreal Engine 5**
-
-Post on Unreal Engine Forum: https://forums.unrealengine.com/t/free-modularfeatures-extraactions-plugin-modular-gas-enhanced-input-and-more/495400
 
 # Installation
 Just clone this repository or download the .zip file in the latest version and drop the files inside the 'Plugins/' folder of your project folder.
