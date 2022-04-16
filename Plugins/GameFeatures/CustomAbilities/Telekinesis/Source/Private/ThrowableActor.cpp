@@ -36,30 +36,31 @@ void AThrowableActor::ThrowSetup(AActor* Caller)
 
 void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	GetStaticMeshComponent()->AddImpulse(NormalImpulse.GetSafeNormal());
-
-	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacterBase>() && OtherActor != CallerActor.Get())
+	if (IsValid(OtherActor) && OtherActor != CallerActor.Get())
 	{
-		APECharacterBase* Player = Cast<APECharacterBase>(OtherActor);
-
-		if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
+		if (OtherActor->GetClass()->IsChildOf<APECharacterBase>())
 		{
-			constexpr float ImpulseMultiplier = 5.f;
+			APECharacterBase* Player = Cast<APECharacterBase>(OtherActor);
 
-			Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
-
-			if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 			{
-				ApplyThrowableEffect(Player->GetAbilitySystemComponent());
+				constexpr float ImpulseMultiplier = 5.f;
+
+				Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
+
+				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+				{
+					ApplyThrowableEffect(Player->GetAbilitySystemComponent());
+				}
 			}
 		}
-	}
-	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics())
-	{
-		OtherComp->AddImpulseAtLocation(NormalImpulse.GetSafeNormal(), Hit.ImpactPoint, Hit.BoneName);
-	}
+		else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics())
+		{
+			OtherComp->AddImpulseAtLocation(NormalImpulse.GetSafeNormal(), Hit.ImpactPoint, Hit.BoneName);
+		}
 
-	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
+		GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
+	}
 }
 
 void AThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)
