@@ -95,15 +95,15 @@ void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName Ev
 		{
 			if (!Entry.EffectClass.IsNull())
 			{
-				ApplyEffects(Owner, Entry);
+				AddEffects(Owner, Entry);
 			}
 		}
 	}
 }
 
-void UGameFeatureAction_AddEffects::ApplyEffects(AActor* TargetActor, const FEffectStackedData& Effect)
+void UGameFeatureAction_AddEffects::AddEffects(AActor* TargetActor, const FEffectStackedData& Effect)
 {
-	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && !Effect.EffectClass.IsNull())
+	if (IsValid(TargetActor) && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Adding effect %s level %u to Actor %s with %u SetByCaller params."),
@@ -143,7 +143,7 @@ void UGameFeatureAction_AddEffects::ApplyEffects(AActor* TargetActor, const FEff
 
 void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 {
-	if (IsValid(TargetActor))
+	if (IsValid(TargetActor) && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Removing effects from Actor %s."), *TargetActor->GetName());

@@ -112,13 +112,8 @@ private:
 	void HandleActorExtension(AActor* Owner, FName EventName);
 	void ResetExtension();
 
-	UFUNCTION(Client, Reliable)
-		void AddActorInputs(AActor* TargetActor);
-	void AddActorInputs_Implementation(AActor* TargetActor);
-
-	UFUNCTION(Client, Reliable)
-		void RemoveActorInputs(AActor* TargetActor);
-	void RemoveActorInputs_Implementation(AActor* TargetActor);
+	void AddActorInputs(AActor* TargetActor);
+	void RemoveActorInputs(AActor* TargetActor);
 
 	struct FInputBindingData
 	{

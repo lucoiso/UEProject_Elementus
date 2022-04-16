@@ -46,13 +46,8 @@ private:
 	void HandleActorExtension(AActor* Owner, FName EventName);
 	void ResetExtension();
 
-	UFUNCTION(NetMulticast, Reliable)
-		void AddAttribute(AActor* TargetActor);
-	void AddAttribute_Implementation(AActor* TargetActor);
-
-	UFUNCTION(NetMulticast, Reliable)
-		void RemoveAttribute(AActor* TargetActor);
-	void RemoveAttribute_Implementation(AActor* TargetActor);
+	void AddAttribute(AActor* TargetActor);
+	void RemoveAttribute(AActor* TargetActor);
 
 	TMap<TWeakObjectPtr<AActor>, TWeakObjectPtr<UAttributeSet>> ActiveExtensions;
 	TArray<TSharedPtr<FComponentRequestHandle>> ActiveRequests;

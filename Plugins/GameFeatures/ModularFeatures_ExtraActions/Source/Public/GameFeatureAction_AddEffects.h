@@ -66,7 +66,7 @@ private:
 	void HandleActorExtension(AActor* Owner, FName EventName);
 	void ResetExtension();
 
-	void ApplyEffects(AActor* TargetActor, const FEffectStackedData& Effect);
+	void AddEffects(AActor* TargetActor, const FEffectStackedData& Effect);
 	void RemoveEffects(AActor* TargetActor);
 
 	TMap<TWeakObjectPtr<AActor>, TArray<FActiveGameplayEffectHandle>> ActiveExtensions;

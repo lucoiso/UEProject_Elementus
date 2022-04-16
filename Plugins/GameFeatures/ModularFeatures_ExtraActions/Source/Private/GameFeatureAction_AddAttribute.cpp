@@ -91,13 +91,16 @@ void UGameFeatureAction_AddAttribute::HandleActorExtension(AActor* Owner, FName 
 			}
 		}
 
-		AddAttribute(Owner);
+		if (!Attribute.IsNull())
+		{
+			AddAttribute(Owner);
+		}
 	}
 }
 
-void UGameFeatureAction_AddAttribute::AddAttribute_Implementation(AActor* TargetActor)
+void UGameFeatureAction_AddAttribute::AddAttribute(AActor* TargetActor)
 {
-	if (IsValid(TargetActor) && !Attribute.IsNull() && TargetActor->GetLocalRole() == ROLE_Authority)
+	if (IsValid(TargetActor) && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Adding attribute %s to Actor %s."), *Attribute.GetAssetName(),
@@ -133,9 +136,9 @@ void UGameFeatureAction_AddAttribute::AddAttribute_Implementation(AActor* Target
 	}
 }
 
-void UGameFeatureAction_AddAttribute::RemoveAttribute_Implementation(AActor* TargetActor)
+void UGameFeatureAction_AddAttribute::RemoveAttribute(AActor* TargetActor)
 {
-	if (IsValid(TargetActor) && !Attribute.IsNull() && TargetActor->GetLocalRole() == ROLE_Authority)
+	if (IsValid(TargetActor) && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
 		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Removing attribute %s from Actor %s."), *Attribute.GetAssetName(),

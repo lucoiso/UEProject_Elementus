@@ -45,18 +45,14 @@ public:
 		TArray<FActorSpawnSettings> SpawnSettings;
 
 protected:
+	virtual void OnGameFeatureActivating(FGameFeatureActivatingContext& Context) override;
 	virtual void OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context) override;
 	virtual void AddToWorld(const FWorldContext& WorldContext) override;
 
-	UFUNCTION(Server, Reliable)
-		void SpawnActors(UWorld* WorldReference);
-	void SpawnActors_Implementation(UWorld* WorldReference);
-
-	UFUNCTION(Server, Reliable)
-		void DestroyActors();
-	void DestroyActors_Implementation();
-
 private:
+	void SpawnActors(UWorld* WorldReference);
+	void DestroyActors();
+	
 	void ResetExtension();
 
 	TArray<TWeakObjectPtr<AActor>> SpawnedActors;

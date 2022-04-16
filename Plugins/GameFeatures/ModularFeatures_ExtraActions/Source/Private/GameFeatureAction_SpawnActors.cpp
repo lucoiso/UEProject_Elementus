@@ -5,6 +5,16 @@
 #include "GameFeatureAction_SpawnActors.h"
 #include "Components/GameFrameworkComponentManager.h"
 
+void UGameFeatureAction_SpawnActors::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
+{
+	if (!ensureAlways(SpawnedActors.IsEmpty()))
+	{
+		ResetExtension();
+	}
+
+	Super::OnGameFeatureActivating(Context);
+}
+
 void UGameFeatureAction_SpawnActors::OnGameFeatureDeactivating(FGameFeatureDeactivatingContext& Context)
 {
 	Super::OnGameFeatureDeactivating(Context);
@@ -30,7 +40,7 @@ void UGameFeatureAction_SpawnActors::AddToWorld(const FWorldContext& WorldContex
 	}
 }
 
-void UGameFeatureAction_SpawnActors::SpawnActors_Implementation(UWorld* WorldReference)
+void UGameFeatureAction_SpawnActors::SpawnActors(UWorld* WorldReference)
 {
 	for (const FActorSpawnSettings& Settings : SpawnSettings)
 	{
@@ -43,7 +53,7 @@ void UGameFeatureAction_SpawnActors::SpawnActors_Implementation(UWorld* WorldRef
 	}
 }
 
-void UGameFeatureAction_SpawnActors::DestroyActors_Implementation()
+void UGameFeatureAction_SpawnActors::DestroyActors()
 {
 	for (const TWeakObjectPtr<AActor>& ActorPtr : SpawnedActors)
 	{

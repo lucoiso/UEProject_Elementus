@@ -77,13 +77,8 @@ private:
 	void HandleActorExtension(AActor* Owner, FName EventName);
 	void ResetExtension();
 
-	UFUNCTION(Server, Reliable)
-		void AddActorAbilities(AActor* TargetActor, const FAbilityMapping& Ability);
-	void AddActorAbilities_Implementation(AActor* TargetActor, const FAbilityMapping& Ability);
-
-	UFUNCTION(Server, Reliable)
-		void RemoveActorAbilities(AActor* TargetActor);
-	void RemoveActorAbilities_Implementation(AActor* TargetActor);
+	void AddActorAbilities(AActor* TargetActor, const FAbilityMapping& Ability);
+	void RemoveActorAbilities(AActor* TargetActor);
 
 	struct FActiveAbilityData
 	{
