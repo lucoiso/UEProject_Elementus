@@ -150,11 +150,8 @@ void APECharacterBase::BeginPlay()
 
 void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (EndPlayReason != EEndPlayReason::Destroyed)
-	{
-		UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-	}
-
+	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
+	
 	Super::EndPlay(EndPlayReason);
 }
 
