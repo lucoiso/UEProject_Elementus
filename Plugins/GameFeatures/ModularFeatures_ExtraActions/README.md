@@ -4,7 +4,7 @@
 
 ## The plugin
 
-Inspired by some features from UE5's Valley of the Ancient sample, this plugin integrates GAS and Enhanced Input to the existing Game Features and Modular plugins from Unreal Engine, extending some Feature Actions to:
+This plugin integrates GAS and Enhanced Input to the existing Game Features and Modular plugins from Unreal Engine, extending the plugin to add some feature actions:
 
 1. Add Attribute;
 2. Add Gameplay Abilities;
@@ -12,14 +12,11 @@ Inspired by some features from UE5's Valley of the Ancient sample, this plugin i
 4. Add Enhanced Input Mappings;
 5. Spawn Actors;
 
-**This project is being built on Unreal Engine 5**
-
 ## Links
 
-**Example Project:** [Project Elementus](https://github.com/lucoiso/UEProject_Elementus) - _Work in Progress but already using this plugin_  
-**Marketplace:** [Modular Game Features - Extra Actions in Code Plugins - UE Marketplace (unrealengine.com)](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions)  
+**Marketplace:** [Modular Game Features - Extra Actions in Code Plugins - UE Marketplace](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions)  
 **Forum:** [[FREE] ModularFeatures_ExtraActions plugin - Modular GAS, Enhanced Input and more](https://forums.unrealengine.com/t/free-modularfeatures-extraactions-plugin-modular-gas-enhanced-input-and-more/495400)  
-
+**Example Project:** [Project Elementus](https://github.com/lucoiso/UEProject_Elementus) - _Work in Progress but already using this plugin_  
 
 # Installation
 Just clone this repository or download the .zip file in the latest version and drop the files inside the 'Plugins/' folder of your project folder.
