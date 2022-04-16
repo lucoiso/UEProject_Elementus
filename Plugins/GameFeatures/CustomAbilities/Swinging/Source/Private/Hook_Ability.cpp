@@ -28,10 +28,8 @@ void UHook_Ability::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	FTargetActorSpawnParams TargetingParams;
-	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
-
-	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
+	ActivateWaitMontageTask();
+	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
 }
 
 void UHook_Ability::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -40,6 +38,14 @@ void UHook_Ability::InputReleased(const FGameplayAbilitySpecHandle Handle, const
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+}
+
+void UHook_Ability::WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
+{
+	FTargetActorSpawnParams TargetingParams;
+	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
+	
+	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
 }
 
 void UHook_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
