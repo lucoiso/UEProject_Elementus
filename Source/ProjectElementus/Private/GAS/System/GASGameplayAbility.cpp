@@ -325,10 +325,18 @@ FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromAc
 	return FGameplayAbilityTargetDataHandle();
 }
 
-void UGASGameplayAbility::ActivateWaitMontageTask()
+void UGASGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, const bool bRandomSection)
 {
+	FName MontageSectionName = MontageSection;
+	
+	if (bRandomSection)
+	{
+		MontageSectionName = 
+			AbilityAnimation->GetSectionName(FMath::FloorToInt32<double>(FMath::RandRange(0, AbilityAnimation->CompositeSections.Num())));
+	}
+
 	UAbilityTask_PlayMontageAndWait* AbilityTask_PlayMontageAndWait =
-		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, "WaitMontageTask", AbilityAnimation);
+		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, "WaitMontageTask", AbilityAnimation, 1.f, MontageSectionName);
 
 	AbilityTask_PlayMontageAndWait->OnBlendOut.AddDynamic(this, &UGASGameplayAbility::WaitMontage_Callback);
 	AbilityTask_PlayMontageAndWait->OnInterrupted.AddDynamic(this, &UGASGameplayAbility::K2_EndAbility);

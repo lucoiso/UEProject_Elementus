@@ -97,7 +97,7 @@ protected:
 
 	/* Perform a animation montage and call WaitMontage_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Delegates")
-		void ActivateWaitMontageTask();
+		void ActivateWaitMontageTask(const FName MontageSection = NAME_None, const bool bRandomSection = false);
 
 	/* Performs targeting and call WaitTargetData_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Delegates")
