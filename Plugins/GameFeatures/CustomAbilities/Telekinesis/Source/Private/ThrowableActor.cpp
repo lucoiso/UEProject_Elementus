@@ -5,7 +5,7 @@
 #include "ThrowableActor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Actors/Character/PECharacterBase.h"
-#include "AbilitySystemComponent.h"
+#include "GAS/System/GASAbilitySystemComponent.h"
 
 AThrowableActor::AThrowableActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -61,24 +61,19 @@ void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* 
 	}
 }
 
-void AThrowableActor::ApplyThrowableEffect_Implementation(UAbilitySystemComponent* TargetComp)
+void AThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)
 {
-	if (ensureMsgf(IsValid(TargetComp), TEXT("%s have a invalid target"), *GetName()))
+	UGASAbilitySystemComponent* TargetGASC = Cast<UGASAbilitySystemComponent>(TargetABSC);
+	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{
 			return;
 		}
 
-		for (const TSubclassOf<UGameplayEffect>& Effect : HitEffects)
+		for (const FGameplayEffectGroupedData& Effect : HitEffects)
 		{
-			TargetComp->ApplyGameplayEffectToSelf(Effect.GetDefaultObject(),
-				1.f, TargetComp->MakeEffectContext());
+			TargetGASC->ApplyEffectGroupedDataToSelf(Effect);
 		}
 	}
-}
-
-bool AThrowableActor::ApplyThrowableEffect_Validate(UAbilitySystemComponent* TargetComp)
-{
-	return true;
 }
