@@ -67,6 +67,7 @@ void UHook_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilit
 
 	UHookAbility_Task* AbilityTask = UHookAbility_Task::HookAbilityMovement(
 		this, FName("HookTask"), *TargetHit);
+	
 	AbilityTask->ReadyForActivation();
 
 	FGameplayCueParameters Params;
@@ -83,7 +84,10 @@ void UHook_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilit
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindLambda([=]() -> void
 			{
-				EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+				if (IsActive())
+				{
+					EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+				}
 			});
 
 		GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime, false);
