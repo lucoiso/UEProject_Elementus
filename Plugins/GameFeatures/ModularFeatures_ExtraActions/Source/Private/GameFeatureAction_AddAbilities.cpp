@@ -66,7 +66,7 @@ void UGameFeatureAction_AddAbilities::AddToWorld(const FWorldContext& WorldConte
 
 void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	/*UE_LOG(LogGameplayExtraFeatures, Warning,
+	/*UE_LOG(LogGameplayFeaturesExtraActions, Display,
 		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
 		   *Owner->GetName());*/
 
@@ -110,7 +110,7 @@ void UGameFeatureAction_AddAbilities::AddActorAbilities_Implementation(AActor* T
 {
 	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
-		UE_LOG(LogGameplayExtraFeatures, Warning,
+		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Adding ability %s to Actor %s."), *Ability.AbilityClass.GetAssetName(),
 			*TargetActor->GetName());
 
@@ -182,7 +182,7 @@ void UGameFeatureAction_AddAbilities::RemoveActorAbilities_Implementation(AActor
 {
 	if (IsValid(TargetActor) && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
-		UE_LOG(LogGameplayExtraFeatures, Warning,
+		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Removing associated abilities from Actor %s."),
 			*TargetActor->GetName());
 

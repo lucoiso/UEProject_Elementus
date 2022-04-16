@@ -7,7 +7,7 @@
 #include "Engine/World.h"
 #include "Engine/Engine.h"
 
-DEFINE_LOG_CATEGORY(LogGameplayExtraFeatures);
+DEFINE_LOG_CATEGORY(LogGameplayFeaturesExtraActions);
 
 void UGameFeatureAction_WorldActionBase::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {

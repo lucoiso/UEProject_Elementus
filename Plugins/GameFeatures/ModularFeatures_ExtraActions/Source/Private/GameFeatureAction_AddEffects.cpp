@@ -62,7 +62,7 @@ void UGameFeatureAction_AddEffects::AddToWorld(const FWorldContext& WorldContext
 
 void UGameFeatureAction_AddEffects::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	/*UE_LOG(LogGameplayExtraFeatures, Warning,
+	/*UE_LOG(LogGameplayFeaturesExtraActions, Display,
 		   TEXT("Event %s sended by Actor %s for effects management."), *EventName.ToString(),
 		   *Owner->GetName());*/
 
@@ -105,7 +105,7 @@ void UGameFeatureAction_AddEffects::ApplyEffects(AActor* TargetActor, const FEff
 {
 	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && !Effect.EffectClass.IsNull())
 	{
-		UE_LOG(LogGameplayExtraFeatures, Warning,
+		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Adding effect %s level %u to Actor %s with %u SetByCaller params."),
 			*Effect.EffectClass.GetAssetName(), Effect.EffectLevel,
 			*TargetActor->GetName(), Effect.SetByCallerParams.Num());
@@ -145,7 +145,7 @@ void UGameFeatureAction_AddEffects::RemoveEffects(AActor* TargetActor)
 {
 	if (IsValid(TargetActor))
 	{
-		UE_LOG(LogGameplayExtraFeatures, Warning,
+		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Removing effects from Actor %s."), *TargetActor->GetName());
 
 		TArray<FActiveGameplayEffectHandle> ActiveEffects = ActiveExtensions.FindRef(TargetActor);

@@ -66,7 +66,7 @@ void UGameFeatureAction_AddInputs::AddToWorld(const FWorldContext& WorldContext)
 
 void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	/*UE_LOG(LogGameplayExtraFeatures, Warning,
+	/*UE_LOG(LogGameplayFeaturesExtraActions, Display,
 		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
 		   *Owner->GetName());*/
 
@@ -106,7 +106,7 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 {
 	if (IsValid(TargetActor) && TargetActor->IsActorInitialized() && !InputMappingContext.IsNull())
 	{
-		UE_LOG(LogGameplayExtraFeatures, Warning,
+		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Adding Enhanced Input Mapping %s to Actor %s."), *InputMappingContext.GetAssetName(),
 			*TargetActor->GetName());
 
@@ -160,7 +160,7 @@ void UGameFeatureAction_AddInputs::AddActorInputs_Implementation(AActor* TargetA
 				{
 					for (const FInputMappingStack& InputData : ActionsBindings)
 					{
-						UE_LOG(LogGameplayExtraFeatures, Warning,
+						UE_LOG(LogGameplayFeaturesExtraActions, Display,
 							TEXT("Binding Action Input %s to Actor %s."), *InputData.ActionInput.GetAssetName(),
 							*TargetActor->GetName());
 
@@ -206,7 +206,7 @@ void UGameFeatureAction_AddInputs::RemoveActorInputs_Implementation(AActor* Targ
 {
 	if (IsValid(TargetActor) && !InputMappingContext.IsNull())
 	{
-		UE_LOG(LogGameplayExtraFeatures, Warning,
+		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Removing Enhanced Input Mapping %s from Actor %s."), *InputMappingContext.GetAssetName(),
 			*TargetActor->GetName());
 

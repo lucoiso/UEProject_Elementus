@@ -62,7 +62,7 @@ void UGameFeatureAction_AddAttribute::AddToWorld(const FWorldContext& WorldConte
 
 void UGameFeatureAction_AddAttribute::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	/*UE_LOG(LogGameplayExtraFeatures, Warning,
+	/*UE_LOG(LogGameplayFeaturesExtraActions, Display,
 		   TEXT("Event %s sended by Actor %s for attribute management."), *EventName.ToString(),
 		   *Owner->GetName());*/
 
@@ -99,7 +99,7 @@ void UGameFeatureAction_AddAttribute::AddAttribute_Implementation(AActor* Target
 {
 	if (IsValid(TargetActor) && !Attribute.IsNull() && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
-		UE_LOG(LogGameplayExtraFeatures, Warning,
+		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Adding attribute %s to Actor %s."), *Attribute.GetAssetName(),
 			*TargetActor->GetName());
 
@@ -137,7 +137,7 @@ void UGameFeatureAction_AddAttribute::RemoveAttribute_Implementation(AActor* Tar
 {
 	if (IsValid(TargetActor) && !Attribute.IsNull() && TargetActor->GetLocalRole() == ROLE_Authority)
 	{
-		UE_LOG(LogGameplayExtraFeatures, Warning,
+		UE_LOG(LogGameplayFeaturesExtraActions, Display,
 			TEXT("Removing attribute %s from Actor %s."), *Attribute.GetAssetName(),
 			*TargetActor->GetName());
 
@@ -156,7 +156,7 @@ void UGameFeatureAction_AddAttribute::RemoveAttribute_Implementation(AActor* Tar
 
 				AbilitySystemComponent->ForceReplication();
 
-				UE_LOG(LogGameplayExtraFeatures, Warning, TEXT("Attribute %s removed from Actor %s."),
+				UE_LOG(LogGameplayFeaturesExtraActions, Display, TEXT("Attribute %s removed from Actor %s."),
 					*Attribute.GetAssetName(), *TargetActor->GetName());
 			}
 		}

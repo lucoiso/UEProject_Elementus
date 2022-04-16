@@ -12,7 +12,7 @@
 class UGameInstance;
 struct FWorldContext;
 
-DECLARE_LOG_CATEGORY_EXTERN(LogGameplayExtraFeatures, Display, All);
+DECLARE_LOG_CATEGORY_EXTERN(LogGameplayFeaturesExtraActions, Display, All);
 
 UENUM(BlueprintType, Category = "MF Extra Actions | Enums")
 enum class EControllerOwner :uint8
