@@ -31,16 +31,12 @@ void AThrowableActor::ThrowSetup(AActor* Caller)
 	CallerActor.Reset();
 	CallerActor = Caller;
 
-	if (!GetStaticMeshComponent()->OnComponentHit.IsBound())
-	{
-		GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &AThrowableActor::OnThrowableHit);
-	}
+	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &AThrowableActor::OnThrowableHit);
 }
 
 void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
-	GetStaticMeshComponent()->AddForceAtLocation(NormalImpulse, Hit.ImpactPoint);
+	GetStaticMeshComponent()->AddImpulse(NormalImpulse.GetSafeNormal());
 
 	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacterBase>() && OtherActor != CallerActor.Get())
 	{
@@ -51,7 +47,6 @@ void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* 
 			constexpr float ImpulseMultiplier = 5.f;
 
 			Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
-			GetStaticMeshComponent()->AddImpulse(NormalImpulse.GetSafeNormal());
 
 			if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 			{
@@ -59,6 +54,12 @@ void AThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* 
 			}
 		}
 	}
+	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics())
+	{
+		OtherComp->AddImpulseAtLocation(NormalImpulse.GetSafeNormal(), Hit.ImpactPoint, Hit.BoneName);
+	}
+
+	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
 }
 
 void AThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)
