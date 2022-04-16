@@ -239,7 +239,7 @@ protected:
 	/* Remove the cooldown effect */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const;
-
-	private:
-		FTimerHandle CancelationTimerHandle;
+	
+	/* Shared Timer Handle that is actually used with bEndAbilityAfterActiveTime */
+	FTimerHandle CancelationTimerHandle;
 };
