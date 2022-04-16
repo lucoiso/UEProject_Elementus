@@ -97,7 +97,7 @@ void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 	bIsFinished = true;
 
-	if (PhysicsHandle.IsValid() && IsValid(PhysicsHandle->GetGrabbedComponent()))
+	if (PhysicsHandle.IsValid())
 	{
 		PhysicsHandle->ReleaseComponent();
 	}
