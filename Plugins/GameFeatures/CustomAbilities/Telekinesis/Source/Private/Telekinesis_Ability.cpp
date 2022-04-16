@@ -30,7 +30,7 @@ void UTelekinesis_Ability::ActivateAbility
 
 	FTargetActorSpawnParams TargetingParams;
 	TargetingParams.TargetFilter.RequiredActorClass = AThrowableActor::StaticClass();
-	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
+	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("head");
 
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
 }
