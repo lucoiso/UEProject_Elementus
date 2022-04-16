@@ -100,6 +100,11 @@ void UTelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 	if (PhysicsHandle.IsValid())
 	{
 		PhysicsHandle->ReleaseComponent();
+
+		if (IsValid(PhysicsHandle->GetGrabbedComponent()))
+		{
+			PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
+		}
 	}
 
 	PhysicsHandle.Reset();
