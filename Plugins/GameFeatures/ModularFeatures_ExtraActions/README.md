@@ -2,7 +2,7 @@
 
 ![image](https://user-images.githubusercontent.com/77353979/163046114-e8f33b34-456c-47a2-942a-1cbffcfcf6b6.png)
 
-## The plugin:
+## The plugin
 
 Inspired by some features from UE5's Valley of the Ancient sample, this plugin integrates GAS and Enhanced Input to the existing Game Features and Modular plugins from Unreal Engine, extending some Feature Actions to:
 
@@ -12,27 +12,29 @@ Inspired by some features from UE5's Valley of the Ancient sample, this plugin i
 4. Add Enhanced Input Mappings;
 5. Spawn Actors;
 
-**Example Project:**
-There's a project with already built functions using multiplayer that i created using this plugin: [Project Elementus](https://github.com/lucoiso/UEProject_Elementus)  
-**Post on Unreal Engine Forum:** [[FREE] ModularFeatures_ExtraActions plugin - Modular GAS, Enhanced Input and more](https://forums.unrealengine.com/t/free-modularfeatures-extraactions-plugin-modular-gas-enhanced-input-and-more/495400)  
-**Product in the Marketplace:** [Modular Game Features - Extra Actions in Code Plugins - UE Marketplace (unrealengine.com)](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions)
-
 **This project is being built on Unreal Engine 5**
+
+## Links
+
+**Example Project:** [Project Elementus](https://github.com/lucoiso/UEProject_Elementus) - _Work in Progress but already using this plugin_  
+**Marketplace:** [Modular Game Features - Extra Actions in Code Plugins - UE Marketplace (unrealengine.com)](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions)  
+**Forum:** [[FREE] ModularFeatures_ExtraActions plugin - Modular GAS, Enhanced Input and more](https://forums.unrealengine.com/t/free-modularfeatures-extraactions-plugin-modular-gas-enhanced-input-and-more/495400)  
+
 
 # Installation
 Just clone this repository or download the .zip file in the latest version and drop the files inside the 'Plugins/' folder of your project folder.
 Note that if your project doesn't have a 'Plugins' folder, you can create one.
 
-# Documentation:
+# Documentation
 
-## Initial Setup - Ability Binding:
+## Initial Setup - Ability Binding
 To bind a ability input, implement the **AbilityInputBinding (C++: IAbilityInputBinding)** interface inside your **pawn or controller class** and implement the **SetupAbilityInputBinding** and **RemoveAbilityInputBinding** that comes with the AbilityInputBinding interface. The plugin will call these functions to bind the abilities.  
 _Note that functions that come by interfaces doesn't have a body, you will need to create them._  
 
-## Initial Setup - Ability Binding:
+## Initial Setup - Add/Remove Framework Receiver
 Classes that can receive the framework need to send themselves as Game Framework Component Receiver and when they are ready to receive the framework, send the Game ActorReadyGame Framework Component Extension Event.
 
-C++ Functions:
+C++ Functions
 
 > Add Receiver:  
 > ```UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);```
