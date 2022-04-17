@@ -41,6 +41,11 @@ void UHookAbility_Task::Activate()
 
 			if (IsValid(HitDataHandle.GetActor()))
 			{
+				if (IsValid(HitDataHandle.GetComponent()) && HitDataHandle.GetComponent()->IsSimulatingPhysics())
+				{
+					HitDataHandle.GetComponent()->WakeAllRigidBodies();
+				}
+
 				if (ShouldBroadcastAbilityTaskDelegates())
 				{
 					OnHooking.ExecuteIfBound(true);
@@ -87,9 +92,6 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 		{
 			const FVector HookForce = Difference * (DeltaTime * 5000.f);
 			const FVector CharacterForce = FVector(HookForce.X * 0.5f, HookForce.Y * 0.5f, HookForce.Z);
-
-			GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "HookForce: " + HookForce.ToString());
-			GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "CharacterForce: " + CharacterForce.ToString());
 
 			HookOwner->GetCharacterMovement()->AddForce(CharacterForce);
 
