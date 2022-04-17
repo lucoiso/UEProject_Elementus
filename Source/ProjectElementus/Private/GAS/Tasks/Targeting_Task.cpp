@@ -68,6 +68,7 @@ void UTargeting_Task::Activate()
 			{
 				TargetActor->MasterPC = Ability->GetCurrentActorInfo()->PlayerController.Get();
 				TargetActor->bDestroyOnConfirmation = TargetingParams.bDestroyOnConfirmation;
+				TargetActor->ShouldProduceTargetDataOnServer = true;
 
 				if (ShouldBroadcastAbilityTaskDelegates())
 				{
