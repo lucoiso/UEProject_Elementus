@@ -32,7 +32,7 @@ void UHookAbility_Task::Activate()
 		HookOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
 
 		if (ensureMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
-		{
+		{			
 			HitTarget = Cast<APECharacterBase>(HitDataHandle.GetActor());
 			if (!HitTarget.IsValid())
 			{
@@ -70,44 +70,44 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 	}
 
 	Super::TickTask(DeltaTime);
-
-	FVector HookLocation = HitDataHandle.Location;
-
-	const float Multiplier = (2.f + DeltaTime);
-
-	if (IsValid(HitDataHandle.GetActor()) &&
-		HitDataHandle.GetActor()->IsRootComponentMovable() &&
-		HitDataHandle.GetActor()->GetRootComponent()->IsSimulatingPhysics())
+	
+	if (IsValid(HitDataHandle.GetActor()))
 	{
-		HookLocation = HitDataHandle.GetActor()->GetActorLocation();
+		const bool bIsTargetMovableAndSimulatingPhysics =
+			HitDataHandle.GetActor()->IsRootComponentMovable() &&
+			HitDataHandle.GetActor()->GetRootComponent()->IsSimulatingPhysics();
+		
+		const FVector HookLocationToUse = 
+			bIsTargetMovableAndSimulatingPhysics ? 
+			HitDataHandle.GetActor()->GetActorLocation() : 
+			HitDataHandle.Location;
 
-		if (!HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
+		const FVector Difference = HookLocationToUse - HookOwner->GetActorLocation();
+		if (Difference.Size() >= 500.f)
 		{
-			HitDataHandle.GetComponent()->AddForce(
-				Multiplier * (HookOwner->GetActorLocation() - HitDataHandle.GetActor()->GetActorLocation()));
+			const FVector HookForce = Difference * (DeltaTime * 5000.f);
+			const FVector CharacterForce = FVector(HookForce.X * 0.5f, HookForce.Y * 0.5f, HookForce.Z);
+
+			GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "HookForce: " + HookForce.ToString());
+			GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Yellow, "CharacterForce: " + CharacterForce.ToString());
+
+			HookOwner->GetCharacterMovement()->AddForce(CharacterForce);
+
+			if (bIsTargetMovableAndSimulatingPhysics && !HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
+			{
+				HitDataHandle.GetComponent()->AddForce(-1.f * HookForce);
+			}
+			
+			else if (HitTarget.IsValid())
+			{
+				HitTarget->GetCharacterMovement()->AddForce(-1.f * CharacterForce);
+			}
 		}
 	}
-
-	const FVector Dif = HookLocation - HookOwner->GetActorLocation();
-
-	if (Dif.Size() <= 250.f)
-	{
-		const float Dot = FVector::DotProduct(Dif, HookOwner->GetVelocity());
-		const FVector HandleForce = Dif.GetSafeNormal() * Dot * (Multiplier * -1.f);
-
-		HookOwner->GetCharacterMovement()->AddForce(HandleForce);
-	}
-
 	else
 	{
-		const FVector HookForce = FVector(0.75f, 0.75f, 1.f) * Dif.GetClampedToMaxSize(17.5f) * Multiplier;
-
-		if (HitTarget.IsValid())
-		{
-			HitTarget->GetCharacterMovement()->AddForce(-1.f * HookForce);
-		}
-
-		HookOwner->GetCharacterMovement()->AddForce(HookForce);
+		bIsFinished = true;
+		EndTask();
 	}
 }
 
