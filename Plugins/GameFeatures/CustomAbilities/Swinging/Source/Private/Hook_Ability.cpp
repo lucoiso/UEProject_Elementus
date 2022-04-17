@@ -28,7 +28,7 @@ void UHook_Ability::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	ActivateWaitMontageTask();
+	ActivateWaitMontageTask(NAME_None, 1.25f);
 	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
 }
 
