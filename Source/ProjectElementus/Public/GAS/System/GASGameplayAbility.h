@@ -185,7 +185,7 @@ protected:
 
 	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromSingleHitResult(const FHitResult HitResult);
 
-	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromMultipleHitResults(
+	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromHitResultArray(
 		const TArray<FHitResult> HitResults);
 
 	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);

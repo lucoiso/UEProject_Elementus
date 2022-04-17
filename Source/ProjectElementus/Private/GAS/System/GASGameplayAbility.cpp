@@ -12,6 +12,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitConfirmCancel.h"
 #include "Abilities/Tasks/AbilityTask_WaitCancel.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
+#include "Abilities/Tasks/AbilityTask_WaitTargetData.h"
 #include "Abilities/Tasks/AbilityTask_SpawnActor.h"
 
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
@@ -301,7 +302,7 @@ FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromSi
 	return TargetData;
 }
 
-FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromMultipleHitResults(
+FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandleFromHitResultArray(
 	const TArray<FHitResult> HitResults)
 {
 	FGameplayAbilityTargetDataHandle TargetData;
@@ -365,14 +366,49 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 
 	TargetParameters.Range = AbilityMaxRange;
 
-	UTargeting_Task* AbilityTask_WaitTargetData =
-		UTargeting_Task::StartTargetingAndWaitData(this, "WaitTargetDataTask", TargetingConfirmation,
-			TargetActorClass, TargetParameters);
+	UAbilityTask_WaitTargetData* AbilityTask_WaitTargetData =
+		UAbilityTask_WaitTargetData::WaitTargetData(this, "WaitTargetDataTask", TargetingConfirmation,
+			TargetActorClass);
 
-	AbilityTask_WaitTargetData->Cancelled.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
-	AbilityTask_WaitTargetData->ValidData.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
+	AGameplayAbilityTargetActor* TargetActor = nullptr;
+	if (AbilityTask_WaitTargetData->BeginSpawningActor(this, TargetActorClass, TargetActor))
+	{
+		TargetActor->StartLocation = TargetParameters.StartLocation;
+		TargetActor->ReticleClass = TargetParameters.ReticleClass;
+		TargetActor->ReticleParams = TargetParameters.ReticleParams;
+		TargetActor->bDebug = TargetParameters.bDebug;
 
-	AbilityTask_WaitTargetData->ReadyForActivation();
+		FGameplayTargetDataFilterHandle FilterHandle;
+		FilterHandle.Filter = MakeShared<FGameplayTargetDataFilter>(TargetParameters.TargetFilter);
+		TargetActor->Filter = FilterHandle;
+
+		if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_Trace>())
+		{
+			AGameplayAbilityTargetActor_Trace* TraceObj = Cast<AGameplayAbilityTargetActor_Trace>(TargetActor);
+
+			TraceObj->MaxRange = TargetParameters.Range;
+			TraceObj->bTraceAffectsAimPitch = TargetParameters.bTraceAffectsAimPitch;
+
+			if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_GroundTrace>())
+			{
+				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
+
+				GroundTraceObj->MaxRange = TargetParameters.Range;
+				GroundTraceObj->bTraceAffectsAimPitch = TargetParameters.bTraceAffectsAimPitch;
+				GroundTraceObj->CollisionRadius = TargetParameters.Radius;
+				GroundTraceObj->CollisionHeight = TargetParameters.Height;
+			}
+		}
+
+		AbilityTask_WaitTargetData->FinishSpawningActor(this, TargetActor);
+
+		TargetActor->bDestroyOnConfirmation = TargetParameters.bDestroyOnConfirmation;
+
+		AbilityTask_WaitTargetData->Cancelled.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
+		AbilityTask_WaitTargetData->ValidData.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
+
+		AbilityTask_WaitTargetData->ReadyForActivation();
+	}
 }
 
 void UGASGameplayAbility::ActivateWaitConfirmInputTask()
