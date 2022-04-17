@@ -5,7 +5,6 @@
 #include "GAS/System/GASGameplayAbility.h"
 #include "GAS/System/GASAbilitySystemComponent.h"
 #include "GAS/Tasks/SpawnProjectile_Task.h"
-#include "GAS/Tasks/Targeting_Task.h"
 
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
@@ -370,6 +369,9 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 		UAbilityTask_WaitTargetData::WaitTargetData(this, "WaitTargetDataTask", TargetingConfirmation,
 			TargetActorClass);
 
+	AbilityTask_WaitTargetData->Cancelled.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
+	AbilityTask_WaitTargetData->ValidData.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
+
 	AGameplayAbilityTargetActor* TargetActor = nullptr;
 	if (AbilityTask_WaitTargetData->BeginSpawningActor(this, TargetActorClass, TargetActor))
 	{
@@ -393,8 +395,6 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 			{
 				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
 
-				GroundTraceObj->MaxRange = TargetParameters.Range;
-				GroundTraceObj->bTraceAffectsAimPitch = TargetParameters.bTraceAffectsAimPitch;
 				GroundTraceObj->CollisionRadius = TargetParameters.Radius;
 				GroundTraceObj->CollisionHeight = TargetParameters.Height;
 			}
@@ -403,9 +403,6 @@ void UGASGameplayAbility::ActivateWaitTargetDataTask(
 		AbilityTask_WaitTargetData->FinishSpawningActor(this, TargetActor);
 
 		TargetActor->bDestroyOnConfirmation = TargetParameters.bDestroyOnConfirmation;
-
-		AbilityTask_WaitTargetData->Cancelled.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
-		AbilityTask_WaitTargetData->ValidData.AddDynamic(this, &UGASGameplayAbility::WaitTargetData_Callback);
 
 		AbilityTask_WaitTargetData->ReadyForActivation();
 	}
