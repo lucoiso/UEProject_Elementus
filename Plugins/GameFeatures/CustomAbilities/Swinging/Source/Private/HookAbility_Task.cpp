@@ -83,7 +83,7 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 
 		if (!HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 		{
-			HitDataHandle.GetComponent()->AddImpulse(
+			HitDataHandle.GetComponent()->AddForce(
 				Multiplier * (HookOwner->GetActorLocation() - HitDataHandle.GetActor()->GetActorLocation()));
 		}
 	}
@@ -93,21 +93,21 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 	if (Dif.Size() <= 250.f)
 	{
 		const float Dot = FVector::DotProduct(Dif, HookOwner->GetVelocity());
-		const FVector Force = Dif.GetSafeNormal() * Dot * (Multiplier * -1.f);
+		const FVector HandleForce = Dif.GetSafeNormal() * Dot * (Multiplier * -1.f);
 
-		HookOwner->GetCharacterMovement()->AddForce(Force);
+		HookOwner->GetCharacterMovement()->AddForce(HandleForce);
 	}
 
 	else
 	{
-		const FVector HookVelocity = FVector(0.75f, 0.75f, 1.f) * Dif.GetClampedToMaxSize(17.5f) * Multiplier;
+		const FVector HookForce = FVector(0.75f, 0.75f, 1.f) * Dif.GetClampedToMaxSize(17.5f) * Multiplier;
 
 		if (HitTarget.IsValid())
 		{
-			HitTarget->GetCharacterMovement()->AddImpulse(-1.f * HookVelocity, true);
+			HitTarget->GetCharacterMovement()->AddForce(-1.f * HookForce);
 		}
 
-		HookOwner->GetCharacterMovement()->AddImpulse(HookVelocity, true);
+		HookOwner->GetCharacterMovement()->AddForce(HookForce);
 	}
 }
 
