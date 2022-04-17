@@ -92,7 +92,7 @@ void UGASGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 	if (bEndAbilityAfterActiveTime)
 	{
 		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([=]() -> void
+		TimerDelegate.BindLambda([&]() -> void
 			{
 				if (IsActive())
 				{
@@ -153,7 +153,7 @@ void UGASGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag
 {
 	ABILITY_VLOG(this, Warning, TEXT("Activating %s ability associated Gameplay Cues."), *GetName());
 
-	if (GameplayCueTag.IsValid() && HasAuthority(&GetCurrentActivationInfoRef()))
+	if (GameplayCueTag.IsValid())
 	{
 		Parameters.AbilityLevel = GetAbilityLevel();
 		SourceAbilitySystem->GetOwnedGameplayTags(Parameters.AggregatedSourceTags);
