@@ -90,10 +90,9 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 		const FVector Difference = HookLocationToUse - HookOwner->GetActorLocation();
 		if (Difference.Size() >= 500.f)
 		{
-			const FVector HookForce = Difference * (DeltaTime * 2500.f);
-			const FVector CharacterForce = FVector(HookForce.X * 0.5f, HookForce.Y * 0.5f, HookForce.Z * 0.75f);
+			const FVector HookForce = Difference * (DeltaTime * 3250.f);
 
-			HookOwner->GetCharacterMovement()->AddForce(CharacterForce);
+			HookOwner->GetCharacterMovement()->AddForce(HookForce);
 
 			if (bIsTargetMovableAndSimulatingPhysics && !HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 			{
@@ -102,7 +101,7 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 			
 			else if (HitTarget.IsValid())
 			{
-				HitTarget->GetCharacterMovement()->AddForce(-1.f * CharacterForce);
+				HitTarget->GetCharacterMovement()->AddForce(-1.f * HookForce);
 			}
 		}
 	}
