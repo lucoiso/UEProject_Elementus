@@ -66,9 +66,9 @@ void UGameFeatureAction_AddInputs::AddToWorld(const FWorldContext& WorldContext)
 
 void UGameFeatureAction_AddInputs::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	UE_LOG(LogGameplayFeaturesExtraActions, Warning,
+	/*UE_LOG(LogGameplayFeaturesExtraActions, Warning,
 		   TEXT("Event %s sended by Actor %s for inputs management."), *EventName.ToString(),
-		   *Owner->GetName());
+		   *Owner->GetName());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)

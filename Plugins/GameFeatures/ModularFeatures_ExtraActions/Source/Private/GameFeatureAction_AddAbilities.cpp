@@ -66,9 +66,9 @@ void UGameFeatureAction_AddAbilities::AddToWorld(const FWorldContext& WorldConte
 
 void UGameFeatureAction_AddAbilities::HandleActorExtension(AActor* Owner, FName EventName)
 {
-	UE_LOG(LogGameplayFeaturesExtraActions, Warning,
+	/*UE_LOG(LogGameplayFeaturesExtraActions, Warning,
 		   TEXT("Event %s sended by Actor %s for ability management."), *EventName.ToString(),
-		   *Owner->GetName());
+		   *Owner->GetName());*/
 
 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName ==
 		UGameFrameworkComponentManager::NAME_ReceiverRemoved)
