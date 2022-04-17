@@ -153,7 +153,7 @@ void UGASGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag
 {
 	ABILITY_VLOG(this, Warning, TEXT("Activating %s ability associated Gameplay Cues."), *GetName());
 
-	if (GameplayCueTag.IsValid())
+	if (GameplayCueTag.IsValid() && HasAuthority(&GetCurrentActivationInfoRef()))
 	{
 		Parameters.AbilityLevel = GetAbilityLevel();
 		SourceAbilitySystem->GetOwnedGameplayTags(Parameters.AggregatedSourceTags);
