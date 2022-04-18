@@ -23,7 +23,6 @@ protected:
 	virtual void PossessedBy(AController* InputController) override;
 
 	virtual void OnRep_PlayerState() override;
-
 	virtual void OnRep_Controller() override;
 
 private:
