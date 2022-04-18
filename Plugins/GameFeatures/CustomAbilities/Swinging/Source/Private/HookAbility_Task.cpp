@@ -32,7 +32,7 @@ void UHookAbility_Task::Activate()
 		HookOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
 
 		if (ensureMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
-		{			
+		{
 			HitTarget = Cast<APECharacterBase>(HitDataHandle.GetActor());
 			if (!HitTarget.IsValid())
 			{
@@ -75,16 +75,16 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 	}
 
 	Super::TickTask(DeltaTime);
-	
+
 	if (IsValid(HitDataHandle.GetActor()))
 	{
 		const bool bIsTargetMovableAndSimulatingPhysics =
 			HitDataHandle.GetActor()->IsRootComponentMovable() &&
 			HitDataHandle.GetActor()->GetRootComponent()->IsSimulatingPhysics();
-		
-		const FVector HookLocationToUse = 
-			bIsTargetMovableAndSimulatingPhysics ? 
-			HitDataHandle.GetActor()->GetActorLocation() : 
+
+		const FVector HookLocationToUse =
+			bIsTargetMovableAndSimulatingPhysics ?
+			HitDataHandle.GetActor()->GetActorLocation() :
 			HitDataHandle.Location;
 
 		const FVector Difference = HookLocationToUse - HookOwner->GetActorLocation();
@@ -98,7 +98,7 @@ void UHookAbility_Task::TickTask(const float DeltaTime)
 			{
 				HitDataHandle.GetComponent()->AddForce(-1.f * HookForce);
 			}
-			
+
 			else if (HitTarget.IsValid())
 			{
 				HitTarget->GetCharacterMovement()->AddForce(-1.f * HookForce);

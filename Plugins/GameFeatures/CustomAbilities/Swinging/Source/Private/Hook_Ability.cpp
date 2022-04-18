@@ -44,7 +44,7 @@ void UHook_Ability::WaitGameplayEvent_Callback_Implementation(FGameplayEventData
 {
 	FTargetActorSpawnParams TargetingParams;
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
-	
+
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
 }
 
@@ -67,7 +67,7 @@ void UHook_Ability::WaitTargetData_Callback_Implementation(const FGameplayAbilit
 
 	UHookAbility_Task* AbilityTask = UHookAbility_Task::HookAbilityMovement(
 		this, FName("HookTask"), *TargetHit);
-	
+
 	AbilityTask->ReadyForActivation();
 
 	FGameplayCueParameters Params;
