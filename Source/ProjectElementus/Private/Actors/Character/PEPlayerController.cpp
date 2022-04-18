@@ -97,7 +97,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action)
 
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
-	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"),
 		*FString(__func__), InputID);
 
 	const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
@@ -128,7 +128,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action)
 
 	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
-	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input ID Value %u"),
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"),
 		*FString(__func__), InputID);
 
 	const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>();
@@ -147,7 +147,7 @@ void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 		return;
 	}
 
-	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
+	CONTROLLER_AXIS_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
 		*FString(__func__),
 		*Value.ToString(), Value.GetMagnitude());
 
@@ -162,7 +162,7 @@ void APEPlayerController::Move(const FInputActionValue& Value)
 		return;
 	}
 
-	CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
+	CONTROLLER_AXIS_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
 		*FString(__func__),
 		*Value.ToString(), Value.GetMagnitude());
 
@@ -188,7 +188,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value)
 		return;
 	}
 
-	CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
 		*FString(__func__),
 		*Value.ToString(), Value.GetMagnitude());
 
