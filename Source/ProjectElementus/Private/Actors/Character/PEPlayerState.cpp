@@ -367,7 +367,7 @@ const float APEPlayerState::GetGold() const
 #define UPDATE_ATTRIBUTE_INFORMATIONS(AttributeSet, AttributePropery, LevelingInfo) \
 AttributeSet->AttributePropery = AttributeSet->Get##AttributePropery() + LevelingInfo.Bonus##AttributePropery;
 
-void APEPlayerState::SetupCharacterLevel(const uint32 NewLevel)
+void APEPlayerState::SetupCharacterLevel(const int32 NewLevel)
 {
 	if (ensureMsgf(Attributes.IsValid(), TEXT("%s have a invalid AttributeSet"), *GetName()) &&
 		ensureMsgf(LevelingData.IsValid(), TEXT("%s have a invalid LevelingData"), *GetName()))

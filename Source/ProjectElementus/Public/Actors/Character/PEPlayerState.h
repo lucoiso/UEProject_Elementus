@@ -50,65 +50,88 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	class APEPlayerController* GetPEPlayerController() const;
+	/* Returns a casted version of Player Controller using PEPlayerController class */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components", meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
+		class APEPlayerController* GetPEPlayerController() const;
 
 	TWeakObjectPtr<UGASAbilitySystemComponent> AbilitySystemComponent;
 	TWeakObjectPtr<class UGASAttributeSet> Attributes;
 
+	/* This DataTable contains informations about attribute values that will be passed when the level is changed */
 	TWeakObjectPtr<UDataTable> LevelingData;
+	
+	/* This DataTable contains informations about attribute values that will be passed on initialization */
 	TWeakObjectPtr<UDataTable> AttributesData;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
+	/* Returns associated Ability System Component */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
 		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
+	/* Returns main Attribute Set associated to Ability System Component */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
 		UAttributeSet* GetAttributeSetBase() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
+	/* Returns a array of secondary mutable attributes from Ability System Component */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
 		TArray<UAttributeSet*> GetAttributeSetArray() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current Health property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetHealth() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current MaxHealth property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetMaxHealth() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current Stamina property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetStamina() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current MaxStamina property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetMaxStamina() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current Mana property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetMana() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current MaxMana property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetMaxMana() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current AttackRate property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetAttackRate() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current DefenseRate property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetDefenseRate() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current SpeedRate property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetSpeedRate() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current JumpRate property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetJumpRate() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current Experience property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetExperience() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current Gold property value from associated AttributeSet */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetGold() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns current value of NextLevelRequirement which is automatically set when the player level changes */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetLevelingRequirementExp() const;
 
 protected:
-	void SetupCharacterLevel(const uint32 NewLevel);
+	/* Change character level and updates its attributes based on: TWeakObjectPtr<UDataTable> LevelingData */
+	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
+		void SetupCharacterLevel(const int32 NewLevel);
 
 private:
 	float NextLevelRequirement = 0.f;
