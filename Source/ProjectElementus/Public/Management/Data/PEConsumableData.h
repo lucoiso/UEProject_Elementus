@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Management/Data/GASAbilityData.h"
 #include "Engine/DataAsset.h"
 #include "PEConsumableData.generated.h"
 
@@ -34,7 +35,7 @@ public:
 		TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		TSoftClassPtr<UGameplayEffect> ObjectEffectClass;
+		TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		FGameplayTagContainer RequirementsTags;
