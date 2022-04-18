@@ -41,11 +41,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		bool bDestroyAfterExplosion;
 
-	/* Effects that will be apply to affected characters */
+	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		TArray<FGameplayEffectGroupedData> ExplosionEffects;
 
-	/* Visual Effect */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		TArray<UNiagaraSystem*> ExplosionVFXs;
 

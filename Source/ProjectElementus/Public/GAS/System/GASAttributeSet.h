@@ -24,16 +24,20 @@ public:
 private:
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
+	
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	/* A helper function to clamp attribute values */
 	void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
 		const FGameplayAttributeData& MaxAttribute,
 		float NewMaxValue,
 		const FGameplayAttribute& AffectedAttributeProperty) const;
 
 public:
+	/* A non-replicated attribute to handle damage value inside GE Executions */
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes")
 		FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UGASAttributeSet, Damage)

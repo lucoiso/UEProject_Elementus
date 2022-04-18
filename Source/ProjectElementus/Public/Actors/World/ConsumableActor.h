@@ -36,9 +36,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		class UNiagaraComponent* ObjectVFX;
 
+	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
+	/* Tags that target require to consume this */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		FGameplayTagContainer RequirementsTags;
 };

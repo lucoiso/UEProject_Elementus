@@ -45,9 +45,11 @@ public:
 		bCharacterAbilitiesGiven = NewValue;
 	};
 
+	/* Apply a grouped GE data to self Ability System Component */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void ApplyEffectGroupedDataToSelf(FGameplayEffectGroupedData GroupedData);
 
+	/* Apply a grouped GE data to target Ability System Component */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC);
 };

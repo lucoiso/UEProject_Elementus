@@ -37,6 +37,7 @@ public:
 	};
 
 protected:
+	/* Tags that target require to interact with this */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
 		FGameplayTagContainer RequirementsTags;
 };

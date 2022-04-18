@@ -57,5 +57,5 @@ public:
 		FText AbilityDescription;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		UTexture2D* AbilityImage;
+		TSoftObjectPtr<UTexture2D> AbilityImage;
 };

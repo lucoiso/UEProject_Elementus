@@ -24,6 +24,7 @@ public:
 	void HideHUD();
 
 protected:
+	/* A Blueprint Widget class to use as HUD */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom Properties | Management")
 		TSubclassOf<UUserWidget> HUDClass;
 

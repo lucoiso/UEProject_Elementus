@@ -41,6 +41,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Custom Properties | Defaults")
 		TArray<FGameplayEffectGroupedData> ProjectileEffects;
 
