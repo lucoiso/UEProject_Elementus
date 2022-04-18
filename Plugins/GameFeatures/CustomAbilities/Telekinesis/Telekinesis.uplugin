@@ -27,6 +27,10 @@
 		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
+		},
+		{
+			"Name": "ModularFeatures_ExtraActions",
+			"Enabled": true
 		}
 	]
 }
