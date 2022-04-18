@@ -59,7 +59,7 @@ protected:
 
 	/* This DataTable contains informations about attribute values that will be passed when the level is changed */
 	TWeakObjectPtr<UDataTable> LevelingData;
-	
+
 	/* This DataTable contains informations about attribute values that will be passed on initialization */
 	TWeakObjectPtr<UDataTable> AttributesData;
 

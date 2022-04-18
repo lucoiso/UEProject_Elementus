@@ -9,13 +9,13 @@
 #include "PEAssetManager.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS(MinimalAPI, Category = "Custom Classes | Management")
 class UPEAssetManager : public UAssetManager
 {
 	GENERATED_BODY()
-		
+
 public:
-	virtual void StartInitialLoading() override;	
+	virtual void StartInitialLoading() override;
 };

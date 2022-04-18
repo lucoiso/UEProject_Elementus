@@ -35,7 +35,7 @@ public:
 	/* If set to true, ability will ignore Cost GE application */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom GAS | Defaults")
 		bool bIgnoreCost;
-	
+
 	/* If set to true, ability will ignore Cooldown GE application */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom GAS | Defaults")
 		bool bIgnoreCooldown;
@@ -44,7 +44,7 @@ protected:
 	/* Mix with bEndAbilityAfterActiveTime to end ability with a pre-determined time */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
 		float AbilityActiveTime;
-	
+
 	/* Will finish ability when the AbilityActiveTime is complete */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
 		bool bEndAbilityAfterActiveTime;
@@ -97,29 +97,29 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo,
 		bool bReplicateEndAbility,
 		bool bWasCancelled) override final;
-	
+
 	virtual bool CommitAbilityCooldown(const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo,
 		const bool ForceCooldown,
 		OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) override final;
 
-	virtual bool CommitAbilityCost(const FGameplayAbilitySpecHandle Handle, 
-		const FGameplayAbilityActorInfo* ActorInfo, 
-		const FGameplayAbilityActivationInfo ActivationInfo, 
+	virtual bool CommitAbilityCost(const FGameplayAbilitySpecHandle Handle,
+		const FGameplayAbilityActorInfo* ActorInfo,
+		const FGameplayAbilityActivationInfo ActivationInfo,
 		OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) override final;
 
 	virtual void CommitExecute(const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo) override final;
-	
-	/* 
+
+	/*
 	* These 'Activate Task' and 'Callback' functions are intended to act as helper functions
 	* They will call the defaults tasks from original GAS source
 	* This is a way to avoid the need to include the same headers in every ability class
 	* This is also a way to avoid the need to copy the same code in every ability class
 	*/
-	
+
 	/* Wait Confirm input and call WaitConfirmInput_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
 		void ActivateWaitConfirmInputTask();
@@ -134,7 +134,7 @@ protected:
 
 	/* Perform a animation montage and call WaitMontage_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
-		void ActivateWaitMontageTask(const FName MontageSection = NAME_None, const float Rate = 1.f, 
+		void ActivateWaitMontageTask(const FName MontageSection = NAME_None, const float Rate = 1.f,
 			const bool bRandomSection = false, const bool bStopsWhenAbilityEnds = true);
 
 	/* Performs targeting and call WaitTargetData_Callback function */
@@ -279,7 +279,7 @@ protected:
 	/* Remove the cooldown effect */
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const;
-	
+
 	/* Shared Timer Handle that is actually used with bEndAbilityAfterActiveTime */
 	FTimerHandle CancelationTimerHandle;
 };

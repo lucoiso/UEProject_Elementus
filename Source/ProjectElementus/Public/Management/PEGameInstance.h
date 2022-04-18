@@ -9,7 +9,7 @@
 #include "PEGameInstance.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS(MinimalAPI, Category = "Custom Classes | Management")
 class UPEGameInstance : public UGameInstance

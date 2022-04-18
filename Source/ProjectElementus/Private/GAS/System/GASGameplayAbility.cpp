@@ -158,7 +158,7 @@ bool UGASGameplayAbility::CommitAbilityCooldown(const FGameplayAbilitySpecHandle
 
 bool UGASGameplayAbility::CommitAbilityCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, OUT FGameplayTagContainer* OptionalRelevantTags)
 {
-	return bIgnoreCost ? 
+	return bIgnoreCost ?
 		true :
 		Super::CommitAbilityCost(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
 }
@@ -167,7 +167,7 @@ void UGASGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle,
 {
 	if (!bIgnoreCooldown)
 	{
-		ApplyCooldown(Handle, ActorInfo, ActivationInfo);		
+		ApplyCooldown(Handle, ActorInfo, ActivationInfo);
 	}
 
 	if (!bIgnoreCost)
@@ -183,7 +183,7 @@ void UGASGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag
 	if (GameplayCueTag.IsValid())
 	{
 		ABILITY_VLOG(this, Display, TEXT("Activating %s ability associated Gameplay Cues with Tag %s."), *GetName(), *GameplayCueTag.ToString());
-		
+
 		Parameters.AbilityLevel = GetAbilityLevel();
 		SourceAbilitySystem->GetOwnedGameplayTags(Parameters.AggregatedSourceTags);
 		Parameters.Instigator = SourceAbilitySystem->GetAvatarActor();
@@ -360,19 +360,19 @@ const FGameplayAbilityTargetDataHandle UGASGameplayAbility::MakeTargetDataHandle
 	return FGameplayAbilityTargetDataHandle();
 }
 
-void UGASGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, const float Rate, 
+void UGASGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, const float Rate,
 	const bool bRandomSection, const bool bStopsWhenAbilityEnds)
 {
 	FName MontageSectionName = MontageSection;
-	
+
 	if (bRandomSection)
 	{
-		MontageSectionName = 
+		MontageSectionName =
 			AbilityAnimation->GetSectionName(FMath::FloorToInt32<double>(FMath::RandRange(0, AbilityAnimation->CompositeSections.Num())));
 	}
 
 	UAbilityTask_PlayMontageAndWait* AbilityTask_PlayMontageAndWait =
-		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, "WaitMontageTask", AbilityAnimation, Rate, 
+		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, "WaitMontageTask", AbilityAnimation, Rate,
 			MontageSectionName, bStopsWhenAbilityEnds);
 
 	AbilityTask_PlayMontageAndWait->OnBlendOut.AddDynamic(this, &UGASGameplayAbility::WaitMontage_Callback);
@@ -447,7 +447,7 @@ void UGASGameplayAbility::ActivateWaitConfirmInputTask()
 		UAbilityTask_WaitConfirmCancel::WaitConfirmCancel(this);
 
 	AbilityTask_WaitConfirm->OnConfirm.AddDynamic(this, &UGASGameplayAbility::WaitConfirmInput_Callback);
-	
+
 	// Canceling is already binded by ActivateWaitCancelInputTask()
 	// AbilityTask_WaitConfirm->OnCancel.AddDynamic(this, &UGASGameplayAbility::WaitCancelInput_Callback);
 
