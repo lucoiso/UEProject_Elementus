@@ -25,10 +25,10 @@
 
 UGASGameplayAbility::UGASGameplayAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	AbilityActiveTime(0),
+	AbilityMaxRange(0),
 	bIgnoreCost(false),
 	bIgnoreCooldown(false),
-	AbilityMaxRange(0),
+	AbilityActiveTime(0),
 	bEndAbilityAfterActiveTime(false),
 	bAutoActivateOnGrant(false)
 {
