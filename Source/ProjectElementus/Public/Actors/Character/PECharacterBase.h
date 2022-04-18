@@ -68,27 +68,35 @@ public:
 	/** Returns FollowCamera Location at World **/
 	const float GetCameraTargetArmLength() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns character default walk speed */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetDefaultWalkSpeed() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns character default crouch speed */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetDefaultCrouchSpeed() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Attributes")
+	/* Returns character default jump velocity */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
 		const float GetDefaultJumpVelocity() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
+	/* Returns character associated Ability System Component */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
 		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
+	/* Returns main Attribute Set associated to Ability System Component */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
 		UAttributeSet* GetAttributeSetBase() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
+	/* Returns a array of secondary mutable attributes from Ability System Component */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
 		TArray<UAttributeSet*> GetAttributeSetArray() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Components")
+	/* Returns a casted version of Player State using PEPlayerState class */
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components", meta = (DisplayName = "Get Casted Player State: APEPlayerState"))
 		APEPlayerState* GetPEPlayerState() const;
 
+	/* Enumeration class used to bind ability InputIDs */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Enumeration Class"),
 		Category = "Custom GAS | Data")
 		UEnum* InputIDEnumerationClass;
@@ -96,6 +104,7 @@ public:
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
+	/* Array of given abilities */
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Abilities")
 		TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 
@@ -118,6 +127,7 @@ public:
 		void RemoveAbility(TSubclassOf<UGameplayAbility> Ability);
 	virtual void RemoveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability);
 
+	/* Init a death state with this character */
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
 		void PerformDeath();
 	virtual void PerformDeath_Implementation();
