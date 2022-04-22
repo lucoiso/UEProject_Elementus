@@ -2,9 +2,9 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Actors/World/ResourceActor.h"
+#include "Actors/World/PEResourceActor.h"
 
-AResourceActor::AResourceActor(const FObjectInitializer& ObjectInitializer)
+APEResourceActor::APEResourceActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;

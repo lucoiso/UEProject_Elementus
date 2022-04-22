@@ -3,24 +3,25 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/Character/PECharacterBase.h"
-
+#include "Actors/Character/PEAIController.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "Camera/CameraComponent.h"
 
+#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
-#include "GAS/System/GASAbilitySystemComponent.h"
-#include "GAS/System/GASAttributeSet.h"
+#include "AbilitySystemComponent.h"
 
 APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
+
+	AIControllerClass = APEAIController::StaticClass();
 
 	bAlwaysRelevant = true;
 
@@ -82,6 +83,58 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 }
 
+void APECharacterBase::PossessedBy(AController* InputController)
+{
+	Super::PossessedBy(InputController);
+
+	InitializeABSC(false);
+}
+
+void APECharacterBase::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	InitializeABSC(true);
+}
+
+void APECharacterBase::OnRep_Controller()
+{
+	Super::OnRep_Controller();
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->RefreshAbilityActorInfo();
+
+		const FGameplayTag DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+		AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
+	}
+}
+
+void APECharacterBase::InitializeABSC(const bool bOnRep)
+{
+	APEPlayerState* State = GetPlayerState<APEPlayerState>();
+
+	if (IsValid(State))
+	{
+		AbilitySystemComponent = State->GetAbilitySystemComponent();
+
+		if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
+		{
+			bOnRep
+				? AbilitySystemComponent->InitAbilityActorInfo(State, this)
+				: State->GetAbilitySystemComponent()->InitAbilityActorInfo(State, this);
+		}
+	}
+
+	if (bOnRep || !bIsFrameworkReady)
+	{
+		UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
+			this, UGameFrameworkComponentManager::NAME_GameActorReady);
+
+		bIsFrameworkReady = true;
+	}
+}
+
 const float APECharacterBase::GetDefaultWalkSpeed() const
 {
 	return DefaultWalkSpeed;
@@ -117,21 +170,6 @@ UAbilitySystemComponent* APECharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent.Get();
 }
 
-UAttributeSet* APECharacterBase::GetAttributeSetBase() const
-{
-	return Attributes.Get();
-}
-
-TArray<UAttributeSet*> APECharacterBase::GetAttributeSetArray() const
-{
-	return AbilitySystemComponent.Get()->GetSpawnedAttributes();
-}
-
-APEPlayerState* APECharacterBase::GetPEPlayerState() const
-{
-	return Cast<APEPlayerState>(GetPlayerState());
-}
-
 void APECharacterBase::PreInitializeComponents()
 {
 	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
@@ -150,35 +188,14 @@ void APECharacterBase::BeginPlay()
 
 void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->ClearAllAbilities();
+	}
+
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
 	Super::EndPlay(EndPlayReason);
-}
-
-void APECharacterBase::InitializeAttributes(const bool bOnRep)
-{
-	APEPlayerState* State = GetPEPlayerState();
-
-	if (IsValid(State))
-	{
-		AbilitySystemComponent = Cast<UGASAbilitySystemComponent>(State->GetAbilitySystemComponent());
-		Attributes = Cast<UGASAttributeSet>(State->GetAttributeSetBase());
-
-		if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
-		{
-			bOnRep
-				? AbilitySystemComponent->InitAbilityActorInfo(State, this)
-				: State->GetAbilitySystemComponent()->InitAbilityActorInfo(State, this);
-		}
-	}
-
-	if (bOnRep || !bIsFrameworkReady)
-	{
-		UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-			this, UGameFrameworkComponentManager::NAME_GameActorReady);
-
-		bIsFrameworkReady = true;
-	}
 }
 
 void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
@@ -207,13 +224,13 @@ void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbi
 
 		if (bTryRemoveExistingAbilityWithClass)
 		{
-			const FGameplayAbilitySpec* AbilitySpec = GetAbilitySystemComponent()->FindAbilitySpecFromClass(Ability);
+			const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
 			RemoveAbility_Lambda(AbilitySpec);
 		}
 
 		if (bTryRemoveExistingAbilityWithInput)
 		{
-			const FGameplayAbilitySpec* AbilitySpec = GetAbilitySystemComponent()->FindAbilitySpecFromInputID(InputID);
+			const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromInputID(InputID);
 			RemoveAbility_Lambda(AbilitySpec);
 		}
 
@@ -263,4 +280,35 @@ void APECharacterBase::PerformDeath_Implementation()
 bool APECharacterBase::PerformDeath_Validate()
 {
 	return true;
+}
+
+void APECharacterBase::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	if (!AbilitySystemComponent.IsValid())
+	{
+		return;
+	}
+
+	const FGameplayTag DoubleJumpTag = FGameplayTag::RequestGameplayTag(FName("GameplayAbility.Default.DoubleJump"));
+
+	if (AbilitySystemComponent->HasMatchingGameplayTag(DoubleJumpTag))
+	{
+		const FGameplayAbilitySpec AbilitySpec =
+			*AbilitySystemComponent->FindAbilitySpecFromInputID(
+				InputIDEnumerationClass->GetValueByName("Jump", EGetByNameFlags::CheckAuthoredName));
+
+#if __cplusplus > 201402L // Check if C++ > C++14
+		if constexpr (&AbilitySpec != nullptr)
+#else
+		if (&AbilitySpec != nullptr)
+#endif
+		{
+			if (AbilitySpec.Handle.IsValid())
+			{
+				AbilitySystemComponent->CancelAbilityHandle(AbilitySpec.Handle);
+			}
+		}
+	}
 }

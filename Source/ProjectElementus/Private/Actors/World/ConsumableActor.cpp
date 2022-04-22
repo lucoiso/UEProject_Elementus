@@ -2,13 +2,13 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Actors/World/ConsumableActor.h"
-#include "GAS/System/GASAbilitySystemComponent.h"
+#include "Actors/World/PEConsumableActor.h"
+#include "GAS/System/PEAbilitySystemComponent.h"
 
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
 
-AConsumableActor::AConsumableActor(const FObjectInitializer& ObjectInitializer)
+APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -18,9 +18,9 @@ AConsumableActor::AConsumableActor(const FObjectInitializer& ObjectInitializer)
 	ObjectVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Object VFX"));
 }
 
-void AConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
+void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
 {
-	UGASAbilitySystemComponent* TargetGASC = Cast<UGASAbilitySystemComponent>(TargetABSC);
+	UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
 	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)

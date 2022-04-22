@@ -2,9 +2,9 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Actors/World/WeaponActor.h"
+#include "Actors/World/PEWeaponActor.h"
 
-AWeaponActor::AWeaponActor(const FObjectInitializer& ObjectInitializer)
+APEWeaponActor::APEWeaponActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;

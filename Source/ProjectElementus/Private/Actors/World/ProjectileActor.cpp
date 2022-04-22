@@ -2,14 +2,14 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Actors/World/ProjectileActor.h"
+#include "Actors/World/PEProjectileActor.h"
 #include "Actors/Character/PECharacterBase.h"
-#include "GAS/System/GASAbilitySystemComponent.h"
+#include "GAS/System/PEAbilitySystemComponent.h"
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
-AProjectileActor::AProjectileActor(const FObjectInitializer& ObjectInitializer)
+APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	bReplicates = true;
@@ -35,19 +35,19 @@ AProjectileActor::AProjectileActor(const FObjectInitializer& ObjectInitializer)
 	ProjectileMovement->ProjectileGravityScale = 0.025f;
 }
 
-void AProjectileActor::BeginPlay()
+void APEProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CollisionComponent->OnComponentHit.AddDynamic(this, &AProjectileActor::OnProjectileHit);
+	CollisionComponent->OnComponentHit.AddDynamic(this, &APEProjectileActor::OnProjectileHit);
 }
 
-void AProjectileActor::FireInDirection(const FVector Direction)
+void APEProjectileActor::FireInDirection(const FVector Direction)
 {
 	ProjectileMovement->Velocity = ProjectileMovement->InitialSpeed * Direction;
 }
 
-void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor,
+void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
@@ -70,9 +70,9 @@ void AProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitCo
 	Destroy();
 }
 
-void AProjectileActor::ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC)
+void APEProjectileActor::ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC)
 {
-	UGASAbilitySystemComponent* TargetGASC = Cast<UGASAbilitySystemComponent>(TargetABSC);
+	UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
 	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)

@@ -6,7 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "Management/Data/GASAbilityData.h"
+#include "GAS/System/PEAbilityData.h"
 #include "Engine/DataAsset.h"
 #include "PEConsumableData.generated.h"
 

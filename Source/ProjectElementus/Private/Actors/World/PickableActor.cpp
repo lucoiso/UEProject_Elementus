@@ -2,9 +2,9 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Actors/World/PickableActor.h"
+#include "Actors/World/PEPickableActor.h"
 
-APickableActor::APickableActor(const FObjectInitializer& ObjectInitializer)
+APEPickableActor::APEPickableActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;

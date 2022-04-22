@@ -2,9 +2,9 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Actors/World/ExplosiveActor.h"
+#include "Actors/World/PEExplosiveActor.h"
 #include "Actors/Character/PECharacterBase.h"
-#include "GAS/System/GASAbilitySystemComponent.h"
+#include "GAS/System/PEAbilitySystemComponent.h"
 
 #include "Components/PrimitiveComponent.h"
 
@@ -14,7 +14,7 @@
 
 #include "GameplayEffect.h"
 
-AExplosiveActor::AExplosiveActor(const FObjectInitializer& ObjectInitializer)
+APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
 	ExplosionRadius(100.f),
 	ExplosionMagnitude(1000.f),
@@ -24,7 +24,7 @@ AExplosiveActor::AExplosiveActor(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bStartWithTickEnabled = false;
 }
 
-void AExplosiveActor::PerformExplosion()
+void APEExplosiveActor::PerformExplosion()
 {
 	TArray<FHitResult> HitOut;
 	FCollisionQueryParams QueryParams;
@@ -86,9 +86,9 @@ void AExplosiveActor::PerformExplosion()
 	}
 }
 
-void AExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
+void APEExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
 {
-	UGASAbilitySystemComponent* TargetGASC = Cast<UGASAbilitySystemComponent>(TargetABSC);
+	UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
 	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
