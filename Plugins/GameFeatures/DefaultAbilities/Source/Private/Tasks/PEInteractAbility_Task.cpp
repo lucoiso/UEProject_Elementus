@@ -13,7 +13,8 @@ UPEInteractAbility_Task::UPEInteractAbility_Task(const FObjectInitializer& Objec
 
 UPEInteractAbility_Task* UPEInteractAbility_Task::InteractionTask(UGameplayAbility* OwningAbility, FName TaskInstanceName)
 {
-	return nullptr;
+	UPEInteractAbility_Task* MyObj = NewAbilityTask<UPEInteractAbility_Task>(OwningAbility, TaskInstanceName);
+	return MyObj;
 }
 
 void UPEInteractAbility_Task::Activate()
