@@ -34,15 +34,12 @@ public:
 	UFUNCTION(Category = "Custom Functions | Management")
 		virtual bool IsInteractEnabled()
 	{
+		return true;
 	};
 	
 	UFUNCTION(Category = "Custom Functions | Management")
 		virtual bool IsInteractAllowedForActor(const AActor* Actor)
 	{
+		return true;
 	};
-
-protected:
-	/* Tags that target require to interact with this */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Functions | Management")
-		TArray<FGameplayTag> RequiredTags;
 };
