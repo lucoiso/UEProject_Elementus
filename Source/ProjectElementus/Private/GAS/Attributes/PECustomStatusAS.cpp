@@ -32,9 +32,9 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 	if (Attribute == GetSpeedRateAttribute() || Attribute == GetJumpRateAttribute())
 	{
-		if (APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor()))
+		if (const APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor()))
 		{
-			APECharacterBase* Character = State->GetPawn<APECharacterBase>();
+			const APECharacterBase* Character = State->GetPawn<APECharacterBase>();
 			if (IsValid(Character))
 			{
 				UCharacterMovementComponent* MovComp = Character->GetCharacterMovement();
