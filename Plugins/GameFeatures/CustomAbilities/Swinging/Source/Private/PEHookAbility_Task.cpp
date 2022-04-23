@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEHookAbility_Task.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer)
@@ -30,11 +30,11 @@ void UPEHookAbility_Task::Activate()
 
 	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		HookOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
+		HookOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
 
 		if (ensureMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 		{
-			HitTarget = Cast<APECharacterBase>(HitDataHandle.GetActor());
+			HitTarget = Cast<APECharacter>(HitDataHandle.GetActor());
 			if (!HitTarget.IsValid())
 			{
 				HitTarget.Reset();
@@ -95,7 +95,7 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 			HookOwner->GetCharacterMovement()->AddForce(HookForce);
 
 			if (bIsTargetMovableAndSimulatingPhysics && !HitDataHandle.GetActor()->GetClass()->IsChildOf<
-				APECharacterBase>())
+				APECharacter>())
 			{
 				HitDataHandle.GetComponent()->AddForce(-1.f * HookForce);
 			}

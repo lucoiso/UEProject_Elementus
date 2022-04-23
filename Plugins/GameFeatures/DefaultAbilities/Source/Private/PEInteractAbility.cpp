@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEInteractAbility.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 
 UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)

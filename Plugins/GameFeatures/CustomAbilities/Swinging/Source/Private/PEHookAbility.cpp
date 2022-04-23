@@ -4,7 +4,7 @@
 
 #include "PEHookAbility.h"
 #include "PEHookAbility_Task.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
@@ -80,7 +80,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params,
 	                     GetCurrentActorInfo()->AbilitySystemComponent.Get());
 
-	if (Cast<APECharacterBase>(TargetHit->GetActor()))
+	if (Cast<APECharacter>(TargetHit->GetActor()))
 	{
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindLambda([=]() -> void

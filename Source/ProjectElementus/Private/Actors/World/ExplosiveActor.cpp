@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/World/PEExplosiveActor.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 
 #include "Components/PrimitiveComponent.h"
@@ -56,9 +56,9 @@ void APEExplosiveActor::PerformExplosion()
 			const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).
 				GetSafeNormal();
 
-			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
+			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacter>())
 			{
-				if (APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor()); ensureMsgf(
+				if (APECharacter* Player = Cast<APECharacter>(Hit.GetActor()); ensureMsgf(
 					IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 				{
 					Player->LaunchCharacter(Velocity, true, true);

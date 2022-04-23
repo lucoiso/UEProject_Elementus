@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/Character/PEPlayerState.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerController.h"
 
 #include "GAS/System/PEAbilitySystemComponent.h"
@@ -83,7 +83,7 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 		if (APEPlayerController* Controller_Temp = GetPEPlayerController(); ensureMsgf(
 			IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
-			if (APECharacterBase* Player_Temp = Controller_Temp->GetPawn<APECharacterBase>(); ensureMsgf(
+			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>(); ensureMsgf(
 				IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				const FVector SpectatorLocation = Player_Temp->GetActorLocation();

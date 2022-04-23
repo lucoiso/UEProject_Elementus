@@ -2,7 +2,7 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
 #include "Actors/Character/PEPlayerState.h"
 
@@ -15,7 +15,7 @@
 
 #include "AbilitySystemComponent.h"
 
-APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
+APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -75,21 +75,21 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 }
 
-void APECharacterBase::PossessedBy(AController* InputController)
+void APECharacter::PossessedBy(AController* InputController)
 {
 	Super::PossessedBy(InputController);
 
 	InitializeABSC(false);
 }
 
-void APECharacterBase::OnRep_PlayerState()
+void APECharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
 	InitializeABSC(true);
 }
 
-void APECharacterBase::OnRep_Controller()
+void APECharacter::OnRep_Controller()
 {
 	Super::OnRep_Controller();
 
@@ -102,7 +102,7 @@ void APECharacterBase::OnRep_Controller()
 	}
 }
 
-void APECharacterBase::InitializeABSC(const bool bOnRep)
+void APECharacter::InitializeABSC(const bool bOnRep)
 {
 	if (APEPlayerState* State = GetPlayerState<APEPlayerState>(); IsValid(State))
 	{
@@ -125,49 +125,49 @@ void APECharacterBase::InitializeABSC(const bool bOnRep)
 	}
 }
 
-float APECharacterBase::GetDefaultWalkSpeed() const
+float APECharacter::GetDefaultWalkSpeed() const
 {
 	return DefaultWalkSpeed;
 }
 
-float APECharacterBase::GetDefaultCrouchSpeed() const
+float APECharacter::GetDefaultCrouchSpeed() const
 {
 	return DefaultCrouchSpeed;
 }
 
-float APECharacterBase::GetDefaultJumpVelocity() const
+float APECharacter::GetDefaultJumpVelocity() const
 {
 	return DefaultJumpVelocity;
 }
 
-FVector APECharacterBase::GetCameraForwardVector() const
+FVector APECharacter::GetCameraForwardVector() const
 {
 	return FollowCamera->GetForwardVector();
 }
 
-FVector APECharacterBase::GetCameraComponentLocation() const
+FVector APECharacter::GetCameraComponentLocation() const
 {
 	return FollowCamera->GetComponentLocation();
 }
 
-float APECharacterBase::GetCameraTargetArmLength() const
+float APECharacter::GetCameraTargetArmLength() const
 {
 	return CameraBoom->TargetArmLength;
 }
 
-UAbilitySystemComponent* APECharacterBase::GetAbilitySystemComponent() const
+UAbilitySystemComponent* APECharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent.Get();
 }
 
-void APECharacterBase::PreInitializeComponents()
+void APECharacter::PreInitializeComponents()
 {
 	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
 
 	Super::PreInitializeComponents();
 }
 
-void APECharacterBase::BeginPlay()
+void APECharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -176,7 +176,7 @@ void APECharacterBase::BeginPlay()
 	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
 }
 
-void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void APECharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (AbilitySystemComponent.IsValid())
 	{
@@ -188,9 +188,9 @@ void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
-                                                  const bool bTryRemoveExistingAbilityWithInput = true,
-                                                  const bool bTryRemoveExistingAbilityWithClass = true)
+void APECharacter::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
+                                              const bool bTryRemoveExistingAbilityWithInput = true,
+                                              const bool bTryRemoveExistingAbilityWithClass = true)
 {
 	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
 	{
@@ -236,7 +236,7 @@ void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbi
 	}
 }
 
-void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
+void APECharacter::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
 {
 	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
 	{
@@ -262,18 +262,18 @@ void APECharacterBase::RemoveAbility_Implementation(const TSubclassOf<UGameplayA
 	}
 }
 
-void APECharacterBase::PerformDeath_Implementation()
+void APECharacter::PerformDeath_Implementation()
 {
 	// TO DO
 	Destroy();
 }
 
-bool APECharacterBase::PerformDeath_Validate()
+bool APECharacter::PerformDeath_Validate()
 {
 	return true;
 }
 
-void APECharacterBase::Landed(const FHitResult& Hit)
+void APECharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 

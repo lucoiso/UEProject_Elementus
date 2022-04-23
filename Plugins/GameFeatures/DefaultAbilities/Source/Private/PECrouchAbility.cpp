@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PECrouchAbility.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 
 UPECrouchAbility::UPECrouchAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -19,7 +19,7 @@ void UPECrouchAbility::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	APECharacterBase* Player = Cast<APECharacterBase>(ActorInfo->AvatarActor.Get());
+	APECharacter* Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get());
 
 	if (!IsValid(Player))
 	{

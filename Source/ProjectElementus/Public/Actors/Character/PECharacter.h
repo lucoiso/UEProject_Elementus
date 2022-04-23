@@ -7,7 +7,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
-#include "PECharacterBase.generated.h"
+#include "PECharacter.generated.h"
 
 class UGameplayAbility;
 class UInputAction;
@@ -18,7 +18,7 @@ struct FGameplayTag;
  *
  */
 UCLASS(config = Game, Category = "Custom Classes | Player")
-class PROJECTELEMENTUS_API APECharacterBase final : public ACharacter, public IAbilitySystemInterface
+class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -40,7 +40,7 @@ private:
 	bool bIsFrameworkReady = false;
 
 public:
-	explicit APECharacterBase(const FObjectInitializer& ObjectInitializer);
+	explicit APECharacter(const FObjectInitializer& ObjectInitializer);
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{

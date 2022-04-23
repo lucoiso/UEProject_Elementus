@@ -4,7 +4,7 @@
 
 #include "PEThrowableActor.h"
 #include "Components/StaticMeshComponent.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 
 APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer)
@@ -40,9 +40,9 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent* Hit
 {
 	if (IsValid(OtherActor) && OtherActor != CallerActor.Get())
 	{
-		if (OtherActor->GetClass()->IsChildOf<APECharacterBase>())
+		if (OtherActor->GetClass()->IsChildOf<APECharacter>())
 		{
-			if (APECharacterBase* Player = Cast<APECharacterBase>(OtherActor); ensureMsgf(
+			if (APECharacter* Player = Cast<APECharacter>(OtherActor); ensureMsgf(
 				IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				constexpr float ImpulseMultiplier = 5.f;

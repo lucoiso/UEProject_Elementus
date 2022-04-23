@@ -5,7 +5,7 @@
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "Abilities/GameplayAbilityTargetActor_Trace.h"
 
 UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer)
@@ -29,7 +29,7 @@ void UPETelekinesisAbility_Task::Activate()
 
 	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
-		TelekinesisOwner = Cast<APECharacterBase>(Ability->GetAvatarActorFromActorInfo());
+		TelekinesisOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
 
 		if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 		{

@@ -17,7 +17,7 @@
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
 
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "Actors/World/PEProjectileActor.h"
 
 #include "GameplayEffect.h"

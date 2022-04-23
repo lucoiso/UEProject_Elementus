@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/Character/PEPlayerController.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
@@ -96,7 +96,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action) const
 	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"),
 	                     *FString(__func__), InputID);
 
-	if (const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>(); ensureMsgf(
+	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>(); ensureMsgf(
 		IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
 		TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
@@ -128,7 +128,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"),
 	                     *FString(__func__), InputID);
 
-	if (const APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>(); ensureMsgf(
+	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>(); ensureMsgf(
 		IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
 		TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
@@ -188,7 +188,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 	                     *FString(__func__),
 	                     *Value.ToString(), Value.GetMagnitude());
 
-	if (APECharacterBase* ControllerOwner = GetPawn<APECharacterBase>(); ensureMsgf(
+	if (APECharacter* ControllerOwner = GetPawn<APECharacter>(); ensureMsgf(
 		IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
 		if (ControllerOwner->CanJump() && !IsMoveInputIgnored())

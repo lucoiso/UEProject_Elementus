@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/World/PEProjectileActor.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 
 #include "Components/SphereComponent.h"
@@ -53,9 +53,9 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
 
-	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacterBase>())
+	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacter>())
 	{
-		if (APECharacterBase* Character = Cast<APECharacterBase>(OtherActor); ensureMsgf(
+		if (APECharacter* Character = Cast<APECharacter>(OtherActor); ensureMsgf(
 			IsValid(Character), TEXT("%s have a invalid Character"), *GetName()))
 		{
 			Character->LaunchCharacter(ImpulseVelocity, true, true);

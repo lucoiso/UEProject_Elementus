@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Attributes/PECustomStatusAS.h"
-#include "Actors/Character/PECharacterBase.h"
+#include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerState.h"
 
 #include "GAS/System/PEAbilitySystemGlobals.h"
@@ -35,7 +35,7 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 	{
 		if (const APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor()))
 		{
-			if (const APECharacterBase* Character = State->GetPawn<APECharacterBase>(); IsValid(Character))
+			if (const APECharacter* Character = State->GetPawn<APECharacter>(); IsValid(Character))
 			{
 				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement(); ensureMsgf(
 					IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
