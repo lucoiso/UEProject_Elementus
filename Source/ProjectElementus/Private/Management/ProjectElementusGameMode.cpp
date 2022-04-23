@@ -12,11 +12,7 @@ AProjectElementusGameMode::AProjectElementusGameMode()
 {
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBP_ClassRef(
 		TEXT("/Game/Main/Blueprints/Actors/Pawns/BP_Character_01"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&PlayerPawnBP_ClassRef.Class != nullptr)
-#else
-	if (&PlayerPawnBP_ClassRef.Class != nullptr)
-#endif
 	{
 		DefaultPawnClass = PlayerPawnBP_ClassRef.Class;
 	}

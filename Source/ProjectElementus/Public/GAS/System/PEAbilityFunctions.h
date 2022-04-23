@@ -10,7 +10,7 @@
 #include "PEAbilityFunctions.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS(Category = "Custom GAS | Classes")
 class PROJECTELEMENTUS_API UPEAbilityFunctions : public UBlueprintFunctionLibrary
@@ -22,8 +22,10 @@ public:
 		static const FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromSingleHitResult(const FHitResult HitResult);
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Helpers | Management")
-		static const FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromHitResultArray(const TArray<FHitResult> HitResults);
+		static const FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromHitResultArray(
+			const TArray<FHitResult> HitResults);
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Helpers | Management")
-		static const FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
+		static const FGameplayAbilityTargetDataHandle
+		MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
 };

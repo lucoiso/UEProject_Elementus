@@ -20,7 +20,6 @@
 #include "Actors/Character/PECharacterBase.h"
 #include "Actors/World/PEProjectileActor.h"
 
-#include "Camera/CameraComponent.h"
 #include "GameplayEffect.h"
 
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer)
@@ -102,7 +101,8 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 				}
 			});
 
-		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime,
+		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate,
+			AbilityActiveTime,
 			false);
 	}
 }
@@ -149,21 +149,28 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 }
 
-bool UPEGameplayAbility::CommitAbilityCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const bool ForceCooldown, OUT FGameplayTagContainer* OptionalRelevantTags)
+bool UPEGameplayAbility::CommitAbilityCooldown(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	const bool ForceCooldown,
+	OUT FGameplayTagContainer* OptionalRelevantTags)
 {
-	return bIgnoreCooldown ?
-		true :
-		Super::CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, ForceCooldown, OptionalRelevantTags);
+	return bIgnoreCooldown
+		? true
+		: Super::CommitAbilityCooldown(Handle, ActorInfo, ActivationInfo, ForceCooldown, OptionalRelevantTags);
 }
 
-bool UPEGameplayAbility::CommitAbilityCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, OUT FGameplayTagContainer* OptionalRelevantTags)
+bool UPEGameplayAbility::CommitAbilityCost(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo,
+	OUT FGameplayTagContainer* OptionalRelevantTags)
 {
-	return bIgnoreCost ?
-		true :
-		Super::CommitAbilityCost(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
+	return bIgnoreCost ? true : Super::CommitAbilityCost(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
 }
 
-void UPEGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+void UPEGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	if (!bIgnoreCooldown)
 	{
@@ -182,7 +189,8 @@ void UPEGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag,
 {
 	if (GameplayCueTag.IsValid())
 	{
-		ABILITY_VLOG(this, Display, TEXT("Activating %s ability associated Gameplay Cues with Tag %s."), *GetName(), *GameplayCueTag.ToString());
+		ABILITY_VLOG(this, Display, TEXT("Activating %s ability associated Gameplay Cues with Tag %s."), *GetName(),
+			*GameplayCueTag.ToString());
 
 		Parameters.AbilityLevel = GetAbilityLevel();
 		SourceAbilitySystem->GetOwnedGameplayTags(Parameters.AggregatedSourceTags);
@@ -329,7 +337,8 @@ void UPEGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, con
 	if (bRandomSection)
 	{
 		MontageSectionName =
-			AbilityAnimation->GetSectionName(FMath::FloorToInt32<double>(FMath::RandRange(0, AbilityAnimation->CompositeSections.Num())));
+			AbilityAnimation->GetSectionName(
+				FMath::FloorToInt32<double>(FMath::RandRange(0, AbilityAnimation->CompositeSections.Num())));
 	}
 
 	UAbilityTask_PlayMontageAndWait* AbilityTask_PlayMontageAndWait =
@@ -348,11 +357,7 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 	const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
 	FTargetActorSpawnParams TargetParameters)
 {
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&TargetParameters.StartLocation == nullptr)
-#else
-	if (&TargetParameters.StartLocation == nullptr)
-#endif
 	{
 		TargetParameters.StartLocation = MakeTargetLocationInfoFromOwnerActor();
 	}
@@ -387,7 +392,8 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 
 			if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_GroundTrace>())
 			{
-				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
+				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(
+					TargetActor);
 
 				GroundTraceObj->CollisionRadius = TargetParameters.Radius;
 				GroundTraceObj->CollisionHeight = TargetParameters.Height;

@@ -9,6 +9,7 @@
 #include "PEHookAbility_Task.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FHookManagement, const bool, ValidTarget);
+
 /**
  *
  */

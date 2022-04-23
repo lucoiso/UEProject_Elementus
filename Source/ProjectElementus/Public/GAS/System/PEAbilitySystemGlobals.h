@@ -9,7 +9,7 @@
 #include "PEAbilitySystemGlobals.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS(Category = "Custom GAS | Classes")
 class PROJECTELEMENTUS_API UPEAbilitySystemGlobals : public UAbilitySystemGlobals
@@ -17,11 +17,11 @@ class PROJECTELEMENTUS_API UPEAbilitySystemGlobals : public UAbilitySystemGlobal
 	GENERATED_BODY()
 
 public:
-	UPEAbilitySystemGlobals(const FObjectInitializer& ObjectInitializer);	
-	
+	UPEAbilitySystemGlobals(const FObjectInitializer& ObjectInitializer);
+
 	TSoftClassPtr<class UGameplayEffect> GlobalDeathEffect;
 	TSoftClassPtr<class UGameplayEffect> GlobalStunEffect;
-	
+
 	TSoftObjectPtr<class UDataTable> MainStatusAttributeData;
 	TSoftObjectPtr<class UDataTable> CustomStatusAttributeData;
 	TSoftObjectPtr<class UDataTable> LevelingAttributeData;
@@ -29,7 +29,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
 		UGameplayEffect* GetGlobalDeathEffect();
-	
+
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
 		UGameplayEffect* GetGlobalStunEffect();
 

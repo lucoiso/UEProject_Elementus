@@ -36,7 +36,8 @@ protected:
 
 private:
 	UFUNCTION()
-		void OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+		void OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+			FVector NormalImpulse, const FHitResult& Hit);
 
 	void ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC);
 	TWeakObjectPtr<AActor> CallerActor;

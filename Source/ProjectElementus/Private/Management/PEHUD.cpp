@@ -13,11 +13,7 @@ APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer)
 
 	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUD_ClassRef(
 		TEXT("/Game/Main/Blueprints/Widgets/BP_ScreenInformations"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&UserHUD_ClassRef.Class != nullptr)
-#else
-	if (&UserHUD_ClassRef.Class != nullptr)
-#endif
 	{
 		HUDClass = UserHUD_ClassRef.Class;
 	}

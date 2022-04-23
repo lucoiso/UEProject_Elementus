@@ -33,8 +33,7 @@ void UPEDoubleJumpAbility::ActivateAbility
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
-
-	else if (!Player->GetCharacterMovement()->IsFalling())
+	if (!Player->GetCharacterMovement()->IsFalling())
 	{
 		Player->Jump();
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);

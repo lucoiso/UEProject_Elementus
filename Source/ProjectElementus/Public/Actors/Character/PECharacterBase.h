@@ -107,7 +107,8 @@ public:
 		void GiveAbility(TSubclassOf<UGameplayAbility> Ability, const FName InputId,
 			const bool bTryRemoveExistingAbilityWithInput, const bool bTryRemoveExistingAbilityWithClass);
 	virtual void GiveAbility_Implementation(TSubclassOf<UGameplayAbility> Ability, const FName InputId,
-		const bool bTryRemoveExistingAbilityWithInput, const bool bTryRemoveExistingAbilityWithClass);
+		const bool bTryRemoveExistingAbilityWithInput,
+		const bool bTryRemoveExistingAbilityWithClass);
 
 	/* Will remove the ability associated to the InputAction */
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")

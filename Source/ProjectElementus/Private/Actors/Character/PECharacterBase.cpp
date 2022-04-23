@@ -33,22 +33,14 @@ APECharacterBase::APECharacterBase(const FObjectInitializer& ObjectInitializer)
 
 	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(
 		TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
-#else
-	if (&SkeletalMesh_ObjRef.Object != nullptr)
-#endif
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh_ObjRef.Object);
 	}
 
 	static const ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(
 		TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&Animation_ClassRef.Class != nullptr)
-#else
-	if (&Animation_ClassRef.Class != nullptr)
-#endif
 	{
 		GetMesh()->SetAnimInstanceClass(Animation_ClassRef.Class);
 	}
@@ -199,7 +191,8 @@ void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
-	const bool bTryRemoveExistingAbilityWithInput = true, const bool bTryRemoveExistingAbilityWithClass = true)
+	const bool bTryRemoveExistingAbilityWithInput = true,
+	const bool bTryRemoveExistingAbilityWithClass = true)
 {
 	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
 	{
@@ -299,11 +292,7 @@ void APECharacterBase::Landed(const FHitResult& Hit)
 			*AbilitySystemComponent->FindAbilitySpecFromInputID(
 				InputIDEnumerationClass->GetValueByName("Jump", EGetByNameFlags::CheckAuthoredName));
 
-#if __cplusplus > 201402L // Check if C++ > C++14
 		if constexpr (&AbilitySpec != nullptr)
-#else
-		if (&AbilitySpec != nullptr)
-#endif
 		{
 			if (AbilitySpec.Handle.IsValid())
 			{

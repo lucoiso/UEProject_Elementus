@@ -11,7 +11,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "GameplayEffectExtension.h"
-#include "GameplayEffectTypes.h"
 
 #include "AbilitySystemComponent.h"
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"

@@ -12,8 +12,6 @@
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
 
-#include "GameplayEffect.h"
-
 APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
 	ExplosionRadius(100.f),
@@ -55,7 +53,8 @@ void APEExplosiveActor::PerformExplosion()
 	{
 		if (IsValid(Hit.GetActor()))
 		{
-			const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+			const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).
+				GetSafeNormal();
 
 			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 			{
@@ -65,7 +64,8 @@ void APEExplosiveActor::PerformExplosion()
 				{
 					Player->LaunchCharacter(Velocity, true, true);
 
-					if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+					if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()),
+						TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 					{
 						ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
 					}

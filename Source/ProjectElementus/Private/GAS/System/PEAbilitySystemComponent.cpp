@@ -15,7 +15,8 @@ void UPEAbilitySystemComponent::ApplyEffectGroupedDataToSelf(FGameplayEffectGrou
 {
 	if (IsOwnerActorAuthoritative())
 	{
-		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
+		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f,
+			MakeEffectContext());
 
 		for (const TPair<FGameplayTag, float>& StackedData : GroupedData.SetByCallerStackedData)
 		{
@@ -30,11 +31,13 @@ void UPEAbilitySystemComponent::ApplyEffectGroupedDataToSelf(FGameplayEffectGrou
 	}
 }
 
-void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC)
+void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData,
+	UAbilitySystemComponent* TargetABSC)
 {
 	if (IsOwnerActorAuthoritative())
 	{
-		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
+		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f,
+			MakeEffectContext());
 
 		for (const TPair<FGameplayTag, float>& StackedData : GroupedData.SetByCallerStackedData)
 		{

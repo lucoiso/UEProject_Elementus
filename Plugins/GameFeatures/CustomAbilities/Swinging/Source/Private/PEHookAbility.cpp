@@ -45,7 +45,8 @@ void UPEHookAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventDat
 	FTargetActorSpawnParams TargetingParams;
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
 
-	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
+	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
+		AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
 }
 
 void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -86,7 +87,8 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 			{
 				if (IsActive())
 				{
-					EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+					EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true,
+						false);
 				}
 			});
 

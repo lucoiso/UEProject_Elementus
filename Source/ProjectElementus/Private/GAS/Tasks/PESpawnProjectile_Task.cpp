@@ -39,7 +39,9 @@ void UPESpawnProjectile_Task::Activate()
 			{
 				APEProjectileActor* SpawnedProjectile =
 					GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform,
-						Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(),
+						Ability->GetAvatarActorFromActorInfo(),
+						Ability->GetActorInfo().PlayerController->
+						GetPawn(),
 						ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 				SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;

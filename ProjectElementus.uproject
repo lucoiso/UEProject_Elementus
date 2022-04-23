@@ -1,73 +1,73 @@
 {
-	"FileVersion": 3,
-	"EngineAssociation": "5.0",
-	"Category": "",
-	"Description": "",
-	"Modules": [
-		{
-			"Name": "ProjectElementus",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"GameplayAbilities",
-				"EnhancedInput",
-				"AIModule",
-				"GameFeatures",
-				"ModularFeatures_ExtraActions"
-			]
-		}
-	],
-	"Plugins": [
-		{
-			"Name": "Bridge",
-			"Enabled": true,
-			"SupportedTargetPlatforms": [
-				"Win64",
-				"Mac",
-				"Linux"
-			]
-		},
-		{
-			"Name": "ControlRig",
-			"Enabled": true
-		},
-		{
-			"Name": "FullBodyIK",
-			"Enabled": true
-		},
-		{
-			"Name": "ModelingToolsEditorMode",
-			"Enabled": true
-		},
-		{
-			"Name": "GameplayAbilities",
-			"Enabled": true
-		},
-		{
-			"Name": "EnhancedInput",
-			"Enabled": true
-		},
-		{
-			"Name": "GameFeatures",
-			"Enabled": true
-		},
-		{
-			"Name": "ModularGameplay",
-			"Enabled": true
-		},
-		{
-			"Name": "ConsoleVariables",
-			"Enabled": true
-		},
-		{
-			"Name": "FSR",
-			"Enabled": true
-		},
-		{
-			"Name": "ModularFeatures_ExtraActions",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a718e1ae4fa741869b8f7aaea1434a8d"
-		}
-	]
+  "FileVersion": 3,
+  "EngineAssociation": "5.0",
+  "Category": "",
+  "Description": "",
+  "Modules": [
+    {
+      "Name": "ProjectElementus",
+      "Type": "Runtime",
+      "LoadingPhase": "Default",
+      "AdditionalDependencies": [
+        "Engine",
+        "GameplayAbilities",
+        "EnhancedInput",
+        "AIModule",
+        "GameFeatures",
+        "ModularFeatures_ExtraActions"
+      ]
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "Bridge",
+      "Enabled": true,
+      "SupportedTargetPlatforms": [
+        "Win64",
+        "Mac",
+        "Linux"
+      ]
+    },
+    {
+      "Name": "ControlRig",
+      "Enabled": true
+    },
+    {
+      "Name": "FullBodyIK",
+      "Enabled": true
+    },
+    {
+      "Name": "ModelingToolsEditorMode",
+      "Enabled": true
+    },
+    {
+      "Name": "GameplayAbilities",
+      "Enabled": true
+    },
+    {
+      "Name": "EnhancedInput",
+      "Enabled": true
+    },
+    {
+      "Name": "GameFeatures",
+      "Enabled": true
+    },
+    {
+      "Name": "ModularGameplay",
+      "Enabled": true
+    },
+    {
+      "Name": "ConsoleVariables",
+      "Enabled": true
+    },
+    {
+      "Name": "FSR",
+      "Enabled": true
+    },
+    {
+      "Name": "ModularFeatures_ExtraActions",
+      "Enabled": true,
+      "MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a718e1ae4fa741869b8f7aaea1434a8d"
+    }
+  ]
 }

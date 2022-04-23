@@ -18,7 +18,8 @@ APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializ
 	ObjectVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Object VFX"));
 }
 
-void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption = true)
+void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC,
+	const bool bDestroyAfterConsumption = true)
 {
 	UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
 	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))

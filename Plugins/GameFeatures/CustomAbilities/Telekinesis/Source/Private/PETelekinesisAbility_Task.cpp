@@ -33,7 +33,8 @@ void UPETelekinesisAbility_Task::Activate()
 
 		if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 		{
-			PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(),
+			PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(),
+				UPhysicsHandleComponent::StaticClass(),
 				FName("TelekinesisPhysicsHandle"));
 
 			if (PhysicsHandle.IsValid())
@@ -51,7 +52,8 @@ void UPETelekinesisAbility_Task::Activate()
 						OnGrabbing.ExecuteIfBound(true);
 					}
 
-					PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+					PhysicsHandle->SetTargetLocation(
+						TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 					bTickingTask = true;
 
 					return;
@@ -137,9 +139,11 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		FHitResult HitResult;
 		FGameplayTargetDataFilterHandle DataFilterHandle;
 
-		AGameplayAbilityTargetActor_Trace::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation, EndLocation, "None", QueryParams);
+		AGameplayAbilityTargetActor_Trace::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation,
+			EndLocation, "None", QueryParams);
 
-		const FVector Direction = ((HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation) - GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
+		const FVector Direction = ((HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation) -
+			GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
 		const FVector Velocity = Direction * 2750.f;
 
 		GrabbedPrimitive_Temp->SetAllPhysicsLinearVelocity(Velocity);

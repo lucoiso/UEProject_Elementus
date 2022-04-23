@@ -19,7 +19,7 @@ UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer)
 	, CurrentLevel(1.f)
 	, CurrentExperience(1.f)
 	, RequiredExperience(1.f)
-{	
+{
 	InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetLevelingAttributeMetaData());
 }
 
@@ -31,24 +31,26 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, flo
 	{
 		UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
 		const UDataTable* LevelingBonus_Table = UPEAbilitySystemGlobals::Get().GetLevelingBonusData();
-			
-		if (ensureMsgf(IsValid(AbilityComp) && IsValid(LevelingBonus_Table), TEXT("%s have a invalid Parameters"), *GetName()))
+
+		if (ensureMsgf(IsValid(AbilityComp) && IsValid(LevelingBonus_Table), TEXT("%s have a invalid Parameters"),
+			*GetName()))
 		{
 			const FPELevelingData LevelingInfo = *LevelingBonus_Table->FindRow<FPELevelingData>(
 				FName(*FString::FromInt(GetCurrentLevel() + 1)), "");
 
-#if __cplusplus > 201402L // Check if C++ > C++14
 			if constexpr (&LevelingInfo != nullptr)
-#else
-			if (&LevelingInfo != nullptr)
-#endif
 			{
-				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxHealthAttribute(), EGameplayModOp::Additive, LevelingInfo.BonusMaxHealth);
-				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxStaminaAttribute(), EGameplayModOp::Additive, LevelingInfo.BonusMaxStamina);
-				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxManaAttribute(), EGameplayModOp::Additive, LevelingInfo.BonusMaxMana);
+				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxHealthAttribute(), EGameplayModOp::Additive,
+					LevelingInfo.BonusMaxHealth);
+				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxStaminaAttribute(), EGameplayModOp::Additive,
+					LevelingInfo.BonusMaxStamina);
+				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxManaAttribute(), EGameplayModOp::Additive,
+					LevelingInfo.BonusMaxMana);
 
-				AbilityComp->ApplyModToAttribute(UPECustomStatusAS::GetAttackRateAttribute(), EGameplayModOp::Additive, LevelingInfo.BonusAttackRate);
-				AbilityComp->ApplyModToAttribute(UPECustomStatusAS::GetDefenseRateAttribute(), EGameplayModOp::Additive, LevelingInfo.BonusDefenseRate);
+				AbilityComp->ApplyModToAttribute(UPECustomStatusAS::GetAttackRateAttribute(), EGameplayModOp::Additive,
+					LevelingInfo.BonusAttackRate);
+				AbilityComp->ApplyModToAttribute(UPECustomStatusAS::GetDefenseRateAttribute(), EGameplayModOp::Additive,
+					LevelingInfo.BonusDefenseRate);
 
 				const float NewExperience = GetCurrentExperience() - GetRequiredExperience();
 				SetRequiredExperience(LevelingInfo.RequiredExp);

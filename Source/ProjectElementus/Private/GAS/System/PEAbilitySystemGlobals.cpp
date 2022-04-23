@@ -11,66 +11,42 @@ UPEAbilitySystemGlobals::UPEAbilitySystemGlobals(const FObjectInitializer& Objec
 {
 	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffect_ClassRef(
 		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&DeathGameplayEffect_ClassRef.Class != nullptr)
-#else
-	if (&DeathGameplayEffect_ClassRef.Class != nullptr)
-#endif
 	{
 		GlobalDeathEffect = DeathGameplayEffect_ClassRef.Class;
 	}
 
 	static const ConstructorHelpers::FClassFinder<UGameplayEffect> StunGameplayEffect_ClassRef(
 		TEXT("/Game/Main/GAS/Effects/States/GE_Stun"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&StunGameplayEffect_ClassRef.Class != nullptr)
-#else
-	if (&StunGameplayEffect_ClassRef.Class != nullptr)
-#endif
 	{
 		GlobalStunEffect = StunGameplayEffect_ClassRef.Class;
 	}
 
 	static const ConstructorHelpers::FObjectFinder<UDataTable> MainAttributesMetaData_ObjRef(
 		TEXT("/Game/Main/GAS/Data/DT_BasicStatusAS"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&MainAttributesMetaData_ObjRef.Object != nullptr)
-#else
-	if (&MainAttributesMetaData_ObjRef.Object != nullptr)
-#endif
 	{
 		MainStatusAttributeData = MainAttributesMetaData_ObjRef.Object;
 	}
 
 	static const ConstructorHelpers::FObjectFinder<UDataTable> CustomAttributesMetaData_ObjRef(
 		TEXT("/Game/Main/GAS/Data/DT_CustomStatusAS"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&CustomAttributesMetaData_ObjRef.Object != nullptr)
-#else
-	if (&CustomAttributesMetaData_ObjRef.Object != nullptr)
-#endif
 	{
 		CustomStatusAttributeData = CustomAttributesMetaData_ObjRef.Object;
 	}
-	
+
 	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingAttributesMetaData_ObjRef(
 		TEXT("/Game/Main/GAS/Data/DT_LevelingAS"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&LevelingAttributesMetaData_ObjRef.Object != nullptr)
-#else
-	if (&LevelingAttributesMetaData_ObjRef.Object != nullptr)
-#endif
 	{
 		LevelingAttributeData = LevelingAttributesMetaData_ObjRef.Object;
 	}
 
 	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingBonus_ObjRef(
 		TEXT("/Game/Main/GAS/Data/DT_LevelingBonus"));
-#if __cplusplus > 201402L // Check if C++ > C++14
 	if constexpr (&LevelingBonus_ObjRef.Object != nullptr)
-#else
-	if (&LevelingBonus_ObjRef.Object != nullptr)
-#endif
 	{
 		LevelingBonusData = LevelingBonus_ObjRef.Object;
 	}

@@ -27,9 +27,7 @@ void UPECrouchAbility::ActivateAbility
 		return;
 	}
 
-	Player->CanCrouch() && !Player->bIsCrouched ?
-		Player->Crouch() :
-		Player->UnCrouch();
+	Player->CanCrouch() && !Player->bIsCrouched ? Player->Crouch() : Player->UnCrouch();
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }

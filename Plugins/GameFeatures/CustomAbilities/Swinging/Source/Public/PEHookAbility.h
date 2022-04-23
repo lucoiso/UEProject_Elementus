@@ -31,5 +31,6 @@ private:
 
 	virtual void WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload) override;
 
-	virtual void WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
+	virtual void
+		WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
 };

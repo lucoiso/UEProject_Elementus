@@ -45,11 +45,13 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/* Returns a casted version of Player Controller using PEPlayerController class */
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components", meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components",
+		meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
 		class APEPlayerController* GetPEPlayerController() const;
 
 	/* Player associated Ability System Component */
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Components",
+		meta = (AllowPrivateAccess = "true"))
 		class UPEAbilitySystemComponent* AbilitySystemComponent;
 
 public:

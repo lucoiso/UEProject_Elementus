@@ -32,7 +32,8 @@ void UPETelekinesisAbility::ActivateAbility
 	TargetingParams.TargetFilter.RequiredActorClass = APEThrowableActor::StaticClass();
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("head");
 
-	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
+	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
+		AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
 }
 
 void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
@@ -49,7 +50,8 @@ void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle
 	CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 }
 
-void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
+	const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	if (!TargetDataHandle.IsValid(0))
 	{

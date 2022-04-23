@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "GameplayTagContainer.h"
 #include "PEInteractable.generated.h"
 
 /**
@@ -19,7 +18,7 @@ class UPEInteractable : public UInterface
 };
 
 /**
- * 
+ *
  */
 class PROJECTELEMENTUS_API IPEInteractable
 {
@@ -36,7 +35,7 @@ public:
 	{
 		return true;
 	};
-	
+
 	UFUNCTION(Category = "Custom Functions | Management")
 		virtual bool IsInteractAllowedForActor(const AActor* Actor)
 	{

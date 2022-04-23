@@ -13,7 +13,8 @@ UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitial
 	bIsFinished = false;
 }
 
-UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName,
+UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility,
+	const FName TaskInstanceName,
 	const FHitResult HitResult)
 {
 	UPEHookAbility_Task* MyObj = NewAbilityTask<UPEHookAbility_Task>(OwningAbility, TaskInstanceName);
@@ -83,9 +84,9 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 			HitDataHandle.GetActor()->GetRootComponent()->IsSimulatingPhysics();
 
 		const FVector HookLocationToUse =
-			bIsTargetMovableAndSimulatingPhysics ?
-			HitDataHandle.GetActor()->GetActorLocation() :
-			HitDataHandle.Location;
+			bIsTargetMovableAndSimulatingPhysics
+			? HitDataHandle.GetActor()->GetActorLocation()
+			: HitDataHandle.Location;
 
 		const FVector Difference = HookLocationToUse - HookOwner->GetActorLocation();
 		if (Difference.Size() >= 500.f)
@@ -94,7 +95,8 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 
 			HookOwner->GetCharacterMovement()->AddForce(HookForce);
 
-			if (bIsTargetMovableAndSimulatingPhysics && !HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
+			if (bIsTargetMovableAndSimulatingPhysics && !HitDataHandle.GetActor()->GetClass()->IsChildOf<
+				APECharacterBase>())
 			{
 				HitDataHandle.GetComponent()->AddForce(-1.f * HookForce);
 			}

@@ -34,7 +34,8 @@ void APEThrowableActor::ThrowSetup(AActor* Caller)
 	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &APEThrowableActor::OnThrowableHit);
 }
 
-void APEThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void APEThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (IsValid(OtherActor) && OtherActor != CallerActor.Get())
 	{
@@ -48,7 +49,8 @@ void APEThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor
 
 				Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
 
-				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()),
+					TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 				{
 					ApplyThrowableEffect(Player->GetAbilitySystemComponent());
 				}

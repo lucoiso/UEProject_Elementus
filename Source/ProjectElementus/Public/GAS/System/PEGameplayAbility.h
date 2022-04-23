@@ -220,7 +220,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
 			UAbilitySystemComponent* SourceAbilitySystem);
-	
+
 	/* Apply SelfAbilityEffects to self */
 	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToSelf", Category = "Custom GAS | Management")
 		void BP_ApplyAbilityEffectsToSelf();

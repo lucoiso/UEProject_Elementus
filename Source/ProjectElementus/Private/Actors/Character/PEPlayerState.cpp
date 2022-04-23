@@ -46,10 +46,12 @@ void APEPlayerState::BeginPlay()
 	if (ensureMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::DeathStateChanged_Callback);
+			EGameplayTagEventType::NewOrRemoved).AddUObject(
+				this, &APEPlayerState::DeathStateChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::StunStateChanged_Callback);
+			EGameplayTagEventType::NewOrRemoved).AddUObject(
+				this, &APEPlayerState::StunStateChanged_Callback);
 	}
 }
 

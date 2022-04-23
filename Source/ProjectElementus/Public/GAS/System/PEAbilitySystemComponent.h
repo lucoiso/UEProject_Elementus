@@ -29,8 +29,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC);
 
-	template<typename T>
-	inline const T* GetCustomAttributeSet() const
+	template <typename T>
+	const T* GetCustomAttributeSet() const
 	{
 		return Cast<T>(GetAttributeSet(T::StaticClass()));
 	}
