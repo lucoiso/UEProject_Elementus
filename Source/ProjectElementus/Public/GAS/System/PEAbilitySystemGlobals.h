@@ -22,10 +22,10 @@ public:
 	TSoftClassPtr<class UGameplayEffect> GlobalDeathEffect;
 	TSoftClassPtr<class UGameplayEffect> GlobalStunEffect;
 	
-	TSoftClassPtr<class UDataTable> MainStatusAttributeData;
-	TSoftClassPtr<class UDataTable> CustomStatusAttributeData;
-	TSoftClassPtr<class UDataTable> LevelingAttributeData;
-	TSoftClassPtr<class UDataTable> LevelingBonusData;
+	TSoftObjectPtr<class UDataTable> MainStatusAttributeData;
+	TSoftObjectPtr<class UDataTable> CustomStatusAttributeData;
+	TSoftObjectPtr<class UDataTable> LevelingAttributeData;
+	TSoftObjectPtr<class UDataTable> LevelingBonusData;
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
 		UGameplayEffect* GetGlobalDeathEffect();

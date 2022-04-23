@@ -88,20 +88,20 @@ UGameplayEffect* UPEAbilitySystemGlobals::GetGlobalStunEffect()
 
 UDataTable* UPEAbilitySystemGlobals::GetMainStatusAttributeMetaData()
 {
-	return MainStatusAttributeData.LoadSynchronous()->GetDefaultObject<UDataTable>();
+	return MainStatusAttributeData.LoadSynchronous();
 }
 
 UDataTable* UPEAbilitySystemGlobals::GetCustomStatusAttributeMetaData()
 {
-	return CustomStatusAttributeData.LoadSynchronous()->GetDefaultObject<UDataTable>();
+	return CustomStatusAttributeData.LoadSynchronous();
 }
 
 UDataTable* UPEAbilitySystemGlobals::GetLevelingAttributeMetaData()
 {
-	return LevelingAttributeData.LoadSynchronous()->GetDefaultObject<UDataTable>();
+	return LevelingAttributeData.LoadSynchronous();
 }
 
 UDataTable* UPEAbilitySystemGlobals::GetLevelingBonusData()
 {
-	return LevelingBonusData.LoadSynchronous()->GetDefaultObject<UDataTable>();
+	return LevelingBonusData.LoadSynchronous();
 }
