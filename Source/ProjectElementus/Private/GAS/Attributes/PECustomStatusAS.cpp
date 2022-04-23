@@ -6,6 +6,8 @@
 #include "Actors/Character/PECharacterBase.h"
 #include "Actors/Character/PEPlayerState.h"
 
+#include "GAS/System/PEAbilitySystemGlobals.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "GameplayEffectExtension.h"
@@ -22,16 +24,7 @@ UPECustomStatusAS::UPECustomStatusAS(const FObjectInitializer& ObjectInitializer
 	, JumpRate(1.f)
 	, Gold(0.f)
 {
-	static const ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaData_ObjRef(
-		TEXT("/Game/Main/GAS/Data/DT_CustomStatusAS"));
-#if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&AttributesMetaData_ObjRef.Object != nullptr)
-#else
-	if (&AttributesMetaData_ObjRef.Object != nullptr)
-#endif
-	{
-		InitFromMetaDataTable(AttributesMetaData_ObjRef.Object);
-	}
+	InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetCustomStatusAttributeMetaData());
 }
 
 void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)

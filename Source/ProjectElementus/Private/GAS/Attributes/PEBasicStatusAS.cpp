@@ -3,6 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Attributes/PEBasicStatusAS.h"
+#include "GAS/System/PEAbilitySystemGlobals.h"
 
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
@@ -19,27 +20,7 @@ UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer)
 	, Mana(100.f)
 	, MaxMana(100.f)
 {
-	static const ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaData_ObjRef(
-		TEXT("/Game/Main/GAS/Data/DT_BasicStatusAS"));
-#if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&AttributesMetaData_ObjRef.Object != nullptr)
-#else
-	if (&AttributesMetaData_ObjRef.Object != nullptr)
-#endif
-	{
-		InitFromMetaDataTable(AttributesMetaData_ObjRef.Object);
-	}
-
-	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffect_ClassRef(
-		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
-#if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&DeathGameplayEffect_ClassRef.Class != nullptr)
-#else
-	if (&DeathGameplayEffect_ClassRef.Class != nullptr)
-#endif
-	{
-		DeathEffect = DeathGameplayEffect_ClassRef.Class;
-	}
+	InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetMainStatusAttributeMetaData());
 }
 
 void UPEBasicStatusAS::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -73,7 +54,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 			GetOwningAbilitySystemComponent()->CancelAllAbilities();
 
 			GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(
-				DeathEffect->GetDefaultObject()), 1.f, GetOwningAbilitySystemComponent()->MakeEffectContext());
+				UPEAbilitySystemGlobals::Get().GetGlobalDeathEffect()), 1.f, GetOwningAbilitySystemComponent()->MakeEffectContext());
 		}
 
 		if (Attribute == GetStaminaAttribute())

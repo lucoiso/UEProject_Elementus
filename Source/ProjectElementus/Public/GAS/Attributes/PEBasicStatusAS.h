@@ -33,8 +33,6 @@ private:
 		float NewMaxValue,
 		const FGameplayAttribute& AffectedAttributeProperty) const;
 
-	TSoftClassPtr<UGameplayEffect> DeathEffect;
-
 public:
 	/* A non-replicated attribute to handle damage value inside GE Executions */
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes")

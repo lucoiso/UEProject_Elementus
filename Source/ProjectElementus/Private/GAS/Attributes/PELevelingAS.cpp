@@ -6,6 +6,8 @@
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
 
+#include "GAS/System/PEAbilitySystemGlobals.h"
+
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 
@@ -17,28 +19,8 @@ UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer)
 	, CurrentLevel(1.f)
 	, CurrentExperience(1.f)
 	, RequiredExperience(1.f)
-{
-	static const ConstructorHelpers::FObjectFinder<UDataTable> AttributesMetaData_ObjRef(
-		TEXT("/Game/Main/GAS/Data/DT_LevelingAS"));
-#if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&AttributesMetaData_ObjRef.Object != nullptr)
-#else
-	if (&AttributesMetaData_ObjRef.Object != nullptr)
-#endif
-	{
-		InitFromMetaDataTable(AttributesMetaData_ObjRef.Object);
-	}
-
-	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingBonus_ObjRef(
-		TEXT("/Game/Main/GAS/Data/DT_LevelingBonus"));
-#if __cplusplus > 201402L // Check if C++ > C++14
-	if constexpr (&LevelingBonus_ObjRef.Object != nullptr)
-#else
-	if (&LevelingBonus_ObjRef.Object != nullptr)
-#endif
-	{
-		LevelingBonus_Table = LevelingBonus_ObjRef.Object;
-	}
+{	
+	InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetLevelingAttributeMetaData());
 }
 
 void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
@@ -48,7 +30,9 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, flo
 	if (Attribute == GetCurrentExperienceAttribute() && NewValue >= GetRequiredExperience())
 	{
 		UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
-		if (ensureMsgf(IsValid(AbilityComp) && LevelingBonus_Table.IsValid(), TEXT("%s have a invalid Parameters"), *GetName()))
+		const UDataTable* LevelingBonus_Table = UPEAbilitySystemGlobals::Get().GetLevelingBonusData();
+			
+		if (ensureMsgf(IsValid(AbilityComp) && IsValid(LevelingBonus_Table), TEXT("%s have a invalid Parameters"), *GetName()))
 		{
 			const FPELevelingData LevelingInfo = *LevelingBonus_Table->FindRow<FPELevelingData>(
 				FName(*FString::FromInt(GetCurrentLevel() + 1)), "");

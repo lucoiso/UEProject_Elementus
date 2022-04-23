@@ -25,8 +25,6 @@ private:
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	TWeakObjectPtr<UDataTable> LevelingBonus_Table;
-
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_CurrentLevel)
 		FGameplayAttributeData CurrentLevel;

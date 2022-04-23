@@ -15,5 +15,38 @@ UCLASS(Category = "Custom GAS | Classes")
 class PROJECTELEMENTUS_API UPEAbilitySystemGlobals : public UAbilitySystemGlobals
 {
 	GENERATED_BODY()
+
+public:
+	UPEAbilitySystemGlobals(const FObjectInitializer& ObjectInitializer);	
 	
+	TSoftClassPtr<class UGameplayEffect> GlobalDeathEffect;
+	TSoftClassPtr<class UGameplayEffect> GlobalStunEffect;
+	
+	TSoftClassPtr<class UDataTable> MainStatusAttributeData;
+	TSoftClassPtr<class UDataTable> CustomStatusAttributeData;
+	TSoftClassPtr<class UDataTable> LevelingAttributeData;
+	TSoftClassPtr<class UDataTable> LevelingBonusData;
+
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
+		UGameplayEffect* GetGlobalDeathEffect();
+	
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
+		UGameplayEffect* GetGlobalStunEffect();
+
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
+		UDataTable* GetMainStatusAttributeMetaData();
+
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
+		UDataTable* GetCustomStatusAttributeMetaData();
+
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
+		UDataTable* GetLevelingAttributeMetaData();
+
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
+		UDataTable* GetLevelingBonusData();
+
+	static UPEAbilitySystemGlobals& Get()
+	{
+		return *Cast<UPEAbilitySystemGlobals>(IGameplayAbilitiesModule::Get().GetAbilitySystemGlobals());
+	}
 };
