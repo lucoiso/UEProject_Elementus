@@ -4,7 +4,7 @@
 
 #include "GAS/System/PEAbilityFunctions.h"
 
-const FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSingleHitResult(
+FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSingleHitResult(
 	const FHitResult HitResult)
 {
 	FGameplayAbilityTargetDataHandle TargetData;
@@ -15,7 +15,7 @@ const FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandle
 	return TargetData;
 }
 
-const FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromHitResultArray(
+FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromHitResultArray(
 	const TArray<FHitResult> HitResults)
 {
 	FGameplayAbilityTargetDataHandle TargetData;
@@ -29,7 +29,7 @@ const FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandle
 	return TargetData;
 }
 
-const FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromActorArray(
+FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromActorArray(
 	const TArray<AActor*> TargetActors)
 {
 	if (!TargetActors.IsEmpty())

@@ -12,7 +12,7 @@
  *
  */
 UCLASS(MinimalAPI, Category = "Custom Classes | Management")
-class UPEGameInstance : public UGameInstance
+class UPEGameInstance final : public UGameInstance
 {
 	GENERATED_BODY()
 };

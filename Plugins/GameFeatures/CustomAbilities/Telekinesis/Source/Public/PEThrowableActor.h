@@ -15,12 +15,12 @@ class UAbilitySystemComponent;
  *
  */
 UCLASS(MinimalAPI, Abstract, Blueprintable, Category = "Custom Classes | Actors")
-class APEThrowableActor : public AStaticMeshActor
+class APEThrowableActor final : public AStaticMeshActor
 {
 	GENERATED_BODY()
 
 public:
-	APEThrowableActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEThrowableActor(const FObjectInitializer& ObjectInitializer);
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
@@ -32,12 +32,12 @@ public:
 protected:
 	/* Effects that will be apply to affected characters on Hit */
 	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
-		TArray<FGameplayEffectGroupedData> HitEffects;
+	TArray<FGameplayEffectGroupedData> HitEffects;
 
 private:
 	UFUNCTION()
-		void OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-			FVector NormalImpulse, const FHitResult& Hit);
+	void OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                    FVector NormalImpulse, const FHitResult& Hit);
 
 	void ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC);
 	TWeakObjectPtr<AActor> CallerActor;

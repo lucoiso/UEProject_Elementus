@@ -17,29 +17,29 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpawnProjectileDelegate, APEProject
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Tasks")
-class PROJECTELEMENTUS_API UPESpawnProjectile_Task : public UAbilityTask
+class PROJECTELEMENTUS_API UPESpawnProjectile_Task final : public UAbilityTask
 {
 	GENERATED_BODY()
 
 public:
-	UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer);
 
 	/* Create a reference to manage this ability task */
 	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility",
 		BlueprintInternalUseOnly = "true"), Category = "Custom GAS | Tasks")
-		static UPESpawnProjectile_Task* SpawnProjectile(UGameplayAbility* OwningAbility,
-			TSubclassOf<APEProjectileActor> ClassToSpawn,
-			const FTransform SpawnTransform,
-			const FVector DirectionToFire,
-			const TArray<FGameplayEffectGroupedData> EffectDataArray);
+	static UPESpawnProjectile_Task* SpawnProjectile(UGameplayAbility* OwningAbility,
+	                                                TSubclassOf<APEProjectileActor> ClassToSpawn,
+	                                                const FTransform SpawnTransform,
+	                                                const FVector DirectionToFire,
+	                                                const TArray<FGameplayEffectGroupedData> EffectDataArray);
 
 	virtual void Activate() override;
 
 	UPROPERTY(BlueprintAssignable, Category = "Custom GAS | Delegates")
-		FSpawnProjectileDelegate OnProjectileSpawn;
+	FSpawnProjectileDelegate OnProjectileSpawn;
 
 	UPROPERTY(BlueprintAssignable, Category = "Custom GAS | Delegates")
-		FSpawnProjectileDelegate OnSpawnFailed;
+	FSpawnProjectileDelegate OnSpawnFailed;
 
 protected:
 	FTransform ProjectileTransform;

@@ -13,14 +13,14 @@
 
 UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-	, Health(500.f)
-	, MaxHealth(500.f)
-	, Stamina(250.f)
-	, MaxStamina(250.f)
-	, Mana(100.f)
-	, MaxMana(100.f)
+	  , Health(500.f)
+	  , MaxHealth(500.f)
+	  , Stamina(250.f)
+	  , MaxStamina(250.f)
+	  , Mana(100.f)
+	  , MaxMana(100.f)
 {
-	InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetMainStatusAttributeMetaData());
+	UAttributeSet::InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetMainStatusAttributeMetaData());
 }
 
 void UPEBasicStatusAS::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -43,7 +43,8 @@ void UPEBasicStatusAS::PreAttributeChange(const FGameplayAttribute& Attribute, f
 	}
 }
 
-void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue,
+                                           const float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
@@ -54,10 +55,10 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 			GetOwningAbilitySystemComponent()->CancelAllAbilities();
 
 			GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(
-				UPEAbilitySystemGlobals::Get().
-				GetGlobalDeathEffect()), 1.f,
-				GetOwningAbilitySystemComponent()->
-				MakeEffectContext());
+				                                                             UPEAbilitySystemGlobals::Get().
+				                                                             GetGlobalDeathEffect()), 1.f,
+			                                                             GetOwningAbilitySystemComponent()->
+			                                                             MakeEffectContext());
 		}
 
 		if (Attribute == GetStaminaAttribute())
@@ -128,20 +129,19 @@ void UPEBasicStatusAS::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 }
 
 void UPEBasicStatusAS::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
-	const FGameplayAttributeData& MaxAttribute, const float NewMaxValue,
-	const FGameplayAttribute& AffectedAttributeProperty) const
+                                                   const FGameplayAttributeData& MaxAttribute, const float NewMaxValue,
+                                                   const FGameplayAttribute& AffectedAttributeProperty) const
 {
-	UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
-	if (ensureMsgf(IsValid(AbilityComp), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
+	if (UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent(); ensureMsgf(
+		IsValid(AbilityComp), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
-		const float CurrentMaxValue = MaxAttribute.GetCurrentValue();
-
-		if (!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
+		if (const float CurrentMaxValue = MaxAttribute.GetCurrentValue(); !FMath::IsNearlyEqual(
+			CurrentMaxValue, NewMaxValue) && AbilityComp)
 		{
 			const float CurrentValue = AffectedAttribute.GetCurrentValue();
-			const float NewDelta = (CurrentMaxValue > 0.f)
-				? (CurrentValue * NewMaxValue / CurrentMaxValue) - CurrentValue
-				: NewMaxValue;
+			const float NewDelta = CurrentMaxValue > 0.f
+				                       ? CurrentValue * NewMaxValue / CurrentMaxValue - CurrentValue
+				                       : NewMaxValue;
 
 			AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
 		}

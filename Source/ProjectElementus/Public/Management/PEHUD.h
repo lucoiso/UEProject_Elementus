@@ -12,12 +12,12 @@
  *
  */
 UCLASS(Blueprintable, NotPlaceable, Category = "Custom Classes | Management")
-class PROJECTELEMENTUS_API APEHUD : public AHUD
+class PROJECTELEMENTUS_API APEHUD final : public AHUD
 {
 	GENERATED_BODY()
 
 public:
-	APEHUD(const FObjectInitializer& ObjectInitializer);
+	explicit APEHUD(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
 
@@ -26,7 +26,7 @@ public:
 protected:
 	/* A Blueprint Widget class to use as HUD */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom Properties | Management")
-		TSubclassOf<UUserWidget> HUDClass;
+	TSubclassOf<UUserWidget> HUDClass;
 
 private:
 	TWeakObjectPtr<UUserWidget> HUDHandle;

@@ -22,9 +22,9 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 
 void UPEHookAbility::ActivateAbility
 (const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+ const FGameplayAbilityActorInfo* ActorInfo,
+ const FGameplayAbilityActivationInfo ActivationInfo,
+ const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -33,7 +33,7 @@ void UPEHookAbility::ActivateAbility
 }
 
 void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo)
+                                   const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
@@ -46,7 +46,7 @@ void UPEHookAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventDat
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
 
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-		AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
+	                           AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
 }
 
 void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -78,19 +78,19 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	TargetData->AddTargetDataToGameplayCueParameters(Params);
 
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params,
-		GetCurrentActorInfo()->AbilitySystemComponent.Get());
+	                     GetCurrentActorInfo()->AbilitySystemComponent.Get());
 
 	if (Cast<APECharacterBase>(TargetHit->GetActor()))
 	{
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindLambda([=]() -> void
+		{
+			if (IsActive())
 			{
-				if (IsActive())
-				{
-					EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true,
-						false);
-				}
-			});
+				EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true,
+				           false);
+			}
+		});
 
 		GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime, false);
 	}

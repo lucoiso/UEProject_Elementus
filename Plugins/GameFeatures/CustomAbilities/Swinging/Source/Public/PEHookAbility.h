@@ -12,25 +12,25 @@
  *
  */
 UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Custom GAS | Abilities")
-class UPEHookAbility : public UPEGameplayAbility
+class UPEHookAbility final : public UPEGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UPEHookAbility(const FObjectInitializer& ObjectInitializer);
+	explicit UPEHookAbility(const FObjectInitializer& ObjectInitializer);
 
 private:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-		const FGameplayAbilityActorInfo* ActorInfo,
-		const FGameplayAbilityActivationInfo ActivationInfo,
-		const FGameplayEventData* TriggerEventData) override;
+	                             const FGameplayAbilityActorInfo* ActorInfo,
+	                             const FGameplayAbilityActivationInfo ActivationInfo,
+	                             const FGameplayEventData* TriggerEventData) override;
 
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle,
-		const FGameplayAbilityActorInfo* ActorInfo,
-		const FGameplayAbilityActivationInfo ActivationInfo) override;
+	                           const FGameplayAbilityActorInfo* ActorInfo,
+	                           const FGameplayAbilityActivationInfo ActivationInfo) override;
 
 	virtual void WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload) override;
 
 	virtual void
-		WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
+	WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
 };

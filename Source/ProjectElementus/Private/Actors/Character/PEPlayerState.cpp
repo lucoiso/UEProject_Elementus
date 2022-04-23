@@ -46,12 +46,12 @@ void APEPlayerState::BeginPlay()
 	if (ensureMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(
-				this, &APEPlayerState::DeathStateChanged_Callback);
+		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
+			this, &APEPlayerState::DeathStateChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
-			EGameplayTagEventType::NewOrRemoved).AddUObject(
-				this, &APEPlayerState::StunStateChanged_Callback);
+		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
+			this, &APEPlayerState::StunStateChanged_Callback);
 	}
 }
 
@@ -75,18 +75,16 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 	}
 
 	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-		*FString(__func__),
-		*CallbackTag.ToString(), NewCount);
+	                 *FString(__func__),
+	                 *CallbackTag.ToString(), NewCount);
 
 	if (NewCount != 0)
 	{
-		APEPlayerController* Controller_Temp = GetPEPlayerController();
-
-		if (ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
+		if (APEPlayerController* Controller_Temp = GetPEPlayerController(); ensureMsgf(
+			IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
-			APECharacterBase* Player_Temp = Controller_Temp->GetPawn<APECharacterBase>();
-
-			if (ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
+			if (APECharacterBase* Player_Temp = Controller_Temp->GetPawn<APECharacterBase>(); ensureMsgf(
+				IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				const FVector SpectatorLocation = Player_Temp->GetActorLocation();
 				const FRotator SpectatorRotation = Player_Temp->GetActorRotation();
@@ -107,8 +105,8 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
 	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-		*FString(__func__),
-		*CallbackTag.ToString(), NewCount);
+	                 *FString(__func__),
+	                 *CallbackTag.ToString(), NewCount);
 
 	if (ensureMsgf(IsValid(GetPlayerController()), TEXT("%s have a invalid Player"), *GetName()))
 	{

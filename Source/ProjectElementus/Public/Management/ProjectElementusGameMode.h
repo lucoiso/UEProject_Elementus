@@ -12,7 +12,7 @@
  *
  */
 UCLASS(MinimalAPI, Category = "Custom Classes | Management")
-class AProjectElementusGameMode : public AGameModeBase
+class AProjectElementusGameMode final : public AGameModeBase
 {
 	GENERATED_BODY()
 

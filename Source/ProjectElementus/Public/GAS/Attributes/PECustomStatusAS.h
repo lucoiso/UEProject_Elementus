@@ -14,12 +14,12 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Attributes")
-class PROJECTELEMENTUS_API UPECustomStatusAS : public UAttributeSet
+class PROJECTELEMENTUS_API UPECustomStatusAS final : public UAttributeSet
 {
 	GENERATED_BODY()
 
 public:
-	UPECustomStatusAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPECustomStatusAS(const FObjectInitializer& ObjectInitializer);
 
 private:
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
@@ -27,38 +27,38 @@ private:
 
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_AttackRate)
-		FGameplayAttributeData AttackRate;
+	FGameplayAttributeData AttackRate;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, AttackRate)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_DefenseRate)
-		FGameplayAttributeData DefenseRate;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_DefenseRate)
+	FGameplayAttributeData DefenseRate;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, DefenseRate)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_SpeedRate)
-		FGameplayAttributeData SpeedRate;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_SpeedRate)
+	FGameplayAttributeData SpeedRate;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, SpeedRate)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_JumpRate)
-		FGameplayAttributeData JumpRate;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_JumpRate)
+	FGameplayAttributeData JumpRate;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, JumpRate)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Gold)
-		FGameplayAttributeData Gold;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Gold)
+	FGameplayAttributeData Gold;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, Gold)
 
 protected:
 	UFUNCTION()
-		void OnRep_AttackRate(const FGameplayAttributeData& OldValue) const;
+	void OnRep_AttackRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_DefenseRate(const FGameplayAttributeData& OldValue) const;
+	void OnRep_DefenseRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_SpeedRate(const FGameplayAttributeData& OldValue) const;
+	void OnRep_SpeedRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_JumpRate(const FGameplayAttributeData& OldValue) const;
+	void OnRep_JumpRate(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_Gold(const FGameplayAttributeData& OldValue) const;
+	void OnRep_Gold(const FGameplayAttributeData& OldValue) const;
 };

@@ -14,19 +14,19 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FHookManagement, const bool, ValidTarget);
  *
  */
 UCLASS(MinimalAPI, NotBlueprintable, NotPlaceable, Category = "Custom GAS | Tasks")
-class UPEHookAbility_Task : public UAbilityTask
+class UPEHookAbility_Task final : public UAbilityTask
 {
 	GENERATED_BODY()
 
 public:
-	UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer);
 
 	FHookManagement OnHooking;
 
 	/* Create a reference to manage this ability task */
 	static UPEHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility,
-		FName TaskInstanceName,
-		const FHitResult HitResult);
+	                                                FName TaskInstanceName,
+	                                                const FHitResult HitResult);
 
 	virtual void Activate() override;
 

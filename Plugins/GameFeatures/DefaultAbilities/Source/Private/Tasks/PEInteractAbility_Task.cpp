@@ -12,7 +12,7 @@ UPEInteractAbility_Task::UPEInteractAbility_Task(const FObjectInitializer& Objec
 }
 
 UPEInteractAbility_Task* UPEInteractAbility_Task::InteractionTask(UGameplayAbility* OwningAbility,
-	FName TaskInstanceName)
+                                                                  const FName TaskInstanceName)
 {
 	UPEInteractAbility_Task* MyObj = NewAbilityTask<UPEInteractAbility_Task>(OwningAbility, TaskInstanceName);
 	return MyObj;
@@ -26,7 +26,7 @@ void UPEInteractAbility_Task::Activate()
 	EndTask();
 }
 
-void UPEInteractAbility_Task::TickTask(float DeltaTime)
+void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 {
 	if (bIsFinished)
 	{
@@ -37,7 +37,7 @@ void UPEInteractAbility_Task::TickTask(float DeltaTime)
 	Super::TickTask(DeltaTime);
 }
 
-void UPEInteractAbility_Task::OnDestroy(bool AbilityIsEnding)
+void UPEInteractAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
 

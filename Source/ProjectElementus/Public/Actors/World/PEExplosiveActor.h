@@ -16,12 +16,12 @@ class UAbilitySystemComponent;
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Custom Classes | Actors")
-class PROJECTELEMENTUS_API APEExplosiveActor : public AActor
+class PROJECTELEMENTUS_API APEExplosiveActor final : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	APEExplosiveActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEExplosiveActor(const FObjectInitializer& ObjectInitializer);
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
@@ -29,24 +29,24 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
-		void PerformExplosion();
+	void PerformExplosion();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Properties | Defaults")
-		float ExplosionRadius;
+	float ExplosionRadius;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Properties | Defaults")
-		float ExplosionMagnitude;
+	float ExplosionMagnitude;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		bool bDestroyAfterExplosion;
+	bool bDestroyAfterExplosion;
 
 	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		TArray<FGameplayEffectGroupedData> ExplosionEffects;
+	TArray<FGameplayEffectGroupedData> ExplosionEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		TArray<UNiagaraSystem*> ExplosionVFXs;
+	TArray<UNiagaraSystem*> ExplosionVFXs;
 
 private:
 	void ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC);

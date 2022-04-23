@@ -14,8 +14,8 @@ UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitial
 }
 
 UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility,
-	const FName TaskInstanceName,
-	const FHitResult HitResult)
+                                                              const FName TaskInstanceName,
+                                                              const FHitResult HitResult)
 {
 	UPEHookAbility_Task* MyObj = NewAbilityTask<UPEHookAbility_Task>(OwningAbility, TaskInstanceName);
 
@@ -85,11 +85,10 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 
 		const FVector HookLocationToUse =
 			bIsTargetMovableAndSimulatingPhysics
-			? HitDataHandle.GetActor()->GetActorLocation()
-			: HitDataHandle.Location;
+				? HitDataHandle.GetActor()->GetActorLocation()
+				: HitDataHandle.Location;
 
-		const FVector Difference = HookLocationToUse - HookOwner->GetActorLocation();
-		if (Difference.Size() >= 500.f)
+		if (const FVector Difference = HookLocationToUse - HookOwner->GetActorLocation(); Difference.Size() >= 500.f)
 		{
 			const FVector HookForce = Difference * (0.75f / DeltaTime);
 

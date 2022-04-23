@@ -12,10 +12,11 @@ UPESpawnProjectile_Task::UPESpawnProjectile_Task(const FObjectInitializer& Objec
 }
 
 UPESpawnProjectile_Task* UPESpawnProjectile_Task::SpawnProjectile(UGameplayAbility* OwningAbility,
-	const TSubclassOf<APEProjectileActor> ClassToSpawn,
-	const FTransform SpawnTransform,
-	const FVector DirectionToFire,
-	TArray<FGameplayEffectGroupedData> EffectDataArray)
+                                                                  const TSubclassOf<APEProjectileActor> ClassToSpawn,
+                                                                  const FTransform SpawnTransform,
+                                                                  const FVector DirectionToFire,
+                                                                  const TArray<FGameplayEffectGroupedData>
+                                                                  EffectDataArray)
 {
 	UPESpawnProjectile_Task* MyObj = NewAbilityTask<UPESpawnProjectile_Task>(OwningAbility);
 
@@ -39,10 +40,10 @@ void UPESpawnProjectile_Task::Activate()
 			{
 				APEProjectileActor* SpawnedProjectile =
 					GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform,
-						Ability->GetAvatarActorFromActorInfo(),
-						Ability->GetActorInfo().PlayerController->
-						GetPawn(),
-						ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+					                                                   Ability->GetAvatarActorFromActorInfo(),
+					                                                   Ability->GetActorInfo().PlayerController->
+					                                                   GetPawn(),
+					                                                   ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 				SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
 

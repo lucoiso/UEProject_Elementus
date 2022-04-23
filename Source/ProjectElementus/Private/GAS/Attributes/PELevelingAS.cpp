@@ -16,23 +16,23 @@
 
 UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-	, CurrentLevel(1.f)
-	, CurrentExperience(1.f)
-	, RequiredExperience(1.f)
+	  , CurrentLevel(1.f)
+	  , CurrentExperience(1.f)
+	  , RequiredExperience(1.f)
 {
-	InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetLevelingAttributeMetaData());
+	UAttributeSet::InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetLevelingAttributeMetaData());
 }
 
-void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue, const float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
 	if (Attribute == GetCurrentExperienceAttribute() && NewValue >= GetRequiredExperience())
 	{
 		UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
-		const UDataTable* LevelingBonus_Table = UPEAbilitySystemGlobals::Get().GetLevelingBonusData();
 
-		if (ensureMsgf(IsValid(AbilityComp) && IsValid(LevelingBonus_Table), TEXT("%s have a invalid Parameters"),
+		if (const UDataTable* LevelingBonus_Table = UPEAbilitySystemGlobals::Get().GetLevelingBonusData(); ensureMsgf(
+			IsValid(AbilityComp) && IsValid(LevelingBonus_Table), TEXT("%s have a invalid Parameters"),
 			*GetName()))
 		{
 			const FPELevelingData LevelingInfo = *LevelingBonus_Table->FindRow<FPELevelingData>(
@@ -41,16 +41,16 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, flo
 			if constexpr (&LevelingInfo != nullptr)
 			{
 				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxHealthAttribute(), EGameplayModOp::Additive,
-					LevelingInfo.BonusMaxHealth);
+				                                 LevelingInfo.BonusMaxHealth);
 				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxStaminaAttribute(), EGameplayModOp::Additive,
-					LevelingInfo.BonusMaxStamina);
+				                                 LevelingInfo.BonusMaxStamina);
 				AbilityComp->ApplyModToAttribute(UPEBasicStatusAS::GetMaxManaAttribute(), EGameplayModOp::Additive,
-					LevelingInfo.BonusMaxMana);
+				                                 LevelingInfo.BonusMaxMana);
 
 				AbilityComp->ApplyModToAttribute(UPECustomStatusAS::GetAttackRateAttribute(), EGameplayModOp::Additive,
-					LevelingInfo.BonusAttackRate);
+				                                 LevelingInfo.BonusAttackRate);
 				AbilityComp->ApplyModToAttribute(UPECustomStatusAS::GetDefenseRateAttribute(), EGameplayModOp::Additive,
-					LevelingInfo.BonusDefenseRate);
+				                                 LevelingInfo.BonusDefenseRate);
 
 				const float NewExperience = GetCurrentExperience() - GetRequiredExperience();
 				SetRequiredExperience(LevelingInfo.RequiredExp);

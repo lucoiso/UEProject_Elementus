@@ -14,19 +14,19 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FTelekinesisManagement, const bool, ValidTarge
  *
  */
 UCLASS(MinimalAPI, NotBlueprintable, NotPlaceable, Category = "Custom GAS | Tasks")
-class UPETelekinesisAbility_Task : public UAbilityTask
+class UPETelekinesisAbility_Task final : public UAbilityTask
 {
 	GENERATED_BODY()
 
 public:
-	UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer);
 
 	FTelekinesisManagement OnGrabbing;
 
 	/* Create a reference to manage this ability task */
 	static UPETelekinesisAbility_Task* PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-		FName TaskInstanceName,
-		const TWeakObjectPtr<AActor> Target);
+	                                                                FName TaskInstanceName,
+	                                                                const TWeakObjectPtr<AActor> Target);
 
 	virtual void Activate() override;
 

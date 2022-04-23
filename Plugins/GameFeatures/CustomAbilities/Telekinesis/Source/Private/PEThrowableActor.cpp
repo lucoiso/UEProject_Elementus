@@ -34,23 +34,23 @@ void APEThrowableActor::ThrowSetup(AActor* Caller)
 	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &APEThrowableActor::OnThrowableHit);
 }
 
-void APEThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent* HitComponent, AActor* OtherActor,
+                                       UPrimitiveComponent* OtherComp, const FVector NormalImpulse,
+                                       const FHitResult& Hit)
 {
 	if (IsValid(OtherActor) && OtherActor != CallerActor.Get())
 	{
 		if (OtherActor->GetClass()->IsChildOf<APECharacterBase>())
 		{
-			APECharacterBase* Player = Cast<APECharacterBase>(OtherActor);
-
-			if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
+			if (APECharacterBase* Player = Cast<APECharacterBase>(OtherActor); ensureMsgf(
+				IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				constexpr float ImpulseMultiplier = 5.f;
 
 				Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
 
 				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()),
-					TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+				               TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 				{
 					ApplyThrowableEffect(Player->GetAbilitySystemComponent());
 				}
@@ -67,8 +67,8 @@ void APEThrowableActor::OnThrowableHit(UPrimitiveComponent* HitComponent, AActor
 
 void APEThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)
 {
-	UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
-	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
+	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC); ensureMsgf(
+		IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

@@ -26,19 +26,19 @@ class PROJECTELEMENTUS_API IPEInteractable
 
 public:
 	UFUNCTION(Category = "Custom Functions | Behaviors")
-		virtual void DoInteractionBehavior()
+	virtual void DoInteractionBehavior()
 	{
-	};
+	}
 
 	UFUNCTION(Category = "Custom Functions | Management")
-		virtual bool IsInteractEnabled()
+	virtual bool IsInteractEnabled()
 	{
 		return true;
-	};
+	}
 
 	UFUNCTION(Category = "Custom Functions | Management")
-		virtual bool IsInteractAllowedForActor(const AActor* Actor)
+	virtual bool IsInteractAllowedForActor(const AActor* Actor)
 	{
 		return true;
-	};
+	}
 };

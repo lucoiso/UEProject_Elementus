@@ -18,9 +18,9 @@ UPESprintAbility::UPESprintAbility(const FObjectInitializer& ObjectInitializer)
 
 void UPESprintAbility::ActivateAbility
 (const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+ const FGameplayAbilityActorInfo* ActorInfo,
+ const FGameplayAbilityActivationInfo ActivationInfo,
+ const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -34,8 +34,8 @@ void UPESprintAbility::ActivateAbility
 }
 
 void UPESprintAbility::InputReleased(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo)
+                                     const FGameplayAbilityActorInfo* ActorInfo,
+                                     const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 

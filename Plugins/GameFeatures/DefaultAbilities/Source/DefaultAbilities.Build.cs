@@ -6,20 +6,21 @@ using UnrealBuildTool;
 
 public class DefaultAbilities : ModuleRules
 {
-    public DefaultAbilities(ReadOnlyTargetRules target) : base(target)
-    {
-        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+	public DefaultAbilities(ReadOnlyTargetRules target) : base(target)
+	{
+		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+		CppStandard = CppStandardVersion.Cpp17;
 
-        PublicDependencyModuleNames.AddRange(new[]
-        {
-            "Core",
-            "CoreUObject",
-            "Engine",
-            "InputCore",
-            "GameplayAbilities",
-            "GameplayTags",
-            "GameplayTasks",
-            "ProjectElementus"
-        });
-    }
+		PublicDependencyModuleNames.AddRange(new[]
+		{
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore",
+			"GameplayAbilities",
+			"GameplayTags",
+			"GameplayTasks",
+			"ProjectElementus"
+		});
+	}
 }

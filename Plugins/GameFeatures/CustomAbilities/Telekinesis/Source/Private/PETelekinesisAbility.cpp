@@ -22,9 +22,9 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 
 void UPETelekinesisAbility::ActivateAbility
 (const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+ const FGameplayAbilityActorInfo* ActorInfo,
+ const FGameplayAbilityActivationInfo ActivationInfo,
+ const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -33,12 +33,12 @@ void UPETelekinesisAbility::ActivateAbility
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("head");
 
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-		AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
+	                           AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
 }
 
 void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo)
+                                         const FGameplayAbilityActorInfo* ActorInfo,
+                                         const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 
@@ -71,7 +71,7 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 	}
 
 	AbilityTask = UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this, FName("TelekinesisTask"),
-		TargetHit->GetActor());
+	                                                                       TargetHit->GetActor());
 
 	AbilityTask->OnGrabbing.BindDynamic(this, &UPETelekinesisAbility::GrabbingComplete);
 
@@ -84,7 +84,7 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 	TargetData->AddTargetDataToGameplayCueParameters(Params);
 
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Telekinesis"), Params,
-		GetCurrentActorInfo()->AbilitySystemComponent.Get());
+	                     GetCurrentActorInfo()->AbilitySystemComponent.Get());
 }
 
 void UPETelekinesisAbility::GrabbingComplete(const bool ValidTarget)

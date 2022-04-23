@@ -12,12 +12,12 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Classes | Player")
-class PROJECTELEMENTUS_API APEAIController : public AAIController
+class PROJECTELEMENTUS_API APEAIController final : public AAIController
 {
 	GENERATED_BODY()
 
 public:
-	APEAIController(const FObjectInitializer& ObjectInitializer);
+	explicit APEAIController(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void PreInitializeComponents() override;

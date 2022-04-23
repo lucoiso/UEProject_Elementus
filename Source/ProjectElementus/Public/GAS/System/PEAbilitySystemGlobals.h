@@ -12,38 +12,38 @@
  *
  */
 UCLASS(Category = "Custom GAS | Classes")
-class PROJECTELEMENTUS_API UPEAbilitySystemGlobals : public UAbilitySystemGlobals
+class PROJECTELEMENTUS_API UPEAbilitySystemGlobals final : public UAbilitySystemGlobals
 {
 	GENERATED_BODY()
 
 public:
-	UPEAbilitySystemGlobals(const FObjectInitializer& ObjectInitializer);
+	explicit UPEAbilitySystemGlobals(const FObjectInitializer& ObjectInitializer);
 
-	TSoftClassPtr<class UGameplayEffect> GlobalDeathEffect;
-	TSoftClassPtr<class UGameplayEffect> GlobalStunEffect;
+	TSoftClassPtr<UGameplayEffect> GlobalDeathEffect;
+	TSoftClassPtr<UGameplayEffect> GlobalStunEffect;
 
-	TSoftObjectPtr<class UDataTable> MainStatusAttributeData;
-	TSoftObjectPtr<class UDataTable> CustomStatusAttributeData;
-	TSoftObjectPtr<class UDataTable> LevelingAttributeData;
-	TSoftObjectPtr<class UDataTable> LevelingBonusData;
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-		UGameplayEffect* GetGlobalDeathEffect();
+	TSoftObjectPtr<UDataTable> MainStatusAttributeData;
+	TSoftObjectPtr<UDataTable> CustomStatusAttributeData;
+	TSoftObjectPtr<UDataTable> LevelingAttributeData;
+	TSoftObjectPtr<UDataTable> LevelingBonusData;
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-		UGameplayEffect* GetGlobalStunEffect();
+	UGameplayEffect* GetGlobalDeathEffect() const;
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-		UDataTable* GetMainStatusAttributeMetaData();
+	UGameplayEffect* GetGlobalStunEffect() const;
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-		UDataTable* GetCustomStatusAttributeMetaData();
+	UDataTable* GetMainStatusAttributeMetaData() const;
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-		UDataTable* GetLevelingAttributeMetaData();
+	UDataTable* GetCustomStatusAttributeMetaData() const;
 
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-		UDataTable* GetLevelingBonusData();
+	UDataTable* GetLevelingAttributeMetaData() const;
+
+	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
+	UDataTable* GetLevelingBonusData() const;
 
 	static UPEAbilitySystemGlobals& Get()
 	{

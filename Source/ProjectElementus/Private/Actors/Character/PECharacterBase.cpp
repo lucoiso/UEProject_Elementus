@@ -104,9 +104,7 @@ void APECharacterBase::OnRep_Controller()
 
 void APECharacterBase::InitializeABSC(const bool bOnRep)
 {
-	APEPlayerState* State = GetPlayerState<APEPlayerState>();
-
-	if (IsValid(State))
+	if (APEPlayerState* State = GetPlayerState<APEPlayerState>(); IsValid(State))
 	{
 		AbilitySystemComponent = State->GetAbilitySystemComponent();
 
@@ -127,32 +125,32 @@ void APECharacterBase::InitializeABSC(const bool bOnRep)
 	}
 }
 
-const float APECharacterBase::GetDefaultWalkSpeed() const
+float APECharacterBase::GetDefaultWalkSpeed() const
 {
 	return DefaultWalkSpeed;
 }
 
-const float APECharacterBase::GetDefaultCrouchSpeed() const
+float APECharacterBase::GetDefaultCrouchSpeed() const
 {
 	return DefaultCrouchSpeed;
 }
 
-const float APECharacterBase::GetDefaultJumpVelocity() const
+float APECharacterBase::GetDefaultJumpVelocity() const
 {
 	return DefaultJumpVelocity;
 }
 
-const FVector APECharacterBase::GetCameraForwardVector() const
+FVector APECharacterBase::GetCameraForwardVector() const
 {
 	return FollowCamera->GetForwardVector();
 }
 
-const FVector APECharacterBase::GetCameraComponentLocation() const
+FVector APECharacterBase::GetCameraComponentLocation() const
 {
 	return FollowCamera->GetComponentLocation();
 }
 
-const float APECharacterBase::GetCameraTargetArmLength() const
+float APECharacterBase::GetCameraTargetArmLength() const
 {
 	return CameraBoom->TargetArmLength;
 }
@@ -191,8 +189,8 @@ void APECharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 void APECharacterBase::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
-	const bool bTryRemoveExistingAbilityWithInput = true,
-	const bool bTryRemoveExistingAbilityWithClass = true)
+                                                  const bool bTryRemoveExistingAbilityWithInput = true,
+                                                  const bool bTryRemoveExistingAbilityWithClass = true)
 {
 	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
 	{
@@ -284,9 +282,8 @@ void APECharacterBase::Landed(const FHitResult& Hit)
 		return;
 	}
 
-	const FGameplayTag DoubleJumpTag = FGameplayTag::RequestGameplayTag(FName("GameplayAbility.Default.DoubleJump"));
-
-	if (AbilitySystemComponent->HasMatchingGameplayTag(DoubleJumpTag))
+	if (const FGameplayTag DoubleJumpTag = FGameplayTag::RequestGameplayTag(FName("GameplayAbility.Default.DoubleJump"))
+		; AbilitySystemComponent->HasMatchingGameplayTag(DoubleJumpTag))
 	{
 		const FGameplayAbilitySpec AbilitySpec =
 			*AbilitySystemComponent->FindAbilitySpecFromInputID(

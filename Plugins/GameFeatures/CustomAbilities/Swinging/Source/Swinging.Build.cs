@@ -6,20 +6,21 @@ using UnrealBuildTool;
 
 public class Swinging : ModuleRules
 {
-    public Swinging(ReadOnlyTargetRules target) : base(target)
-    {
-        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+	public Swinging(ReadOnlyTargetRules target) : base(target)
+	{
+		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+		CppStandard = CppStandardVersion.Cpp17;
 
-        PublicDependencyModuleNames.AddRange(new[]
-        {
-            "Core",
-            "CoreUObject",
-            "Engine",
-            "InputCore",
-            "GameplayAbilities",
-            "GameplayTags",
-            "GameplayTasks",
-            "ProjectElementus"
-        });
-    }
+		PublicDependencyModuleNames.AddRange(new[]
+		{
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore",
+			"GameplayAbilities",
+			"GameplayTags",
+			"GameplayTasks",
+			"ProjectElementus"
+		});
+	}
 }

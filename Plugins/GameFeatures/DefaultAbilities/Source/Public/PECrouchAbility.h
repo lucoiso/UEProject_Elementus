@@ -12,16 +12,16 @@
  *
  */
 UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Custom GAS | Abilities")
-class UPECrouchAbility : public UPEGameplayAbility
+class UPECrouchAbility final : public UPEGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UPECrouchAbility(const FObjectInitializer& ObjectInitializer);
+	explicit UPECrouchAbility(const FObjectInitializer& ObjectInitializer);
 
 private:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-		const FGameplayAbilityActorInfo* ActorInfo,
-		const FGameplayAbilityActivationInfo ActivationInfo,
-		const FGameplayEventData* TriggerEventData) override;
+	                             const FGameplayAbilityActorInfo* ActorInfo,
+	                             const FGameplayAbilityActivationInfo ActivationInfo,
+	                             const FGameplayEventData* TriggerEventData) override;
 };

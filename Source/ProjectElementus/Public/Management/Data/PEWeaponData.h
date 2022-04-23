@@ -12,12 +12,12 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Data | Data Assets")
-class PROJECTELEMENTUS_API UPEWeaponData : public UPrimaryDataAsset
+class PROJECTELEMENTUS_API UPEWeaponData final : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	UPEWeaponData(const FObjectInitializer& ObjectInitializer);
+	explicit UPEWeaponData(const FObjectInitializer& ObjectInitializer);
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{

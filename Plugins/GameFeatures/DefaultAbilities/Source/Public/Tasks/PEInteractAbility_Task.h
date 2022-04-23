@@ -12,12 +12,12 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Tasks")
-class DEFAULTABILITIES_API UPEInteractAbility_Task : public UAbilityTask
+class DEFAULTABILITIES_API UPEInteractAbility_Task final : public UAbilityTask
 {
 	GENERATED_BODY()
 
 public:
-	UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer);
 
 	/* Create a reference to manage this ability task */
 	static UPEInteractAbility_Task* InteractionTask(UGameplayAbility* OwningAbility, FName TaskInstanceName);

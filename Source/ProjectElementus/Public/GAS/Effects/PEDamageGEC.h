@@ -12,13 +12,13 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Calculations")
-class PROJECTELEMENTUS_API UPEDamageGEC : public UGameplayEffectExecutionCalculation
+class PROJECTELEMENTUS_API UPEDamageGEC final : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 
 public:
-	UPEDamageGEC(const FObjectInitializer& ObjectInitializer);
+	explicit UPEDamageGEC(const FObjectInitializer& ObjectInitializer);
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-		OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+	                                    OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };

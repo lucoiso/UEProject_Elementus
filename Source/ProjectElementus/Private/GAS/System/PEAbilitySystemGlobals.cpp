@@ -52,32 +52,32 @@ UPEAbilitySystemGlobals::UPEAbilitySystemGlobals(const FObjectInitializer& Objec
 	}
 }
 
-UGameplayEffect* UPEAbilitySystemGlobals::GetGlobalDeathEffect()
+UGameplayEffect* UPEAbilitySystemGlobals::GetGlobalDeathEffect() const
 {
 	return GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>();
 }
 
-UGameplayEffect* UPEAbilitySystemGlobals::GetGlobalStunEffect()
+UGameplayEffect* UPEAbilitySystemGlobals::GetGlobalStunEffect() const
 {
 	return GlobalStunEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>();
 }
 
-UDataTable* UPEAbilitySystemGlobals::GetMainStatusAttributeMetaData()
+UDataTable* UPEAbilitySystemGlobals::GetMainStatusAttributeMetaData() const
 {
 	return MainStatusAttributeData.LoadSynchronous();
 }
 
-UDataTable* UPEAbilitySystemGlobals::GetCustomStatusAttributeMetaData()
+UDataTable* UPEAbilitySystemGlobals::GetCustomStatusAttributeMetaData() const
 {
 	return CustomStatusAttributeData.LoadSynchronous();
 }
 
-UDataTable* UPEAbilitySystemGlobals::GetLevelingAttributeMetaData()
+UDataTable* UPEAbilitySystemGlobals::GetLevelingAttributeMetaData() const
 {
 	return LevelingAttributeData.LoadSynchronous();
 }
 
-UDataTable* UPEAbilitySystemGlobals::GetLevelingBonusData()
+UDataTable* UPEAbilitySystemGlobals::GetLevelingBonusData() const
 {
 	return LevelingBonusData.LoadSynchronous();
 }

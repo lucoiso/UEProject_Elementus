@@ -17,16 +17,17 @@
 
 UPECustomStatusAS::UPECustomStatusAS(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-	, AttackRate(1.f)
-	, DefenseRate(1.f)
-	, SpeedRate(1.f)
-	, JumpRate(1.f)
-	, Gold(0.f)
+	  , AttackRate(1.f)
+	  , DefenseRate(1.f)
+	  , SpeedRate(1.f)
+	  , JumpRate(1.f)
+	  , Gold(0.f)
 {
-	InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetCustomStatusAttributeMetaData());
+	UAttributeSet::InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetCustomStatusAttributeMetaData());
 }
 
-void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue,
+                                            const float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
@@ -34,11 +35,10 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 	{
 		if (const APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor()))
 		{
-			const APECharacterBase* Character = State->GetPawn<APECharacterBase>();
-			if (IsValid(Character))
+			if (const APECharacterBase* Character = State->GetPawn<APECharacterBase>(); IsValid(Character))
 			{
-				UCharacterMovementComponent* MovComp = Character->GetCharacterMovement();
-				if (ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
+				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement(); ensureMsgf(
+					IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
 				{
 					if (Attribute == GetSpeedRateAttribute())
 					{

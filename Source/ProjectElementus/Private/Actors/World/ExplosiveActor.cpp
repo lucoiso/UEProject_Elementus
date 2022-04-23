@@ -14,9 +14,9 @@
 
 APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	ExplosionRadius(100.f),
-	ExplosionMagnitude(1000.f),
-	bDestroyAfterExplosion(true)
+	  ExplosionRadius(100.f),
+	  ExplosionMagnitude(1000.f),
+	  bDestroyAfterExplosion(true)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -36,12 +36,12 @@ void APEExplosiveActor::PerformExplosion()
 #endif // !UE_BUILD_DEBUG
 
 	GetWorld()->SweepMultiByObjectType(HitOut,
-		GetActorLocation(),
-		GetActorLocation(),
-		FQuat(FRotator(0.f)),
-		FCollisionObjectQueryParams::AllDynamicObjects,
-		FCollisionShape::MakeSphere(ExplosionRadius),
-		QueryParams);
+	                                   GetActorLocation(),
+	                                   GetActorLocation(),
+	                                   FQuat(FRotator(0.f)),
+	                                   FCollisionObjectQueryParams::AllDynamicObjects,
+	                                   FCollisionShape::MakeSphere(ExplosionRadius),
+	                                   QueryParams);
 
 	for (UNiagaraSystem* NiagaraSystem : ExplosionVFXs)
 	{
@@ -58,14 +58,13 @@ void APEExplosiveActor::PerformExplosion()
 
 			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacterBase>())
 			{
-				APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor());
-
-				if (ensureMsgf(IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
+				if (APECharacterBase* Player = Cast<APECharacterBase>(Hit.GetActor()); ensureMsgf(
+					IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
 				{
 					Player->LaunchCharacter(Velocity, true, true);
 
 					if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()),
-						TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+					               TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 					{
 						ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
 					}
@@ -88,8 +87,8 @@ void APEExplosiveActor::PerformExplosion()
 
 void APEExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
 {
-	UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
-	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
+	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC); ensureMsgf(
+		IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

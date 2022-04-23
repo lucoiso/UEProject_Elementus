@@ -12,16 +12,16 @@
  *
  */
 UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Custom GAS | Abilities")
-class UPEDoubleJumpAbility : public UPEGameplayAbility
+class UPEDoubleJumpAbility final : public UPEGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer);
+	explicit UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer);
 
 private:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-		const FGameplayAbilityActorInfo* ActorInfo,
-		const FGameplayAbilityActivationInfo ActivationInfo,
-		const FGameplayEventData* TriggerEventData) override;
+	                             const FGameplayAbilityActorInfo* ActorInfo,
+	                             const FGameplayAbilityActivationInfo ActivationInfo,
+	                             const FGameplayEventData* TriggerEventData) override;
 };

@@ -12,7 +12,7 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Attributes")
-class PROJECTELEMENTUS_API UPEWeaponAS : public UAttributeSet
+class PROJECTELEMENTUS_API UPEWeaponAS final : public UAttributeSet
 {
 	GENERATED_BODY()
 };

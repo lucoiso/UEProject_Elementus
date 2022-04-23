@@ -14,7 +14,7 @@ APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializ
 {
 	bReplicates = true;
 	bAlwaysRelevant = true;
-	SetReplicateMovement(true);
+	AActor::SetReplicateMovement(true);
 
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Component"));
 	CollisionComponent->InitSphereRadius(12.5f);
@@ -42,21 +42,21 @@ void APEProjectileActor::BeginPlay()
 	CollisionComponent->OnComponentHit.AddDynamic(this, &APEProjectileActor::OnProjectileHit);
 }
 
-void APEProjectileActor::FireInDirection(const FVector Direction)
+void APEProjectileActor::FireInDirection(const FVector Direction) const
 {
 	ProjectileMovement->Velocity = ProjectileMovement->InitialSpeed * Direction;
 }
 
 void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-	const FHitResult& Hit)
+                                                        UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+                                                        const FHitResult& Hit)
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
 
 	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacterBase>())
 	{
-		APECharacterBase* Character = Cast<APECharacterBase>(OtherActor);
-		if (ensureMsgf(IsValid(Character), TEXT("%s have a invalid Character"), *GetName()))
+		if (APECharacterBase* Character = Cast<APECharacterBase>(OtherActor); ensureMsgf(
+			IsValid(Character), TEXT("%s have a invalid Character"), *GetName()))
 		{
 			Character->LaunchCharacter(ImpulseVelocity, true, true);
 			ApplyProjectileEffect(Character->GetAbilitySystemComponent());
@@ -72,8 +72,8 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 
 void APEProjectileActor::ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC)
 {
-	UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
-	if (ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
+	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC); ensureMsgf(
+		IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

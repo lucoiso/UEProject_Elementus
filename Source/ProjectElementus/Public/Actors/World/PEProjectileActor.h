@@ -16,12 +16,12 @@ class UProjectileMovementComponent;
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Custom Classes | Actors")
-class PROJECTELEMENTUS_API APEProjectileActor : public AActor
+class PROJECTELEMENTUS_API APEProjectileActor final : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	APEProjectileActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEProjectileActor(const FObjectInitializer& ObjectInitializer);
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
@@ -30,28 +30,28 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		USphereComponent* CollisionComponent;
+	USphereComponent* CollisionComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		UProjectileMovementComponent* ProjectileMovement;
+	UProjectileMovementComponent* ProjectileMovement;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
-		float ImpulseMultiplier = 1.f;
+	float ImpulseMultiplier = 1.f;
 
 	virtual void BeginPlay() override;
 
 public:
 	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
 	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Custom Properties | Defaults")
-		TArray<FGameplayEffectGroupedData> ProjectileEffects;
+	TArray<FGameplayEffectGroupedData> ProjectileEffects;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
-		virtual void FireInDirection(const FVector Direction);
+	void FireInDirection(const FVector Direction) const;
 
 protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Custom Functions | Behaviors")
-		void OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-			FVector NormalImpulse, const FHitResult& Hit);
+	void OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                     FVector NormalImpulse, const FHitResult& Hit);
 
 private:
 	void ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC);

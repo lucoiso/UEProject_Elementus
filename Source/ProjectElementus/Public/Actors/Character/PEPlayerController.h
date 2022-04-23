@@ -30,7 +30,6 @@ DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
 
 struct FAbilityInputData
 {
-public:
 	uint32 OnPressedHandle = 0;
 	uint32 OnReleasedHandle = 0;
 	uint32 InputID = 0;
@@ -40,27 +39,24 @@ public:
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Classes | Player")
-class PROJECTELEMENTUS_API APEPlayerController : public APlayerController, public IAbilityInputBinding
+class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IAbilityInputBinding
 {
 	GENERATED_BODY()
 
 public:
-	APEPlayerController(const FObjectInitializer& ObjectInitializer);
+	explicit APEPlayerController(const FObjectInitializer& ObjectInitializer);
 
 	/* This function came from IAbilityInputBinding interface, provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
-		virtual void SetupAbilityInputBinding(UInputAction* Action, const int32 InputID) override;
-	virtual void SetupAbilityInputBinding_Implementation(UInputAction* Action, const int32 InputID);
+	virtual void SetupAbilityInputBinding(UInputAction* Action, const int32 InputID) override;
 
 	/* This function came from IAbilityInputBinding interface, provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
-		virtual void RemoveAbilityInputBinding(const UInputAction* Action) const override;
-	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const;
+	virtual void RemoveAbilityInputBinding(const UInputAction* Action) const override;
 
 	/* Custom function to remove HUD from player screen */
 	UFUNCTION(Client, Reliable)
-		void RemoveHUD();
-	virtual void RemoveHUD_Implementation();
+	void RemoveHUD();
 
 protected:
 	virtual void PreInitializeComponents() override;
@@ -71,12 +67,12 @@ private:
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION()
-		void ChangeCameraAxis(const FInputActionValue& Value);
+	void ChangeCameraAxis(const FInputActionValue& Value);
 	UFUNCTION()
-		void Move(const FInputActionValue& Value);
+	void Move(const FInputActionValue& Value) const;
 	UFUNCTION()
-		void Jump(const FInputActionValue& Value);
+	void Jump(const FInputActionValue& Value) const;
 
-	void OnAbilityInputPressed(UInputAction* Action);
-	void OnAbilityInputReleased(UInputAction* Action);
+	void OnAbilityInputPressed(UInputAction* Action) const;
+	void OnAbilityInputReleased(UInputAction* Action) const;
 };

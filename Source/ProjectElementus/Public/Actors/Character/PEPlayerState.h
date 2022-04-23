@@ -28,12 +28,12 @@ DECLARE_LOG_CATEGORY_EXTERN(LogPlayerState, Display, NoLogging);
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Classes | Player")
-class PROJECTELEMENTUS_API APEPlayerState : public APlayerState, public IAbilitySystemInterface
+class PROJECTELEMENTUS_API APEPlayerState final : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-	APEPlayerState(const FObjectInitializer& ObjectInitializer);
+	explicit APEPlayerState(const FObjectInitializer& ObjectInitializer);
 
 private:
 	void DeathStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
@@ -47,15 +47,15 @@ protected:
 	/* Returns a casted version of Player Controller using PEPlayerController class */
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components",
 		meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
-		class APEPlayerController* GetPEPlayerController() const;
+	class APEPlayerController* GetPEPlayerController() const;
 
 	/* Player associated Ability System Component */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Components",
 		meta = (AllowPrivateAccess = "true"))
-		class UPEAbilitySystemComponent* AbilitySystemComponent;
+	UPEAbilitySystemComponent* AbilitySystemComponent;
 
 public:
 	/* Returns associated Ability System Component */
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
-		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };

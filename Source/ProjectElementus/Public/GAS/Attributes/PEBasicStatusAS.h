@@ -14,12 +14,12 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Attributes")
-class PROJECTELEMENTUS_API UPEBasicStatusAS : public UAttributeSet
+class PROJECTELEMENTUS_API UPEBasicStatusAS final : public UAttributeSet
 {
 	GENERATED_BODY()
 
 public:
-	UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer);
 
 private:
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
@@ -29,56 +29,56 @@ private:
 
 	/* A helper function to clamp attribute values */
 	void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
-		const FGameplayAttributeData& MaxAttribute,
-		float NewMaxValue,
-		const FGameplayAttribute& AffectedAttributeProperty) const;
+	                                 const FGameplayAttributeData& MaxAttribute,
+	                                 float NewMaxValue,
+	                                 const FGameplayAttribute& AffectedAttributeProperty) const;
 
 public:
 	/* A non-replicated attribute to handle damage value inside GE Executions */
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes")
-		FGameplayAttributeData Damage;
+	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UPEBasicStatusAS, Damage)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Health)
-		FGameplayAttributeData Health;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Health)
+	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UPEBasicStatusAS, Health)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxHealth)
-		FGameplayAttributeData MaxHealth;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxHealth)
+	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UPEBasicStatusAS, MaxHealth)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Stamina)
-		FGameplayAttributeData Stamina;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Stamina)
+	FGameplayAttributeData Stamina;
 	ATTRIBUTE_ACCESSORS(UPEBasicStatusAS, Stamina)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxStamina)
-		FGameplayAttributeData MaxStamina;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxStamina)
+	FGameplayAttributeData MaxStamina;
 	ATTRIBUTE_ACCESSORS(UPEBasicStatusAS, MaxStamina)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Mana)
-		FGameplayAttributeData Mana;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Mana)
+	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UPEBasicStatusAS, Mana)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxMana)
-		FGameplayAttributeData MaxMana;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_MaxMana)
+	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UPEBasicStatusAS, MaxMana)
 
 protected:
 	UFUNCTION()
-		void OnRep_Health(const FGameplayAttributeData& OldValue) const;
+	void OnRep_Health(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_MaxHealth(const FGameplayAttributeData& OldValue) const;
+	void OnRep_MaxHealth(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_Mana(const FGameplayAttributeData& OldValue) const;
+	void OnRep_Mana(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_MaxMana(const FGameplayAttributeData& OldValue) const;
+	void OnRep_MaxMana(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_Stamina(const FGameplayAttributeData& OldValue) const;
+	void OnRep_Stamina(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_MaxStamina(const FGameplayAttributeData& OldValue) const;
+	void OnRep_MaxStamina(const FGameplayAttributeData& OldValue) const;
 };

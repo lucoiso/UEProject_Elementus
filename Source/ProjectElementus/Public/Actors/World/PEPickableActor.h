@@ -12,12 +12,12 @@
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Custom Classes | Actors")
-class PROJECTELEMENTUS_API APEPickableActor : public AActor
+class PROJECTELEMENTUS_API APEPickableActor final : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	APEPickableActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEPickableActor(const FObjectInitializer& ObjectInitializer);
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{

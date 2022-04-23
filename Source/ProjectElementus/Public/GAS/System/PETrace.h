@@ -18,7 +18,6 @@ struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 {
 	GENERATED_USTRUCT_BODY()
 
-public:
 	FTargetActorSpawnParams() :
 		Range(0.f),
 		Height(0.f),
@@ -36,29 +35,29 @@ public:
 	float Range;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float Height;
+	float Height;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float Radius;
+	float Radius;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		struct FGameplayAbilityTargetingLocationInfo StartLocation;
+	FGameplayAbilityTargetingLocationInfo StartLocation;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		TSubclassOf<class AGameplayAbilityWorldReticle> ReticleClass;
+	TSubclassOf<AGameplayAbilityWorldReticle> ReticleClass;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		struct FWorldReticleParameters ReticleParams;
+	FWorldReticleParameters ReticleParams;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		struct FGameplayTargetDataFilter TargetFilter;
+	FGameplayTargetDataFilter TargetFilter;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		bool bDestroyOnConfirmation;
+	bool bDestroyOnConfirmation;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		bool bTraceAffectsAimPitch;
+	bool bTraceAffectsAimPitch;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		bool bDebug;
+	bool bDebug;
 };

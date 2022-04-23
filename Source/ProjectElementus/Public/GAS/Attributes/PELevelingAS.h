@@ -14,12 +14,12 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Attributes")
-class PROJECTELEMENTUS_API UPELevelingAS : public UAttributeSet
+class PROJECTELEMENTUS_API UPELevelingAS final : public UAttributeSet
 {
 	GENERATED_BODY()
 
 public:
-	UPELevelingAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPELevelingAS(const FObjectInitializer& ObjectInitializer);
 
 private:
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
@@ -27,24 +27,24 @@ private:
 
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_CurrentLevel)
-		FGameplayAttributeData CurrentLevel;
+	FGameplayAttributeData CurrentLevel;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, CurrentLevel)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_CurrentExperience)
-		FGameplayAttributeData CurrentExperience;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_CurrentExperience)
+	FGameplayAttributeData CurrentExperience;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, CurrentExperience)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_RequiredExperience)
-		FGameplayAttributeData RequiredExperience;
+	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_RequiredExperience)
+	FGameplayAttributeData RequiredExperience;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, RequiredExperience)
 
 protected:
 	UFUNCTION()
-		void OnRep_CurrentLevel(const FGameplayAttributeData& OldValue) const;
+	void OnRep_CurrentLevel(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_CurrentExperience(const FGameplayAttributeData& OldValue) const;
+	void OnRep_CurrentExperience(const FGameplayAttributeData& OldValue) const;
 
 	UFUNCTION()
-		void OnRep_RequiredExperience(const FGameplayAttributeData& OldValue) const;
+	void OnRep_RequiredExperience(const FGameplayAttributeData& OldValue) const;
 };
