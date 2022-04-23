@@ -80,7 +80,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params,
 	                     GetCurrentActorInfo()->AbilitySystemComponent.Get());
 
-	if (Cast<APECharacter>(TargetHit->GetActor()))
+	if (Cast<APECharacter>(TargetHit->GetActor()) && TargetHit->GetActor() != GetAvatarActorFromActorInfo())
 	{
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindLambda([=]() -> void
