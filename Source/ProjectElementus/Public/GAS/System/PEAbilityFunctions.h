@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Category = "Custom GAS | Classes")
 class PROJECTELEMENTUS_API UPEAbilityFunctions : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()

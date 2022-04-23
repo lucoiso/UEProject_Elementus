@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Category = "Custom GAS | Tasks")
 class DEFAULTABILITIES_API UPEInteract_Task : public UGameplayTask
 {
 	GENERATED_BODY()

@@ -8,8 +8,10 @@
 #include "UObject/Interface.h"
 #include "PEInteractable.generated.h"
 
-// This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+/**
+ *
+ */
+UINTERFACE(MinimalAPI, Category = "Custom GAS | Interfaces")
 class UPEInteractable : public UInterface
 {
 	GENERATED_BODY()

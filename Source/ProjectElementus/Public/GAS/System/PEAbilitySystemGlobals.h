@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Category = "Custom GAS | Classes")
 class PROJECTELEMENTUS_API UPEAbilitySystemGlobals : public UAbilitySystemGlobals
 {
 	GENERATED_BODY()
