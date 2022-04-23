@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "GameplayTagContainer.h"
 #include "PEInteractable.generated.h"
 
 /**
@@ -24,6 +25,24 @@ class PROJECTELEMENTUS_API IPEInteractable
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	UFUNCTION(Category = "Custom Functions | Behaviors")
+		virtual void DoInteractionBehavior()
+	{
+	};
+
+	UFUNCTION(Category = "Custom Functions | Management")
+		virtual bool IsInteractEnabled()
+	{
+	};
+	
+	UFUNCTION(Category = "Custom Functions | Management")
+		virtual bool IsInteractAllowedForActor(const AActor* Actor)
+	{
+	};
+
+protected:
+	/* Tags that target require to interact with this */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Functions | Management")
+		TArray<FGameplayTag> RequiredTags;
 };
