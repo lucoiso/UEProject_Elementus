@@ -220,16 +220,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
 		void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
 			UAbilitySystemComponent* SourceAbilitySystem);
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Helpers | Management")
-		static const FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromSingleHitResult(const FHitResult HitResult);
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Helpers | Management")
-		static const FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromHitResultArray(const TArray<FHitResult> HitResults);
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Helpers | Management")
-		static const FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
-
+	
 	/* Apply SelfAbilityEffects to self */
 	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToSelf", Category = "Custom GAS | Management")
 		void BP_ApplyAbilityEffectsToSelf();
