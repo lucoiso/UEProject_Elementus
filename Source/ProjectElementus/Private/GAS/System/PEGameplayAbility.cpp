@@ -51,6 +51,7 @@ void UPEGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInf
 	if (bAutoActivateOnGrant && !ActorInfo->AbilitySystemComponent.Get()->TryActivateAbility(Spec.Handle))
 	{
 		ABILITY_VLOG(this, Warning, TEXT("%s failed to auto activate on grant."), *GetName());
+		ActorInfo->AbilitySystemComponent.Get()->PrintDebug();
 	}
 }
 
