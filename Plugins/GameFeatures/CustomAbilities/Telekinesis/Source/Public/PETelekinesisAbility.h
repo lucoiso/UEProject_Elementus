@@ -20,6 +20,9 @@ class UPETelekinesisAbility final : public UPEGameplayAbility
 public:
 	explicit UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Hook")
+	float ThrowIntensity;
+
 private:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	                             const FGameplayAbilityActorInfo* ActorInfo,

@@ -25,7 +25,7 @@ public:
 
 	/* Create a reference to manage this ability task */
 	static UPETelekinesisAbility_Task* PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-	                                                                FName TaskInstanceName,
+	                                                                FName TaskInstanceName, const float ThrowIntensity,
 	                                                                const TWeakObjectPtr<AActor> Target);
 
 	virtual void Activate() override;
@@ -36,9 +36,9 @@ private:
 	virtual void TickTask(float DeltaTime) override;
 
 	virtual void OnDestroy(bool AbilityIsEnding) override;
-
-protected:
+	
 	bool bIsFinished;
+	float Intensity;
 
 	TWeakObjectPtr<class UPhysicsHandleComponent> PhysicsHandle;
 	TWeakObjectPtr<class APECharacter> TelekinesisOwner;

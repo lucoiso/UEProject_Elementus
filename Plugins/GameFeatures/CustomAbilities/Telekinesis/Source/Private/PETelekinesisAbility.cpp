@@ -8,7 +8,8 @@
 #include "GAS/Targeting/PELineTargeting.h"
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+	: Super(ObjectInitializer),
+	  ThrowIntensity(2750)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
 
@@ -67,8 +68,8 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 		return;
 	}
 
-	AbilityTask = UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this, FName("TelekinesisTask"),
-	                                                                       TargetHit->GetActor());
+	AbilityTask = UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(
+		this, FName("TelekinesisTask"), ThrowIntensity, TargetHit->GetActor());
 
 	AbilityTask->OnGrabbing.BindDynamic(this, &UPETelekinesisAbility::GrabbingComplete);
 

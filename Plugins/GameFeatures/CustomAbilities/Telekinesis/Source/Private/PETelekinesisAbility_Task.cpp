@@ -16,10 +16,13 @@ UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer&
 }
 
 UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(
-	UGameplayAbility* OwningAbility, const FName TaskInstanceName, const TWeakObjectPtr<AActor> Target)
+	UGameplayAbility* OwningAbility, const FName TaskInstanceName, const float ThrowIntensity,
+	const TWeakObjectPtr<AActor> Target)
 {
 	UPETelekinesisAbility_Task* MyObj = NewAbilityTask<UPETelekinesisAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->TelekinesisTarget = Target;
+	MyObj->Intensity = ThrowIntensity;
+
 	return MyObj;
 }
 
@@ -54,8 +57,8 @@ void UPETelekinesisAbility_Task::Activate()
 
 					PhysicsHandle->SetTargetLocation(
 						TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
-					bTickingTask = true;
 
+					bTickingTask = true;
 					return;
 				}
 			}
@@ -143,7 +146,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 
 		const FVector Direction = ((HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation) -
 			GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
-		const FVector Velocity = Direction * 2750.f;
+		const FVector Velocity = Direction * Intensity;
 
 		GrabbedPrimitive_Temp->SetAllPhysicsLinearVelocity(Velocity);
 
