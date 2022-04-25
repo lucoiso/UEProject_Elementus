@@ -104,7 +104,7 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 
 		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation(); Difference.Size() >= 500.f)
 		{
-			const FVector HookForce = Difference * Intensity * DeltaTime * 10.f;
+			const FVector HookForce = Difference * Intensity * DeltaTime * 15.f;
 
 			HookOwner->GetCharacterMovement()->AddForce(HookForce);
 
