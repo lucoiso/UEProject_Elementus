@@ -154,11 +154,6 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	if (UAbilitySystemComponent* Comp = ActorInfo->AbilitySystemComponent.Get(); IsValid(Comp))
 	{
 		Comp->RemoveLooseGameplayTags(AbilityExtraTags);
-
-		if (UAbilitySystemGlobals::Get().ShouldReplicateActivationOwnedTags())
-		{
-			Comp->RemoveReplicatedLooseGameplayTags(AbilityExtraTags);
-		}
 	}
 }
 
@@ -438,11 +433,6 @@ void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 	const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingConfirm"));
 
 	Comp->AddLooseGameplayTag(AddTag);
-	if (UAbilitySystemGlobals::Get().ShouldReplicateActivationOwnedTags())
-	{
-		Comp->AddReplicatedLooseGameplayTag(AddTag);
-	}
-
 	AbilityExtraTags.AddTag(AddTag);
 }
 
@@ -459,11 +449,6 @@ void UPEGameplayAbility::ActivateWaitCancelInputTask()
 	const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingCancel"));
 
 	Comp->AddLooseGameplayTag(AddTag);
-	if (UAbilitySystemGlobals::Get().ShouldReplicateActivationOwnedTags())
-	{
-		Comp->AddReplicatedLooseGameplayTag(AddTag);
-	}
-
 	AbilityExtraTags.AddTag(AddTag);
 }
 

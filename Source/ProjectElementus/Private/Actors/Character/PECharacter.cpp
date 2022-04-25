@@ -178,7 +178,7 @@ void APECharacter::BeginPlay()
 
 void APECharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (AbilitySystemComponent.IsValid())
+	if (AbilitySystemComponent.IsValid() && GetLocalRole() == ROLE_Authority)
 	{
 		AbilitySystemComponent->ClearAllAbilities();
 	}
