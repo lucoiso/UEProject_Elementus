@@ -70,6 +70,6 @@ void UPESpawnProjectile_Task::Activate()
 		}
 	}
 
-	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	UE_LOG(LogGameplayTasks, Display, TEXT("Task %s ended"), *GetName());
 	EndTask();
 }
