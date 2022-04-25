@@ -14,6 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemLog.h"
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -174,6 +175,14 @@ void APECharacter::BeginPlay()
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
 	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->AbilityActivatedCallbacks.AddUFunction(this, "AbilityActivated");
+		AbilitySystemComponent->AbilityCommittedCallbacks.AddUFunction(this, "AbilityCommited");
+		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, "AbilityEnded");
+		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, "AbilityFailed");
+	}
 }
 
 void APECharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -296,5 +305,14 @@ void APECharacter::Landed(const FHitResult& Hit)
 				AbilitySystemComponent->CancelAbilityHandle(AbilitySpec.Handle);
 			}
 		}
+	}
+}
+
+void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason)
+{
+	for (const auto& i : Reason)
+	{
+		ABILITY_VLOG(this, Warning, TEXT("Ability %s failed to activate. Owner: %s ; Reason: %s"), *Ability->GetName(),
+		             *GetName(), *i.ToString());
 	}
 }

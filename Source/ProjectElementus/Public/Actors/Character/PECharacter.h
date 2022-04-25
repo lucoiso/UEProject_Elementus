@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
@@ -114,6 +115,19 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
 	void PerformDeath();
 	bool PerformDeath_Validate();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Custom GAS | Abilities")
+	void AbilityActivated(UGameplayAbility* Ability);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Custom GAS | Abilities")
+	void AbilityCommited(UGameplayAbility* Ability);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Custom GAS | Abilities")
+	void AbilityEnded(UGameplayAbility* Ability);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Custom GAS | Abilities")
+	void AbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason);
+	virtual void AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason);
 
 private:
 	virtual void Landed(const FHitResult& Hit) override;
