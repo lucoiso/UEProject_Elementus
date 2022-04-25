@@ -91,15 +91,13 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 
 	Super::TickTask(DeltaTime);
 
-	if (IsValid(HitDataHandle.GetActor()))
+	if (IsValid(HitDataHandle.GetActor()) && IsValid(HitDataHandle.GetComponent()))
 	{
-		const bool bIsTargetMovableAndSimulatingPhysics =
-			HitDataHandle.GetActor()->IsRootComponentMovable() &&
-			HitDataHandle.GetActor()->GetRootComponent()->IsSimulatingPhysics();
+		const bool bIsTargetMovable = HitDataHandle.GetComponent()->Mobility == EComponentMobility::Movable;
 
 		CurrentHookLocation =
-			bIsTargetMovableAndSimulatingPhysics
-				? HitDataHandle.GetActor()->GetActorLocation()
+			bIsTargetMovable
+				? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName)
 				: HitDataHandle.Location;
 
 		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation(); Difference.Size() >= 500.f)
@@ -108,8 +106,9 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 
 			HookOwner->GetCharacterMovement()->AddForce(HookForce);
 
-			if (bIsTargetMovableAndSimulatingPhysics && !HitDataHandle.GetActor()->GetClass()->IsChildOf<
-				APECharacter>())
+			if (bIsTargetMovable &&
+				HitDataHandle.GetComponent()->IsSimulatingPhysics() &&
+				!HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacter>())
 			{
 				HitDataHandle.GetComponent()->AddForce(-1.f * HookForce);
 			}
