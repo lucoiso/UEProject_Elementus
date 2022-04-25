@@ -115,6 +115,11 @@ void APECharacter::InitializeABSC(const bool bOnRep)
 				? AbilitySystemComponent->InitAbilityActorInfo(State, this)
 				: State->GetAbilitySystemComponent()->InitAbilityActorInfo(State, this);
 		}
+
+		if (!IsPlayerControlled())
+		{
+			AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Data.Game.Bot"));
+		}
 	}
 
 	if (bOnRep || !bIsFrameworkReady)
