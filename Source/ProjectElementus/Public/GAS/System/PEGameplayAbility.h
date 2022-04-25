@@ -41,6 +41,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom GAS | Defaults")
 	bool bIgnoreCooldown;
 
+	/* If true, ability will wait for Cancel Input to cancel this ability */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
+	bool bWaitCancel;
+
 protected:
 	/* Mix with bEndAbilityAfterActiveTime to end ability with a pre-determined time */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")

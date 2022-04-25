@@ -29,6 +29,7 @@ UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializ
 	  AbilityMaxRange(0),
 	  bIgnoreCost(false),
 	  bIgnoreCooldown(false),
+	  bWaitCancel(true),
 	  AbilityActiveTime(0),
 	  bEndAbilityAfterActiveTime(false),
 	  bAutoActivateOnGrant(false)
@@ -86,7 +87,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 		WaitStunTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitStunTagAddedTask->ReadyForActivation();
 
-		if (CanBeCanceled())
+		if (CanBeCanceled() && bWaitCancel)
 		{
 			ActivateWaitCancelInputTask();
 		}
@@ -510,5 +511,8 @@ void UPEGameplayAbility::ActivateSpawnActorTask(const FGameplayAbilityTargetData
 
 void UPEGameplayAbility::WaitCancelInput_Callback()
 {
-	CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+	if (CanBeCanceled())
+	{
+		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+	}
 }
