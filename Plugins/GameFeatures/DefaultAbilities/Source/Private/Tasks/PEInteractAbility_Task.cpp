@@ -39,7 +39,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 void UPEInteractAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
-	UE_LOG(LogGameplayTasks, Warning, TEXT("Task %s ended"), *GetName());
+	UE_LOG(LogGameplayTasks, Display, TEXT("Task %s ended"), *GetName());
 
 	bIsFinished = true;
 
