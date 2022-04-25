@@ -320,4 +320,6 @@ void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
 		ABILITY_VLOG(this, Warning, TEXT("Ability %s failed to activate. Owner: %s ; Reason: %s"), *Ability->GetName(),
 		             *GetName(), *i.ToString());
 	}
+
+	AbilitySystemComponent->PrintDebug();
 }
