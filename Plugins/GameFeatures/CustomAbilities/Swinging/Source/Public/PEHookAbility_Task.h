@@ -26,9 +26,13 @@ public:
 	/* Create a reference to manage this ability task */
 	static UPEHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility,
 	                                                FName TaskInstanceName,
-	                                                const FHitResult HitResult);
+	                                                const FHitResult HitResult,
+	                                                const float HookIntensity);
 
 	virtual void Activate() override;
+
+	FVector GetLastHookLocation() const;
+	FHitResult GetHitResult() const;
 
 private:
 	virtual void TickTask(float DeltaTime) override;
@@ -38,7 +42,8 @@ private:
 	TWeakObjectPtr<APECharacter> HitTarget;
 
 protected:
+	float Intensity;
 	bool bIsFinished;
-
 	FHitResult HitDataHandle;
+	FVector CurrentHookLocation;
 };

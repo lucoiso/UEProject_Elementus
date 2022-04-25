@@ -8,6 +8,7 @@
 #include "GAS/System/PEGameplayAbility.h"
 #include "PEHookAbility.generated.h"
 
+class UPEHookAbility_Task;
 /**
  *
  */
@@ -18,6 +19,9 @@ class UPEHookAbility final : public UPEGameplayAbility
 
 public:
 	explicit UPEHookAbility(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Hook")
+	float HookIntensity;
 
 private:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -33,4 +37,8 @@ private:
 
 	virtual void
 	WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
+
+	virtual void WaitConfirmInput_Callback_Implementation() override;
+
+	TWeakObjectPtr<UPEHookAbility_Task> TaskHandle;
 };

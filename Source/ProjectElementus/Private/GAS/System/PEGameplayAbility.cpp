@@ -3,6 +3,8 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/System/PEGameplayAbility.h"
+
+#include "AbilitySystemGlobals.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "GAS/Tasks/PESpawnProjectile_Task.h"
 
@@ -146,6 +148,16 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	if (CancelationTimerHandle.IsValid())
 	{
 		CancelationTimerHandle.Invalidate();
+	}
+
+	if (UAbilitySystemComponent* Comp = ActorInfo->AbilitySystemComponent.Get(); IsValid(Comp))
+	{
+		Comp->RemoveLooseGameplayTags(AbilityExtraTags);
+
+		if (UAbilitySystemGlobals::Get().ShouldReplicateActivationOwnedTags())
+		{
+			Comp->RemoveReplicatedLooseGameplayTags(AbilityExtraTags);
+		}
 	}
 }
 
@@ -420,6 +432,17 @@ void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 	// AbilityTask_WaitConfirm->OnCancel.AddDynamic(this, &UPEGameplayAbility::WaitCancelInput_Callback);
 
 	AbilityTask_WaitConfirm->ReadyForActivation();
+
+	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
+	const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingConfirm"));
+
+	Comp->AddLooseGameplayTag(AddTag);
+	if (UAbilitySystemGlobals::Get().ShouldReplicateActivationOwnedTags())
+	{
+		Comp->AddReplicatedLooseGameplayTag(AddTag);
+	}
+
+	AbilityExtraTags.AddTag(AddTag);
 }
 
 void UPEGameplayAbility::ActivateWaitCancelInputTask()
@@ -430,6 +453,17 @@ void UPEGameplayAbility::ActivateWaitCancelInputTask()
 	AbilityTask_WaitCancel->OnCancel.AddDynamic(this, &UPEGameplayAbility::WaitCancelInput_Callback);
 
 	AbilityTask_WaitCancel->ReadyForActivation();
+
+	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
+	const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingCancel"));
+
+	Comp->AddLooseGameplayTag(AddTag);
+	if (UAbilitySystemGlobals::Get().ShouldReplicateActivationOwnedTags())
+	{
+		Comp->AddReplicatedLooseGameplayTag(AddTag);
+	}
+
+	AbilityExtraTags.AddTag(AddTag);
 }
 
 void UPEGameplayAbility::ActivateWaitAddedTagTask(const FGameplayTag Tag)

@@ -8,16 +8,17 @@
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+	: Super(ObjectInitializer),
+	  HookIntensity(125)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.BlockLeftHand"));
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.BlockLeftHand"));
+	bIgnoreCooldown = true;
 }
 
 void UPEHookAbility::ActivateAbility
@@ -66,10 +67,10 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 		return;
 	}
 
-	UPEHookAbility_Task* AbilityTask = UPEHookAbility_Task::HookAbilityMovement(
-		this, FName("HookTask"), *TargetHit);
+	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(
+		this, FName("HookTask"), *TargetHit, HookIntensity);
 
-	AbilityTask->ReadyForActivation();
+	TaskHandle->ReadyForActivation();
 
 	FGameplayCueParameters Params;
 	Params.Location = TargetHit->Location;
@@ -94,4 +95,33 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 
 		GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime, false);
 	}
+
+	ActivateWaitConfirmInputTask();
+}
+
+void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
+{
+	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()); IsValid(Player) && TaskHandle.
+		IsValid())
+	{
+		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() *
+			HookIntensity * 25.f;
+
+		Player->LaunchCharacter(ImpulseVector, false, true);
+
+		if (TaskHandle->GetHitResult().GetComponent()->IsSimulatingPhysics())
+		{
+			TaskHandle->GetHitResult().GetComponent()->AddImpulse(-1.f * ImpulseVector);
+		}
+		else if (APECharacter* TargetPlayer = Cast<APECharacter>(TaskHandle->GetHitResult().GetActor()); IsValid(
+			TargetPlayer))
+		{
+			TargetPlayer->LaunchCharacter(-1.f * ImpulseVector, false, true);
+		}
+
+		bIgnoreCooldown = false;
+		CommitAbilityCooldown(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+	}
+
+	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
 }

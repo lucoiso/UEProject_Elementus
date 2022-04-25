@@ -15,10 +15,12 @@ UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitial
 
 UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility,
                                                               const FName TaskInstanceName,
-                                                              const FHitResult HitResult)
+                                                              const FHitResult HitResult,
+                                                              const float HookIntensity)
 {
 	UPEHookAbility_Task* MyObj = NewAbilityTask<UPEHookAbility_Task>(OwningAbility, TaskInstanceName);
 
+	MyObj->Intensity = HookIntensity;
 	MyObj->HitDataHandle = HitResult;
 
 	return MyObj;
@@ -34,6 +36,8 @@ void UPEHookAbility_Task::Activate()
 
 		if (ensureMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 		{
+			CurrentHookLocation = HitDataHandle.Location;
+
 			HitTarget = Cast<APECharacter>(HitDataHandle.GetActor());
 			if (!HitTarget.IsValid())
 			{
@@ -67,6 +71,16 @@ void UPEHookAbility_Task::Activate()
 	EndTask();
 }
 
+FVector UPEHookAbility_Task::GetLastHookLocation() const
+{
+	return CurrentHookLocation;
+}
+
+FHitResult UPEHookAbility_Task::GetHitResult() const
+{
+	return HitDataHandle;
+}
+
 void UPEHookAbility_Task::TickTask(const float DeltaTime)
 {
 	if (bIsFinished)
@@ -83,14 +97,14 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 			HitDataHandle.GetActor()->IsRootComponentMovable() &&
 			HitDataHandle.GetActor()->GetRootComponent()->IsSimulatingPhysics();
 
-		const FVector HookLocationToUse =
+		CurrentHookLocation =
 			bIsTargetMovableAndSimulatingPhysics
 				? HitDataHandle.GetActor()->GetActorLocation()
 				: HitDataHandle.Location;
 
-		if (const FVector Difference = HookLocationToUse - HookOwner->GetActorLocation(); Difference.Size() >= 500.f)
+		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation(); Difference.Size() >= 500.f)
 		{
-			const FVector HookForce = Difference * (0.75f / DeltaTime);
+			const FVector HookForce = Difference * Intensity * DeltaTime * 10.f;
 
 			HookOwner->GetCharacterMovement()->AddForce(HookForce);
 
