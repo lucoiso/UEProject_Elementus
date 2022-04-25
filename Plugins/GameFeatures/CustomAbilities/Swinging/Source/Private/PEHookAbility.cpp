@@ -5,7 +5,7 @@
 #include "PEHookAbility.h"
 #include "PEHookAbility_Task.h"
 #include "Actors/Character/PECharacter.h"
-#include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
+#include "GAS/Targeting/PELineTargeting.h"
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
@@ -46,7 +46,7 @@ void UPEHookAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventDat
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
 
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-	                           AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
+	                           APELineTargeting::StaticClass(), TargetingParams);
 }
 
 void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)

@@ -5,7 +5,7 @@
 #include "PETelekinesisAbility.h"
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
-#include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
+#include "GAS/Targeting/PELineTargeting.h"
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -30,7 +30,7 @@ void UPETelekinesisAbility::ActivateAbility
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("head");
 
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-	                           AGameplayAbilityTargetActor_SingleLineTrace::StaticClass(), TargetingParams);
+	                           APELineTargeting::StaticClass(), TargetingParams);
 }
 
 void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,

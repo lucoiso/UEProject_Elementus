@@ -6,7 +6,7 @@
 #include "PEThrowableActor.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Actors/Character/PECharacter.h"
-#include "Abilities/GameplayAbilityTargetActor_Trace.h"
+#include "GAS/Targeting/PELineTargeting.h"
 
 UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -138,7 +138,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		FHitResult HitResult;
 		FGameplayTargetDataFilterHandle DataFilterHandle;
 
-		AGameplayAbilityTargetActor_Trace::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation,
+		APELineTargeting::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation,
 		                                                       EndLocation, "None", QueryParams);
 
 		const FVector Direction = ((HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation) -
