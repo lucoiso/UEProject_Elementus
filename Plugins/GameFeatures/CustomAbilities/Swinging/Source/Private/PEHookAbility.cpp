@@ -27,6 +27,8 @@ void UPEHookAbility::ActivateAbility
  const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	
+	bIgnoreCooldown = true;
 
 	ActivateWaitMontageTask(NAME_None, 1.25f);
 	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
