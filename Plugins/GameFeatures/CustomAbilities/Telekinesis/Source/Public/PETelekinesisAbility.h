@@ -20,7 +20,7 @@ class UPETelekinesisAbility final : public UPEGameplayAbility
 public:
 	explicit UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Hook")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Telekinesis")
 	float ThrowIntensity;
 
 private:
