@@ -15,5 +15,7 @@ UCLASS(Blueprintable, Category = "Custom GAS | Actors")
 class PROJECTELEMENTUS_API APEGroundTargeting final : public AGameplayAbilityTargetActor_GroundTrace
 {
 	GENERATED_BODY()
-	
+
+public:
+	explicit APEGroundTargeting(const FObjectInitializer& ObjectInitializer);
 };

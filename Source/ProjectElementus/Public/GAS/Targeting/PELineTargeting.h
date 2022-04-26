@@ -15,5 +15,7 @@ UCLASS(Blueprintable, Category = "Custom GAS | Actors")
 class PROJECTELEMENTUS_API APELineTargeting final : public AGameplayAbilityTargetActor_SingleLineTrace
 {
 	GENERATED_BODY()
-	
+
+public:
+	explicit APELineTargeting(const FObjectInitializer& ObjectInitializer);
 };
