@@ -12,8 +12,7 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 	  ThrowIntensity(2750)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
-
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
+	
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
 }

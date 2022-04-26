@@ -10,9 +10,8 @@ UPESprintAbility::UPESprintAbility(const FObjectInitializer& ObjectInitializer)
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
 
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Sprint"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Sprint"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Walk"));
 }
 

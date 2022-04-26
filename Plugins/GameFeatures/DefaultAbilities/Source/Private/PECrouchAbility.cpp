@@ -9,6 +9,8 @@ UPECrouchAbility::UPECrouchAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
+
+	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Crouch"));
 }
 
 void UPECrouchAbility::ActivateAbility

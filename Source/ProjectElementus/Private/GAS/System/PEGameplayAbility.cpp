@@ -416,6 +416,20 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 
 		AbilityTask_WaitTargetData->ReadyForActivation();
 	}
+
+	if (AbilityTask_WaitTargetData->IsActive() && TargetingConfirmation != EGameplayTargetingConfirmation::Instant)
+	{
+		UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
+
+		const FGameplayTag AddTag_Aiming = FGameplayTag::RequestGameplayTag(FName("State.Aiming"));
+		const FGameplayTag AddTag_Confirmation = FGameplayTag::RequestGameplayTag(FName("State.WaitingConfirm"));
+
+		Comp->AddLooseGameplayTag(AddTag_Aiming);
+		Comp->AddLooseGameplayTag(AddTag_Confirmation);
+
+		AbilityExtraTags.AddTag(AddTag_Aiming);
+		AbilityExtraTags.AddTag(AddTag_Confirmation);
+	}
 }
 
 void UPEGameplayAbility::ActivateWaitConfirmInputTask()

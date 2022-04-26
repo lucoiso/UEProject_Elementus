@@ -10,7 +10,6 @@ UPEWalkAbility::UPEWalkAbility(const FObjectInitializer& ObjectInitializer)
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
 
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Walk"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Walk"));
 
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Sprint"));
 }

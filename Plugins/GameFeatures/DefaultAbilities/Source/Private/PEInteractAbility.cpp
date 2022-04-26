@@ -8,10 +8,7 @@
 
 UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
-
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Interact"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Interact"));
 
 	ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag("State.CanInteract"));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
