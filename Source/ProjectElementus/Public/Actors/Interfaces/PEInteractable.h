@@ -26,7 +26,7 @@ class PROJECTELEMENTUS_API IPEInteractable
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Behaviors")
-	void DoInteractionBehavior(AActor* ActorInteracting);
+	void DoInteractionBehavior(APECharacter* CharacterInteracting);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Management")
 	void SetIsCurrentlyFocusedByActor(const bool bIsFocused, AActor* ActorFocusing);
