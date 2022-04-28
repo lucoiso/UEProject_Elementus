@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GAS/System/PEGameplayAbility.h"
+#include "Tasks/PEInteractAbility_Task.h"
 #include "PEInteractAbility.generated.h"
 
 /**
@@ -24,4 +25,9 @@ private:
 	                             const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo,
 	                             const FGameplayEventData* TriggerEventData) override;
+
+	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	                          const FGameplayAbilityActivationInfo ActivationInfo) override;
+
+	TWeakObjectPtr<UPEInteractAbility_Task> TaskHandle;
 };

@@ -48,11 +48,11 @@ public:
 
 	/* This function came from IAbilityInputBinding interface, provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
-	virtual void SetupAbilityInputBinding(UInputAction* Action, const int32 InputID) override;
+	virtual void SetupAbilityInputBinding_Implementation(UInputAction* Action, const int32 InputID) override;
 
 	/* This function came from IAbilityInputBinding interface, provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
-	virtual void RemoveAbilityInputBinding(const UInputAction* Action) const override;
+	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const override;
 
 	/* Custom function to remove HUD from player screen */
 	UFUNCTION(Client, Reliable)

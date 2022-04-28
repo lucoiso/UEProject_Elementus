@@ -296,21 +296,12 @@ void APECharacter::Landed(const FHitResult& Hit)
 		return;
 	}
 
-	if (const FGameplayTag DoubleJumpTag = FGameplayTag::RequestGameplayTag(FName("GameplayAbility.Default.DoubleJump"))
-		; AbilitySystemComponent->HasMatchingGameplayTag(DoubleJumpTag))
+	const FGameplayTagContainer DoubleJumpTagContainer
 	{
-		const FGameplayAbilitySpec AbilitySpec =
-			*AbilitySystemComponent->FindAbilitySpecFromInputID(
-				InputIDEnumerationClass->GetValueByName("Jump", EGetByNameFlags::CheckAuthoredName));
+		FGameplayTag::RequestGameplayTag(FName("GameplayAbility.Default.DoubleJump"))
+	};
 
-		if constexpr (&AbilitySpec != nullptr)
-		{
-			if (AbilitySpec.Handle.IsValid())
-			{
-				AbilitySystemComponent->CancelAbilityHandle(AbilitySpec.Handle);
-			}
-		}
-	}
+	AbilitySystemComponent->CancelAbilities(&DoubleJumpTagContainer);
 }
 
 void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason)

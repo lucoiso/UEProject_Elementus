@@ -4,14 +4,17 @@
 
 #include "PEInteractAbility.h"
 #include "Actors/Character/PECharacter.h"
+#include "Actors/Interfaces/PEInteractable.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
+#include "Tasks/PEInteractAbility_Task.h"
 
 UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Interact"));
+	bAutoActivateOnGrant = true;
+	bWaitCancel = false;
 
-	ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag("State.CanInteract"));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
+	AbilityMaxRange = 1000.f;
 }
 
 void UPEInteractAbility::ActivateAbility
@@ -22,7 +25,22 @@ void UPEInteractAbility::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	// TO DO
+	TaskHandle = UPEInteractAbility_Task::InteractionTask(this, "InteractTask", AbilityMaxRange);
+	TaskHandle->ReadyForActivation();
+}
 
-	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
+                                      const FGameplayAbilityActorInfo* ActorInfo,
+                                      const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
+
+	if (TaskHandle.IsValid() && TaskHandle->GetIsInteractAllowed())
+	{
+		if (IsValid(TaskHandle->GetInteractable()) &&
+			IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
+		{
+			IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(), ActorInfo->AvatarActor.Get());
+		}
+	}
 }

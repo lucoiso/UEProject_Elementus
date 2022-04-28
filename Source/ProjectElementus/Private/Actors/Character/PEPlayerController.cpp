@@ -54,7 +54,8 @@ void APEPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void APEPlayerController::SetupAbilityInputBinding_Implementation(UInputAction* Action, const int32 InputID)
+void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(
+	UInputAction* Action, const int32 InputID)
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent); ensureMsgf(
 		IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
@@ -74,7 +75,7 @@ void APEPlayerController::SetupAbilityInputBinding_Implementation(UInputAction* 
 	}
 }
 
-void APEPlayerController::RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const
+void APEPlayerController::RemoveAbilityInputBinding_Implementation_Implementation(const UInputAction* Action) const
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent); ensureMsgf(
 		IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))

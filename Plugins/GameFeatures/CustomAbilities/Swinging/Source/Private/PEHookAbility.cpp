@@ -12,7 +12,7 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	  HookIntensity(125)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
-	
+
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 
@@ -26,7 +26,7 @@ void UPEHookAbility::ActivateAbility
  const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	
+
 	bIgnoreCooldown = true;
 
 	ActivateWaitMontageTask(NAME_None, 1.25f);

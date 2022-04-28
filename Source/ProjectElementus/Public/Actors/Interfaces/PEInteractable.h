@@ -11,7 +11,7 @@
 /**
  *
  */
-UINTERFACE(MinimalAPI, Category = "Custom GAS | Interfaces")
+UINTERFACE(MinimalAPI, Blueprintable, Category = "Custom GAS | Interfaces")
 class UPEInteractable : public UInterface
 {
 	GENERATED_BODY()
@@ -25,20 +25,12 @@ class PROJECTELEMENTUS_API IPEInteractable
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(Category = "Custom Functions | Behaviors")
-	virtual void DoInteractionBehavior()
-	{
-	}
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Behaviors")
+	void DoInteractionBehavior(AActor* ActorInteracting);
 
-	UFUNCTION(Category = "Custom Functions | Management")
-	virtual bool IsInteractEnabled()
-	{
-		return true;
-	}
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Management")
+	void SetIsCurrentlyFocusedByActor(const bool bIsFocused, AActor* ActorFocusing);
 
-	UFUNCTION(Category = "Custom Functions | Management")
-	virtual bool IsInteractAllowedForActor(const AActor* Actor)
-	{
-		return true;
-	}
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Management")
+	bool IsInteractEnabled();
 };

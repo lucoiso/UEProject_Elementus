@@ -40,7 +40,7 @@ private:
 
 	TWeakObjectPtr<class APECharacter> HookOwner;
 	TWeakObjectPtr<APECharacter> HitTarget;
-	
+
 	float Intensity;
 	bool bIsFinished;
 	FHitResult HitDataHandle;

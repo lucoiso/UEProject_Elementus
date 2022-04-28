@@ -278,7 +278,7 @@ protected:
 
 	/* Shared Timer Handle that is actually used with bEndAbilityAfterActiveTime */
 	FTimerHandle CancelationTimerHandle;
-	
+
 	/* Extra tags to manage tasks conditions */
 	FGameplayTagContainer AbilityExtraTags;
 };

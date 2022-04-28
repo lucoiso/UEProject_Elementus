@@ -7,7 +7,6 @@
 #include "Actors/Character/PEPlayerController.h"
 
 #include "GAS/System/PEAbilitySystemComponent.h"
-#include "GAS/System/PEAbilityData.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
