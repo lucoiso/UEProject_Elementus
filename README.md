@@ -6,7 +6,7 @@
 
 ## About
 
-Project Elementus is a template that can be used to start projects that will use some new features that come with Unreal
+Project Elementus is a third person template that can be used to start projects that will use some new features that come with Unreal
 Engine 5 as well as powerful existing features like the Gameplay Ability System and others!
 
 My intention with this development is to help other developers in their projects by providing a starting point with
