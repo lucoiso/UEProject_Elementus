@@ -1,6 +1,6 @@
-# Codename: Project Elementus (Unnamed Template) - WiP
+# Project Elementus - WiP
 
-![HighresScreenshot00000](https://user-images.githubusercontent.com/77353979/163858508-12ed4d7b-c573-413d-a274-120d90a7d135.png)
+![image](https://user-images.githubusercontent.com/77353979/165977616-6a2146e4-f564-4013-a8dc-c0a7815f341a.png)
 
 **This project is being built on Unreal Engine 5.**
 
@@ -13,7 +13,7 @@ My intention with this development is to help other developers in their projects
 already implemented functionalities. ❤️
 
 I will be posting updates frequently on this forum
-thread: [Codename: Project Elementus (Unnamed Template)](https://forums.unrealengine.com/t/codename-project-elementus-unnamed-template/273595)  
+thread: [Project Elementus - Custom TPS Template w/ Extra Features](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)  
 Please give some feedback and feel invited to test the project and help me with this work. : )
 
 ## Dependencies
@@ -23,12 +23,12 @@ Please give some feedback and feel invited to test the project and help me with 
 
 ## Links
 
-1. Related post on Unreal Engine
-   forums: [Codename: Project Elementus (Unnamed Template)](https://forums.unrealengine.com/t/codename-project-elementus-unnamed-template/273595)
-2. ModularFeatures_ExtraActions post on
-   forum: [[FREE] ModularFeatures_ExtraActions](https://forums.unrealengine.com/t/free-modularfeatures-extraactions/495400)
-3. A bonus plugin that aren’t in this
-   template: [[FREE] AzureSpeech plugin: Text-to-Voice and Voice-to-Text](https://forums.unrealengine.com/t/free-azurespeech-plugin-text-to-voice-and-voice-to-text/495394)
+1. [Related post on Unreal Engine
+   Forum](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)
+2. [ModularFeatures_ExtraActions post on
+   Forum](https://forums.unrealengine.com/t/free-modularfeatures-extraactions/495400)
+3. [A bonus free plugin that aren’t in this
+   template](https://forums.unrealengine.com/t/free-azurespeech-plugin-text-to-voice-and-voice-to-text/495394)
 
 ## Some implemented features
 
@@ -38,29 +38,19 @@ Please give some feedback and feel invited to test the project and help me with 
 4. World Partition;
 5. Enhanced Input;
 6. Networking/Replication/Multiplayer;
-7. Etc.
+7. Custom plugins;
+8. Etc.
 
 **Both C/C++ (a lot) and Blueprints!**
 
 ## Extra features
 
-**AMD FidelityFX Super Resolution 1.0:** Adapted version working with UE5!  
-**Modular Game Features - Extra Actions:** Plugin made for this project and released on UE Marketplace!
-
-------------------------------------------------------
-
-Custom GAS Abilities with GAS Tasks and Ability Cost based on active time:  
-*These abilities were implemented using the **ModularFeatures_ExtraActions** plugin.*
-
-**Telekinesis Ability**:  
-![Project Elementus Preview  NetMode_ Standalone   (64-bit_SM5) 2022-03-05 17-59-01_Trim (1)](https://user-images.githubusercontent.com/77353979/156900594-5fb191b1-757f-4f02-ad3f-45baf6aba92b.gif)
-
-**Swinging/Hook Ability**:  
-![Project Elementus Preview  NetMode_ Standalone   (64-bit_SM5) 2022-03-05 17-59-13_Trim_Trim (1)](https://user-images.githubusercontent.com/77353979/156900598-d8f199fc-7f9e-422b-98bf-c9ea1ed930f8.gif)
+* **[AMD FidelityFX Super Resolution 1.0](https://github.com/lucoiso/fsr-amd-ue/releases/tag/v1.0):** Adapted version working with UE5!  
+* **[Modular Game Features - Extra Actions](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions):** Plugin made for this project and released on UE Marketplace!
 
 **And more! :)**
 
 ## More infos on the way!
 
 See the post on Unreal Engine forums to be updated about this
-project: [Codename: Project Elementus (Unnamed Template)](https://forums.unrealengine.com/t/codename-project-elementus-unnamed-template/273595)
+project: [Project Elementus - Custom TPS Template w/ Extra Features](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)  
