@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/ProjectElementusGameMode.h"
-#include "Management/PEHUD.h"
+#include "Actors/Character/PEHUD.h"
 
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/Character/PEPlayerController.h"

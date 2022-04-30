@@ -6,7 +6,8 @@
 
 ## About
 
-Project Elementus is a third person template that can be used to start projects that will use some new features that come with Unreal
+Project Elementus is a third person template that can be used to start projects that will use some new features that
+come with Unreal
 Engine 5 as well as powerful existing features like the Gameplay Ability System and others!
 
 My intention with this development is to help other developers in their projects by providing a starting point with
@@ -45,8 +46,10 @@ Please give some feedback and feel invited to test the project and help me with 
 
 ## Extra features
 
-* **[AMD FidelityFX Super Resolution 1.0](https://github.com/lucoiso/fsr-amd-ue/releases/tag/v1.0):** Adapted version working with UE5!  
-* **[Modular Game Features - Extra Actions](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions):** Plugin made for this project and released on UE Marketplace!
+* **[AMD FidelityFX Super Resolution 1.0](https://github.com/lucoiso/fsr-amd-ue/releases/tag/v1.0):** Adapted version
+  working with UE5!
+* **[Modular Game Features - Extra Actions](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions):**
+  Plugin made for this project and released on UE Marketplace!
 
 **And more! :)**
 

@@ -58,11 +58,6 @@ public:
 	UFUNCTION(Client, Reliable)
 	void RemoveHUD();
 
-protected:
-	virtual void PreInitializeComponents() override;
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 private:
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 

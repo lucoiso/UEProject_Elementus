@@ -38,8 +38,6 @@ private:
 	void InitializeABSC(const bool bOnRep);
 	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
-	bool bIsFrameworkReady = false;
-
 public:
 	explicit APECharacter(const FObjectInitializer& ObjectInitializer);
 

@@ -2,7 +2,7 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Management/PEHUD.h"
+#include "Actors/Character/PEHUD.h"
 #include "Blueprint/UserWidget.h"
 
 APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer)

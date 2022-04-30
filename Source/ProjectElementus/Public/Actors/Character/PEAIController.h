@@ -18,9 +18,4 @@ class PROJECTELEMENTUS_API APEAIController final : public AAIController
 
 public:
 	explicit APEAIController(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	virtual void PreInitializeComponents() override;
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

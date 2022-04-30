@@ -122,13 +122,8 @@ void APECharacter::InitializeABSC(const bool bOnRep)
 		}
 	}
 
-	if (bOnRep || !bIsFrameworkReady)
-	{
-		UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-			this, UGameFrameworkComponentManager::NAME_GameActorReady);
-
-		bIsFrameworkReady = true;
-	}
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
+		this, UGameFrameworkComponentManager::NAME_GameActorReady);
 }
 
 float APECharacter::GetDefaultWalkSpeed() const

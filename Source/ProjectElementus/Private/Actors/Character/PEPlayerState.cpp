@@ -28,19 +28,9 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	NetUpdateFrequency = 75.f;
 }
 
-void APEPlayerState::PreInitializeComponents()
-{
-	Super::PreInitializeComponents();
-
-	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
-}
-
 void APEPlayerState::BeginPlay()
 {
 	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called."), *FString(__func__));
-
-	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-		this, UGameFrameworkComponentManager::NAME_GameActorReady);
 
 	Super::BeginPlay();
 
@@ -54,13 +44,6 @@ void APEPlayerState::BeginPlay()
 		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
 			this, &APEPlayerState::StunStateChanged_Callback);
 	}
-}
-
-void APEPlayerState::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-
-	Super::EndPlay(EndPlayReason);
 }
 
 APEPlayerController* APEPlayerState::GetPEPlayerController() const

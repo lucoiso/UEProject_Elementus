@@ -6,10 +6,12 @@
 #include "Actors/Character/PECharacter.h"
 
 #include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedPlayerInput.h"
 #include "InputAction.h"
+
 #include "AbilitySystemComponent.h"
-#include "Components/GameFrameworkComponentManager.h"
-#include "Management/PEHUD.h"
+#include "Actors/Character/PEHUD.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -32,28 +34,7 @@ void APEPlayerController::RemoveHUD_Implementation()
 	}
 }
 
-void APEPlayerController::PreInitializeComponents()
-{
-	Super::PreInitializeComponents();
-
-	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
-}
-
-void APEPlayerController::BeginPlay()
-{
-	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-		this, UGameFrameworkComponentManager::NAME_GameActorReady);
-
-	Super::BeginPlay();
-}
-
-void APEPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-
-	Super::EndPlay(EndPlayReason);
-}
-
+// Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
 void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(
 	UInputAction* Action, const int32 InputID)
 {
@@ -75,6 +56,7 @@ void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation
 	}
 }
 
+// Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
 void APEPlayerController::RemoveAbilityInputBinding_Implementation_Implementation(const UInputAction* Action) const
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent); ensureMsgf(
@@ -89,6 +71,8 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action) const
 {
 	if (!IsValid(GetPawn()))
 	{
+		CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
+
 		return;
 	}
 
@@ -121,6 +105,8 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 {
 	if (!IsValid(GetPawn()))
 	{
+		CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
+
 		return;
 	}
 
@@ -141,6 +127,8 @@ void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 {
 	if (!IsValid(GetPawnOrSpectator()))
 	{
+		CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
+
 		return;
 	}
 
@@ -156,6 +144,7 @@ void APEPlayerController::Move(const FInputActionValue& Value) const
 {
 	if (!IsValid(GetPawnOrSpectator()))
 	{
+		CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
 		return;
 	}
 
@@ -182,6 +171,8 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 {
 	if (!IsValid(GetPawn()))
 	{
+		CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
+
 		return;
 	}
 

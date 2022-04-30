@@ -40,9 +40,7 @@ private:
 	void StunStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
 
 protected:
-	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/* Returns a casted version of Player Controller using PEPlayerController class */
 	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components",
