@@ -6,7 +6,6 @@
 #include "Actors/Character/PECharacter.h"
 
 #include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "EnhancedPlayerInput.h"
 #include "InputAction.h"
 
@@ -34,6 +33,7 @@ void APEPlayerController::RemoveHUD_Implementation()
 	}
 }
 
+// Start of IAbilityInputBinding interface
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
 void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(
 	UInputAction* Action, const int32 InputID)
@@ -66,6 +66,7 @@ void APEPlayerController::RemoveAbilityInputBinding_Implementation_Implementatio
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnReleasedHandle);
 	}
 }
+// End of IAbilityInputBinding interface
 
 void APEPlayerController::OnAbilityInputPressed(UInputAction* Action) const
 {

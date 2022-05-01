@@ -3,7 +3,6 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/Character/PEAIController.h"
-#include "Components/GameFrameworkComponentManager.h"
 
 APEAIController::APEAIController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

@@ -39,6 +39,7 @@ class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController,
 public:
 	explicit APEPlayerController(const FObjectInitializer& ObjectInitializer);
 
+	// Start of IAbilityInputBinding interface
 	/* This function came from IAbilityInputBinding interface, provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
 	virtual void SetupAbilityInputBinding_Implementation(UInputAction* Action, const int32 InputID) override;
@@ -46,6 +47,7 @@ public:
 	/* This function came from IAbilityInputBinding interface, provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
 	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const override;
+	// End of IAbilityInputBinding interface
 
 	/* Custom function to remove HUD from player screen */
 	UFUNCTION(Client, Reliable)
