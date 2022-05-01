@@ -9,7 +9,7 @@
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	  HookIntensity(125)
+	  HookIntensity(100.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
@@ -29,7 +29,7 @@ void UPEHookAbility::ActivateAbility
 
 	bIgnoreCooldown = true;
 
-	ActivateWaitMontageTask(NAME_None, 1.25f);
+	ActivateWaitMontageTask(NAME_None, 1.325f);
 	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
 }
 
