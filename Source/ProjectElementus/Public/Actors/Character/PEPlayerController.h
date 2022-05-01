@@ -28,13 +28,6 @@ DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
 	UE_VLOG(Actor, LogController_Axis, Verbosity, Format, ##__VA_ARGS__); \
 }
 
-struct FAbilityInputData
-{
-	uint32 OnPressedHandle = 0;
-	uint32 OnReleasedHandle = 0;
-	uint32 InputID = 0;
-};
-
 /**
  *
  */
@@ -59,6 +52,13 @@ public:
 	void RemoveHUD();
 
 private:
+	struct FAbilityInputData
+	{
+		uint32 OnPressedHandle = 0;
+		uint32 OnReleasedHandle = 0;
+		uint32 InputID = 0;
+	};
+	
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION()
