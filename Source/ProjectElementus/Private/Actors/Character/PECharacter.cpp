@@ -5,14 +5,11 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
 #include "Actors/Character/PEPlayerState.h"
-
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
 
@@ -185,18 +182,6 @@ void APECharacter::BeginPlay()
 	}
 }
 
-void APECharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	if (AbilitySystemComponent.IsValid() && GetLocalRole() == ROLE_Authority)
-	{
-		AbilitySystemComponent->ClearAllAbilities();
-	}
-
-	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-
-	Super::EndPlay(EndPlayReason);
-}
-
 void APECharacter::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
                                               const bool bTryRemoveExistingAbilityWithInput = true,
                                               const bool bTryRemoveExistingAbilityWithClass = true)
@@ -273,6 +258,8 @@ void APECharacter::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbili
 
 void APECharacter::PerformDeath_Implementation()
 {
+	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
+
 	// TO DO
 	Destroy();
 }

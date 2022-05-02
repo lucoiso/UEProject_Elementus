@@ -60,7 +60,7 @@ private:
 		uint32 OnReleasedHandle = 0;
 		uint32 InputID = 0;
 	};
-	
+
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION()
