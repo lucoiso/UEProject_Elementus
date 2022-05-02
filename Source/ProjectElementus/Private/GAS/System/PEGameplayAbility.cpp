@@ -429,37 +429,46 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 
 void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 {
+	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
+	if (const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingConfirm"));
+		!AbilityExtraTags.HasTag(AddTag))
+	{
+		Comp->AddLooseGameplayTag(AddTag);
+		AbilityExtraTags.AddTag(AddTag);
+	}
+	
 	UAbilityTask_WaitConfirmCancel* AbilityTask_WaitConfirm =
 		UAbilityTask_WaitConfirmCancel::WaitConfirmCancel(this);
 
 	AbilityTask_WaitConfirm->OnConfirm.AddDynamic(this, &UPEGameplayAbility::WaitConfirmInput_Callback);
-
+	
 	// Canceling is already binded by ActivateWaitCancelInputTask()
-	// AbilityTask_WaitConfirm->OnCancel.AddDynamic(this, &UPEGameplayAbility::WaitCancelInput_Callback);
+	// We will only use it to re-activate this task if bWaitCancel is false
+	// Because this WaitConfirmCancel task ends independly if Cancel or Confirm is pressed
+	if (!bWaitCancel)
+	{
+		AbilityTask_WaitConfirm->OnCancel.AddDynamic(this, &UPEGameplayAbility::ActivateWaitConfirmInputTask);
+	}
 
-	AbilityTask_WaitConfirm->ReadyForActivation();
-
-	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
-	const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingConfirm"));
-
-	Comp->AddLooseGameplayTag(AddTag);
-	AbilityExtraTags.AddTag(AddTag);
+	AbilityTask_WaitConfirm->ReadyForActivation();	
 }
 
 void UPEGameplayAbility::ActivateWaitCancelInputTask()
 {
+	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
+	if (const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingCancel"));
+		!AbilityExtraTags.HasTag(AddTag))
+	{
+		Comp->AddLooseGameplayTag(AddTag);
+		AbilityExtraTags.AddTag(AddTag);
+	}
+	
 	UAbilityTask_WaitCancel* AbilityTask_WaitCancel =
 		UAbilityTask_WaitCancel::WaitCancel(this);
 
 	AbilityTask_WaitCancel->OnCancel.AddDynamic(this, &UPEGameplayAbility::WaitCancelInput_Callback);
 
 	AbilityTask_WaitCancel->ReadyForActivation();
-
-	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
-	const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingCancel"));
-
-	Comp->AddLooseGameplayTag(AddTag);
-	AbilityExtraTags.AddTag(AddTag);
 }
 
 void UPEGameplayAbility::ActivateWaitAddedTagTask(const FGameplayTag Tag)
