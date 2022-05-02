@@ -436,12 +436,12 @@ void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 		Comp->AddLooseGameplayTag(AddTag);
 		AbilityExtraTags.AddTag(AddTag);
 	}
-	
+
 	UAbilityTask_WaitConfirmCancel* AbilityTask_WaitConfirm =
 		UAbilityTask_WaitConfirmCancel::WaitConfirmCancel(this);
 
 	AbilityTask_WaitConfirm->OnConfirm.AddDynamic(this, &UPEGameplayAbility::WaitConfirmInput_Callback);
-	
+
 	// Canceling is already binded by ActivateWaitCancelInputTask()
 	// We will only use it to re-activate this task if bWaitCancel is false
 	// Because this WaitConfirmCancel task ends independly if Cancel or Confirm is pressed
@@ -450,7 +450,7 @@ void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 		AbilityTask_WaitConfirm->OnCancel.AddDynamic(this, &UPEGameplayAbility::ActivateWaitConfirmInputTask);
 	}
 
-	AbilityTask_WaitConfirm->ReadyForActivation();	
+	AbilityTask_WaitConfirm->ReadyForActivation();
 }
 
 void UPEGameplayAbility::ActivateWaitCancelInputTask()
@@ -462,7 +462,7 @@ void UPEGameplayAbility::ActivateWaitCancelInputTask()
 		Comp->AddLooseGameplayTag(AddTag);
 		AbilityExtraTags.AddTag(AddTag);
 	}
-	
+
 	UAbilityTask_WaitCancel* AbilityTask_WaitCancel =
 		UAbilityTask_WaitCancel::WaitCancel(this);
 
