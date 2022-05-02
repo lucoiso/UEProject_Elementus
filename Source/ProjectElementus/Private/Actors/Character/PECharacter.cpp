@@ -182,18 +182,6 @@ void APECharacter::BeginPlay()
 	}
 }
 
-void APECharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	if (AbilitySystemComponent.IsValid() && GetLocalRole() == ROLE_Authority)
-	{
-		AbilitySystemComponent->ClearAllAbilities();
-	}
-
-	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-
-	Super::EndPlay(EndPlayReason);
-}
-
 void APECharacter::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
                                               const bool bTryRemoveExistingAbilityWithInput = true,
                                               const bool bTryRemoveExistingAbilityWithClass = true)
@@ -270,6 +258,8 @@ void APECharacter::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbili
 
 void APECharacter::PerformDeath_Implementation()
 {
+	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
+
 	// TO DO
 	Destroy();
 }

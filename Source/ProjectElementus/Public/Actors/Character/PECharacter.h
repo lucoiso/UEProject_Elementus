@@ -97,7 +97,6 @@ protected:
 
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	/* Give a new Ability to the Player -  bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
