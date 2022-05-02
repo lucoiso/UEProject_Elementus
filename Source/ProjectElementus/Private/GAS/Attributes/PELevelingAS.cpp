@@ -5,12 +5,9 @@
 #include "GAS/Attributes/PELevelingAS.h"
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
-
 #include "GAS/System/PEAbilitySystemGlobals.h"
-
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
-
 #include "AbilitySystemComponent.h"
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"
 

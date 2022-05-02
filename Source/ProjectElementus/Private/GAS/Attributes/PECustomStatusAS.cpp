@@ -5,13 +5,9 @@
 #include "GAS/Attributes/PECustomStatusAS.h"
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerState.h"
-
 #include "GAS/System/PEAbilitySystemGlobals.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
-
 #include "GameplayEffectExtension.h"
-
 #include "AbilitySystemComponent.h"
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"
 

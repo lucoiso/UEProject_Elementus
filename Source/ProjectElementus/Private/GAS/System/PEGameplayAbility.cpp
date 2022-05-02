@@ -3,11 +3,9 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/System/PEGameplayAbility.h"
-
 #include "AbilitySystemGlobals.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "GAS/Tasks/PESpawnProjectile_Task.h"
-
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitConfirmCancel.h"
@@ -15,13 +13,10 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitTargetData.h"
 #include "Abilities/Tasks/AbilityTask_SpawnActor.h"
-
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
-
 #include "Actors/Character/PECharacter.h"
 #include "Actors/World/PEProjectileActor.h"
-
 #include "GameplayEffect.h"
 
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer)

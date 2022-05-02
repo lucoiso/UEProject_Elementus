@@ -40,8 +40,15 @@ void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
 		if (IsValid(TaskHandle->GetInteractable()) &&
 			IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
 		{
-			IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(),
-			                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()));
+			if (HasAuthority(&ActivationInfo))
+			{
+				IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(),
+				                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()));
+			}
+			else
+			{
+				ActorInfo->AbilitySystemComponent->ServerSetInputPressed(Handle);
+			}
 		}
 	}
 }
