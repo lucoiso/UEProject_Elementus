@@ -8,6 +8,7 @@
 #include "UObject/Interface.h"
 #include "PEInteractable.generated.h"
 
+class APECharacter;
 /**
  *
  */
@@ -26,10 +27,10 @@ class PROJECTELEMENTUS_API IPEInteractable
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Behaviors")
-	void DoInteractionBehavior(APECharacter* CharacterInteracting);
+	void DoInteractionBehavior(APECharacter* CharacterInteracting, const FHitResult& HitResult);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Management")
-	void SetIsCurrentlyFocusedByActor(const bool bIsFocused, AActor* ActorFocusing);
+	void SetIsCurrentlyFocusedByActor(const bool bIsFocused, AActor* ActorFocusing, const FHitResult& HitResult);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Management")
 	bool IsInteractEnabled();

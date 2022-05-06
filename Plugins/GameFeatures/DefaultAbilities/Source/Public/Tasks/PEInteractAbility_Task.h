@@ -30,6 +30,8 @@ public:
 
 	AActor* GetInteractable() const;
 
+	FHitResult GetInteractableHitResult() const;
+
 private:
 	virtual void TickTask(float DeltaTime) override;
 	virtual void OnDestroy(bool AbilityIsEnding) override;
@@ -41,5 +43,8 @@ private:
 	float Range;
 
 	TWeakObjectPtr<APECharacter> InteractionOwner;
-	TWeakObjectPtr<AActor> LastInteractable_Ref;
+	TWeakObjectPtr<AActor> LastInteractableActor_Ref;
+	TWeakObjectPtr<UPrimitiveComponent> LastInteractablePrimitive_Ref;
+
+	FHitResult HitResult;
 };

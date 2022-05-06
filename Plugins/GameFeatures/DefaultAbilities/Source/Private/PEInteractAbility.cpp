@@ -43,7 +43,8 @@ void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
 			if (HasAuthority(&ActivationInfo))
 			{
 				IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(),
-				                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()));
+				                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()),
+				                                               TaskHandle->GetInteractableHitResult());
 			}
 			else
 			{
