@@ -54,8 +54,8 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 
 	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacter>())
 	{
-		if (APECharacter* Character = Cast<APECharacter>(OtherActor); ensureMsgf(
-			IsValid(Character), TEXT("%s have a invalid Character"), *GetName()))
+		if (APECharacter* Character = Cast<APECharacter>(OtherActor);
+			ensureMsgf(IsValid(Character), TEXT("%s have a invalid Character"), *GetName()))
 		{
 			Character->LaunchCharacter(ImpulseVelocity, true, true);
 			ApplyProjectileEffect(Character->GetAbilitySystemComponent());
@@ -71,8 +71,8 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 
 void APEProjectileActor::ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC)
 {
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC); ensureMsgf(
-		IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
+	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
+		ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

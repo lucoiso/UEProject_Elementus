@@ -12,7 +12,7 @@ class UPEHookAbility_Task;
 /**
  *
  */
-UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Custom GAS | Abilities")
+UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Project Elementus | Classes")
 class UPEHookAbility final : public UPEGameplayAbility
 {
 	GENERATED_BODY()
@@ -20,7 +20,7 @@ class UPEHookAbility final : public UPEGameplayAbility
 public:
 	explicit UPEHookAbility(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Hook")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float HookIntensity;
 
 private:

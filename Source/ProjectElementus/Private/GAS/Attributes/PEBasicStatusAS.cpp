@@ -52,11 +52,10 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 		{
 			GetOwningAbilitySystemComponent()->CancelAllAbilities();
 
-			GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(
-				                                                             UPEAbilitySystemGlobals::Get().
-				                                                             GetGlobalDeathEffect()), 1.f,
-			                                                             GetOwningAbilitySystemComponent()->
-			                                                             MakeEffectContext());
+			GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(
+				Cast<UGameplayEffect>(UPEAbilitySystemGlobals::Get().GetGlobalDeathEffect()), 1.f,
+				GetOwningAbilitySystemComponent()->
+				MakeEffectContext());
 		}
 
 		if (Attribute == GetStaminaAttribute())

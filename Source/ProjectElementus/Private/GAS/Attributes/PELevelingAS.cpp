@@ -28,12 +28,12 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, con
 	{
 		UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
 
-		if (const UDataTable* LevelingBonus_Table = UPEAbilitySystemGlobals::Get().GetLevelingBonusData(); ensureMsgf(
-			IsValid(AbilityComp) && IsValid(LevelingBonus_Table), TEXT("%s have a invalid Parameters"),
-			*GetName()))
+		if (const UDataTable* LevelingBonus_Table = UPEAbilitySystemGlobals::Get().GetLevelingBonusData();
+			ensureMsgf(IsValid(AbilityComp)
+			           && IsValid(LevelingBonus_Table), TEXT("%s have a invalid Parameters"), *GetName()))
 		{
-			const FPELevelingData LevelingInfo = *LevelingBonus_Table->FindRow<FPELevelingData>(
-				FName(*FString::FromInt(GetCurrentLevel() + 1)), "");
+			const FPELevelingData LevelingInfo =
+				*LevelingBonus_Table->FindRow<FPELevelingData>(FName(*FString::FromInt(GetCurrentLevel() + 1)), "");
 
 			if constexpr (&LevelingInfo != nullptr)
 			{

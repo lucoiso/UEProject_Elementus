@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Data | Data Assets")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes | Data")
 class PROJECTELEMENTUS_API UPEResourceData final : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

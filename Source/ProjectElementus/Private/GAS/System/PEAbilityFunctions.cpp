@@ -3,6 +3,8 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/System/PEAbilityFunctions.h"
+#include "GAS/System/PEAbilitySystemGlobals.h"
+#include "AbilitySystemComponent.h"
 
 FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSingleHitResult(
 	const FHitResult HitResult)
@@ -41,4 +43,74 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromAc
 	}
 
 	return FGameplayAbilityTargetDataHandle();
+}
+
+void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
+                                      const TSubclassOf<UGameplayAbility> Ability,
+                                      const FName InputId,
+                                      const bool bTryRemoveExistingAbilityWithInput = true,
+                                      const bool bTryRemoveExistingAbilityWithClass = true)
+{
+	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"),
+	                     *TargetABSC->GetAvatarActor()->GetName()))
+	{
+		if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
+		{
+			return;
+		}
+
+		const uint32 InputID =
+			UPEAbilitySystemGlobals::Get().GetMainInputIDEnum()->GetValueByName(
+				InputId, EGetByNameFlags::CheckAuthoredName);
+		if (InputID == INDEX_NONE)
+		{
+			return;
+		}
+
+		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec* AbilitySpec) -> void
+		{
+			if (AbilitySpec != nullptr)
+			{
+				RemoveAbility(TargetABSC, AbilitySpec->Ability->GetClass());
+			}
+		};
+
+		if (bTryRemoveExistingAbilityWithClass)
+		{
+			const FGameplayAbilitySpec* AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
+			RemoveAbility_Lambda(AbilitySpec);
+		}
+
+		if (bTryRemoveExistingAbilityWithInput)
+		{
+			const FGameplayAbilitySpec* AbilitySpec = TargetABSC->FindAbilitySpecFromInputID(InputID);
+			RemoveAbility_Lambda(AbilitySpec);
+		}
+
+		const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID, TargetABSC->GetAvatarActor());
+
+		TargetABSC->GiveAbility(Spec);
+	}
+}
+
+void UPEAbilityFunctions::RemoveAbility(UAbilitySystemComponent* TargetABSC,
+                                        const TSubclassOf<UGameplayAbility> Ability)
+{
+	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"),
+	                     *TargetABSC->GetAvatarActor()->GetName()))
+	{
+		if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
+		{
+			return;
+		}
+
+		const FGameplayAbilitySpec* AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
+
+		if (AbilitySpec == nullptr)
+		{
+			return;
+		}
+
+		TargetABSC->ClearAbility(AbilitySpec->Handle);
+	}
 }

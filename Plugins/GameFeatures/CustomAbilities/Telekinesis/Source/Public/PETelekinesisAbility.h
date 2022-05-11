@@ -12,7 +12,7 @@ class UPETelekinesisAbility_Task;
 /**
  *
  */
-UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Custom GAS | Abilities")
+UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Project Elementus | Classes")
 class UPETelekinesisAbility final : public UPEGameplayAbility
 {
 	GENERATED_BODY()
@@ -20,7 +20,7 @@ class UPETelekinesisAbility final : public UPEGameplayAbility
 public:
 	explicit UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Telekinesis")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float ThrowIntensity;
 
 private:

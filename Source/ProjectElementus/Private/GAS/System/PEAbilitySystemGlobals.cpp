@@ -50,6 +50,13 @@ UPEAbilitySystemGlobals::UPEAbilitySystemGlobals(const FObjectInitializer& Objec
 	{
 		LevelingBonusData = LevelingBonus_ObjRef.Object;
 	}
+
+	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(
+		TEXT("/Game/Main/GAS/Data/EN_AbilityInputID"));
+	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
+	{
+		MainInputIDEnum = InputIDEnum_ObjRef.Object;
+	}
 }
 
 UGameplayEffect* UPEAbilitySystemGlobals::GetGlobalDeathEffect() const
@@ -80,4 +87,9 @@ UDataTable* UPEAbilitySystemGlobals::GetLevelingAttributeMetaData() const
 UDataTable* UPEAbilitySystemGlobals::GetLevelingBonusData() const
 {
 	return LevelingBonusData.LoadSynchronous();
+}
+
+UEnum* UPEAbilitySystemGlobals::GetMainInputIDEnum() const
+{
+	return MainInputIDEnum.LoadSynchronous();
 }

@@ -11,7 +11,7 @@
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "Custom GAS | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
 struct FFeatureLoadingInfo
 {
 	GENERATED_USTRUCT_BODY()
@@ -25,7 +25,7 @@ struct FFeatureLoadingInfo
 	FName GameFeatureName;
 };
 
-USTRUCT(BlueprintType, Category = "Custom GAS | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Classes | Management")
 struct FPEWorldData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()

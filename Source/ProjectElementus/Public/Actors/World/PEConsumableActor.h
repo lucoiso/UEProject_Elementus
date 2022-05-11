@@ -13,7 +13,7 @@
 /**
  *
  */
-UCLASS(Abstract, Blueprintable, Category = "Custom Classes | Actors")
+UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APEConsumableActor final : public AActor
 {
 	GENERATED_BODY()
@@ -26,21 +26,21 @@ public:
 		return FPrimaryAssetId("Consumable Actor", GetFName());
 	}
 
-	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void PerformConsumption(class UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	UStaticMeshComponent* ObjectMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	class UNiagaraComponent* ObjectVFX;
 
 	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
 	/* Tags that target require to consume this */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	FGameplayTagContainer RequirementsTags;
 };

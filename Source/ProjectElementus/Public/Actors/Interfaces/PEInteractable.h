@@ -12,7 +12,7 @@ class APECharacter;
 /**
  *
  */
-UINTERFACE(MinimalAPI, Blueprintable, Category = "Custom GAS | Interfaces")
+UINTERFACE(MinimalAPI, Blueprintable, Category = "Project Elementus | Interfaces")
 class UPEInteractable : public UInterface
 {
 	GENERATED_BODY()
@@ -26,12 +26,12 @@ class PROJECTELEMENTUS_API IPEInteractable
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Behaviors")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Project Elementus | Functions")
 	void DoInteractionBehavior(APECharacter* CharacterInteracting, const FHitResult& HitResult);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Management")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Project Elementus | Functions")
 	void SetIsCurrentlyFocusedByActor(const bool bIsFocused, AActor* ActorFocusing, const FHitResult& HitResult);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Custom Functions | Management")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Project Elementus | Functions")
 	bool IsInteractEnabled();
 };

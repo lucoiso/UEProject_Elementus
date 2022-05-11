@@ -29,12 +29,14 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 	if (Attribute == GetSpeedRateAttribute() || Attribute == GetJumpRateAttribute())
 	{
-		if (const APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor()))
+		if (const APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor());
+			IsValid(State))
 		{
-			if (const APECharacter* Character = State->GetPawn<APECharacter>(); IsValid(Character))
+			if (const APECharacter* Character = State->GetPawn<APECharacter>();
+				IsValid(Character))
 			{
-				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement(); ensureMsgf(
-					IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
+				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement();
+					ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
 				{
 					if (Attribute == GetSpeedRateAttribute())
 					{

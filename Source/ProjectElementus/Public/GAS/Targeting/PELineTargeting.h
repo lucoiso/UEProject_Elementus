@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable, Category = "Custom GAS | Actors")
+UCLASS(Blueprintable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APELineTargeting final : public AGameplayAbilityTargetActor_SingleLineTrace
 {
 	GENERATED_BODY()

@@ -102,7 +102,8 @@ void APECharacter::OnRep_Controller()
 
 void APECharacter::InitializeABSC(const bool bOnRep)
 {
-	if (APEPlayerState* State = GetPlayerState<APEPlayerState>(); IsValid(State))
+	if (APEPlayerState* State = GetPlayerState<APEPlayerState>();
+		IsValid(State))
 	{
 		AbilitySystemComponent = State->GetAbilitySystemComponent();
 
@@ -182,80 +183,6 @@ void APECharacter::BeginPlay()
 	}
 }
 
-void APECharacter::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
-                                              const bool bTryRemoveExistingAbilityWithInput = true,
-                                              const bool bTryRemoveExistingAbilityWithClass = true)
-{
-	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
-	{
-		if (GetLocalRole() != ROLE_Authority || !IsValid(Ability))
-		{
-			return;
-		}
-
-		const uint32 InputID = InputIDEnumerationClass->GetValueByName(InputId, EGetByNameFlags::CheckAuthoredName);
-		if (InputID == INDEX_NONE)
-		{
-			return;
-		}
-
-		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec* AbilitySpec) -> void
-		{
-			if (AbilitySpec != nullptr)
-			{
-				RemoveAbility(AbilitySpec->Ability->GetClass());
-			}
-		};
-
-		if (bTryRemoveExistingAbilityWithClass)
-		{
-			const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
-			RemoveAbility_Lambda(AbilitySpec);
-		}
-
-		if (bTryRemoveExistingAbilityWithInput)
-		{
-			const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromInputID(InputID);
-			RemoveAbility_Lambda(AbilitySpec);
-		}
-
-		const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID, this);
-
-		AbilitySystemComponent->GiveAbility(Spec);
-
-		if (AbilitySystemComponent->FindAbilitySpecFromHandle(Spec.Handle) != nullptr)
-		{
-			CharacterAbilities.Add(Ability);
-		}
-	}
-}
-
-void APECharacter::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
-{
-	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
-	{
-		if (GetLocalRole() != ROLE_Authority || CharacterAbilities.Num() <= 0 ||
-			!IsValid(Ability))
-		{
-			return;
-		}
-
-		const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
-
-		if (AbilitySpec == nullptr)
-		{
-			return;
-		}
-
-		AbilitySystemComponent->ClearAbility(AbilitySpec->Handle);
-
-		if (AbilitySystemComponent->FindAbilitySpecFromClass(Ability) == nullptr)
-		{
-			CharacterAbilities.Remove(Ability);
-		}
-	}
-}
-
 void APECharacter::PerformDeath_Implementation()
 {
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
@@ -290,8 +217,8 @@ void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
 {
 	for (const auto& i : Reason)
 	{
-		ABILITY_VLOG(this, Warning, TEXT("Ability %s failed to activate. Owner: %s ; Reason: %s"), *Ability->GetName(),
-		             *GetName(), *i.ToString());
+		ABILITY_VLOG(this, Warning, TEXT("Ability %s failed to activate. Owner: %s ; Reason: %s"),
+		             *Ability->GetName(), *GetName(), *i.ToString());
 	}
 
 	AbilitySystemComponent->PrintDebug();

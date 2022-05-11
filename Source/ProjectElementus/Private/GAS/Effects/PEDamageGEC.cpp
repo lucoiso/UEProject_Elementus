@@ -35,9 +35,8 @@ UPEDamageGEC::UPEDamageGEC(const FObjectInitializer& ObjectInitializer)
 	RelevantAttributesToCapture.Add(GetAttributesStatics().DefenseRateDef);
 }
 
-void UPEDamageGEC::Execute_Implementation(
-	const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-	OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+                                          OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
@@ -77,7 +76,6 @@ void UPEDamageGEC::Execute_Implementation(
 	};
 
 	OutExecutionOutput.AddOutputModifier(
-		FGameplayModifierEvaluatedData(GetAttributesStatics().DamageProperty,
-		                               EGameplayModOp::Additive,
+		FGameplayModifierEvaluatedData(GetAttributesStatics().DamageProperty, EGameplayModOp::Additive,
 		                               CalculateDamage()));
 }

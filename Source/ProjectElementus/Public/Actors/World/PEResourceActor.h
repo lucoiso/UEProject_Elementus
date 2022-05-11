@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(Abstract, Blueprintable, Category = "Custom Classes | Actors")
+UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APEResourceActor final : public AActor
 {
 	GENERATED_BODY()

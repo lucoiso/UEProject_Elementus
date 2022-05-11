@@ -12,13 +12,16 @@
 /**
  *
  */
-UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Custom GAS | Abilities")
+UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Project Elementus | Classes")
 class UPEInteractAbility final : public UPEGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
 	explicit UPEInteractAbility(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	bool bUseCustomDepth;
 
 private:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,

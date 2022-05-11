@@ -13,7 +13,7 @@
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "Custom GAS | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
 struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 {
 	GENERATED_USTRUCT_BODY()
@@ -34,30 +34,30 @@ struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 
 	float Range;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	float Height;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	float Radius;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	FGameplayAbilityTargetingLocationInfo StartLocation;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	TSubclassOf<AGameplayAbilityWorldReticle> ReticleClass;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	FWorldReticleParameters ReticleParams;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	FGameplayTargetDataFilter TargetFilter;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	bool bDestroyOnConfirmation;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	bool bTraceAffectsAimPitch;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	bool bDebug;
 };

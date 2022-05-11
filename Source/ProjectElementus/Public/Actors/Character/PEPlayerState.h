@@ -27,7 +27,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogPlayerState, Display, NoLogging);
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Classes | Player")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APEPlayerState final : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
@@ -43,17 +43,17 @@ protected:
 	virtual void BeginPlay() override;
 
 	/* Returns a casted version of Player Controller using PEPlayerController class */
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components",
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Properties",
 		meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
 	class APEPlayerController* GetPEPlayerController() const;
 
 	/* Player associated Ability System Component */
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Components",
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
 		meta = (AllowPrivateAccess = "true"))
 	UPEAbilitySystemComponent* AbilitySystemComponent;
 
 public:
 	/* Returns associated Ability System Component */
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };

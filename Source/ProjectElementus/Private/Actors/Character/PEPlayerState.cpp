@@ -35,12 +35,12 @@ void APEPlayerState::BeginPlay()
 	if (ensureMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::DeathStateChanged_Callback);
+		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(this,
+			&APEPlayerState::DeathStateChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::StunStateChanged_Callback);
+		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(this,
+			&APEPlayerState::StunStateChanged_Callback);
 	}
 }
 
@@ -62,18 +62,15 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 
 	if (NewCount != 0)
 	{
-		if (APEPlayerController* Controller_Temp = GetPEPlayerController(); ensureMsgf(
-			IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
+		if (APEPlayerController* Controller_Temp = GetPEPlayerController();
+			ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
-			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>(); ensureMsgf(
-				IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
+			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>();
+				ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
-				const FVector SpectatorLocation = Player_Temp->GetActorLocation();
-				const FRotator SpectatorRotation = Player_Temp->GetActorRotation();
-
 				Player_Temp->PerformDeath();
-
-				Controller_Temp->ServerSetSpectatorLocation(SpectatorLocation, SpectatorRotation);
+				Controller_Temp->ServerSetSpectatorLocation(Player_Temp->GetActorLocation(),
+				                                            Player_Temp->GetActorRotation());
 			}
 
 			Controller_Temp->ChangeState(NAME_Spectating);

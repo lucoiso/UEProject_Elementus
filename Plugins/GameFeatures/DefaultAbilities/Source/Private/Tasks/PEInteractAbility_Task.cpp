@@ -19,10 +19,13 @@ UPEInteractAbility_Task::UPEInteractAbility_Task(const FObjectInitializer& Objec
 
 UPEInteractAbility_Task* UPEInteractAbility_Task::InteractionTask(UGameplayAbility* OwningAbility,
                                                                   const FName TaskInstanceName,
-                                                                  const float InteractionRange)
+                                                                  const float InteractionRange,
+                                                                  const bool bUseCustomDepth)
 {
 	UPEInteractAbility_Task* MyObj = NewAbilityTask<UPEInteractAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->Range = InteractionRange;
+	MyObj->bUseCustomDepth = bUseCustomDepth;
+
 	return MyObj;
 }
 
@@ -114,7 +117,10 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 			IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), true,
 			                                                      InteractionOwner.Get(), HitResult);
 
-			LastInteractablePrimitive_Ref->SetRenderCustomDepth(true);
+			if (bUseCustomDepth)
+			{
+				LastInteractablePrimitive_Ref->SetRenderCustomDepth(true);
+			}
 
 			AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.CanInteract"));
 		}
@@ -134,7 +140,11 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 			if (LastInteractablePrimitive_Ref.IsValid())
 			{
-				LastInteractablePrimitive_Ref->SetRenderCustomDepth(false);
+				if (bUseCustomDepth)
+				{
+					LastInteractablePrimitive_Ref->SetRenderCustomDepth(false);
+				}
+
 				LastInteractablePrimitive_Ref.Reset();
 			}
 		}

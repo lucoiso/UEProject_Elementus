@@ -13,7 +13,7 @@
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Attributes")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPECustomStatusAS final : public UAttributeSet
 {
 	GENERATED_BODY()
@@ -26,23 +26,23 @@ private:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_AttackRate)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_AttackRate)
 	FGameplayAttributeData AttackRate;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, AttackRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_DefenseRate)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_DefenseRate)
 	FGameplayAttributeData DefenseRate;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, DefenseRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_SpeedRate)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_SpeedRate)
 	FGameplayAttributeData SpeedRate;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, SpeedRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_JumpRate)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_JumpRate)
 	FGameplayAttributeData JumpRate;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, JumpRate)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_Gold)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_Gold)
 	FGameplayAttributeData Gold;
 	ATTRIBUTE_ACCESSORS(UPECustomStatusAS, Gold)
 

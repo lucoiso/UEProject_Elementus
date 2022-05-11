@@ -26,8 +26,7 @@ UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializ
 	  bIgnoreCooldown(false),
 	  bWaitCancel(true),
 	  AbilityActiveTime(0),
-	  bEndAbilityAfterActiveTime(false),
-	  bAutoActivateOnGrant(false)
+	  bEndAbilityAfterActiveTime(false)
 {
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Dead"));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Stunned"));
@@ -169,7 +168,9 @@ bool UPEGameplayAbility::CommitAbilityCost(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo,
                                            OUT FGameplayTagContainer* OptionalRelevantTags)
 {
-	return bIgnoreCost ? true : Super::CommitAbilityCost(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
+	return bIgnoreCost
+		       ? true
+		       : Super::CommitAbilityCost(Handle, ActorInfo, ActivationInfo, OptionalRelevantTags);
 }
 
 void UPEGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle,

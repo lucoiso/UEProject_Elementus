@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Classes | Player")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APEAIController final : public AAIController
 {
 	GENERATED_BODY()

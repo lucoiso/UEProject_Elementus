@@ -16,7 +16,7 @@ class APEProjectileActor;
 /**
  *
  */
-UCLASS(Abstract, NotPlaceable, Blueprintable, HideDropdown, Category = "Custom GAS | Components")
+UCLASS(Abstract, NotPlaceable, Blueprintable, HideDropdown, Category = "Project Elementus | Classes | Abilities")
 class PROJECTELEMENTUS_API UPEGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
@@ -30,44 +30,44 @@ public:
 	}
 
 	/* This will determine the line trace distance to perform */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	float AbilityMaxRange;
 
 	/* If set to true, ability will ignore Cost GE application */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	bool bIgnoreCost;
 
 	/* If set to true, ability will ignore Cooldown GE application */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	bool bIgnoreCooldown;
 
 	/* If true, ability will wait for Cancel Input to cancel this ability */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bWaitCancel;
 
 protected:
 	/* Mix with bEndAbilityAfterActiveTime to end ability with a pre-determined time */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float AbilityActiveTime;
 
 	/* Will finish ability when the AbilityActiveTime is complete */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bEndAbilityAfterActiveTime;
 
 	/* Auto activate this ability when granted by Ability System Component */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bAutoActivateOnGrant;
 
 	/* Gameplay Effects that will be applied to self via ApplyAbilityEffectsToSelf function */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> SelfAbilityEffects;
 
 	/* Gameplay Effects that will be applied to target via ApplyAbilityEffectsToTarget function */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> TargetAbilityEffects;
 
 	/* Single Montage to play with ActivateWaitMontageTask function - You can mix this with ActivateWaitGameplayEventTask function */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	UAnimMontage* AbilityAnimation;
 
 private:
@@ -88,7 +88,7 @@ private:
 	void ActivateWaitCancelInputTask();
 
 	/* Default callback for ActivateWaitCancelInputTask */
-	UFUNCTION(Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(Category = "Project Elementus | Functions | Callbacks")
 	void WaitCancelInput_Callback();
 
 protected:
@@ -126,39 +126,39 @@ protected:
 	*/
 
 	/* Wait Confirm input and call WaitConfirmInput_Callback function */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
 	void ActivateWaitConfirmInputTask();
 
 	/* Wait a Gameplay Tag to be added to owner and call WaitAddedTag_Callback function */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
 	void ActivateWaitAddedTagTask(const FGameplayTag Tag);
 
 	/* Wait a Gameplay Tag to be removed from owner and call WaitRemovedTag_Callback function */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
 	void ActivateWaitRemovedTagTask(const FGameplayTag Tag);
 
 	/* Perform a animation montage and call WaitMontage_Callback function */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
 	void ActivateWaitMontageTask(const FName MontageSection = NAME_None, const float Rate = 1.f,
 	                             const bool bRandomSection = false, const bool bStopsWhenAbilityEnds = true);
 
 	/* Performs targeting and call WaitTargetData_Callback function */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
 	void ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation,
 	                                const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
 	                                FTargetActorSpawnParams TargetParameters);
 
 	/* Start a task to wait for a Gameplay Event and call WaitGameplayEvent_Callback function */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
 	void ActivateWaitGameplayEventTask(const FGameplayTag EventTag);
 
 	/* Spawn a actor and call SpawnActor_Callback function */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Helpers | Delegates")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
 	void ActivateSpawnActorTask(const FGameplayAbilityTargetDataHandle TargetDataHandle,
 	                            TSubclassOf<AActor> ActorClass);
 
 	/* Default callback for ActivateWaitMontageTask function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void WaitMontage_Callback();
 
 	virtual void WaitMontage_Callback_Implementation()
@@ -166,7 +166,7 @@ protected:
 	} // Override this function on children classes.
 
 	/* Default callback for ActivateWaitConfirmInputTask function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void WaitConfirmInput_Callback();
 
 	virtual void WaitConfirmInput_Callback_Implementation()
@@ -174,7 +174,7 @@ protected:
 	} // Override this function on children classes.
 
 	/* Default callback for ActivateWaitAddedTagTask function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void WaitAddedTag_Callback();
 
 	virtual void WaitAddedTag_Callback_Implementation()
@@ -182,7 +182,7 @@ protected:
 	} // Override this function on children classes.
 
 	/* Default callback for ActivateWaitRemovedTagTask function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void WaitRemovedTag_Callback();
 
 	virtual void WaitRemovedTag_Callback_Implementation()
@@ -190,7 +190,7 @@ protected:
 	} // Override this function on children classes.
 
 	/* Default callback for ActivateWaitAttributeChangeTask function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void WaitAttributeChange_Callback();
 
 	virtual void WaitAttributeChange_Callback_Implementation()
@@ -198,7 +198,7 @@ protected:
 	} // Override this function on children classes.
 
 	/* Default callback for ActivateWaitGameplayEventTask function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void WaitGameplayEvent_Callback(FGameplayEventData Payload);
 
 	virtual void WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
@@ -206,7 +206,7 @@ protected:
 	} // Override this function on children classes.
 
 	/* Default callback for ActivateWaitTargetDataTask function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void WaitTargetData_Callback(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 
 	virtual void WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -214,7 +214,7 @@ protected:
 	} // Override this function on children classes.
 
 	/* Default callback for ActivateSpawnActorTask function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void SpawnActor_Callback(AActor* SpawnedActor);
 
 	virtual void SpawnActor_Callback_Implementation(AActor* SpawnedActor)
@@ -222,12 +222,12 @@ protected:
 	} // Override this function on children classes.
 
 	/* Activate a Gameplay Cue with passed parameters */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
 	                          UAbilitySystemComponent* SourceAbilitySystem);
 
 	/* Apply SelfAbilityEffects to self */
-	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToSelf", Category = "Custom GAS | Management")
+	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToSelf", Category = "Project Elementus | Functions")
 	void BP_ApplyAbilityEffectsToSelf();
 
 	void ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHandle Handle,
@@ -235,13 +235,15 @@ protected:
 	                               const FGameplayAbilityActivationInfo ActivationInfo);
 
 	/* Remove SelfAbilityEffects from self */
-	UFUNCTION(BlueprintCallable, DisplayName = "RemoveAbilityEffectsFromSelf", Category = "Custom GAS | Management")
+	UFUNCTION(BlueprintCallable, DisplayName = "RemoveAbilityEffectsFromSelf",
+		Category = "Project Elementus | Functions")
 	void BP_RemoveAbilityEffectsFromSelf();
 
 	void RemoveAbilityEffectsFromSelf(const FGameplayAbilityActorInfo* ActorInfo);
 
 	/* Apply TargetAbilityEffects to target */
-	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToTarget", Category = "Custom GAS | Management")
+	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToTarget",
+		Category = "Project Elementus | Functions")
 	void BP_ApplyAbilityEffectsToTarget(const FGameplayAbilityTargetDataHandle TargetDataHandle);
 
 	void ApplyAbilityEffectsToTarget(const FGameplayAbilityTargetDataHandle TargetDataHandle,
@@ -250,7 +252,8 @@ protected:
 	                                 const FGameplayAbilityActivationInfo ActivationInfo);
 
 	/* Spawn and fire a projectile with TargetAbilityEffects effects applied */
-	UFUNCTION(BlueprintCallable, DisplayName = "SpawnProjectileWithTargetEffects", Category = "Custom GAS | Management")
+	UFUNCTION(BlueprintCallable, DisplayName = "SpawnProjectileWithTargetEffects",
+		Category = "Project Elementus | Functions")
 	void BP_SpawnProjectileWithTargetEffects(
 		const TSubclassOf<APEProjectileActor> ProjectileClass,
 		const FTransform ProjectileTransform,
@@ -265,7 +268,7 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo);
 
 	/* Default callback for SpawnProjectileWithTargetEffects function */
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom GAS | Helpers | Callbacks")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void SpawnProjectile_Callback(APEProjectileActor* SpawnedProjectile);
 
 	virtual void SpawnProjectile_Callback_Implementation(APEProjectileActor* SpawnedProjectile)
@@ -273,7 +276,7 @@ protected:
 	} // Override this function on children classes.
 
 	/* Remove the cooldown effect */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const;
 
 	/* Shared Timer Handle that is actually used with bEndAbilityAfterActiveTime */

@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Custom GAS | Abilities")
+UCLASS(MinimalAPI, NotPlaceable, HideDropdown, Category = "Project Elementus | Classes")
 class UPEWalkAbility final : public UPEGameplayAbility
 {
 	GENERATED_BODY()
