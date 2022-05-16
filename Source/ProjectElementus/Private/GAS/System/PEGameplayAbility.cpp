@@ -343,12 +343,12 @@ void UPEGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, con
 	if (bRandomSection)
 	{
 		MontageSectionName =
-			AbilityAnimation->GetSectionName(
-				FMath::FloorToInt32<double>(FMath::RandRange(0, AbilityAnimation->CompositeSections.Num())));
+			AbilityAnimation->GetSectionName(FMath::RandRange(0, AbilityAnimation->CompositeSections.Num()));
 	}
 
 	UAbilityTask_PlayMontageAndWait* AbilityTask_PlayMontageAndWait =
-		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, "WaitMontageTask", AbilityAnimation, Rate,
+		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, "WaitMontageTask",
+		                                                               AbilityAnimation, Rate,
 		                                                               MontageSectionName, bStopsWhenAbilityEnds);
 
 	AbilityTask_PlayMontageAndWait->OnBlendOut.AddDynamic(this, &UPEGameplayAbility::WaitMontage_Callback);
@@ -371,7 +371,8 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 	TargetParameters.Range = AbilityMaxRange;
 
 	UAbilityTask_WaitTargetData* AbilityTask_WaitTargetData =
-		UAbilityTask_WaitTargetData::WaitTargetData(this, "WaitTargetDataTask", TargetingConfirmation,
+		UAbilityTask_WaitTargetData::WaitTargetData(this, "WaitTargetDataTask",
+		                                            TargetingConfirmation,
 		                                            TargetActorClass);
 
 	AbilityTask_WaitTargetData->Cancelled.AddDynamic(this, &UPEGameplayAbility::WaitTargetData_Callback);
@@ -398,8 +399,8 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 
 			if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_GroundTrace>())
 			{
-				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj = Cast<AGameplayAbilityTargetActor_GroundTrace>(
-					TargetActor);
+				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj =
+					Cast<AGameplayAbilityTargetActor_GroundTrace>(TargetActor);
 
 				GroundTraceObj->CollisionRadius = TargetParameters.Radius;
 				GroundTraceObj->CollisionHeight = TargetParameters.Height;

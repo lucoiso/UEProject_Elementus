@@ -2,6 +2,8 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Modules/ModuleManager.h"
+#include "ElementusInventoryPackage.h"
 
-IMPLEMENT_MODULE(FDefaultModuleImpl, ElementusInventory)
+AElementusInventoryPackage::AElementusInventoryPackage()
+{
+}
