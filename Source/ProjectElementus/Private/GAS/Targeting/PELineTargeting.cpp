@@ -7,5 +7,5 @@
 APELineTargeting::APELineTargeting(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	TraceProfile = FCollisionProfileName("BlockAll");
+	TraceProfile = FCollisionProfileName("Target");
 }

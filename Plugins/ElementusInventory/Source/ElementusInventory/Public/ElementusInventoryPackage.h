@@ -12,7 +12,7 @@ UCLASS(Category = "Project Elementus | Classes")
 class ELEMENTUSINVENTORY_API AElementusInventoryPackage : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	AElementusInventoryPackage();
 };

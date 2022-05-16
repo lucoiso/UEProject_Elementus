@@ -6,15 +6,16 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "GAS/System/PEAbilityData.h"
+#include "Actors/Interfaces/PEInteractable.h"
 #include "GameFramework/Actor.h"
+#include "Management/Data/PEConsumableData.h"
 #include "PEConsumableActor.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEConsumableActor final : public AActor
+class PROJECTELEMENTUS_API APEConsumableActor final : public AActor, public IPEInteractable
 {
 	GENERATED_BODY()
 
@@ -26,21 +27,27 @@ public:
 		return FPrimaryAssetId("Consumable Actor", GetFName());
 	}
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void PerformConsumption(class UAbilitySystemComponent* TargetABSC, const bool bDestroyAfterConsumption);
+	virtual void
+	DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	bool bDestroyAfterConsumption;
 
 protected:
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void PerformConsumption(class UAbilitySystemComponent* TargetABSC);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPEConsumableData* ConsumableData;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	UStaticMeshComponent* ObjectMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	class UNiagaraComponent* ObjectVFX;
 
-	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	TArray<FGameplayEffectGroupedData> ConsumableEffects;
-
-	/* Tags that target require to consume this */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	FGameplayTagContainer RequirementsTags;
+private:
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif WITH_EDITOR
 };

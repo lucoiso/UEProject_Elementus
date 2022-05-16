@@ -8,11 +8,11 @@
 #include "Components/ActorComponent.h"
 #include "ElementusInventoryComponent.generated.h"
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Category = "Project Elementus | Classes")
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Category = "Project Elementus | Classes")
 class ELEMENTUSINVENTORY_API UElementusInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	UElementusInventoryComponent();
 };
