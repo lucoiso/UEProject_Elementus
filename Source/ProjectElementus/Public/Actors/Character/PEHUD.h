@@ -21,6 +21,7 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void HideHUD();
 
 protected:
