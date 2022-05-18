@@ -36,7 +36,7 @@ public:
 	explicit APEPlayerState(const FObjectInitializer& ObjectInitializer);
 
 private:
-	void DeathStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
+	void DeathStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount);
 	void StunStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
 
 protected:

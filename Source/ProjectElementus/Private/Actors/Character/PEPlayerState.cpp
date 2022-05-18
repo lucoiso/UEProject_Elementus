@@ -23,7 +23,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	NetUpdateFrequency = 75.f;
+	NetUpdateFrequency = 33.333f;
 }
 
 void APEPlayerState::BeginPlay()
@@ -49,7 +49,7 @@ APEPlayerController* APEPlayerState::GetPEPlayerController() const
 	return Cast<APEPlayerController>(GetOwner());
 }
 
-void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
+void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount)
 {
 	if (!HasAuthority())
 	{
@@ -65,24 +65,34 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 		if (APEPlayerController* Controller_Temp = GetPEPlayerController();
 			ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
+			SetIsSpectator(true);
+			Controller_Temp->RemoveHUD();
+
+			FVector CachedLocation;
+			FRotator CachedRotator;
+			Controller_Temp->GetPlayerViewPoint(CachedLocation, CachedRotator);
+
 			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>();
 				ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				Player_Temp->PerformDeath();
-				Controller_Temp->ServerSetSpectatorLocation(Player_Temp->GetActorLocation(),
-				                                            Player_Temp->GetActorRotation());
 			}
 
 			Controller_Temp->ChangeState(NAME_Spectating);
-			Controller_Temp->ClientGotoState(NAME_Spectating);
+			Controller_Temp->ServerSetSpectatorLocation(CachedLocation, CachedRotator);
 
-			Controller_Temp->RemoveHUD();
+			Controller_Temp->ClientGotoState(NAME_Spectating);
 		}
 	}
 }
 
 void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
 	                 *FString(__func__),
 	                 *CallbackTag.ToString(), NewCount);

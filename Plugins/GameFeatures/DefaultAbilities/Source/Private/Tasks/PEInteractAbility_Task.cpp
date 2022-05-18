@@ -105,7 +105,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 	const FGameplayTargetDataFilterHandle DataFilterHandle;
 
 	APELineTargeting::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation,
-	                                      EndLocation, "BlockAll", QueryParams);
+	                                      EndLocation, "Target", QueryParams);
 
 	if (IsValid(HitResult.GetActor()) && HitResult.GetActor()->Implements<UPEInteractable>())
 	{

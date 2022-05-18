@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
+#include "GAS/Attributes/PEBasicStatusAS.h"
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -187,13 +188,23 @@ void APECharacter::PerformDeath_Implementation()
 {
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
-	// TO DO
-	Destroy();
-}
+	GetCharacterMovement()->DisableMovement();
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+	GetMesh()->SetAllBodiesBelowSimulatePhysics(NAME_None, true, true);
 
-bool APECharacter::PerformDeath_Validate()
-{
-	return true;
+	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindLambda([&]
+	{
+		if (IsValid(this))
+		{
+			Destroy();
+		}
+	});
+
+	FTimerHandle TimerHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 15.0f, false);
 }
 
 void APECharacter::Landed(const FHitResult& Hit)
@@ -215,11 +226,21 @@ void APECharacter::Landed(const FHitResult& Hit)
 
 void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason)
 {
+	ABILITY_VLOG(this, Warning, TEXT("=========================================================="));
+	ABILITY_VLOG(this, Warning,
+	             TEXT("Ability %s failed to activate. Owner: %s; Reasons:"), *Ability->GetName(), *GetName());
+
 	for (const auto& i : Reason)
 	{
-		ABILITY_VLOG(this, Warning, TEXT("Ability %s failed to activate. Owner: %s ; Reason: %s"),
-		             *Ability->GetName(), *GetName(), *i.ToString());
+		ABILITY_VLOG(this, Warning, TEXT("%s"), *i.ToString());
 	}
+	ABILITY_VLOG(this, Warning, TEXT("=========================================================="));
+
+	ABILITY_VLOG(this, Warning,
+	             TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ==================="));
 
 	AbilitySystemComponent->PrintDebug();
+
+	ABILITY_VLOG(this, Warning,
+	             TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ==================="));
 }

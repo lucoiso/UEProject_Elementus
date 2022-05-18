@@ -17,6 +17,8 @@ APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer
 	  bDestroyAfterExplosion(true),
 	  bDebug(false)
 {
+	bReplicates = true;
+
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 }

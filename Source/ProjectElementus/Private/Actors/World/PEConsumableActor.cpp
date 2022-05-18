@@ -14,6 +14,8 @@ APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer),
 	  bDestroyAfterConsumption(true)
 {
+	bReplicates = true;
+
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 

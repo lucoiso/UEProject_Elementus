@@ -30,7 +30,7 @@ void UPEHookAbility::ActivateAbility
 
 	bIgnoreCooldown = true;
 
-	ActivateWaitMontageTask(NAME_None, 1.325f);
+	ActivateWaitMontageTask(NAME_None, 1.5f);
 	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
 }
 
@@ -68,8 +68,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 		return;
 	}
 
-	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(
-		this, FName("HookTask"), *TargetHit, HookIntensity);
+	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this, FName("HookTask"), *TargetHit, HookIntensity);
 
 	TaskHandle->ReadyForActivation();
 

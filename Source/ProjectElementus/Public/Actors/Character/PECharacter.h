@@ -91,9 +91,8 @@ protected:
 
 public:
 	/* Init a death state with this character */
-	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Project Elementus | Functions")
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Project Elementus | Functions")
 	void PerformDeath();
-	bool PerformDeath_Validate();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Project Elementus | Functions | Callbacks")
 	void AbilityActivated(UGameplayAbility* Ability);
