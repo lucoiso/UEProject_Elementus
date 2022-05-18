@@ -171,6 +171,26 @@ void APECharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (IsValid(GetMesh()))
+	{
+		const auto DynamicColor_Lambda = [&](const uint8 Index, const FLinearColor Color) -> void
+		{
+			if (UMaterialInstanceDynamic* DynMat = GetMesh()->CreateDynamicMaterialInstance(Index);
+				IsValid(DynMat))
+			{
+				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
+			}
+		};
+
+		const FLinearColor DestColor =
+			IsBotControlled()
+				? FLinearColor::Red
+				: FLinearColor::Blue;
+
+		DynamicColor_Lambda(0, DestColor);
+		DynamicColor_Lambda(1, DestColor);
+	}
+
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
 	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
@@ -184,27 +204,44 @@ void APECharacter::BeginPlay()
 	}
 }
 
-void APECharacter::PerformDeath_Implementation()
+void APECharacter::PerformDeath()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
-	GetCharacterMovement()->DisableMovement();
-	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
-	GetMesh()->SetAllBodiesBelowSimulatePhysics(NAME_None, true, true);
+	Multicast_ActivateRagdoll();
 
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindLambda([&]
 	{
 		if (IsValid(this))
 		{
-			Destroy();
+			Server_PerformDeath();
 		}
 	});
 
 	FTimerHandle TimerHandle;
-
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 15.0f, false);
+}
+
+void APECharacter::Server_PerformDeath_Implementation()
+{
+	Destroy();
+}
+
+void APECharacter::Multicast_ActivateRagdoll_Implementation()
+{
+	if (IsValid(GetMesh()) && IsValid(GetCharacterMovement()) && IsValid(GetCapsuleComponent()))
+	{
+		GetCharacterMovement()->DisableMovement();
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+		GetMesh()->SetAllBodiesBelowSimulatePhysics(NAME_None, true, true);
+	}
 }
 
 void APECharacter::Landed(const FHitResult& Hit)

@@ -65,23 +65,14 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 		if (APEPlayerController* Controller_Temp = GetPEPlayerController();
 			ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
-			SetIsSpectator(true);
-			Controller_Temp->RemoveHUD();
-
-			FVector CachedLocation;
-			FRotator CachedRotator;
-			Controller_Temp->GetPlayerViewPoint(CachedLocation, CachedRotator);
-
 			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>();
 				ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				Player_Temp->PerformDeath();
 			}
 
-			Controller_Temp->ChangeState(NAME_Spectating);
-			Controller_Temp->ServerSetSpectatorLocation(CachedLocation, CachedRotator);
-
-			Controller_Temp->ClientGotoState(NAME_Spectating);
+			SetIsSpectator(true);
+			Controller_Temp->SetupControllerSpectator();
 		}
 	}
 }

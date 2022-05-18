@@ -26,9 +26,16 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	InputEnumHandle = UPEAbilitySystemGlobals::Get().GetMainInputIDEnum();
 }
 
+void APEPlayerController::SetupControllerSpectator_Implementation()
+{
+	RemoveHUD();
+	ChangeState(NAME_Spectating);
+}
+
 void APEPlayerController::RemoveHUD_Implementation()
 {
-	if (APEHUD* HUD_Temp = GetHUD<APEHUD>(); ensureMsgf(IsValid(HUD_Temp), TEXT("%s have a invalid HUD"), *GetName()))
+	if (APEHUD* HUD_Temp = GetHUD<APEHUD>();
+		ensureMsgf(IsValid(HUD_Temp), TEXT("%s have a invalid HUD"), *GetName()))
 	{
 		HUD_Temp->HideHUD();
 	}

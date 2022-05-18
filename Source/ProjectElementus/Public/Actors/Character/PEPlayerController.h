@@ -50,8 +50,11 @@ public:
 	// End of IAbilityInputBinding interface
 
 	/* Custom function to remove HUD from player screen */
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(Client, Unreliable)
 	void RemoveHUD();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void SetupControllerSpectator();
 
 private:
 	struct FAbilityInputData

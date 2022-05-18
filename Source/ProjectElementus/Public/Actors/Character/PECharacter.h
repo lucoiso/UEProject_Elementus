@@ -91,7 +91,7 @@ protected:
 
 public:
 	/* Init a death state with this character */
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Project Elementus | Functions")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void PerformDeath();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Project Elementus | Functions | Callbacks")
@@ -107,5 +107,11 @@ public:
 	void AbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason);
 
 private:
+	UFUNCTION(Server, Reliable)
+	void Server_PerformDeath();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ActivateRagdoll();
+
 	virtual void Landed(const FHitResult& Hit) override;
 };
