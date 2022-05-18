@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(Category = "Custom GAS | Classes")
+UCLASS(Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEAbilitySystemGlobals final : public UAbilitySystemGlobals
 {
 	GENERATED_BODY()
@@ -19,6 +19,33 @@ class PROJECTELEMENTUS_API UPEAbilitySystemGlobals final : public UAbilitySystem
 public:
 	explicit UPEAbilitySystemGlobals(const FObjectInitializer& ObjectInitializer);
 
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UGameplayEffect* GetGlobalDeathEffect() const;
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UGameplayEffect* GetGlobalStunEffect() const;
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UDataTable* GetMainStatusAttributeMetaData() const;
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UDataTable* GetCustomStatusAttributeMetaData() const;
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UDataTable* GetLevelingAttributeMetaData() const;
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UDataTable* GetLevelingBonusData() const;
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UEnum* GetMainInputIDEnum() const;
+
+	static UPEAbilitySystemGlobals& Get()
+	{
+		return *Cast<UPEAbilitySystemGlobals>(IGameplayAbilitiesModule::Get().GetAbilitySystemGlobals());
+	}
+
+private:
 	TSoftClassPtr<UGameplayEffect> GlobalDeathEffect;
 	TSoftClassPtr<UGameplayEffect> GlobalStunEffect;
 
@@ -26,27 +53,5 @@ public:
 	TSoftObjectPtr<UDataTable> CustomStatusAttributeData;
 	TSoftObjectPtr<UDataTable> LevelingAttributeData;
 	TSoftObjectPtr<UDataTable> LevelingBonusData;
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-	UGameplayEffect* GetGlobalDeathEffect() const;
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-	UGameplayEffect* GetGlobalStunEffect() const;
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-	UDataTable* GetMainStatusAttributeMetaData() const;
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-	UDataTable* GetCustomStatusAttributeMetaData() const;
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-	UDataTable* GetLevelingAttributeMetaData() const;
-
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Functions")
-	UDataTable* GetLevelingBonusData() const;
-
-	static UPEAbilitySystemGlobals& Get()
-	{
-		return *Cast<UPEAbilitySystemGlobals>(IGameplayAbilitiesModule::Get().GetAbilitySystemGlobals());
-	}
+	TSoftObjectPtr<UEnum> MainInputIDEnum;
 };

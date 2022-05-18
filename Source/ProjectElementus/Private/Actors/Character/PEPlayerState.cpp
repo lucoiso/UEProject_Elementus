@@ -23,7 +23,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	NetUpdateFrequency = 75.f;
+	NetUpdateFrequency = 33.333f;
 }
 
 void APEPlayerState::BeginPlay()
@@ -35,12 +35,12 @@ void APEPlayerState::BeginPlay()
 	if (ensureMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::DeathStateChanged_Callback);
+		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(this,
+			&APEPlayerState::DeathStateChanged_Callback);
 
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
-			this, &APEPlayerState::StunStateChanged_Callback);
+		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(this,
+			&APEPlayerState::StunStateChanged_Callback);
 	}
 }
 
@@ -49,7 +49,7 @@ APEPlayerController* APEPlayerState::GetPEPlayerController() const
 	return Cast<APEPlayerController>(GetOwner());
 }
 
-void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
+void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount)
 {
 	if (!HasAuthority())
 	{
@@ -62,30 +62,28 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 
 	if (NewCount != 0)
 	{
-		if (APEPlayerController* Controller_Temp = GetPEPlayerController(); ensureMsgf(
-			IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
+		if (APEPlayerController* Controller_Temp = GetPEPlayerController();
+			ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
-			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>(); ensureMsgf(
-				IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
+			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>();
+				ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
-				const FVector SpectatorLocation = Player_Temp->GetActorLocation();
-				const FRotator SpectatorRotation = Player_Temp->GetActorRotation();
-
 				Player_Temp->PerformDeath();
-
-				Controller_Temp->ServerSetSpectatorLocation(SpectatorLocation, SpectatorRotation);
 			}
 
-			Controller_Temp->ChangeState(NAME_Spectating);
-			Controller_Temp->ClientGotoState(NAME_Spectating);
-
-			Controller_Temp->RemoveHUD();
+			SetIsSpectator(true);
+			Controller_Temp->SetupControllerSpectator();
 		}
 	}
 }
 
 void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
 	                 *FString(__func__),
 	                 *CallbackTag.ToString(), NewCount);

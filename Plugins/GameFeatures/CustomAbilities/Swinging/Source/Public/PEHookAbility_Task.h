@@ -13,7 +13,7 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FHookManagement, const bool, ValidTarget);
 /**
  *
  */
-UCLASS(MinimalAPI, NotBlueprintable, NotPlaceable, Category = "Custom GAS | Tasks")
+UCLASS(MinimalAPI, NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class UPEHookAbility_Task final : public UAbilityTask
 {
 	GENERATED_BODY()

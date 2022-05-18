@@ -15,6 +15,7 @@ UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializ
 	bWaitCancel = false;
 
 	AbilityMaxRange = 1000.f;
+	bUseCustomDepth = false;
 }
 
 void UPEInteractAbility::ActivateAbility
@@ -25,7 +26,7 @@ void UPEInteractAbility::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	TaskHandle = UPEInteractAbility_Task::InteractionTask(this, "InteractTask", AbilityMaxRange);
+	TaskHandle = UPEInteractAbility_Task::InteractionTask(this, "InteractTask", AbilityMaxRange, bUseCustomDepth);
 	TaskHandle->ReadyForActivation();
 }
 
@@ -43,7 +44,8 @@ void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
 			if (HasAuthority(&ActivationInfo))
 			{
 				IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(),
-				                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()));
+				                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()),
+				                                               TaskHandle->GetInteractableHitResult());
 			}
 			else
 			{

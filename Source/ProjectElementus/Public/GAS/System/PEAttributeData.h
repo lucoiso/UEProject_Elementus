@@ -11,7 +11,7 @@
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "Custom GAS | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
 struct FPELevelingData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
@@ -26,23 +26,23 @@ struct FPELevelingData : public FTableRowBase
 	{
 	}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	float BonusMaxHealth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	float BonusMaxMana;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	float BonusMaxStamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	float BonusAttackRate;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	float BonusDefenseRate;
 
 	/* Required experience to pass to next level */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Required Xp to Level Up"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Required Xp to Level Up"), Category = "Settings")
 	float RequiredExp;
 };
 

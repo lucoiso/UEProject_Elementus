@@ -12,7 +12,7 @@
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Abilities")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEAbilitySystemComponent final : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
@@ -21,11 +21,11 @@ public:
 	explicit UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer);
 
 	/* Apply a grouped GE data to self Ability System Component */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ApplyEffectGroupedDataToSelf(FGameplayEffectGroupedData GroupedData);
 
 	/* Apply a grouped GE data to target Ability System Component */
-	UFUNCTION(BlueprintCallable, Category = "Custom GAS | Management")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC);
 
 	template <typename T>

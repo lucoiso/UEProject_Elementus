@@ -8,7 +8,7 @@
 #include "UObject/Interface.h"
 #include "PickableInterface.generated.h"
 
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, Category = "Project Elementus | Interfaces")
 class UPickableInterface : public UInterface
 {
 	GENERATED_BODY()

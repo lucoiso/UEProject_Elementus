@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Attributes")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEResourceAS final : public UAttributeSet
 {
 	GENERATED_BODY()

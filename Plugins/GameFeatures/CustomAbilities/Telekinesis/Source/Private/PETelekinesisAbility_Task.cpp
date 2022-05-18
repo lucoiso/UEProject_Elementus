@@ -142,7 +142,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		FGameplayTargetDataFilterHandle DataFilterHandle;
 
 		APELineTargeting::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation,
-		                                      EndLocation, "None", QueryParams);
+		                                      EndLocation, "Target", QueryParams);
 
 		const FVector Direction = ((HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation) -
 			GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();

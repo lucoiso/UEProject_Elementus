@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(MinimalAPI, Category = "Custom Classes | Management")
+UCLASS(MinimalAPI, Category = "Project Elementus | Classes | Management")
 class UPEGameInstance final : public UGameInstance
 {
 	GENERATED_BODY()

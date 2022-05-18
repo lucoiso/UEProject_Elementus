@@ -15,7 +15,7 @@ class UNiagaraSystem;
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Data | Data Assets")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes | Data")
 class PROJECTELEMENTUS_API UPEConsumableData final : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -28,15 +28,15 @@ public:
 		return FPrimaryAssetId("Consumable Data", GetFName());
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TSoftObjectPtr<UStaticMesh> ObjectMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	FGameplayTagContainer RequirementsTags;
 };

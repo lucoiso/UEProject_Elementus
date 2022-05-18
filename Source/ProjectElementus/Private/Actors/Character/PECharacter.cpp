@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
+#include "GAS/Attributes/PEBasicStatusAS.h"
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -102,7 +103,8 @@ void APECharacter::OnRep_Controller()
 
 void APECharacter::InitializeABSC(const bool bOnRep)
 {
-	if (APEPlayerState* State = GetPlayerState<APEPlayerState>(); IsValid(State))
+	if (APEPlayerState* State = GetPlayerState<APEPlayerState>();
+		IsValid(State))
 	{
 		AbilitySystemComponent = State->GetAbilitySystemComponent();
 
@@ -169,6 +171,26 @@ void APECharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (IsValid(GetMesh()))
+	{
+		const auto DynamicColor_Lambda = [&](const uint8 Index, const FLinearColor Color) -> void
+		{
+			if (UMaterialInstanceDynamic* DynMat = GetMesh()->CreateDynamicMaterialInstance(Index);
+				IsValid(DynMat))
+			{
+				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
+			}
+		};
+
+		const FLinearColor DestColor =
+			IsBotControlled()
+				? FLinearColor::Red
+				: FLinearColor::Blue;
+
+		DynamicColor_Lambda(0, DestColor);
+		DynamicColor_Lambda(1, DestColor);
+	}
+
 	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
 	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
@@ -182,91 +204,44 @@ void APECharacter::BeginPlay()
 	}
 }
 
-void APECharacter::GiveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability, const FName InputId,
-                                              const bool bTryRemoveExistingAbilityWithInput = true,
-                                              const bool bTryRemoveExistingAbilityWithClass = true)
+void APECharacter::PerformDeath()
 {
-	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
+	if (!HasAuthority())
 	{
-		if (GetLocalRole() != ROLE_Authority || !IsValid(Ability))
-		{
-			return;
-		}
-
-		const uint32 InputID = InputIDEnumerationClass->GetValueByName(InputId, EGetByNameFlags::CheckAuthoredName);
-		if (InputID == INDEX_NONE)
-		{
-			return;
-		}
-
-		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec* AbilitySpec) -> void
-		{
-			if (AbilitySpec != nullptr)
-			{
-				RemoveAbility(AbilitySpec->Ability->GetClass());
-			}
-		};
-
-		if (bTryRemoveExistingAbilityWithClass)
-		{
-			const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
-			RemoveAbility_Lambda(AbilitySpec);
-		}
-
-		if (bTryRemoveExistingAbilityWithInput)
-		{
-			const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromInputID(InputID);
-			RemoveAbility_Lambda(AbilitySpec);
-		}
-
-		const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID, this);
-
-		AbilitySystemComponent->GiveAbility(Spec);
-
-		if (AbilitySystemComponent->FindAbilitySpecFromHandle(Spec.Handle) != nullptr)
-		{
-			CharacterAbilities.Add(Ability);
-		}
+		return;
 	}
-}
 
-void APECharacter::RemoveAbility_Implementation(const TSubclassOf<UGameplayAbility> Ability)
-{
-	if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid Ability System Component"), *GetName()))
-	{
-		if (GetLocalRole() != ROLE_Authority || CharacterAbilities.Num() <= 0 ||
-			!IsValid(Ability))
-		{
-			return;
-		}
-
-		const FGameplayAbilitySpec* AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(Ability);
-
-		if (AbilitySpec == nullptr)
-		{
-			return;
-		}
-
-		AbilitySystemComponent->ClearAbility(AbilitySpec->Handle);
-
-		if (AbilitySystemComponent->FindAbilitySpecFromClass(Ability) == nullptr)
-		{
-			CharacterAbilities.Remove(Ability);
-		}
-	}
-}
-
-void APECharacter::PerformDeath_Implementation()
-{
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
-	// TO DO
+	Multicast_ActivateRagdoll();
+
+	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindLambda([&]
+	{
+		if (IsValid(this))
+		{
+			Server_PerformDeath();
+		}
+	});
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 15.0f, false);
+}
+
+void APECharacter::Server_PerformDeath_Implementation()
+{
 	Destroy();
 }
 
-bool APECharacter::PerformDeath_Validate()
+void APECharacter::Multicast_ActivateRagdoll_Implementation()
 {
-	return true;
+	if (IsValid(GetMesh()) && IsValid(GetCharacterMovement()) && IsValid(GetCapsuleComponent()))
+	{
+		GetCharacterMovement()->DisableMovement();
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+		GetMesh()->SetAllBodiesBelowSimulatePhysics(NAME_None, true, true);
+	}
 }
 
 void APECharacter::Landed(const FHitResult& Hit)
@@ -288,11 +263,21 @@ void APECharacter::Landed(const FHitResult& Hit)
 
 void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason)
 {
+	ABILITY_VLOG(this, Warning, TEXT("=========================================================="));
+	ABILITY_VLOG(this, Warning,
+	             TEXT("Ability %s failed to activate. Owner: %s; Reasons:"), *Ability->GetName(), *GetName());
+
 	for (const auto& i : Reason)
 	{
-		ABILITY_VLOG(this, Warning, TEXT("Ability %s failed to activate. Owner: %s ; Reason: %s"), *Ability->GetName(),
-		             *GetName(), *i.ToString());
+		ABILITY_VLOG(this, Warning, TEXT("%s"), *i.ToString());
 	}
+	ABILITY_VLOG(this, Warning, TEXT("=========================================================="));
+
+	ABILITY_VLOG(this, Warning,
+	             TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ==================="));
 
 	AbilitySystemComponent->PrintDebug();
+
+	ABILITY_VLOG(this, Warning,
+	             TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ==================="));
 }

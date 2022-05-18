@@ -12,7 +12,7 @@
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Tasks")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class DEFAULTABILITIES_API UPEInteractAbility_Task final : public UAbilityTask
 {
 	GENERATED_BODY()
@@ -22,13 +22,15 @@ public:
 
 	/* Create a reference to manage this ability task */
 	static UPEInteractAbility_Task* InteractionTask(UGameplayAbility* OwningAbility, FName TaskInstanceName,
-	                                                const float InteractionRange);
+	                                                const float InteractionRange, const bool bUseCustomDepth = false);
 
 	virtual void Activate() override;
 
 	bool GetIsInteractAllowed() const;
 
 	AActor* GetInteractable() const;
+
+	FHitResult GetInteractableHitResult() const;
 
 private:
 	virtual void TickTask(float DeltaTime) override;
@@ -39,7 +41,11 @@ private:
 
 	bool bIsFinished;
 	float Range;
+	bool bUseCustomDepth;
 
 	TWeakObjectPtr<APECharacter> InteractionOwner;
-	TWeakObjectPtr<AActor> LastInteractable_Ref;
+	TWeakObjectPtr<AActor> LastInteractableActor_Ref;
+	TWeakObjectPtr<UPrimitiveComponent> LastInteractablePrimitive_Ref;
+
+	FHitResult HitResult;
 };

@@ -15,7 +15,7 @@ class UProjectileMovementComponent;
 /**
  *
  */
-UCLASS(Abstract, Blueprintable, Category = "Custom Classes | Actors")
+UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APEProjectileActor final : public AActor
 {
 	GENERATED_BODY()
@@ -29,27 +29,27 @@ public:
 	}
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	USphereComponent* CollisionComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	UProjectileMovementComponent* ProjectileMovement;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float ImpulseMultiplier = 1.f;
 
 	virtual void BeginPlay() override;
 
 public:
 	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
-	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Custom Properties | Defaults")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> ProjectileEffects;
 
-	UFUNCTION(BlueprintCallable, Category = "Custom Functions | Behaviors")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void FireInDirection(const FVector Direction) const;
 
 protected:
-	UFUNCTION(BlueprintNativeEvent, Category = "Custom Functions | Behaviors")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions")
 	void OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	                     FVector NormalImpulse, const FHitResult& Hit);
 

@@ -1,20 +1,7 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "ElementusInventory.h"
+#include "Modules/ModuleManager.h"
 
-#define LOCTEXT_NAMESPACE "FElementusInventoryModule"
-
-void FElementusInventoryModule::StartupModule()
-{
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-}
-
-void FElementusInventoryModule::ShutdownModule()
-{
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
-}
-
-#undef LOCTEXT_NAMESPACE
-
-IMPLEMENT_MODULE(FElementusInventoryModule, ElementusInventory)
+IMPLEMENT_MODULE(FDefaultModuleImpl, ElementusInventory)

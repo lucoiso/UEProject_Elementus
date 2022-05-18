@@ -14,7 +14,7 @@ class UGameplayAbility;
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "Custom GAS | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
 struct FGameplayEffectGroupedData
 {
 	GENERATED_USTRUCT_BODY()
@@ -23,17 +23,17 @@ struct FGameplayEffectGroupedData
 	{
 	}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TSubclassOf<UGameplayEffect> EffectClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom GAS | Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TMap<FGameplayTag, float> SetByCallerStackedData;
 };
 
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Data | Data Assets")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes | Data")
 class PROJECTELEMENTUS_API UPEAbilityData final : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -46,15 +46,15 @@ public:
 		return FPrimaryAssetId("Ability Data", GetFName());
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TSoftClassPtr<UGameplayAbility> AbilityClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	FName AbilityName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	FText AbilityDescription;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TSoftObjectPtr<UTexture2D> AbilityImage;
 };

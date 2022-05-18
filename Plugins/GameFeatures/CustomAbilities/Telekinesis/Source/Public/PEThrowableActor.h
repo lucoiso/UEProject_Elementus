@@ -14,7 +14,7 @@ class UAbilitySystemComponent;
 /**
  *
  */
-UCLASS(MinimalAPI, Abstract, Blueprintable, Category = "Custom Classes | Actors")
+UCLASS(MinimalAPI, Abstract, Blueprintable, Category = "Project Elementus | Classes")
 class APEThrowableActor final : public AStaticMeshActor
 {
 	GENERATED_BODY()
@@ -31,7 +31,7 @@ public:
 
 protected:
 	/* Effects that will be apply to affected characters on Hit */
-	UPROPERTY(EditDefaultsOnly, Category = "Custom Properties | Defaults")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> HitEffects;
 
 private:

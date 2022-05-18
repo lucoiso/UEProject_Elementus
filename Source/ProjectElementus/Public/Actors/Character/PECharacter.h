@@ -18,7 +18,7 @@ struct FGameplayTag;
 /**
  *
  */
-UCLASS(config = Game, Category = "Custom Classes | Player")
+UCLASS(config = Game, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
@@ -68,64 +68,50 @@ public:
 	float GetCameraTargetArmLength() const;
 
 	/* Returns character default walk speed */
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	float GetDefaultWalkSpeed() const;
 
 	/* Returns character default crouch speed */
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	float GetDefaultCrouchSpeed() const;
 
 	/* Returns character default jump velocity */
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Attributes")
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	float GetDefaultJumpVelocity() const;
 
 	/* Returns character associated Ability System Component */
-	UFUNCTION(BlueprintPure, Category = "Custom GAS | Components")
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	/* Enumeration class used to bind ability InputIDs */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "InputID Enumeration Class"),
-		Category = "Custom GAS | Data")
-	UEnum* InputIDEnumerationClass;
 
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
-
-	/* Array of given abilities */
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Abilities")
-	TArray<TSubclassOf<UGameplayAbility>> CharacterAbilities;
 
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 public:
-	/* Give a new Ability to the Player -  bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
-	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
-	void GiveAbility(TSubclassOf<UGameplayAbility> Ability, const FName InputId,
-	                 const bool bTryRemoveExistingAbilityWithInput, const bool bTryRemoveExistingAbilityWithClass);
-
-	/* Will remove the ability associated to the InputAction */
-	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Custom GAS | Abilities")
-	void RemoveAbility(TSubclassOf<UGameplayAbility> Ability);
-
 	/* Init a death state with this character */
-	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation, Category = "Custom GAS | Behaviors")
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void PerformDeath();
-	bool PerformDeath_Validate();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Custom GAS | Abilities")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Project Elementus | Functions | Callbacks")
 	void AbilityActivated(UGameplayAbility* Ability);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Custom GAS | Abilities")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Project Elementus | Functions | Callbacks")
 	void AbilityCommited(UGameplayAbility* Ability);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Custom GAS | Abilities")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Project Elementus | Functions | Callbacks")
 	void AbilityEnded(UGameplayAbility* Ability);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Custom GAS | Abilities")
+	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void AbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason);
-	virtual void AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason);
 
 private:
+	UFUNCTION(Server, Reliable)
+	void Server_PerformDeath();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ActivateRagdoll();
+
 	virtual void Landed(const FHitResult& Hit) override;
 };

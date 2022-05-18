@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(Blueprintable, NotPlaceable, Category = "Custom Classes | Management")
+UCLASS(Blueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APEHUD final : public AHUD
 {
 	GENERATED_BODY()
@@ -21,11 +21,12 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void HideHUD();
 
 protected:
 	/* A Blueprint Widget class to use as HUD */
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom Properties | Management")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Project Elementus | Properties")
 	TSubclassOf<UUserWidget> HUDClass;
 
 private:

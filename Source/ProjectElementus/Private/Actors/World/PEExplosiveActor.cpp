@@ -12,10 +12,13 @@
 
 APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	  ExplosionRadius(100.f),
+	  ExplosionRadius(150.f),
 	  ExplosionMagnitude(1000.f),
-	  bDestroyAfterExplosion(true)
+	  bDestroyAfterExplosion(true),
+	  bDebug(false)
 {
+	bReplicates = true;
+
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 }
@@ -27,11 +30,12 @@ void APEExplosiveActor::PerformExplosion()
 	QueryParams.AddIgnoredActor(this);
 	QueryParams.MobilityType = EQueryMobilityType::Dynamic;
 
-#if UE_BUILD_DEBUG
-	const FName TraceTag("SphereTraceDebugTag");
-	GetWorld()->DebugDrawTraceTag = TraceTag;
-	QueryParams.TraceTag = TraceTag;
-#endif // !UE_BUILD_DEBUG
+	if (bDebug)
+	{
+		const FName TraceTag("SphereTraceDebugTag");
+		GetWorld()->DebugDrawTraceTag = TraceTag;
+		QueryParams.TraceTag = TraceTag;
+	}
 
 	GetWorld()->SweepMultiByObjectType(HitOut,
 	                                   GetActorLocation(),

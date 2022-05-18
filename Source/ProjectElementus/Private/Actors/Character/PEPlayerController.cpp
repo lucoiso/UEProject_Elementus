@@ -9,6 +9,7 @@
 #include "InputAction.h"
 #include "AbilitySystemComponent.h"
 #include "Actors/Character/PEHUD.h"
+#include "GAS/System/PEAbilitySystemGlobals.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -21,11 +22,20 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	InputEnumHandle = UPEAbilitySystemGlobals::Get().GetMainInputIDEnum();
+}
+
+void APEPlayerController::SetupControllerSpectator_Implementation()
+{
+	RemoveHUD();
+	ChangeState(NAME_Spectating);
 }
 
 void APEPlayerController::RemoveHUD_Implementation()
 {
-	if (APEHUD* HUD_Temp = GetHUD<APEHUD>(); ensureMsgf(IsValid(HUD_Temp), TEXT("%s have a invalid HUD"), *GetName()))
+	if (APEHUD* HUD_Temp = GetHUD<APEHUD>();
+		ensureMsgf(IsValid(HUD_Temp), TEXT("%s have a invalid HUD"), *GetName()))
 	{
 		HUD_Temp->HideHUD();
 	}
@@ -36,18 +46,16 @@ void APEPlayerController::RemoveHUD_Implementation()
 void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(
 	UInputAction* Action, const int32 InputID)
 {
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent); ensureMsgf(
-		IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+		ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
-		FAbilityInputData AbilityBinding
+		const FAbilityInputData AbilityBinding
 		{
-			AbilityBinding.OnPressedHandle =
 			EnhancedInputComponent->BindAction(Action, ETriggerEvent::Started, this,
 			                                   &APEPlayerController::OnAbilityInputPressed, Action).GetHandle(),
-			AbilityBinding.OnReleasedHandle =
 			EnhancedInputComponent->BindAction(Action, ETriggerEvent::Completed, this,
 			                                   &APEPlayerController::OnAbilityInputReleased, Action).GetHandle(),
-			AbilityBinding.InputID = InputID
+			static_cast<uint32>(InputID)
 		};
 
 		AbilityActionBindings.Add(Action, AbilityBinding);
@@ -57,8 +65,8 @@ void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
 void APEPlayerController::RemoveAbilityInputBinding_Implementation_Implementation(const UInputAction* Action) const
 {
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent); ensureMsgf(
-		IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+		ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnPressedHandle);
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnReleasedHandle);
@@ -81,22 +89,23 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action) const
 	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"),
 	                     *FString(__func__), InputID);
 
-	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>(); ensureMsgf(
-		IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		TEXT("%s have a invalid ControllerOwner"), *GetName()))
+	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>();
+		ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
+		           TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputPressed(InputID);
 
-		if (InputID == ControllerOwner->InputIDEnumerationClass->GetValueByName(
-			"Confirm", EGetByNameFlags::CheckAuthoredName))
+		if (ensureMsgf(InputEnumHandle.IsValid(), TEXT("%s have a invalid InputEnumHandle"), *GetName()))
 		{
-			ControllerOwner->GetAbilitySystemComponent()->LocalInputConfirm();
-		}
+			if (InputID == InputEnumHandle->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName))
+			{
+				ControllerOwner->GetAbilitySystemComponent()->LocalInputConfirm();
+			}
 
-		else if (InputID == ControllerOwner->InputIDEnumerationClass->GetValueByName(
-			"Cancel", EGetByNameFlags::CheckAuthoredName))
-		{
-			ControllerOwner->GetAbilitySystemComponent()->LocalInputCancel();
+			else if (InputID == InputEnumHandle->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName))
+			{
+				ControllerOwner->GetAbilitySystemComponent()->LocalInputCancel();
+			}
 		}
 	}
 }
@@ -115,9 +124,9 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"),
 	                     *FString(__func__), InputID);
 
-	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>(); ensureMsgf(
-		IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		TEXT("%s have a invalid ControllerOwner"), *GetName()))
+	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>();
+		ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
+		           TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
 	}
@@ -180,8 +189,8 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 	                     *FString(__func__),
 	                     *Value.ToString(), Value.GetMagnitude());
 
-	if (APECharacter* ControllerOwner = GetPawn<APECharacter>(); ensureMsgf(
-		IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetName()))
+	if (APECharacter* ControllerOwner = GetPawn<APECharacter>();
+		ensureMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
 		if (ControllerOwner->CanJump() && !IsMoveInputIgnored())
 		{

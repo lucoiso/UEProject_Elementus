@@ -11,7 +11,7 @@
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Calculations")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEDamageGEC final : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()

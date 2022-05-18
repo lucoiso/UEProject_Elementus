@@ -13,7 +13,7 @@
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom GAS | Attributes")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPELevelingAS final : public UAttributeSet
 {
 	GENERATED_BODY()
@@ -26,15 +26,16 @@ private:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_CurrentLevel)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_CurrentLevel)
 	FGameplayAttributeData CurrentLevel;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, CurrentLevel)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_CurrentExperience)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_CurrentExperience)
 	FGameplayAttributeData CurrentExperience;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, CurrentExperience)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Custom GAS | Attributes", ReplicatedUsing = OnRep_RequiredExperience)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties",
+		ReplicatedUsing = OnRep_RequiredExperience)
 	FGameplayAttributeData RequiredExperience;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, RequiredExperience)
 

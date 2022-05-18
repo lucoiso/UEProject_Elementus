@@ -31,7 +31,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Custom Classes | Player")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IAbilityInputBinding
 {
 	GENERATED_BODY()
@@ -50,8 +50,11 @@ public:
 	// End of IAbilityInputBinding interface
 
 	/* Custom function to remove HUD from player screen */
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(Client, Unreliable)
 	void RemoveHUD();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void SetupControllerSpectator();
 
 private:
 	struct FAbilityInputData
@@ -61,6 +64,7 @@ private:
 		uint32 InputID = 0;
 	};
 
+	TWeakObjectPtr<UEnum> InputEnumHandle;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION()
