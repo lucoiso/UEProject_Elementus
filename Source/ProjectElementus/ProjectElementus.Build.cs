@@ -26,7 +26,9 @@ public class ProjectElementus : ModuleRules
 			"GameplayTags",
 			"GameplayTasks",
 			"GameFeatures",
-			"ModularFeatures_ExtraActions"
+			"ModularFeatures_ExtraActions",
+			"OnlineSubsystem",
+			"OnlineSubsystemEOS"
 		});
 	}
 }
