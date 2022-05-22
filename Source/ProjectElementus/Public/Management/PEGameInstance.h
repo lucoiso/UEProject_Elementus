@@ -52,7 +52,7 @@ public:
 
 	/* Function created for testing only - Will call FindSessionsDelegate on complete */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool DefaultFindSessions(const int32 LocalUserNum);
+	bool DefaultFindSessions(const int32 LocalUserNum, const bool bIsLANQuery = false, const int32 MaxResults = 100);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FFindSessionsDelegate FindSessionsDelegate;
@@ -87,7 +87,7 @@ public:
 	TArray<FSessionDataHandle> GetSessionsDataHandles() const;
 
 	bool EOS_CreateSession(const int32 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings);
-	bool EOS_FindSessions(const int32 SearchingPlayerNum);
+	bool EOS_FindSessions(const int32 SearchingPlayerNum, const bool bIsLANQuery = false, const int32 MaxResults = 100);
 	bool EOS_JoinSession(const int32 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession);
 	bool EOS_DestroySession();
 

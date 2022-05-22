@@ -27,9 +27,9 @@ bool UPEGameInstance::CreateDefaultLocalSession(const bool bIsLAN, const bool bI
 	return EOS_CreateSession(0, SessionSettings);
 }
 
-bool UPEGameInstance::DefaultFindSessions(const int32 LocalUserNum)
+bool UPEGameInstance::DefaultFindSessions(const int32 LocalUserNum, const bool bIsLANQuery, const int32 MaxResults)
 {
-	return EOS_FindSessions(LocalUserNum);
+	return EOS_FindSessions(LocalUserNum, bIsLANQuery, MaxResults);
 }
 
 bool UPEGameInstance::DefaultJoinSession(const int32 LocalUserNum, const FSessionDataHandle SessionData)
@@ -81,21 +81,26 @@ bool UPEGameInstance::EOS_CreateSession(const int32 HostingPlayerNum, const FOnl
 		{
 			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPEGameInstance::OnSessionCreated);
 
-			return SessionInterface->CreateSession(HostingPlayerNum, NAME_GameSession, NewSessionSettings);
+			if (SessionInterface->CreateSession(HostingPlayerNum, NAME_GameSession, NewSessionSettings))
+			{
+				GetWorld()->ServerTravel(GetWorld()->GetMapName() + "?listen");
+				return true;
+			}
 		}
 	}
 
 	return false;
 }
 
-bool UPEGameInstance::EOS_FindSessions(const int32 SearchingPlayerNum)
+bool UPEGameInstance::EOS_FindSessions(const int32 SearchingPlayerNum, const bool bIsLANQuery, const int32 MaxResults)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get())
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
 			EOSSearchSettings = MakeShareable(new FOnlineSessionSearch());
-			EOSSearchSettings->MaxSearchResults = 100;
+			EOSSearchSettings->bIsLanQuery = bIsLANQuery;
+			EOSSearchSettings->MaxSearchResults = MaxResults;
 			EOSSearchSettings->QuerySettings.Set(SEARCH_KEYWORDS, FString("ProjectElementus"),
 			                                     EOnlineComparisonOp::Equals);
 			EOSSearchSettings->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
@@ -146,7 +151,6 @@ void UPEGameInstance::OnSessionCreated(const FName SessionName, const bool bResu
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
 			SessionInterface->ClearOnCreateSessionCompleteDelegates(this);
-			SessionInterface->StartSession(SessionName);
 			CreateSessionDelegate.Broadcast();
 		}
 	}
