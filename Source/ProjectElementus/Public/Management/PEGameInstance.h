@@ -103,7 +103,7 @@ private:
 public:
 	/* Function created for testing only */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool DefaultLogin(const int32 LocalUserNum, const FString Token, const bool bUsePortal = false);
+	bool DefaultLogin(const int32 LocalUserNum, const FString Token, const int32 Port, const bool bUsePortal = false);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FUserLoginDelegate UserLoginDelegate;

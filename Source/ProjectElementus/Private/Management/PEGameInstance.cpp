@@ -227,11 +227,13 @@ void UPEGameInstance::OnSessionDestroyed(const FName SessionName, const bool bRe
 	}
 }
 
-bool UPEGameInstance::DefaultLogin(const int32 LocalUserNum, const FString Token, const bool bUsePortal)
+bool UPEGameInstance::DefaultLogin(const int32 LocalUserNum, const FString Token, const int32 Port,
+                                   const bool bUsePortal)
 {
-	return EOS_Login(LocalUserNum, bUsePortal
-		                               ? FOnlineAccountCredentials("AccountPortal", "", "")
-		                               : FOnlineAccountCredentials("Developer", "localhost:8303", Token));
+	return EOS_Login(LocalUserNum,
+	                 bUsePortal
+		                 ? FOnlineAccountCredentials("AccountPortal", "", "")
+		                 : FOnlineAccountCredentials("Developer", "localhost:" + FString::FromInt(Port), Token));
 }
 
 bool UPEGameInstance::DefaultLogout(const int32 LocalUserNum)
