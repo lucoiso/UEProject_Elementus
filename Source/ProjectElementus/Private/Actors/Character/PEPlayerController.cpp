@@ -10,6 +10,7 @@
 #include "AbilitySystemComponent.h"
 #include "Actors/Character/PEHUD.h"
 #include "GAS/System/PEAbilitySystemGlobals.h"
+#include "Management/PEGameInstance.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -24,6 +25,8 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	InputEnumHandle = UPEAbilitySystemGlobals::Get().GetMainInputIDEnum();
+
+	APlayerController::ClientEnableNetworkVoice(false);
 }
 
 void APEPlayerController::SetupControllerSpectator_Implementation()
@@ -130,6 +133,24 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
 	}
+}
+
+void APEPlayerController::EnableVoiceChat_Implementation(const FInputActionValue& Value)
+{
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
+	                     *FString(__func__),
+	                     *Value.ToString(), Value.GetMagnitude());
+
+	GetGameInstance<UPEGameInstance>()->MuteVoiceChatUser(NetPlayerIndex, false);
+}
+
+void APEPlayerController::DisableVoiceChat_Implementation(const FInputActionValue& Value)
+{
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
+	                     *FString(__func__),
+	                     *Value.ToString(), Value.GetMagnitude());
+
+	GetGameInstance<UPEGameInstance>()->MuteVoiceChatUser(NetPlayerIndex, true);
 }
 
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)

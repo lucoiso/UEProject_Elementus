@@ -7,8 +7,11 @@
 #include "CoreMinimal.h"
 #include "InputTriggers.h"
 #include "AbilityInputBinding.h"
+#include "VoiceChat.h"
 #include "PEPlayerController.generated.h"
 
+class IVoiceChatUser;
+struct FEOSVoiceChatChannelCredentials;
 /**
  *
  */
@@ -76,4 +79,9 @@ private:
 
 	void OnAbilityInputPressed(UInputAction* Action) const;
 	void OnAbilityInputReleased(UInputAction* Action) const;
+
+	UFUNCTION(Client, Reliable)
+	void EnableVoiceChat(const FInputActionValue& Value);
+	UFUNCTION(Client, Reliable)
+	void DisableVoiceChat(const FInputActionValue& Value);
 };
