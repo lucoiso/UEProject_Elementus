@@ -28,11 +28,15 @@ public class ProjectElementus : ModuleRules
 			"GameplayTasks",
 			"GameFeatures",
 			"ModularFeatures_ExtraActions",
+			"JsonUtilities"
+		});
+		
+		PrivateDependencyModuleNames.AddRange(new[]
+		{
 			"EOSSDKHandler",
 			"OnlineSubsystem",
 			"OnlineSubsystemEOS",
 			"EOSVoiceChat",
-			"JsonUtilities"
 		});
 	}
 }

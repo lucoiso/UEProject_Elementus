@@ -9,13 +9,14 @@ public class EOSSDKHandler : ModuleRules
 {
 	public EOSSDKHandler(ReadOnlyTargetRules target) : base(target)
 	{
-		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+		
 		PublicDependencyModuleNames.AddRange(new[]
 		{
 			"Core"
 		});
 		
-		PublicDefinitions.Add("WITH_EOS_SDK=true");
+		PrivateDefinitions.Add("WITH_EOS_SDK=true");
 		
 		PublicIncludePaths.Add(Path.Combine(EngineDirectory, 
 			"Plugins/Online/OnlineSubsystemEOS/Source/OnlineSubsystemEOS/Private/"));
