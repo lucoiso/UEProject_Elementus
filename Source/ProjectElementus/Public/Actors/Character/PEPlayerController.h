@@ -80,8 +80,6 @@ private:
 	void OnAbilityInputPressed(UInputAction* Action) const;
 	void OnAbilityInputReleased(UInputAction* Action) const;
 
-	UFUNCTION(Client, Reliable)
-	void EnableVoiceChat(const FInputActionValue& Value);
-	UFUNCTION(Client, Reliable)
-	void DisableVoiceChat(const FInputActionValue& Value);
+	UFUNCTION()
+	void SetVoiceChatEnabled(const FInputActionValue& Value) const;
 };

@@ -42,3 +42,15 @@ void UPEDoubleJumpAbility::ActivateAbility
 		Player->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
 	}
 }
+
+void UPEDoubleJumpAbility::InputReleased(const FGameplayAbilitySpecHandle Handle,
+                                         const FGameplayAbilityActorInfo* ActorInfo,
+                                         const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
+
+	if (APECharacter* Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get()))
+	{
+		Player->StopJumping();
+	}
+}

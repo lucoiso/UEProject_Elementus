@@ -9,7 +9,7 @@
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	  HookIntensity(100.f)
+	  HookIntensity(3000.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
@@ -105,7 +105,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 		IsValid())
 	{
 		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() *
-			HookIntensity * 25.f;
+			HookIntensity;
 
 		Player->LaunchCharacter(ImpulseVector, false, true);
 

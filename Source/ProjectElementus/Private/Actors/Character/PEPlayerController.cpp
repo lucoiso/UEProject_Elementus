@@ -135,22 +135,16 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 	}
 }
 
-void APEPlayerController::EnableVoiceChat_Implementation(const FInputActionValue& Value)
+void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) const
 {
 	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
 	                     *FString(__func__),
 	                     *Value.ToString(), Value.GetMagnitude());
 
-	GetGameInstance<UPEGameInstance>()->MuteVoiceChatUser(NetPlayerIndex, false);
-}
-
-void APEPlayerController::DisableVoiceChat_Implementation(const FInputActionValue& Value)
-{
-	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__),
-	                     *Value.ToString(), Value.GetMagnitude());
-
-	GetGameInstance<UPEGameInstance>()->MuteVoiceChatUser(NetPlayerIndex, true);
+	if (const UPEGameInstance* GInstance = GetGameInstance<UPEGameInstance>())
+	{
+		GInstance->MuteVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
+	}
 }
 
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
@@ -213,9 +207,8 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 	if (APECharacter* ControllerOwner = GetPawn<APECharacter>();
 		ensureMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetName()))
 	{
-		if (ControllerOwner->CanJump() && !IsMoveInputIgnored())
-		{
-			ControllerOwner->Jump();
-		}
+		Value.Get<bool>()
+			? ControllerOwner->Jump()
+			: ControllerOwner->StopJumping();
 	}
 }

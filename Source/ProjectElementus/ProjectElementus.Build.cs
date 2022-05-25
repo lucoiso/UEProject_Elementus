@@ -30,13 +30,13 @@ public class ProjectElementus : ModuleRules
 			"ModularFeatures_ExtraActions",
 			"JsonUtilities"
 		});
-		
+
 		PrivateDependencyModuleNames.AddRange(new[]
 		{
 			"EOSSDKHandler",
 			"OnlineSubsystem",
 			"OnlineSubsystemEOS",
-			"EOSVoiceChat",
+			"EOSVoiceChat"
 		});
 	}
 }

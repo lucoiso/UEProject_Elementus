@@ -12,28 +12,11 @@ void UPEGameInstance::Init()
 {
 	Super::Init();
 
-	OnlineSubsystemEOS = MakeShareable(static_cast<FOnlineSubsystemEOS*>(IOnlineSubsystem::Get(EOS_SUBSYSTEM)));
-
-	if (OnlineSubsystemEOS.IsValid())
-	{
-		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystemEOS->GetSessionInterface())
-		{
-			OnSessionUserInviteAcceptedDelegate.BindUObject(this, &UPEGameInstance::OnSessionInviteAccepted);
-			SessionInterface->AddOnSessionUserInviteAcceptedDelegate_Handle(OnSessionUserInviteAcceptedDelegate);
-		}
-	}
+	OnlineSubsystemEOS = MakeShareable(static_cast<FOnlineSubsystemEOS*>(FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM)));
 }
 
 void UPEGameInstance::Shutdown()
 {
-	UninitializeVoiceChatFramework();
-
-	const int8 NumLocalPlayers = UGameplayStatics::GetNumLocalPlayerControllers(GetWorld());
-	for (int Iterator = 0; Iterator < NumLocalPlayers; ++Iterator)
-	{
-		EOS_Logout(Iterator);
-	}
-
 	Super::Shutdown();
 }
 
@@ -229,14 +212,17 @@ void UPEGameInstance::OnVoiceChatLogout(const FString& PlayerName, const FVoiceC
 
 void UPEGameInstance::MuteVoiceChatUser(const int32 LocalUserNum, const bool bMute) const
 {
-	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Mute: %d"), *FString(__func__), LocalUserNum, bMute);
-
-	if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
+	if (IVoiceChat::Get()->IsInitialized() && IVoiceChat::Get()->IsConnected())
 	{
-		if (IVoiceChatUser* ChatUser =
-			OnlineSubsystemEOS->GetVoiceChatUserInterface(*IdentityInterface->GetUniquePlayerId(LocalUserNum)))
+		UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Mute: %d"), *FString(__func__), LocalUserNum, bMute);
+
+		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
 		{
-			ChatUser->SetAudioInputDeviceMuted(bMute);
+			if (IVoiceChatUser* ChatUser =
+				OnlineSubsystemEOS->GetVoiceChatUserInterface(*IdentityInterface->GetUniquePlayerId(LocalUserNum)))
+			{
+				ChatUser->SetAudioInputDeviceMuted(bMute);
+			}
 		}
 	}
 }
@@ -657,6 +643,12 @@ void UPEGameInstance::OnLoginComplete(const int32 LocalUserNum, const bool bWasS
 			       LocalUserNum, bWasSuccessful);
 
 			IdentityInterface->ClearOnLoginCompleteDelegates(LocalUserNum, this);
+
+			if (const IOnlineSessionPtr SessionInterface = OnlineSubsystemEOS->GetSessionInterface())
+			{
+				OnSessionUserInviteAcceptedDelegate.BindUObject(this, &UPEGameInstance::OnSessionInviteAccepted);
+				SessionInterface->AddOnSessionUserInviteAcceptedDelegate_Handle(OnSessionUserInviteAcceptedDelegate);
+			}
 		}
 	}
 
@@ -673,6 +665,8 @@ void UPEGameInstance::OnLogoutComplete(const int32 LocalUserNum, const bool bWas
 			       LocalUserNum, bWasSuccessful);
 
 			IdentityInterface->ClearOnLogoutCompleteDelegates(LocalUserNum, this);
+
+			OnSessionUserInviteAcceptedDelegate.Unbind();
 		}
 	}
 
