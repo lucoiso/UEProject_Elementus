@@ -100,7 +100,7 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 				? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName)
 				: HitDataHandle.Location;
 
-		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation(); Difference.Size() >= 150.f)
+		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation(); Difference.Size() >= 100.f)
 		{
 			const FVector HookForce = Difference * Intensity * DeltaTime;
 
