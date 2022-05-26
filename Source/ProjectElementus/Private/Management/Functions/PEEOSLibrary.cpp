@@ -5,6 +5,7 @@
 #include "Management/Functions/PEEOSLibrary.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "EOSVoiceChatUser.h"
+#include "Interfaces/OnlineSessionInterface.h"
 
 FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 {
@@ -64,6 +65,35 @@ bool UPEEOSLibrary::IsUserLoggedIn(const int32 LocalUserNum)
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
 			return IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn;
+		}
+	}
+
+	return false;
+}
+
+bool UPEEOSLibrary::IsHostingSession()
+{
+	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	{
+		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
+		{
+			if (const FNamedOnlineSession* CheckSession = SessionInterface->GetNamedSession(NAME_GameSession))
+			{
+				return CheckSession->bHosting;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool UPEEOSLibrary::IsUserInASession()
+{
+	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	{
+		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
+		{
+			return SessionInterface->GetNamedSession(NAME_GameSession) != nullptr;
 		}
 	}
 

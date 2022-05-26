@@ -40,7 +40,6 @@ public:
 
 	static FEOSVoiceChatUser* GetEOSVoiceChatUser(const int8 LocalUserNum);
 
-	/* Function created for testing only */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static void MuteSessionVoiceChatUser(const int32 LocalUserNum, const bool bMute);
 
@@ -58,6 +57,12 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static bool IsUserLoggedIn(const int32 LocalUserNum);
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	static bool IsHostingSession();
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	static bool IsUserInASession();
 
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static FSessionSettingsHandler GenerateSessionSettings(const int32 NumPublicConnections = 4,

@@ -414,9 +414,6 @@ void UPEGameInstance::OnSessionCreated(const FName SessionName, const bool bResu
 
 void UPEGameInstance::OnSessionsFound(const bool bResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s - Result: %d - Sessions found: %d"), *FString(__func__), bResult,
-	       EOSSearchSettings->SearchResults.Num());
-
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
@@ -424,20 +421,30 @@ void UPEGameInstance::OnSessionsFound(const bool bResult)
 			SessionInterface->ClearOnFindSessionsCompleteDelegates(this);
 		}
 	}
-
-	TArray<FSessionDataHandler> SessionDataHandle_Arr;
-
-	for (const FOnlineSessionSearchResult& SearchResult : EOSSearchSettings->SearchResults)
+	
+	if (EOSSearchSettings.IsValid())
 	{
-		const FSessionDataHandler SessionDataHandle{SearchResult};
+		UE_LOG(LogTemp, Warning, TEXT("%s - Result: %d - Sessions found: %d"), *FString(__func__), bResult,
+			   EOSSearchSettings->SearchResults.Num());		
 
-		UE_LOG(LogTemp, Warning, TEXT("Session Found: %s - %s"), *SearchResult.GetSessionIdStr(),
-		       *SearchResult.Session.OwningUserName);
+		TArray<FSessionDataHandler> SessionDataHandle_Arr;
 
-		SessionDataHandle_Arr.Add(SessionDataHandle);
+		for (const FOnlineSessionSearchResult& SearchResult : EOSSearchSettings->SearchResults)
+		{
+			const FSessionDataHandler SessionDataHandle{SearchResult};
+
+			UE_LOG(LogTemp, Warning, TEXT("Session Found: %s - %s"), *SearchResult.GetSessionIdStr(),
+				   *SearchResult.Session.OwningUserName);
+
+			SessionDataHandle_Arr.Add(SessionDataHandle);
+		}
+
+		FindSessionsDelegate.Broadcast(SessionDataHandle_Arr);
 	}
-
-	FindSessionsDelegate.Broadcast(SessionDataHandle_Arr);
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s - Result: %d - No sessions found"), *FString(__func__), bResult);
+	}
 }
 
 void UPEGameInstance::OnCancelFindSessions(const bool bResult)
@@ -453,6 +460,11 @@ void UPEGameInstance::OnCancelFindSessions(const bool bResult)
 	}
 
 	CancelFindSessionsDelegate.Broadcast();
+
+	if (bResult)
+	{
+		EOSSearchSettings.Reset();
+	}
 }
 
 void UPEGameInstance::OnSessionJoined(const FName SessionName, const EOnJoinSessionCompleteResult::Type Result)
