@@ -13,8 +13,8 @@
 
 UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-	  , CurrentLevel(1.f)
-	  , CurrentExperience(1.f)
+	  , CurrentLevel(0.f)
+	  , CurrentExperience(0.f)
 	  , RequiredExperience(1.f)
 {
 	UAttributeSet::InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetLevelingAttributeMetaData());

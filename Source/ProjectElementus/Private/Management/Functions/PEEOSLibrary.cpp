@@ -71,10 +71,17 @@ bool UPEEOSLibrary::IsUserLoggedIn(const int32 LocalUserNum)
 }
 
 FSessionSettingsHandler UPEEOSLibrary::GenerateSessionSettings(const int32 NumPublicConnections,
-	const int32 NumPrivateConnections, const bool bShouldAdvertise, const bool bAllowJoinInProgress,
-	const bool bIsLANMatch, const bool bIsDedicated, const bool bUsesStats, const bool bAllowInvites,
-	const bool bUsesPresence, const bool bAllowJoinViaPresence, const bool bAllowJoinViaPresenceFriendsOnly,
-	const bool bAntiCheatProtected, const bool bUseLobbiesIfAvailable, const bool bUseLobbiesVoiceChatIfAvailable)
+                                                               const int32 NumPrivateConnections,
+                                                               const bool bShouldAdvertise,
+                                                               const bool bAllowJoinInProgress,
+                                                               const bool bIsLANMatch, const bool bIsDedicated,
+                                                               const bool bUsesStats, const bool bAllowInvites,
+                                                               const bool bUsesPresence,
+                                                               const bool bAllowJoinViaPresence,
+                                                               const bool bAllowJoinViaPresenceFriendsOnly,
+                                                               const bool bAntiCheatProtected,
+                                                               const bool bUseLobbiesIfAvailable,
+                                                               const bool bUseLobbiesVoiceChatIfAvailable)
 {
 	FOnlineSessionSettings SessionSettings;
 	SessionSettings.NumPublicConnections = NumPublicConnections;
@@ -91,8 +98,8 @@ FSessionSettingsHandler UPEEOSLibrary::GenerateSessionSettings(const int32 NumPu
 	SessionSettings.bAntiCheatProtected = bAntiCheatProtected;
 	SessionSettings.bUseLobbiesIfAvailable = bUseLobbiesIfAvailable;
 	SessionSettings.bUseLobbiesVoiceChatIfAvailable = bUseLobbiesVoiceChatIfAvailable;
-	
+
 	SessionSettings.Set(SEARCH_KEYWORDS, FString("ProjectElementus"), EOnlineDataAdvertisementType::ViaOnlineService);
-	
-	return FSessionSettingsHandler { SessionSettings };
+
+	return FSessionSettingsHandler{SessionSettings};
 }

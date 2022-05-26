@@ -35,7 +35,7 @@ class PROJECTELEMENTUS_API UPEEOSLibrary final : public UBlueprintFunctionLibrar
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	static FOnlineSubsystemEOS* GetOnlineSubsystemEOS();
 
 	static FEOSVoiceChatUser* GetEOSVoiceChatUser(const int8 LocalUserNum);
@@ -54,24 +54,24 @@ public:
 	static int32 GetSessionPingFromHandle(const FSessionDataHandler DataHandle);
 
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static FName GetGameSessionName();	
+	static FName GetGameSessionName();
 
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static bool IsUserLoggedIn(const int32 LocalUserNum);	
-	
+	static bool IsUserLoggedIn(const int32 LocalUserNum);
+
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static FSessionSettingsHandler GenerateSessionSettings(const int32 NumPublicConnections = 4,
-	                                                             const int32 NumPrivateConnections = 4,
-	                                                             const bool bShouldAdvertise = true,
-	                                                             const bool bAllowJoinInProgress = true,
-	                                                             const bool bIsLANMatch = false,
-	                                                             const bool bIsDedicated = false,
-	                                                             const bool bUsesStats = true,
-	                                                             const bool bAllowInvites = true,
-	                                                             const bool bUsesPresence = true,
-	                                                             const bool bAllowJoinViaPresence = true,
-	                                                             const bool bAllowJoinViaPresenceFriendsOnly = false,
-	                                                             const bool bAntiCheatProtected = true,
-	                                                             const bool bUseLobbiesIfAvailable = true,
-	                                                             const bool bUseLobbiesVoiceChatIfAvailable = true);
+	                                                       const int32 NumPrivateConnections = 4,
+	                                                       const bool bShouldAdvertise = true,
+	                                                       const bool bAllowJoinInProgress = true,
+	                                                       const bool bIsLANMatch = false,
+	                                                       const bool bIsDedicated = false,
+	                                                       const bool bUsesStats = true,
+	                                                       const bool bAllowInvites = true,
+	                                                       const bool bUsesPresence = true,
+	                                                       const bool bAllowJoinViaPresence = true,
+	                                                       const bool bAllowJoinViaPresenceFriendsOnly = false,
+	                                                       const bool bAntiCheatProtected = true,
+	                                                       const bool bUseLobbiesIfAvailable = true,
+	                                                       const bool bUseLobbiesVoiceChatIfAvailable = true);
 };
