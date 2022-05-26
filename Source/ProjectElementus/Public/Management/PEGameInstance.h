@@ -5,25 +5,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
 #include "EOSVoiceChat.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "OnlineSessionSettings.h"
-#include "OnlineSubsystemEOS.h"
+#include "Management/Functions/PEEOSLibrary.h"
+#include "Engine/GameInstance.h"
 #include "PEGameInstance.generated.h"
 
-class FOnlineAccountCredentials;
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
-struct FSessionDataHandle
-{
-	GENERATED_USTRUCT_BODY()
-
-	FOnlineSessionSearchResult Result;
-};
-
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FEOSVoiceChatChannelCredentials
 {
@@ -35,7 +25,7 @@ struct FEOSVoiceChatChannelCredentials
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCreateSessionDelegate);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFindSessionsDelegate, const TArray<FSessionDataHandle>&, Sessions);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFindSessionsDelegate, const TArray<FSessionDataHandler>&, Sessions);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCancelFindSessionsDelegate);
 
@@ -51,9 +41,6 @@ UCLASS(Category = "Project Elementus | Classes | Management")
 class UPEGameInstance final : public UGameInstance
 {
 	GENERATED_BODY()
-
-protected:
-	static FOnlineSubsystemEOS* GetOnlineSubsystemEOS();
 
 public:
 	/* Function created for testing only */
@@ -101,13 +88,7 @@ protected:
 	FOnVoiceChatLogoutCompleteDelegate OnVoiceChatLogoutCompleteDelegate;
 	void OnVoiceChatLogout(const FString& PlayerName, const FVoiceChatResult& Result);
 
-	static FEOSVoiceChatUser* GetEOSVoiceChatUser(const int8 LocalUserNum);
-
 public:
-	/* Function created for testing only */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static void MuteSessionVoiceChatUser(const int32 LocalUserNum, const bool bMute);
-
 	/* Function created for testing only */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString ChannelName,
@@ -127,8 +108,7 @@ protected:
 public:
 	/* Function created for testing only */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool CreateDefaultSession(const bool bIsLAN = false, const bool bIsDedicated = false,
-	                          const int32 NumOfPublicConnections = 4);
+	bool CreateDefaultSession(const FSessionSettingsHandler SessionSettings);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FCreateSessionDelegate CreateSessionDelegate;
@@ -149,7 +129,7 @@ public:
 
 	/* Function created for testing only */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool DefaultJoinSession(const int32 LocalUserNum, const FSessionDataHandle SessionData);
+	bool DefaultJoinSession(const int32 LocalUserNum, const FSessionDataHandler SessionData);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FJoinSessionDelegate JoinSessionDelegate;
@@ -161,18 +141,6 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FDestroySessionDelegate DestroySessionDelegate;
 
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static FString GetSessionOwningUserNameFromHandle(const FSessionDataHandle DataHandle);
-
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static FString GetSessionIdFromHandle(const FSessionDataHandle DataHandle);
-
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static int32 GetSessionPingFromHandle(const FSessionDataHandle DataHandle);
-
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static FName GetGameSessionName();
-
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ServerTravelToLevel(const FName LevelName) const;
 
@@ -180,7 +148,7 @@ public:
 	void ClientTravelToSessionLevel(const int32 LocalUserNum) const;
 
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	TArray<FSessionDataHandle> GetSessionsDataHandles() const;
+	TArray<FSessionDataHandler> GetSessionsDataHandles() const;
 
 	bool EOS_CreateSession(const int8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings);
 	bool EOS_FindSessions(const int8 SearchingPlayerNum, const bool bIsLANQuery = false, const int8 MaxResults = 100);
@@ -219,9 +187,6 @@ public:
 
 	bool EOS_Login(const int8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials);
 	bool EOS_Logout(const int8 LocalUserNum);
-
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static bool IsUserLoggedIn(const int32 LocalUserNum);
 
 protected:
 	void OnLoginComplete(const int32 LocalUserNum, const bool bWasSuccessful, const FUniqueNetId& UserId,

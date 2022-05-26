@@ -141,10 +141,7 @@ void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) co
 	                     *FString(__func__),
 	                     *Value.ToString(), Value.GetMagnitude());
 
-	if (const UPEGameInstance* GInstance = GetGameInstance<UPEGameInstance>())
-	{
-		GInstance->MuteSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
-	}
+	UPEEOSLibrary::MuteSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
 }
 
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)

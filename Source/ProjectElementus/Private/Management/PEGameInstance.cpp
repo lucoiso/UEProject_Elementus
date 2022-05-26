@@ -8,10 +8,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "JsonObjectConverter.h"
 
-FOnlineSubsystemEOS* UPEGameInstance::GetOnlineSubsystemEOS()
-{
-	return static_cast<FOnlineSubsystemEOS*>(FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM));
-}
 
 void UPEGameInstance::InitializeVoiceChatFramework()
 {
@@ -28,7 +24,7 @@ void UPEGameInstance::UninitializeVoiceChatFramework()
 	{
 		DisconnectVoiceChatFramework();
 
-		if (FOnlineSubsystemEOS* OnlineSubsystemEOS = GetOnlineSubsystemEOS())
+		if (FOnlineSubsystemEOS* OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
 		{
 			if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
 			{
@@ -135,7 +131,7 @@ void UPEGameInstance::LoginToVoiceChatFramework(const int32 LocalUserNum)
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface();
 			IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn)
 		{
-			if (FEOSVoiceChatUser* VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
+			if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 			{
 				OnVoiceChatLoginCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatLogin);
 
@@ -151,9 +147,9 @@ void UPEGameInstance::LoginToVoiceChatFramework(const int32 LocalUserNum)
 
 void UPEGameInstance::LogoutFromVoiceChatFramework(const int32 LocalUserNum)
 {
-	if (FOnlineSubsystemEOS* OnlineSubsystemEOS = GetOnlineSubsystemEOS())
+	if (FOnlineSubsystemEOS* OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
 	{
-		if (FEOSVoiceChatUser* VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
+		if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 		{
 			OnVoiceChatLogoutCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatLogout);
 			VoiceChatUserPtr->Logout(OnVoiceChatLogoutCompleteDelegate);
@@ -203,39 +199,13 @@ void UPEGameInstance::OnVoiceChatLogout(const FString& PlayerName, const FVoiceC
 	OnVoiceChatLogoutCompleteDelegate.Unbind();
 }
 
-FEOSVoiceChatUser* UPEGameInstance::GetEOSVoiceChatUser(const int8 LocalUserNum)
-{
-	if (FOnlineSubsystemEOS* OnlineSubsystemEOS = GetOnlineSubsystemEOS())
-	{
-		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
-		{
-			if (const FUniqueNetIdPtr NetId = IdentityInterface->GetUniquePlayerId(LocalUserNum))
-			{
-				return OnlineSubsystemEOS->GetEOSVoiceChatUserInterface(*NetId.Get());
-			}
-		}
-	}
-
-	return nullptr;
-}
-
-void UPEGameInstance::MuteSessionVoiceChatUser(const int32 LocalUserNum, const bool bMute)
-{
-	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Mute: %d"), *FString(__func__), LocalUserNum, bMute);
-
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
-	{
-		VoiceChatUserPtr->SetAudioInputDeviceMuted(bMute);
-	}
-}
-
 void UPEGameInstance::ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString ChannelName,
                                                        const FEOSVoiceChatChannelCredentials Credentials)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum,
 	       *ChannelName);
 
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
+	if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 	{
 		OnVoiceChatChannelJoinCompleteDelegate.
 			BindUObject(this, &UPEGameInstance::OnVoiceChatChannelJoined);
@@ -256,7 +226,7 @@ void UPEGameInstance::LeaveVoiceChatSessionChannel(const int32 LocalUserNum, con
 	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum,
 	       *ChannelName);
 
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
+	if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 	{
 		OnVoiceChatChannelLeaveCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatChannelLeft);
 		VoiceChatUserPtr->LeaveChannel(ChannelName, OnVoiceChatChannelLeaveCompleteDelegate);
@@ -295,24 +265,9 @@ void UPEGameInstance::OnVoiceChatChannelLeft(const FString& ChannelName, const F
 	OnVoiceChatChannelLeaveCompleteDelegate.Unbind();
 }
 
-bool UPEGameInstance::CreateDefaultSession(const bool bIsLAN, const bool bIsDedicated,
-                                           const int32 NumOfPublicConnections)
+bool UPEGameInstance::CreateDefaultSession(const FSessionSettingsHandler SessionSettings)
 {
-	const TSharedPtr<FOnlineSessionSettings> SessionSettings = MakeShared<FOnlineSessionSettings>();
-	SessionSettings->bIsLANMatch = bIsLAN;
-	SessionSettings->bIsDedicated = bIsDedicated;
-	SessionSettings->bUseLobbiesVoiceChatIfAvailable = true;
-	SessionSettings->bUseLobbiesIfAvailable = true;
-	SessionSettings->bAllowJoinViaPresence = true;
-	SessionSettings->bUsesPresence = true;
-	SessionSettings->bShouldAdvertise = true;
-	SessionSettings->bAllowJoinInProgress = true;
-	SessionSettings->bAllowInvites = true;
-	SessionSettings->NumPublicConnections = NumOfPublicConnections;
-
-	SessionSettings->Set(SEARCH_KEYWORDS, FString("ProjectElementus"), EOnlineDataAdvertisementType::ViaOnlineService);
-
-	return EOS_CreateSession(0, *SessionSettings.Get());
+	return EOS_CreateSession(0, SessionSettings.Settings);
 }
 
 bool UPEGameInstance::DefaultFindSessions(const int32 LocalUserNum, const bool bIsLANQuery, const int32 MaxResults)
@@ -336,7 +291,7 @@ bool UPEGameInstance::CancelFindSessions()
 	return false;
 }
 
-bool UPEGameInstance::DefaultJoinSession(const int32 LocalUserNum, const FSessionDataHandle SessionData)
+bool UPEGameInstance::DefaultJoinSession(const int32 LocalUserNum, const FSessionDataHandler SessionData)
 {
 	return EOS_JoinSession(LocalUserNum, SessionData.Result);
 }
@@ -344,26 +299,6 @@ bool UPEGameInstance::DefaultJoinSession(const int32 LocalUserNum, const FSessio
 bool UPEGameInstance::DefaultDestroySession()
 {
 	return EOS_DestroySession();
-}
-
-FString UPEGameInstance::GetSessionOwningUserNameFromHandle(const FSessionDataHandle DataHandle)
-{
-	return DataHandle.Result.Session.OwningUserName;
-}
-
-FString UPEGameInstance::GetSessionIdFromHandle(const FSessionDataHandle DataHandle)
-{
-	return DataHandle.Result.Session.GetSessionIdStr();
-}
-
-int32 UPEGameInstance::GetSessionPingFromHandle(const FSessionDataHandle DataHandle)
-{
-	return DataHandle.Result.PingInMs;
-}
-
-FName UPEGameInstance::GetGameSessionName()
-{
-	return NAME_GameSession;
 }
 
 void UPEGameInstance::ServerTravelToLevel(const FName LevelName) const
@@ -380,12 +315,12 @@ void UPEGameInstance::ClientTravelToSessionLevel(const int32 LocalUserNum) const
 	}
 }
 
-TArray<FSessionDataHandle> UPEGameInstance::GetSessionsDataHandles() const
+TArray<FSessionDataHandler> UPEGameInstance::GetSessionsDataHandles() const
 {
-	TArray<FSessionDataHandle> SessionDataHandle_Arr;
+	TArray<FSessionDataHandler> SessionDataHandle_Arr;
 	for (const FOnlineSessionSearchResult& SearchResult : EOSSearchSettings->SearchResults)
 	{
-		SessionDataHandle_Arr.Add(FSessionDataHandle{SearchResult});
+		SessionDataHandle_Arr.Add(FSessionDataHandler{SearchResult});
 	}
 
 	return SessionDataHandle_Arr;
@@ -417,6 +352,7 @@ bool UPEGameInstance::EOS_FindSessions(const int8 SearchingPlayerNum, const bool
 			EOSSearchSettings->MaxSearchResults = MaxResults;
 			EOSSearchSettings->QuerySettings.Set(SEARCH_KEYWORDS,
 			                                     FString("ProjectElementus"), EOnlineComparisonOp::Equals);
+			EOSSearchSettings->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
 
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPEGameInstance::OnSessionsFound);
 
@@ -489,11 +425,11 @@ void UPEGameInstance::OnSessionsFound(const bool bResult)
 		}
 	}
 
-	TArray<FSessionDataHandle> SessionDataHandle_Arr;
+	TArray<FSessionDataHandler> SessionDataHandle_Arr;
 
 	for (const FOnlineSessionSearchResult& SearchResult : EOSSearchSettings->SearchResults)
 	{
-		const FSessionDataHandle SessionDataHandle{SearchResult};
+		const FSessionDataHandler SessionDataHandle{SearchResult};
 
 		UE_LOG(LogTemp, Warning, TEXT("Session Found: %s - %s"), *SearchResult.GetSessionIdStr(),
 		       *SearchResult.Session.OwningUserName);
@@ -614,19 +550,6 @@ bool UPEGameInstance::EOS_Logout(const int8 LocalUserNum)
 			IdentityInterface->OnLogoutCompleteDelegates->AddUObject(this, &UPEGameInstance::OnLogoutComplete);
 
 			return IdentityInterface->Logout(LocalUserNum);
-		}
-	}
-
-	return false;
-}
-
-bool UPEGameInstance::IsUserLoggedIn(const int32 LocalUserNum)
-{
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
-	{
-		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
-		{
-			return IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn;
 		}
 	}
 
