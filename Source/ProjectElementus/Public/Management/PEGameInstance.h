@@ -6,16 +6,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "VoiceChat.h"
+#include "EOSVoiceChat.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemEOS.h"
 #include "PEGameInstance.generated.h"
 
-struct FVoiceChatResult;
 class FOnlineAccountCredentials;
-class IOnlineSubsystem;
-class FOnlineSessionSettings;
 /**
  *
  */
@@ -55,12 +52,8 @@ class UPEGameInstance final : public UGameInstance
 {
 	GENERATED_BODY()
 
-public:
-	virtual void Init() override;
-	virtual void Shutdown() override;
-
 protected:
-	FOnlineSubsystemEOSPtr OnlineSubsystemEOS;
+	static FOnlineSubsystemEOS* GetOnlineSubsystemEOS();
 
 public:
 	/* Function created for testing only */
@@ -108,13 +101,12 @@ protected:
 	FOnVoiceChatLogoutCompleteDelegate OnVoiceChatLogoutCompleteDelegate;
 	void OnVoiceChatLogout(const FString& PlayerName, const FVoiceChatResult& Result);
 
-private:
-	TMap<const int8, TSharedPtr<IVoiceChatUser>> EOSVoiceChatUsers;
+	static FEOSVoiceChatUser* GetEOSVoiceChatUser(const int8 LocalUserNum);
 
 public:
 	/* Function created for testing only */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void MuteVoiceChatUser(const int32 LocalUserNum, const bool bMute) const;
+	static void MuteSessionVoiceChatUser(const int32 LocalUserNum, const bool bMute);
 
 	/* Function created for testing only */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
@@ -185,7 +177,7 @@ public:
 	void ServerTravelToLevel(const FName LevelName) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ClientTravelToSessionLevel() const;
+	void ClientTravelToSessionLevel(const int32 LocalUserNum) const;
 
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	TArray<FSessionDataHandle> GetSessionsDataHandles() const;
@@ -229,7 +221,7 @@ public:
 	bool EOS_Logout(const int8 LocalUserNum);
 
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	bool IsUserLoggedIn(const int32 LocalUserNum) const;
+	static bool IsUserLoggedIn(const int32 LocalUserNum);
 
 protected:
 	void OnLoginComplete(const int32 LocalUserNum, const bool bWasSuccessful, const FUniqueNetId& UserId,

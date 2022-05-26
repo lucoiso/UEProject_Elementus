@@ -143,7 +143,7 @@ void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) co
 
 	if (const UPEGameInstance* GInstance = GetGameInstance<UPEGameInstance>())
 	{
-		GInstance->MuteVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
+		GInstance->MuteSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
 	}
 }
 

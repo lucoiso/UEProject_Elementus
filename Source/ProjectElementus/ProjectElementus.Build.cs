@@ -34,9 +34,11 @@ public class ProjectElementus : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new[]
 		{
 			"EOSSDKHandler",
-			"OnlineSubsystem",
+			"EOSShared",
 			"OnlineSubsystemEOS",
-			"EOSVoiceChat"
+			"OnlineSubsystem",
+			"EOSVoiceChat",
+			"VoiceChat"
 		});
 	}
 }
