@@ -43,19 +43,19 @@ class UPEGameInstance final : public UGameInstance
 	GENERATED_BODY()
 
 public:
-	/* Function created for testing only */
+	/* Initialize the voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeVoiceChatFramework();
 
-	/* Function created for testing only */
+	/* Shutdown the voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void UninitializeVoiceChatFramework();
+	void ShutdownVoiceChatFramework();
 
-	/* Function created for testing only */
+	/* Connect the voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ConnectVoiceChatFramework();
 
-	/* Function created for testing only */
+	/* Disconnect the voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void DisconnectVoiceChatFramework();
 
@@ -73,11 +73,11 @@ protected:
 	void OnVoiceChatDisconnected(const FVoiceChatResult& Result);
 
 public:
-	/* Function created for testing only */
+	/* Login to voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void LoginToVoiceChatFramework(const int32 LocalUserNum);
 
-	/* Function created for testing only */
+	/* Logout from voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void LogoutFromVoiceChatFramework(const int32 LocalUserNum);
 
@@ -89,12 +89,12 @@ protected:
 	void OnVoiceChatLogout(const FString& PlayerName, const FVoiceChatResult& Result);
 
 public:
-	/* Function created for testing only */
+	/* Connect the user to a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString ChannelName,
 	                                      const FEOSVoiceChatChannelCredentials Credentials);
 
-	/* Function created for testing only */
+	/* Disconnect the user from a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void LeaveVoiceChatSessionChannel(const int32 LocalUserNum, const FString ChannelName);
 
@@ -106,44 +106,49 @@ protected:
 	void OnVoiceChatChannelLeft(const FString& ChannelName, const FVoiceChatResult& Result);
 
 public:
-	/* Function created for testing only */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool CreateDefaultSession(const FSessionSettingsHandler SessionSettings);
+	/* Create a new EOS Session */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Create EOS Session"))
+	bool CreateEOSSession(const FSessionSettingsHandler SessionSettings);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FCreateSessionDelegate CreateSessionDelegate;
 
-	/* Function created for testing only - Will call FindSessionsDelegate on complete */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool DefaultFindSessions(const int32 LocalUserNum, const bool bIsLANQuery = false, const int32 MaxResults = 100);
+	/* Find created EOS sessions */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Find EOS Sessions"))
+	bool FindEOSSessions(const int32 LocalUserNum, const bool bIsLANQuery = false, const int32 MaxResults = 100);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FFindSessionsDelegate FindSessionsDelegate;
 
-	/* Function created for testing only */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool CancelFindSessions();
+	/* Cancel the current in progress Find EOS Sessions task */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Cancel Find EOS Sessions"))
+	bool CancelFindEOSSessions();
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FCancelFindSessionsDelegate CancelFindSessionsDelegate;
 
-	/* Function created for testing only */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool DefaultJoinSession(const int32 LocalUserNum, const FSessionDataHandler SessionData);
+	/* Join the specified EOS Session */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Join EOS Session"))
+	bool JoinEOSSession(const int32 LocalUserNum, const FSessionDataHandler SessionData);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FJoinSessionDelegate JoinSessionDelegate;
 
-	/* Function created for testing only */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool DefaultDestroySession();
+	/* Destroy the current EOS Session */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Destroy EOS Session"))
+	bool DestroyEOSSession();
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FDestroySessionDelegate DestroySessionDelegate;
 
+	/* Change the level from server-side with ?listen param */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ServerTravelToLevel(const FName LevelName) const;
 
+	/* Force client to travel to session level */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ClientTravelToSessionLevel(const int32 LocalUserNum) const;
 
@@ -171,16 +176,16 @@ private:
 	FString EOSCurrentSessionInfo;
 
 public:
-	/* Function created for testing only */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool DefaultLogin(const int32 LocalUserNum, const FString Token, const int32 Port, const bool bUsePortal = false);
+	/* Login to Epic Online Services */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Login to EOS"))
+	bool EOSLogin(const int32 LocalUserNum, const FString Token, const int32 Port, const bool bUsePortal = false);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FUserLoginDelegate UserLoginDelegate;
 
-	/* Function created for testing only */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	bool DefaultLogout(const int32 LocalUserNum);
+	/* Logout from Epic Online Services */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Logout from EOS"))
+	bool EOSLogout(const int32 LocalUserNum);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FUserLogoutDelegate UserLogoutDelegate;

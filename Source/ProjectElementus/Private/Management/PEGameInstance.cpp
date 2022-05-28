@@ -18,7 +18,7 @@ void UPEGameInstance::InitializeVoiceChatFramework()
 	}
 }
 
-void UPEGameInstance::UninitializeVoiceChatFramework()
+void UPEGameInstance::ShutdownVoiceChatFramework()
 {
 	if (FEOSVoiceChat::Get()->IsInitialized())
 	{
@@ -265,17 +265,17 @@ void UPEGameInstance::OnVoiceChatChannelLeft(const FString& ChannelName, const F
 	OnVoiceChatChannelLeaveCompleteDelegate.Unbind();
 }
 
-bool UPEGameInstance::CreateDefaultSession(const FSessionSettingsHandler SessionSettings)
+bool UPEGameInstance::CreateEOSSession(const FSessionSettingsHandler SessionSettings)
 {
 	return EOS_CreateSession(0, SessionSettings.Settings);
 }
 
-bool UPEGameInstance::DefaultFindSessions(const int32 LocalUserNum, const bool bIsLANQuery, const int32 MaxResults)
+bool UPEGameInstance::FindEOSSessions(const int32 LocalUserNum, const bool bIsLANQuery, const int32 MaxResults)
 {
 	return EOS_FindSessions(LocalUserNum, bIsLANQuery, MaxResults);
 }
 
-bool UPEGameInstance::CancelFindSessions()
+bool UPEGameInstance::CancelFindEOSSessions()
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
@@ -291,12 +291,12 @@ bool UPEGameInstance::CancelFindSessions()
 	return false;
 }
 
-bool UPEGameInstance::DefaultJoinSession(const int32 LocalUserNum, const FSessionDataHandler SessionData)
+bool UPEGameInstance::JoinEOSSession(const int32 LocalUserNum, const FSessionDataHandler SessionData)
 {
 	return EOS_JoinSession(LocalUserNum, SessionData.Result);
 }
 
-bool UPEGameInstance::DefaultDestroySession()
+bool UPEGameInstance::DestroyEOSSession()
 {
 	return EOS_DestroySession();
 }
@@ -421,11 +421,11 @@ void UPEGameInstance::OnSessionsFound(const bool bResult)
 			SessionInterface->ClearOnFindSessionsCompleteDelegates(this);
 		}
 	}
-	
+
 	if (EOSSearchSettings.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s - Result: %d - Sessions found: %d"), *FString(__func__), bResult,
-			   EOSSearchSettings->SearchResults.Num());		
+		       EOSSearchSettings->SearchResults.Num());
 
 		TArray<FSessionDataHandler> SessionDataHandle_Arr;
 
@@ -434,7 +434,7 @@ void UPEGameInstance::OnSessionsFound(const bool bResult)
 			const FSessionDataHandler SessionDataHandle{SearchResult};
 
 			UE_LOG(LogTemp, Warning, TEXT("Session Found: %s - %s"), *SearchResult.GetSessionIdStr(),
-				   *SearchResult.Session.OwningUserName);
+			       *SearchResult.Session.OwningUserName);
 
 			SessionDataHandle_Arr.Add(SessionDataHandle);
 		}
@@ -522,8 +522,8 @@ void UPEGameInstance::OnSessionInviteAccepted(const bool bWasSuccessful, const i
 	}
 }
 
-bool UPEGameInstance::DefaultLogin(const int32 LocalUserNum, const FString Token, const int32 Port,
-                                   const bool bUsePortal)
+bool UPEGameInstance::EOSLogin(const int32 LocalUserNum, const FString Token, const int32 Port,
+                               const bool bUsePortal)
 {
 	return EOS_Login(LocalUserNum,
 	                 bUsePortal
@@ -531,7 +531,7 @@ bool UPEGameInstance::DefaultLogin(const int32 LocalUserNum, const FString Token
 		                 : FOnlineAccountCredentials("Developer", "localhost:" + FString::FromInt(Port), Token));
 }
 
-bool UPEGameInstance::DefaultLogout(const int32 LocalUserNum)
+bool UPEGameInstance::EOSLogout(const int32 LocalUserNum)
 {
 	return EOS_Logout(LocalUserNum);
 }

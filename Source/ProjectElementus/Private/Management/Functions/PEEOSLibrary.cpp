@@ -4,8 +4,10 @@
 
 #include "Management/Functions/PEEOSLibrary.h"
 #include "Interfaces/OnlineIdentityInterface.h"
-#include "EOSVoiceChatUser.h"
+#include "Interfaces/OnlinePresenceInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Interfaces/OnlineAchievementsInterface.h"
+#include "EOSVoiceChatUser.h"
 
 FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 {
@@ -28,7 +30,7 @@ FEOSVoiceChatUser* UPEEOSLibrary::GetEOSVoiceChatUser(const int8 LocalUserNum)
 	return nullptr;
 }
 
-void UPEEOSLibrary::MuteSessionVoiceChatUser(const int32 LocalUserNum, const bool bMute)
+void UPEEOSLibrary::MuteEOSSessionVoiceChatUser(const int32 LocalUserNum, const bool bMute)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Mute: %d"), *FString(__func__), LocalUserNum, bMute);
 
@@ -38,27 +40,27 @@ void UPEEOSLibrary::MuteSessionVoiceChatUser(const int32 LocalUserNum, const boo
 	}
 }
 
-FString UPEEOSLibrary::GetSessionOwningUserNameFromHandle(const FSessionDataHandler DataHandle)
+FString UPEEOSLibrary::GetEOSSessionOwningUserNameFromHandle(const FSessionDataHandler DataHandle)
 {
 	return DataHandle.Result.Session.OwningUserName;
 }
 
-FString UPEEOSLibrary::GetSessionIdFromHandle(const FSessionDataHandler DataHandle)
+FString UPEEOSLibrary::GetEOSSessionIdFromHandle(const FSessionDataHandler DataHandle)
 {
 	return DataHandle.Result.Session.GetSessionIdStr();
 }
 
-int32 UPEEOSLibrary::GetSessionPingFromHandle(const FSessionDataHandler DataHandle)
+int32 UPEEOSLibrary::GetEOSSessionPingFromHandle(const FSessionDataHandler DataHandle)
 {
 	return DataHandle.Result.PingInMs;
 }
 
-FName UPEEOSLibrary::GetGameSessionName()
+FName UPEEOSLibrary::GetEOSSessionName()
 {
 	return NAME_GameSession;
 }
 
-bool UPEEOSLibrary::IsUserLoggedIn(const int32 LocalUserNum)
+bool UPEEOSLibrary::IsUserLoggedInEOS(const int32 LocalUserNum)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
@@ -71,7 +73,7 @@ bool UPEEOSLibrary::IsUserLoggedIn(const int32 LocalUserNum)
 	return false;
 }
 
-bool UPEEOSLibrary::IsHostingSession()
+bool UPEEOSLibrary::IsHostingEOSSession()
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
@@ -87,7 +89,7 @@ bool UPEEOSLibrary::IsHostingSession()
 	return false;
 }
 
-bool UPEEOSLibrary::IsUserInASession()
+bool UPEEOSLibrary::IsUserInAEOSSession()
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
@@ -100,18 +102,18 @@ bool UPEEOSLibrary::IsUserInASession()
 	return false;
 }
 
-FSessionSettingsHandler UPEEOSLibrary::GenerateSessionSettings(const int32 NumPublicConnections,
-                                                               const int32 NumPrivateConnections,
-                                                               const bool bShouldAdvertise,
-                                                               const bool bAllowJoinInProgress,
-                                                               const bool bIsLANMatch, const bool bIsDedicated,
-                                                               const bool bUsesStats, const bool bAllowInvites,
-                                                               const bool bUsesPresence,
-                                                               const bool bAllowJoinViaPresence,
-                                                               const bool bAllowJoinViaPresenceFriendsOnly,
-                                                               const bool bAntiCheatProtected,
-                                                               const bool bUseLobbiesIfAvailable,
-                                                               const bool bUseLobbiesVoiceChatIfAvailable)
+FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 NumPublicConnections,
+                                                                  const int32 NumPrivateConnections,
+                                                                  const bool bShouldAdvertise,
+                                                                  const bool bAllowJoinInProgress,
+                                                                  const bool bIsLANMatch, const bool bIsDedicated,
+                                                                  const bool bUsesStats, const bool bAllowInvites,
+                                                                  const bool bUsesPresence,
+                                                                  const bool bAllowJoinViaPresence,
+                                                                  const bool bAllowJoinViaPresenceFriendsOnly,
+                                                                  const bool bAntiCheatProtected,
+                                                                  const bool bUseLobbiesIfAvailable,
+                                                                  const bool bUseLobbiesVoiceChatIfAvailable)
 {
 	FOnlineSessionSettings SessionSettings;
 	SessionSettings.NumPublicConnections = NumPublicConnections;
@@ -132,4 +134,55 @@ FSessionSettingsHandler UPEEOSLibrary::GenerateSessionSettings(const int32 NumPu
 	SessionSettings.Set(SEARCH_KEYWORDS, FString("ProjectElementus"), EOnlineDataAdvertisementType::ViaOnlineService);
 
 	return FSessionSettingsHandler{SessionSettings};
+}
+
+void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString PresenceText, const bool bOnline)
+{
+	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	{
+		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
+		{
+			if (const IOnlinePresencePtr PresenceInterface = OnlineSubsystem->GetPresenceInterface())
+			{
+				FOnlineUserPresenceStatus NewStatus;
+				NewStatus.Properties.Add(DefaultPresenceKey);
+				NewStatus.State = bOnline ? EOnlinePresenceState::Online : EOnlinePresenceState::Offline;
+				NewStatus.StatusStr = PresenceText;
+
+				PresenceInterface->SetPresence(*IdentityInterface->GetUniquePlayerId(LocalUserNum).Get(), NewStatus);
+			}
+		}
+	}
+}
+
+void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchievementMod Modifier, const FName StatName,
+                                        const float Percentage)
+{
+	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	{
+		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
+		{
+			if (const IOnlineAchievementsPtr AchievementsInterface = OnlineSubsystem->GetAchievementsInterface())
+			{
+				FOnlineAchievementsWriteRef NewAchievement = MakeShareable(new FOnlineAchievementsWrite());
+				
+				switch (Modifier)
+				{
+				case EAchievementMod::Set:
+					NewAchievement->SetFloatStat(StatName, Percentage);
+					break;
+				case EAchievementMod::Add:
+					NewAchievement->IncrementFloatStat(StatName, Percentage);
+					break;
+				case EAchievementMod::Subtract:
+					NewAchievement->DecrementFloatStat(StatName, Percentage);
+					break;
+				default: break;
+				}
+
+				AchievementsInterface->WriteAchievements(*IdentityInterface->GetUniquePlayerId(LocalUserNum).Get(),
+				                                         NewAchievement);
+			}
+		}
+	}
 }
