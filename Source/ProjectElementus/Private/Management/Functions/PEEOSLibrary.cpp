@@ -164,8 +164,11 @@ void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchieve
 		{
 			if (const IOnlineAchievementsPtr AchievementsInterface = OnlineSubsystem->GetAchievementsInterface())
 			{
-				FOnlineAchievementsWriteRef NewAchievement = MakeShareable(new FOnlineAchievementsWrite());
-				
+				UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Modifier: %d; Stat Name: %s; Percentage: %f"),
+				       *FString(__func__), LocalUserNum, Modifier, *StatName.ToString(), Percentage);
+
+				const FOnlineAchievementsWritePtr NewAchievement = MakeShareable(new FOnlineAchievementsWrite());
+
 				switch (Modifier)
 				{
 				case EAchievementMod::Set:
@@ -180,8 +183,19 @@ void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchieve
 				default: break;
 				}
 
-				AchievementsInterface->WriteAchievements(*IdentityInterface->GetUniquePlayerId(LocalUserNum).Get(),
-				                                         NewAchievement);
+				FOnlineAchievementsWriteRef WriteObject = NewAchievement.ToSharedRef();
+
+				AchievementsInterface->WriteAchievements(
+					*IdentityInterface->GetUniquePlayerId(LocalUserNum).Get(),
+					WriteObject,
+					FOnAchievementsWrittenDelegate::CreateLambda(
+						[](const FUniqueNetId& UserID, const bool bResult)
+						{
+							UE_LOG(LogTemp, Log,
+							       TEXT("WriteAchievements - User ID: %s; Result: %d"),
+							       *UserID.ToString(),
+							       bResult);
+						}));
 			}
 		}
 	}
