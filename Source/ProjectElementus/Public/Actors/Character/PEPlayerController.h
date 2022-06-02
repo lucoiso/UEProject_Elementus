@@ -7,11 +7,9 @@
 #include "CoreMinimal.h"
 #include "InputTriggers.h"
 #include "AbilityInputBinding.h"
-#include "VoiceChat.h"
+#include "AbilitySystemInterface.h"
 #include "PEPlayerController.generated.h"
 
-class IVoiceChatUser;
-struct FEOSVoiceChatChannelCredentials;
 /**
  *
  */
@@ -52,12 +50,15 @@ public:
 	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const override;
 	// End of IAbilityInputBinding interface
 
-	/* Custom function to remove HUD from player screen */
-	UFUNCTION(Client, Unreliable)
-	void RemoveHUD();
-
 	UFUNCTION(NetMulticast, Unreliable)
 	void SetupControllerSpectator();
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void InitializeRespawn(const float InSeconds);
+
+protected:
+	UFUNCTION(Server, Reliable)
+	void RespawnAndPossess();
 
 private:
 	struct FAbilityInputData

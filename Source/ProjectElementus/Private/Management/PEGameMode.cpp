@@ -2,12 +2,14 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Management/ProjectElementusGameMode.h"
+#include "Management/PEGameMode.h"
 #include "Actors/Character/PEHUD.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/Character/PEPlayerController.h"
 
-AProjectElementusGameMode::AProjectElementusGameMode()
+APEGameMode::APEGameMode(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer),
+	  bCanRespawn(true)
 {
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBP_ClassRef(
 		TEXT("/Game/Main/Blueprints/Actors/Pawns/BP_Character_01"));

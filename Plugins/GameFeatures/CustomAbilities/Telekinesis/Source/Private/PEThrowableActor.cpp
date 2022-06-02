@@ -42,8 +42,7 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent* Hit
 	{
 		if (OtherActor->GetClass()->IsChildOf<APECharacter>())
 		{
-			if (APECharacter* Player = Cast<APECharacter>(OtherActor); ensureMsgf(
-				IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
+			if (APECharacter* Player = Cast<APECharacter>(OtherActor))
 			{
 				constexpr float ImpulseMultiplier = 5.f;
 
@@ -67,8 +66,7 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent* Hit
 
 void APEThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)
 {
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC); ensureMsgf(
-		IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
+	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

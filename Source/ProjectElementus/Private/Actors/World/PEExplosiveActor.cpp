@@ -60,8 +60,7 @@ void APEExplosiveActor::PerformExplosion()
 
 			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacter>())
 			{
-				if (APECharacter* Player = Cast<APECharacter>(Hit.GetActor()); ensureMsgf(
-					IsValid(Player), TEXT("%s have a invalid Player"), *GetName()))
+				if (APECharacter* Player = Cast<APECharacter>(Hit.GetActor()))
 				{
 					Player->LaunchCharacter(Velocity, true, true);
 
@@ -89,8 +88,7 @@ void APEExplosiveActor::PerformExplosion()
 
 void APEExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
 {
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC); ensureMsgf(
-		IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
+	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

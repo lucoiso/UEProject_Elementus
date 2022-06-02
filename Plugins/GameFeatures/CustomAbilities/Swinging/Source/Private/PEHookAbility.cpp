@@ -101,8 +101,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 
 void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 {
-	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()); IsValid(Player) && TaskHandle.
-		IsValid())
+	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
 	{
 		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() *
 			HookIntensity;
@@ -113,8 +112,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 		{
 			TaskHandle->GetHitResult().GetComponent()->AddImpulse(-1.f * ImpulseVector);
 		}
-		else if (APECharacter* TargetPlayer = Cast<APECharacter>(TaskHandle->GetHitResult().GetActor()); IsValid(
-			TargetPlayer))
+		else if (APECharacter* TargetPlayer = Cast<APECharacter>(TaskHandle->GetHitResult().GetActor()))
 		{
 			TargetPlayer->LaunchCharacter(-1.f * ImpulseVector, false, true);
 		}

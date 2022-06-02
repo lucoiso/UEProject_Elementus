@@ -49,7 +49,7 @@ protected:
 	TArray<FGameplayEffectGroupedData> ExplosionEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	TArray<UNiagaraSystem*> ExplosionVFXs;
+	TArray<TObjectPtr<UNiagaraSystem>> ExplosionVFXs;
 
 private:
 	void ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC);

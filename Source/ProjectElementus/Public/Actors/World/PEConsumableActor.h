@@ -38,13 +38,13 @@ protected:
 	void PerformConsumption(class UAbilitySystemComponent* TargetABSC);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	UPEConsumableData* ConsumableData;
+	TObjectPtr<UPEConsumableData> ConsumableData;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	UStaticMeshComponent* ObjectMesh;
+	TObjectPtr<UStaticMeshComponent> ObjectMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	class UNiagaraComponent* ObjectVFX;
+	TObjectPtr<class UNiagaraComponent> ObjectVFX;
 
 private:
 #if WITH_EDITOR

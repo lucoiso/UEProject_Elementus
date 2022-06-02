@@ -3,11 +3,11 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/PEAssetManager.h"
-#include "GAS/System/PEAbilitySystemGlobals.h"
+#include "AbilitySystemGlobals.h"
 
 void UPEAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
 
-	UPEAbilitySystemGlobals::Get().InitGlobalData();
+	UAbilitySystemGlobals::Get().InitGlobalData();
 }

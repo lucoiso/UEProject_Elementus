@@ -126,8 +126,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 
 	bIsFinished = true;
 
-	if (UPrimitiveComponent* GrabbedPrimitive_Temp = PhysicsHandle->GetGrabbedComponent(); ensureMsgf(
-		IsValid(GrabbedPrimitive_Temp), TEXT("%s have a invalid Owner"), *GetName()))
+	if (UPrimitiveComponent* GrabbedPrimitive_Temp = PhysicsHandle->GetGrabbedComponent())
 	{
 		PhysicsHandle->ReleaseComponent();
 
@@ -150,8 +149,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 
 		GrabbedPrimitive_Temp->SetAllPhysicsLinearVelocity(Velocity);
 
-		if (APEThrowableActor* Throwable = Cast<APEThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor());
-			IsValid(Throwable))
+		if (APEThrowableActor* Throwable = Cast<APEThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor()))
 		{
 			Throwable->ThrowSetup(Ability->GetAvatarActorFromActorInfo());
 		}

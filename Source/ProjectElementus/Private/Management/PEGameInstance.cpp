@@ -309,7 +309,7 @@ void UPEGameInstance::ServerTravelToLevel(const FName LevelName) const
 void UPEGameInstance::ClientTravelToSessionLevel(const int32 LocalUserNum) const
 {
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), LocalUserNum);
-		IsValid(PlayerController) && !EOSCurrentSessionInfo.IsEmpty())
+		!EOSCurrentSessionInfo.IsEmpty())
 	{
 		PlayerController->ClientTravel(EOSCurrentSessionInfo, TRAVEL_Absolute);
 	}

@@ -68,7 +68,7 @@ protected:
 
 	/* Single Montage to play with ActivateWaitMontageTask function - You can mix this with ActivateWaitGameplayEventTask function */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	UAnimMontage* AbilityAnimation;
+	TObjectPtr<UAnimMontage> AbilityAnimation;
 
 private:
 	virtual void

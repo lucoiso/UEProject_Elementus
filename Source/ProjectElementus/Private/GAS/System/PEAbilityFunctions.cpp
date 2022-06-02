@@ -3,7 +3,6 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/System/PEAbilityFunctions.h"
-#include "GAS/System/PEAbilitySystemGlobals.h"
 #include "AbilitySystemComponent.h"
 
 FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSingleHitResult(
@@ -47,7 +46,7 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromAc
 
 void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
                                       const TSubclassOf<UGameplayAbility> Ability,
-                                      const FName InputId,
+                                      const FName InputId, const UEnum* EnumerationClass,
                                       const bool bTryRemoveExistingAbilityWithInput = true,
                                       const bool bTryRemoveExistingAbilityWithClass = true)
 {
@@ -59,9 +58,7 @@ void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
 			return;
 		}
 
-		const uint32 InputID =
-			UPEAbilitySystemGlobals::Get().GetMainInputIDEnum()->GetValueByName(
-				InputId, EGetByNameFlags::CheckAuthoredName);
+		const uint32 InputID = EnumerationClass->GetValueByName(InputId, EGetByNameFlags::CheckAuthoredName);
 		if (InputID == INDEX_NONE)
 		{
 			return;

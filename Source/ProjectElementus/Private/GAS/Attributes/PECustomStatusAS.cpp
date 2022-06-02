@@ -5,7 +5,6 @@
 #include "GAS/Attributes/PECustomStatusAS.h"
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "GAS/System/PEAbilitySystemGlobals.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystemComponent.h"
@@ -19,7 +18,12 @@ UPECustomStatusAS::UPECustomStatusAS(const FObjectInitializer& ObjectInitializer
 	  , JumpRate(1.f)
 	  , Gold(0.f)
 {
-	UAttributeSet::InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetCustomStatusAttributeMetaData());
+	static const ConstructorHelpers::FObjectFinder<UDataTable> CustomAttributesMetaData_ObjRef(
+		TEXT("/Game/Main/GAS/Data/DT_CustomStatusAS"));
+	if constexpr (&CustomAttributesMetaData_ObjRef.Object != nullptr)
+	{
+		UAttributeSet::InitFromMetaDataTable(CustomAttributesMetaData_ObjRef.Object);
+	}
 }
 
 void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue,
@@ -29,11 +33,9 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 	if (Attribute == GetSpeedRateAttribute() || Attribute == GetJumpRateAttribute())
 	{
-		if (const APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor());
-			IsValid(State))
+		if (const APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor()))
 		{
-			if (const APECharacter* Character = State->GetPawn<APECharacter>();
-				IsValid(Character))
+			if (const APECharacter* Character = State->GetPawn<APECharacter>())
 			{
 				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement();
 					ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))

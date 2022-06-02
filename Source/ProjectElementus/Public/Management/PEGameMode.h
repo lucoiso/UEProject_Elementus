@@ -6,16 +6,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "ProjectElementusGameMode.generated.h"
+#include "PEGameMode.generated.h"
 
 /**
  *
  */
 UCLASS(MinimalAPI, Category = "Project Elementus | Classes | Management")
-class AProjectElementusGameMode final : public AGameModeBase
+class APEGameMode final : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AProjectElementusGameMode();
+	explicit APEGameMode(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	bool bCanRespawn;
 };

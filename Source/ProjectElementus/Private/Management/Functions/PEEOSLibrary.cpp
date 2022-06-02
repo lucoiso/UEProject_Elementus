@@ -192,7 +192,7 @@ void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchieve
 						[](const FUniqueNetId& UserID, const bool bResult)
 						{
 							UE_LOG(LogTemp, Log,
-							       TEXT("WriteAchievements - User ID: %s; Result: %d"),
+							       TEXT("WriteEOSAchievement - User ID: %s; Result: %d"),
 							       *UserID.ToString(),
 							       bResult);
 						}));
