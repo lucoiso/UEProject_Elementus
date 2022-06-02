@@ -36,12 +36,11 @@ Please give some feedback and feel invited to test the project and help me with 
 
 1. Gameplay Ability System;
 2. Modular Game Features plugins;
-3. One File per Actor;
-4. World Partition;
-5. Enhanced Input;
-6. Networking/Replication/Multiplayer;
-7. Custom plugins;
-8. Etc.
+3. Epic Online Services;
+4. Enhanced Input;
+5. Networking/Replication/Multiplayer;
+6. Custom plugins;
+7. And others.
 
 **Both C/C++ (a lot) and Blueprints!**
 
