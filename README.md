@@ -1,6 +1,7 @@
 # Project Elementus - WiP
 
-![image](https://user-images.githubusercontent.com/77353979/165977616-6a2146e4-f564-4013-a8dc-c0a7815f341a.png)
+![HighresScreenshot00000](https://user-images.githubusercontent.com/77353979/171550569-09dc7c78-c921-4b60-92a1-0a50b9e8ccca.png)
+
 
 **This project is being built on Unreal Engine 5.**
 
