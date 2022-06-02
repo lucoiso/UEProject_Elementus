@@ -3,7 +3,6 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Attributes/PEBasicStatusAS.h"
-#include "GAS/System/PEAbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemComponent.h"
@@ -18,7 +17,19 @@ UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer)
 	  , Mana(100.f)
 	  , MaxMana(100.f)
 {
-	UAttributeSet::InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetMainStatusAttributeMetaData());
+	static const ConstructorHelpers::FObjectFinder<UDataTable> MainAttributesMetaData_ObjRef(
+		TEXT("/Game/Main/GAS/Data/DT_BasicStatusAS"));
+	if constexpr (&MainAttributesMetaData_ObjRef.Object != nullptr)
+	{
+		UAttributeSet::InitFromMetaDataTable(MainAttributesMetaData_ObjRef.Object);
+	}
+
+	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffect_ClassRef(
+		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
+	if constexpr (&DeathGameplayEffect_ClassRef.Class != nullptr)
+	{
+		GlobalDeathEffect = DeathGameplayEffect_ClassRef.Class;
+	}
 }
 
 void UPEBasicStatusAS::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -50,12 +61,14 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 	{
 		if (Attribute == GetHealthAttribute())
 		{
-			GetOwningAbilitySystemComponent()->CancelAllAbilities();
+			GetOwningAbilitySystemComponentChecked()->CancelAllAbilities();
 
-			GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(
-				Cast<UGameplayEffect>(UPEAbilitySystemGlobals::Get().GetGlobalDeathEffect()), 1.f,
-				GetOwningAbilitySystemComponent()->
-				MakeEffectContext());
+			if (!GlobalDeathEffect.IsNull())
+			{
+				GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(
+					GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>(), 1.f,
+					GetOwningAbilitySystemComponent()->MakeEffectContext());
+			}
 		}
 
 		if (Attribute == GetStaminaAttribute())
@@ -65,7 +78,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 				FGameplayTag::RequestGameplayTag(FName("GameplayAbility.State.CostWhileActive.Stamina"))
 			};
 
-			GetOwningAbilitySystemComponent()->CancelAbilities(&StaminaCostTagContainer);
+			GetOwningAbilitySystemComponentChecked()->CancelAbilities(&StaminaCostTagContainer);
 		}
 
 		if (Attribute == GetManaAttribute())
@@ -75,7 +88,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 				FGameplayTag::RequestGameplayTag(FName("GameplayAbility.State.CostWhileActive.Mana"))
 			};
 
-			GetOwningAbilitySystemComponent()->CancelAbilities(&ManaCostTagContainer);
+			GetOwningAbilitySystemComponentChecked()->CancelAbilities(&ManaCostTagContainer);
 		}
 	}
 }
@@ -129,11 +142,10 @@ void UPEBasicStatusAS::AdjustAttributeForMaxChange(const FGameplayAttributeData&
                                                    const FGameplayAttributeData& MaxAttribute, const float NewMaxValue,
                                                    const FGameplayAttribute& AffectedAttributeProperty) const
 {
-	if (UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent(); ensureMsgf(
-		IsValid(AbilityComp), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
+	if (UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent())
 	{
-		if (const float CurrentMaxValue = MaxAttribute.GetCurrentValue(); !FMath::IsNearlyEqual(
-			CurrentMaxValue, NewMaxValue) && AbilityComp)
+		if (const float CurrentMaxValue = MaxAttribute.GetCurrentValue();
+			!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
 		{
 			const float CurrentValue = AffectedAttribute.GetCurrentValue();
 			const float NewDelta = CurrentMaxValue > 0.f

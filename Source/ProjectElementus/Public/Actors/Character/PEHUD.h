@@ -21,9 +21,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void HideHUD();
-
 protected:
 	/* A Blueprint Widget class to use as HUD */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Project Elementus | Properties")

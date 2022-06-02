@@ -132,7 +132,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 			GetCostGameplayEffect()->GetClass(), ActorInfo->AbilitySystemComponent.Get());
 	}
 
-	if (AbilityActiveTime <= 0)
+	if (AbilityActiveTime <= 0.f)
 	{
 		for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
 		{
@@ -146,7 +146,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 		CancelationTimerHandle.Invalidate();
 	}
 
-	if (UAbilitySystemComponent* Comp = ActorInfo->AbilitySystemComponent.Get(); IsValid(Comp))
+	if (UAbilitySystemComponent* Comp = ActorInfo->AbilitySystemComponent.Get())
 	{
 		Comp->RemoveLooseGameplayTags(AbilityExtraTags);
 	}
@@ -325,7 +325,7 @@ void UPEGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APEP
 
 void UPEGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const
 {
-	if (ensureMsgf(IsValid(GetCooldownGameplayEffect()), TEXT("%s have a invalid CooldownGameplayEffect"), *GetName()))
+	if (IsValid(GetCooldownGameplayEffect()))
 	{
 		ABILITY_VLOG(this, Display, TEXT("Removing %s ability cooldown."), *GetName());
 

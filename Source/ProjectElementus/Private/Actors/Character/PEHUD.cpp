@@ -29,12 +29,3 @@ void APEHUD::BeginPlay()
 
 	Super::BeginPlay();
 }
-
-void APEHUD::HideHUD()
-{
-	if (HUDHandle.IsValid())
-	{
-		HUDHandle->RemoveFromParent();
-		HUDHandle.Reset();
-	}
-}

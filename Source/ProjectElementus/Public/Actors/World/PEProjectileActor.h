@@ -30,10 +30,10 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	USphereComponent* CollisionComponent;
+	TObjectPtr<USphereComponent> CollisionComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	UProjectileMovementComponent* ProjectileMovement;
+	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float ImpulseMultiplier = 1.f;

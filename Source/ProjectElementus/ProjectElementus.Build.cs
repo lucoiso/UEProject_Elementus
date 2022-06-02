@@ -14,6 +14,7 @@ public class ProjectElementus : ModuleRules
 		PublicDependencyModuleNames.AddRange(new[]
 		{
 			"Core",
+			"CoreOnline",
 			"CoreUObject",
 			"Engine",
 			"InputCore",
@@ -26,7 +27,18 @@ public class ProjectElementus : ModuleRules
 			"GameplayTags",
 			"GameplayTasks",
 			"GameFeatures",
-			"ModularFeatures_ExtraActions"
+			"ModularFeatures_ExtraActions",
+			"JsonUtilities"
+		});
+
+		PrivateDependencyModuleNames.AddRange(new[]
+		{
+			"EOSSDKHandler",
+			"EOSShared",
+			"OnlineSubsystemEOS",
+			"OnlineSubsystem",
+			"EOSVoiceChat",
+			"VoiceChat"
 		});
 	}
 }

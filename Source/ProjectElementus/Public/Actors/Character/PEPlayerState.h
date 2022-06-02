@@ -36,7 +36,7 @@ public:
 	explicit APEPlayerState(const FObjectInitializer& ObjectInitializer);
 
 private:
-	void DeathStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount);
+	void DeathStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
 	void StunStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
 
 protected:
@@ -50,7 +50,7 @@ protected:
 	/* Player associated Ability System Component */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
 		meta = (AllowPrivateAccess = "true"))
-	UPEAbilitySystemComponent* AbilitySystemComponent;
+	TObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
 
 public:
 	/* Returns associated Ability System Component */

@@ -8,8 +8,13 @@
 #include "EnhancedPlayerInput.h"
 #include "InputAction.h"
 #include "AbilitySystemComponent.h"
-#include "Actors/Character/PEHUD.h"
-#include "GAS/System/PEAbilitySystemGlobals.h"
+#include "Actors/Character/PEPlayerState.h"
+#include "Components/GameFrameworkComponentManager.h"
+#include "GameFramework/GameModeBase.h"
+#include "GameFramework/PlayerState.h"
+#include "GAS/System/PEAbilitySystemComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Management/PEGameInstance.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -23,22 +28,70 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	InputEnumHandle = UPEAbilitySystemGlobals::Get().GetMainInputIDEnum();
+	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(
+		TEXT("/Game/Main/GAS/Data/EN_AbilityInputID"));
+	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
+	{
+		InputEnumHandle = InputIDEnum_ObjRef.Object;
+	}
+}
+
+void APEPlayerController::InitializeRespawn(const float InSeconds)
+{
+	if (IsInState(NAME_Spectating))
+	{
+		if (InSeconds > 0.f)
+		{
+			FTimerDelegate TimerDelegate;
+			TimerDelegate.BindLambda([this]
+			{
+				if (IsValid(this))
+				{
+					RespawnAndPossess();
+				}
+			});
+
+			FTimerHandle Handle;
+			GetWorld()->GetTimerManager().SetTimer(Handle, TimerDelegate, InSeconds, false);
+		}
+		else
+		{
+			RespawnAndPossess();
+		}
+	}
+}
+
+void APEPlayerController::RespawnAndPossess_Implementation()
+{
+	if (const AActor* PlayerStart = GetWorld()->GetAuthGameMode()->FindPlayerStart(this))
+	{
+		if (const APEPlayerState* State = GetPlayerState<APEPlayerState>())
+		{
+			if (UPEAbilitySystemComponent* AbilitySystemComp_Ref =
+				CastChecked<UPEAbilitySystemComponent>(State->GetAbilitySystemComponent()))
+			{
+				AbilitySystemComp_Ref->RemoveActiveEffectsWithTags(
+					FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("State.Dead"))));
+			}
+		}
+
+		const FVector RespawnLocation = PlayerStart->GetActorLocation();
+		const FRotator RespawnRotation = PlayerStart->GetActorRotation();
+
+		if (APECharacter* SpawnedCharacter_Ref =
+			GetWorld()->SpawnActor<APECharacter>(RespawnLocation, RespawnRotation))
+		{
+			Possess(SpawnedCharacter_Ref);
+			ChangeState(NAME_Playing);
+			PlayerState->SetIsSpectator(false);
+		}
+	}
 }
 
 void APEPlayerController::SetupControllerSpectator_Implementation()
 {
-	RemoveHUD();
 	ChangeState(NAME_Spectating);
-}
-
-void APEPlayerController::RemoveHUD_Implementation()
-{
-	if (APEHUD* HUD_Temp = GetHUD<APEHUD>();
-		ensureMsgf(IsValid(HUD_Temp), TEXT("%s have a invalid HUD"), *GetName()))
-	{
-		HUD_Temp->HideHUD();
-	}
+	PlayerState->SetIsSpectator(true);
 }
 
 // Start of IAbilityInputBinding interface
@@ -90,8 +143,8 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action) const
 	                     *FString(__func__), InputID);
 
 	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>();
-		ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		           TEXT("%s have a invalid ControllerOwner"), *GetName()))
+		ensureMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()),
+		           TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputPressed(InputID);
 
@@ -125,11 +178,20 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 	                     *FString(__func__), InputID);
 
 	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>();
-		ensureMsgf(IsValid(ControllerOwner) && IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		           TEXT("%s have a invalid ControllerOwner"), *GetName()))
+		ensureMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()),
+		           TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
 	}
+}
+
+void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) const
+{
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
+	                     *FString(__func__),
+	                     *Value.ToString(), Value.GetMagnitude());
+
+	UPEEOSLibrary::MuteEOSSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
 }
 
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
@@ -189,12 +251,10 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 	                     *FString(__func__),
 	                     *Value.ToString(), Value.GetMagnitude());
 
-	if (APECharacter* ControllerOwner = GetPawn<APECharacter>();
-		ensureMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid ControllerOwner"), *GetName()))
+	if (APECharacter* ControllerOwner = GetPawn<APECharacter>())
 	{
-		if (ControllerOwner->CanJump() && !IsMoveInputIgnored())
-		{
-			ControllerOwner->Jump();
-		}
+		Value.Get<bool>()
+			? ControllerOwner->Jump()
+			: ControllerOwner->StopJumping();
 	}
 }

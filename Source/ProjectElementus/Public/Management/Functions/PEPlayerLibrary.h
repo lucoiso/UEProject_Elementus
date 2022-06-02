@@ -16,10 +16,10 @@ struct FPlayerInputBindingHandle
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(BlueprintReadWrite, Category = "Project Elementus | Properties")
-	APlayerController* PlayerController;
+	TObjectPtr<APlayerController> PlayerController = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Project Elementus | Properties")
-	int32 InputBindingHandle;
+	int32 InputBindingHandle = 0;
 };
 
 /**

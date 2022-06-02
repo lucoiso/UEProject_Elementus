@@ -9,7 +9,7 @@
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	  HookIntensity(100.f)
+	  HookIntensity(3000.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
@@ -101,11 +101,10 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 
 void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 {
-	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()); IsValid(Player) && TaskHandle.
-		IsValid())
+	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
 	{
 		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() *
-			HookIntensity * 25.f;
+			HookIntensity;
 
 		Player->LaunchCharacter(ImpulseVector, false, true);
 
@@ -113,8 +112,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 		{
 			TaskHandle->GetHitResult().GetComponent()->AddImpulse(-1.f * ImpulseVector);
 		}
-		else if (APECharacter* TargetPlayer = Cast<APECharacter>(TaskHandle->GetHitResult().GetActor()); IsValid(
-			TargetPlayer))
+		else if (APECharacter* TargetPlayer = Cast<APECharacter>(TaskHandle->GetHitResult().GetActor()))
 		{
 			TargetPlayer->LaunchCharacter(-1.f * ImpulseVector, false, true);
 		}

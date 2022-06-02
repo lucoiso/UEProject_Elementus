@@ -10,6 +10,7 @@
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
+class UPEAbilitySystemComponent;
 class UGameplayAbility;
 class UInputAction;
 class USpringArmComponent;
@@ -24,19 +25,18 @@ class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbili
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
+	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
+	TObjectPtr<UCameraComponent> FollowCamera;
 
 protected:
-	virtual void PossessedBy(AController* InputController) override;
+	virtual void PossessedBy(AController* InController) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void OnRep_Controller() override;
 
 private:
-	void InitializeABSC(const bool bOnRep);
-	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TWeakObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
 
 public:
 	explicit APECharacter(const FObjectInitializer& ObjectInitializer);
@@ -83,6 +83,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	void InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor);
+
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
@@ -111,7 +113,13 @@ private:
 	void Server_PerformDeath();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_ActivateRagdoll();
+	void Multicast_DeathSetup();
 
 	virtual void Landed(const FHitResult& Hit) override;
+
+#if WITH_EDITORONLY_DATA
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Debug",
+		meta = (AllowPrivateAccess = "true"))
+	bool bPrintAbilityFailure = false;
+#endif
 };

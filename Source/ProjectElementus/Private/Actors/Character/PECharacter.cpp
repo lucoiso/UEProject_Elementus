@@ -4,15 +4,15 @@
 
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
-#include "Actors/Character/PEPlayerState.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "AbilitySystemComponent.h"
 #include "AbilitySystemLog.h"
+#include "Actors/Character/PEPlayerState.h"
 #include "GAS/Attributes/PEBasicStatusAS.h"
+#include "GAS/System/PEAbilitySystemComponent.h"
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -31,7 +31,7 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
 	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(
-		TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny"));
+		TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny_Simple"));
 	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh_ObjRef.Object);
@@ -74,18 +74,31 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 }
 
-void APECharacter::PossessedBy(AController* InputController)
+void APECharacter::PossessedBy(AController* InController)
 {
-	Super::PossessedBy(InputController);
+	Super::PossessedBy(InController);
 
-	InitializeABSC(false);
+	if (InController->IsPlayerController())
+	{
+		if (APEPlayerState* State = GetPlayerStateChecked<APEPlayerState>())
+		{
+			InitializeAbilitySystemComponent(State->GetAbilitySystemComponent(), State);
+		}
+	}
+	else
+	{
+		// Bot
+	}
 }
 
 void APECharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	InitializeABSC(true);
+	if (APEPlayerState* State = GetPlayerState<APEPlayerState>())
+	{
+		InitializeAbilitySystemComponent(State->GetAbilitySystemComponent(), State);
+	}
 }
 
 void APECharacter::OnRep_Controller()
@@ -95,34 +108,9 @@ void APECharacter::OnRep_Controller()
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->RefreshAbilityActorInfo();
-
-		const FGameplayTag DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
-		AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(
+			FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("State.Dead"))));
 	}
-}
-
-void APECharacter::InitializeABSC(const bool bOnRep)
-{
-	if (APEPlayerState* State = GetPlayerState<APEPlayerState>();
-		IsValid(State))
-	{
-		AbilitySystemComponent = State->GetAbilitySystemComponent();
-
-		if (ensureMsgf(AbilitySystemComponent.IsValid(), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
-		{
-			bOnRep
-				? AbilitySystemComponent->InitAbilityActorInfo(State, this)
-				: State->GetAbilitySystemComponent()->InitAbilityActorInfo(State, this);
-		}
-
-		if (!IsPlayerControlled())
-		{
-			AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Data.Game.Bot"));
-		}
-	}
-
-	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-		this, UGameFrameworkComponentManager::NAME_GameActorReady);
 }
 
 float APECharacter::GetDefaultWalkSpeed() const
@@ -160,6 +148,15 @@ UAbilitySystemComponent* APECharacter::GetAbilitySystemComponent() const
 	return AbilitySystemComponent.Get();
 }
 
+void APECharacter::InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor)
+{
+	AbilitySystemComponent = CastChecked<UPEAbilitySystemComponent>(InABSC);
+	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, this);
+
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
+		this, UGameFrameworkComponentManager::NAME_GameActorReady);
+}
+
 void APECharacter::PreInitializeComponents()
 {
 	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
@@ -171,12 +168,23 @@ void APECharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
+	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->AbilityActivatedCallbacks.AddUFunction(this, "AbilityActivated");
+		AbilitySystemComponent->AbilityCommittedCallbacks.AddUFunction(this, "AbilityCommited");
+		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, "AbilityEnded");
+		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, "AbilityFailed");
+	}
+
 	if (IsValid(GetMesh()))
 	{
 		const auto DynamicColor_Lambda = [&](const uint8 Index, const FLinearColor Color) -> void
 		{
-			if (UMaterialInstanceDynamic* DynMat = GetMesh()->CreateDynamicMaterialInstance(Index);
-				IsValid(DynMat))
+			if (UMaterialInstanceDynamic* DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
 			{
 				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
 			}
@@ -190,30 +198,13 @@ void APECharacter::BeginPlay()
 		DynamicColor_Lambda(0, DestColor);
 		DynamicColor_Lambda(1, DestColor);
 	}
-
-	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
-	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
-
-	if (AbilitySystemComponent.IsValid())
-	{
-		AbilitySystemComponent->AbilityActivatedCallbacks.AddUFunction(this, "AbilityActivated");
-		AbilitySystemComponent->AbilityCommittedCallbacks.AddUFunction(this, "AbilityCommited");
-		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, "AbilityEnded");
-		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, "AbilityFailed");
-	}
 }
 
 void APECharacter::PerformDeath()
 {
-	if (!HasAuthority())
-	{
-		return;
-	}
+	Multicast_DeathSetup();
 
-	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-
-	Multicast_ActivateRagdoll();
+	bAlwaysRelevant = false;
 
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindLambda([&]
@@ -233,8 +224,10 @@ void APECharacter::Server_PerformDeath_Implementation()
 	Destroy();
 }
 
-void APECharacter::Multicast_ActivateRagdoll_Implementation()
+void APECharacter::Multicast_DeathSetup_Implementation()
 {
+	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
+
 	if (IsValid(GetMesh()) && IsValid(GetCharacterMovement()) && IsValid(GetCapsuleComponent()))
 	{
 		GetCharacterMovement()->DisableMovement();
@@ -263,7 +256,6 @@ void APECharacter::Landed(const FHitResult& Hit)
 
 void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason)
 {
-	ABILITY_VLOG(this, Warning, TEXT("=========================================================="));
 	ABILITY_VLOG(this, Warning,
 	             TEXT("Ability %s failed to activate. Owner: %s; Reasons:"), *Ability->GetName(), *GetName());
 
@@ -271,13 +263,17 @@ void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
 	{
 		ABILITY_VLOG(this, Warning, TEXT("%s"), *i.ToString());
 	}
-	ABILITY_VLOG(this, Warning, TEXT("=========================================================="));
 
-	ABILITY_VLOG(this, Warning,
-	             TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ==================="));
+#if WITH_EDITOR
+	if (bPrintAbilityFailure)
+	{
+		ABILITY_VLOG(this, Warning,
+		             TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
 
-	AbilitySystemComponent->PrintDebug();
+		AbilitySystemComponent->PrintDebug();
 
-	ABILITY_VLOG(this, Warning,
-	             TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ==================="));
+		ABILITY_VLOG(this, Warning,
+		             TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
+	}
+#endif
 }

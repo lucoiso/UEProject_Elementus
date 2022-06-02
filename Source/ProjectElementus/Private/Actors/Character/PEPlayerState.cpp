@@ -23,7 +23,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	NetUpdateFrequency = 33.333f;
+	NetUpdateFrequency = 100.f;
 }
 
 void APEPlayerState::BeginPlay()
@@ -46,10 +46,10 @@ void APEPlayerState::BeginPlay()
 
 APEPlayerController* APEPlayerState::GetPEPlayerController() const
 {
-	return Cast<APEPlayerController>(GetOwner());
+	return Cast<APEPlayerController>(GetPlayerController());
 }
 
-void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount)
+void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
 	if (!HasAuthority())
 	{
@@ -71,7 +71,6 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 				Player_Temp->PerformDeath();
 			}
 
-			SetIsSpectator(true);
 			Controller_Temp->SetupControllerSpectator();
 		}
 	}
@@ -90,7 +89,7 @@ void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, c
 
 	if (ensureMsgf(IsValid(GetPlayerController()), TEXT("%s have a invalid Player"), *GetName()))
 	{
-		GetOwningController()->SetIgnoreMoveInput(NewCount != 0);
+		GetPlayerController()->SetIgnoreMoveInput(NewCount != 0);
 	}
 }
 

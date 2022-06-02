@@ -5,7 +5,6 @@
 #include "GAS/Attributes/PELevelingAS.h"
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
-#include "GAS/System/PEAbilitySystemGlobals.h"
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemComponent.h"
@@ -13,27 +12,39 @@
 
 UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-	  , CurrentLevel(1.f)
-	  , CurrentExperience(1.f)
+	  , CurrentLevel(0.f)
+	  , CurrentExperience(0.f)
 	  , RequiredExperience(1.f)
 {
-	UAttributeSet::InitFromMetaDataTable(UPEAbilitySystemGlobals::Get().GetLevelingAttributeMetaData());
+	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingAttributesMetaData_ObjRef(
+		TEXT("/Game/Main/GAS/Data/DT_LevelingAS"));
+	if constexpr (&LevelingAttributesMetaData_ObjRef.Object != nullptr)
+	{
+		UAttributeSet::InitFromMetaDataTable(LevelingAttributesMetaData_ObjRef.Object);
+	}
+
+	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingBonus_ObjRef(
+		TEXT("/Game/Main/GAS/Data/DT_LevelingBonus"));
+	if constexpr (&LevelingBonus_ObjRef.Object != nullptr)
+	{
+		LevelingBonusData = LevelingBonus_ObjRef.Object;
+	}
 }
 
 void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue, const float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
-	if (Attribute == GetCurrentExperienceAttribute() && NewValue >= GetRequiredExperience())
+	if (Attribute == GetCurrentExperienceAttribute()
+		&& NewValue >= GetRequiredExperience()
+		&& !LevelingBonusData.IsNull())
 	{
-		UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
+		UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponentChecked();
 
-		if (const UDataTable* LevelingBonus_Table = UPEAbilitySystemGlobals::Get().GetLevelingBonusData();
-			ensureMsgf(IsValid(AbilityComp)
-			           && IsValid(LevelingBonus_Table), TEXT("%s have a invalid Parameters"), *GetName()))
+		if (const UDataTable* LevelingBonus_Table = LevelingBonusData.LoadSynchronous())
 		{
 			const FPELevelingData LevelingInfo =
-				*LevelingBonus_Table->FindRow<FPELevelingData>(FName(*FString::FromInt(GetCurrentLevel() + 1)), "");
+				*LevelingBonus_Table->FindRow<FPELevelingData>(*FString::FromInt(GetCurrentLevel() + 1), "");
 
 			if constexpr (&LevelingInfo != nullptr)
 			{

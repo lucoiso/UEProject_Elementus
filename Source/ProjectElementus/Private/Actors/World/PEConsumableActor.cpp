@@ -32,8 +32,7 @@ APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializ
 
 void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC)
 {
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
-		ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
+	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
 		if (GetLocalRole() != ROLE_Authority)
 		{

@@ -11,8 +11,8 @@ FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* 
 {
 	if (IsValid(Controller))
 	{
-		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(
-				Controller->InputComponent.Get());
+		if (UEnhancedInputComponent* EnhancedInputComponent =
+				Cast<UEnhancedInputComponent>(Controller->InputComponent.Get());
 			ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"),
 			                 *Controller->GetName()))
 		{
@@ -34,8 +34,7 @@ void UPEPlayerLibrary::RemoveDynamicInput(const FPlayerInputBindingHandle Bindin
 	{
 		if (UEnhancedInputComponent* EnhancedInputComponent =
 				Cast<UEnhancedInputComponent>(BindingHandle.PlayerController->InputComponent.Get());
-			ensureAlwaysMsgf(IsValid(EnhancedInputComponent),
-			                 TEXT("%s have a invalid EnhancedInputComponent"),
+			ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"),
 			                 *BindingHandle.PlayerController->GetName()))
 		{
 			EnhancedInputComponent->RemoveBindingByHandle(BindingHandle.InputBindingHandle);
@@ -48,12 +47,10 @@ void UPEPlayerLibrary::AddDynamicMapping(APlayerController* Controller,
 {
 	if (IsValid(Controller))
 	{
-		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer();
-			IsValid(LocalPlayer))
+		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer())
 		{
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-					LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-				IsValid(Subsystem))
+				LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{
 				Subsystem->AddMappingContext(InputMapping, Priority);
 			}
@@ -65,12 +62,10 @@ void UPEPlayerLibrary::RemoveDynamicMapping(APlayerController* Controller, UInpu
 {
 	if (IsValid(Controller))
 	{
-		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer();
-			IsValid(LocalPlayer))
+		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer())
 		{
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-					LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-				IsValid(Subsystem))
+				LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{
 				Subsystem->RemoveMappingContext(InputMapping);
 			}
