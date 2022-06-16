@@ -13,41 +13,43 @@ UPEAbilitySystemComponent::UPEAbilitySystemComponent(const FObjectInitializer& O
 
 void UPEAbilitySystemComponent::ApplyEffectGroupedDataToSelf(FGameplayEffectGroupedData GroupedData)
 {
-	if (IsOwnerActorAuthoritative())
+	if (!IsOwnerActorAuthoritative())
 	{
-		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f,
-		                                                               MakeEffectContext());
+		return;
+	}
 
-		for (const TPair<FGameplayTag, float>& StackedData : GroupedData.SetByCallerStackedData)
-		{
-			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key,
-			                                               StackedData.Value);
-		}
+	const FGameplayEffectSpecHandle& SpecHandle =
+		MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
 
-		if (SpecHandle.IsValid())
-		{
-			ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
-		}
+	for (const TPair<FGameplayTag, float>& StackedData : GroupedData.SetByCallerStackedData)
+	{
+		SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key, StackedData.Value);
+	}
+
+	if (SpecHandle.IsValid())
+	{
+		ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 	}
 }
 
 void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData,
                                                                UAbilitySystemComponent* TargetABSC)
 {
-	if (IsOwnerActorAuthoritative())
+	if (!IsOwnerActorAuthoritative())
 	{
-		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f,
-		                                                               MakeEffectContext());
+		return;
+	}
 
-		for (const TPair<FGameplayTag, float>& StackedData : GroupedData.SetByCallerStackedData)
-		{
-			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key,
-			                                               StackedData.Value);
-		}
+	const FGameplayEffectSpecHandle& SpecHandle =
+		MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
 
-		if (SpecHandle.IsValid())
-		{
-			ApplyGameplayEffectSpecToTarget(*SpecHandle.Data, TargetABSC);
-		}
+	for (const TPair<FGameplayTag, float>& StackedData : GroupedData.SetByCallerStackedData)
+	{
+		SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key, StackedData.Value);
+	}
+
+	if (SpecHandle.IsValid())
+	{
+		ApplyGameplayEffectSpecToTarget(*SpecHandle.Data, TargetABSC);
 	}
 }

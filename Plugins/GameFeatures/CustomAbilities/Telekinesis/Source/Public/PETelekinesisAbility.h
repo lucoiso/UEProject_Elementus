@@ -20,6 +20,7 @@ class UPETelekinesisAbility final : public UPEGameplayAbility
 public:
 	explicit UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer);
 
+	/* Float value that represents the force that will be applied to the grabbed object when throwed */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float ThrowIntensity;
 

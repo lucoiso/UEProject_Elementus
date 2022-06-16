@@ -42,15 +42,15 @@ private:
 protected:
 	virtual void BeginPlay() override;
 
-	/* Returns a casted version of Player Controller using PEPlayerController class */
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Properties",
-		meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
-	class APEPlayerController* GetPEPlayerController() const;
-
 	/* Player associated Ability System Component */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
 		meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
+
+	/* Returns a casted version of Player Controller using PEPlayerController class */
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Properties",
+		meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
+	class APEPlayerController* GetPEPlayerController() const;
 
 public:
 	/* Returns associated Ability System Component */

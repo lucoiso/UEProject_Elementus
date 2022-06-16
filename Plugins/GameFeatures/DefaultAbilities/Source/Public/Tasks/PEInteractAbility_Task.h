@@ -21,7 +21,7 @@ public:
 	explicit UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer);
 
 	/* Create a reference to manage this ability task */
-	static UPEInteractAbility_Task* InteractionTask(UGameplayAbility* OwningAbility, FName TaskInstanceName,
+	static UPEInteractAbility_Task* InteractionTask(UGameplayAbility* OwningAbility, const FName& TaskInstanceName,
 	                                                const float InteractionRange, const bool bUseCustomDepth = false);
 
 	virtual void Activate() override;

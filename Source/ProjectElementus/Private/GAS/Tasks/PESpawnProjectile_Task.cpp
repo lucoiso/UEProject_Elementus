@@ -19,7 +19,6 @@ UPESpawnProjectile_Task* UPESpawnProjectile_Task::SpawnProjectile(UGameplayAbili
                                                                   EffectDataArray)
 {
 	UPESpawnProjectile_Task* MyObj = NewAbilityTask<UPESpawnProjectile_Task>(OwningAbility);
-
 	MyObj->ProjectileClass = ClassToSpawn;
 	MyObj->ProjectileTransform = SpawnTransform;
 	MyObj->ProjectileFireDirection = DirectionToFire;
@@ -32,7 +31,7 @@ void UPESpawnProjectile_Task::Activate()
 {
 	Super::Activate();
 
-	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
+	if (ensureAlwaysMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
 		if (Ability->GetActorInfo().IsNetAuthority())
 		{

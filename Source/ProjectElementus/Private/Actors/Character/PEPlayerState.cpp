@@ -32,7 +32,8 @@ void APEPlayerState::BeginPlay()
 
 	Super::BeginPlay();
 
-	if (ensureMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
+	// Check if the player state have a valid ABSC and bind functions to wait Death and Stun tags
+	if (ensureAlwaysMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
 		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(this,
@@ -44,33 +45,31 @@ void APEPlayerState::BeginPlay()
 	}
 }
 
-APEPlayerController* APEPlayerState::GetPEPlayerController() const
-{
-	return Cast<APEPlayerController>(GetPlayerController());
-}
-
 void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
+	// GetPlayerController() return nullptr on clients
 	if (!HasAuthority())
 	{
 		return;
 	}
 
 	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 *FString(__func__),
-	                 *CallbackTag.ToString(), NewCount);
+	                 *FString(__func__), *CallbackTag.ToString(), NewCount);
 
+	// If death tag != 0, the player is dead
 	if (NewCount != 0)
 	{
 		if (APEPlayerController* Controller_Temp = GetPEPlayerController();
-			ensureMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
+			ensureAlwaysMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
+			// If this controller have a valid character, perform death
 			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>();
-				ensureMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
+				ensureAlwaysMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				Player_Temp->PerformDeath();
 			}
 
+			// Initialize the spectating state
 			Controller_Temp->SetupControllerSpectator();
 		}
 	}
@@ -78,19 +77,25 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 
 void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, const int32 NewCount) const
 {
+	// GetPlayerController() return nullptr on clients
 	if (!HasAuthority())
 	{
 		return;
 	}
 
 	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
-	                 *FString(__func__),
-	                 *CallbackTag.ToString(), NewCount);
+	                 *FString(__func__), *CallbackTag.ToString(), NewCount);
 
-	if (ensureMsgf(IsValid(GetPlayerController()), TEXT("%s have a invalid Player"), *GetName()))
+	// Just ignore/activate movement inputs if have a valid player controller
+	if (ensureAlwaysMsgf(IsValid(GetPlayerController()), TEXT("%s have a invalid Player"), *GetName()))
 	{
 		GetPlayerController()->SetIgnoreMoveInput(NewCount != 0);
 	}
+}
+
+APEPlayerController* APEPlayerState::GetPEPlayerController() const
+{
+	return Cast<APEPlayerController>(GetPlayerController());
 }
 
 UAbilitySystemComponent* APEPlayerState::GetAbilitySystemComponent() const

@@ -107,7 +107,7 @@ public:
 	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
 		meta = (DisplayName = "Update EOS Presence"))
-	static void UpdateEOSPresence(const int32 LocalUserNum, const FString PresenceText, const bool bOnline);
+	static void UpdateEOSPresence(const int32 LocalUserNum, const FString& PresenceText, const bool bOnline);
 
 	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",

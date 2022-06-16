@@ -42,6 +42,7 @@ void UPEGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInf
 
 	Super::OnGiveAbility(ActorInfo, Spec);
 
+	// If the ability failed to activate on granting, will notify the ability system component
 	if (bAutoActivateOnGrant && !ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle))
 	{
 		ABILITY_VLOG(this, Warning, TEXT("%s failed to auto activate on grant."), *GetName());
@@ -59,6 +60,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 
 	Super::PreActivate(Handle, ActorInfo, ActivationInfo, OnGameplayAbilityEndedDelegate, TriggerEventData);
 
+	// Cancel the ability if can't commit cost or cooldown. Also cancel if has not auth or is not predicted
 	if (!CommitCheck(Handle, ActorInfo, ActivationInfo) || !HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
 	{
 		ABILITY_VLOG(this, Warning, TEXT("%s failed to pre-activate."), *GetName());
@@ -67,6 +69,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 
 	ActivationBlockedTags.AppendTags(AbilityTags);
 
+	// Auto cancel can only be called on instantiated abilities. Non-Instantiated abilities can't handle tasks
 	if (IsInstantiated())
 	{
 		UAbilityTask_WaitGameplayTagAdded* WaitDeadTagAddedTask =
@@ -88,6 +91,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 		}
 	}
 
+	// If the ability is time based, will cancel after active time
 	if (bEndAbilityAfterActiveTime)
 	{
 		FTimerDelegate TimerDelegate;
@@ -125,13 +129,15 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	if (IsValid(GetCostGameplayEffect()) && GetCostGameplayEffect()->DurationPolicy ==
-		EGameplayEffectDurationType::Infinite)
+	// Remove active time based cost effects
+	if (IsValid(GetCostGameplayEffect())
+		&& GetCostGameplayEffect()->DurationPolicy == EGameplayEffectDurationType::Infinite)
 	{
 		ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
 			GetCostGameplayEffect()->GetClass(), ActorInfo->AbilitySystemComponent.Get());
 	}
 
+	// Remove active time based buff/debuff effects from self
 	if (AbilityActiveTime <= 0.f)
 	{
 		for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
@@ -141,11 +147,13 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 		}
 	}
 
+	// If auto cancel by time is active, try to invalidate the timer handle and finish the timer
 	if (CancelationTimerHandle.IsValid())
 	{
 		CancelationTimerHandle.Invalidate();
 	}
 
+	// Remove extra tags that were given by this ability
 	if (UAbilitySystemComponent* Comp = ActorInfo->AbilitySystemComponent.Get())
 	{
 		Comp->RemoveLooseGameplayTags(AbilityExtraTags);
@@ -232,8 +240,7 @@ void UPEGameplayAbility::ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHan
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
 		{
-			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key,
-			                                               StackedData.Value);
+			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key, StackedData.Value);
 		}
 
 		if (SpecHandle.IsValid())
@@ -284,8 +291,7 @@ void UPEGameplayAbility::ApplyAbilityEffectsToTarget(const FGameplayAbilityTarge
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
 		{
-			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key,
-			                                               StackedData.Value);
+			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key, StackedData.Value);
 		}
 
 		if (SpecHandle.IsValid())
@@ -378,8 +384,9 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 	AbilityTask_WaitTargetData->Cancelled.AddDynamic(this, &UPEGameplayAbility::WaitTargetData_Callback);
 	AbilityTask_WaitTargetData->ValidData.AddDynamic(this, &UPEGameplayAbility::WaitTargetData_Callback);
 
-	if (AGameplayAbilityTargetActor* TargetActor = nullptr; AbilityTask_WaitTargetData->BeginSpawningActor(
-		this, TargetActorClass, TargetActor))
+	// Initialize the spawning task with the TargetActor
+	if (AGameplayAbilityTargetActor* TargetActor = nullptr;
+		AbilityTask_WaitTargetData->BeginSpawningActor(this, TargetActorClass, TargetActor))
 	{
 		TargetActor->StartLocation = TargetParameters.StartLocation;
 		TargetActor->ReticleClass = TargetParameters.ReticleClass;
@@ -390,6 +397,7 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 		FilterHandle.Filter = MakeShared<FGameplayTargetDataFilter>(TargetParameters.TargetFilter);
 		TargetActor->Filter = FilterHandle;
 
+		// Check if TargetActorClass is child of AGameplayAbilityTargetActor_Trace and add values to class params
 		if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_Trace>())
 		{
 			AGameplayAbilityTargetActor_Trace* TraceObj = Cast<AGameplayAbilityTargetActor_Trace>(TargetActor);
@@ -397,6 +405,8 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 			TraceObj->MaxRange = TargetParameters.Range;
 			TraceObj->bTraceAffectsAimPitch = TargetParameters.bTraceAffectsAimPitch;
 
+			// Check if TargetActorClass is child of AGameplayAbilityTargetActor_GroundTrace
+			// and add values to class params
 			if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_GroundTrace>())
 			{
 				AGameplayAbilityTargetActor_GroundTrace* GroundTraceObj =
@@ -408,13 +418,13 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 		}
 
 		AbilityTask_WaitTargetData->FinishSpawningActor(this, TargetActor);
-
 		TargetActor->bDestroyOnConfirmation = TargetParameters.bDestroyOnConfirmation;
-
 		AbilityTask_WaitTargetData->ReadyForActivation();
 	}
 
-	if (AbilityTask_WaitTargetData->IsActive() && TargetingConfirmation != EGameplayTargetingConfirmation::Instant)
+	// If Targeting is different than Instant, add the aiming tag and start waiting for confirmation
+	if (AbilityTask_WaitTargetData->IsActive()
+		&& TargetingConfirmation != EGameplayTargetingConfirmation::Instant)
 	{
 		UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
 
@@ -431,6 +441,7 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 
 void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 {
+	// Add extra tag to the ability system component to tell that we are waiting for confirm input
 	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
 	if (const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingConfirm"));
 		!AbilityExtraTags.HasTag(AddTag))
@@ -451,12 +462,12 @@ void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 	{
 		AbilityTask_WaitConfirm->OnCancel.AddDynamic(this, &UPEGameplayAbility::ActivateWaitConfirmInputTask);
 	}
-
 	AbilityTask_WaitConfirm->ReadyForActivation();
 }
 
 void UPEGameplayAbility::ActivateWaitCancelInputTask()
 {
+	// Add extra tag to the ability system component to tell that we are waiting for cancel input
 	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
 	if (const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingCancel"));
 		!AbilityExtraTags.HasTag(AddTag))
@@ -469,7 +480,6 @@ void UPEGameplayAbility::ActivateWaitCancelInputTask()
 		UAbilityTask_WaitCancel::WaitCancel(this);
 
 	AbilityTask_WaitCancel->OnCancel.AddDynamic(this, &UPEGameplayAbility::WaitCancelInput_Callback);
-
 	AbilityTask_WaitCancel->ReadyForActivation();
 }
 
@@ -479,7 +489,6 @@ void UPEGameplayAbility::ActivateWaitAddedTagTask(const FGameplayTag Tag)
 		UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, Tag);
 
 	AbilityTask_WaitGameplayTagAdded->Added.AddDynamic(this, &UPEGameplayAbility::WaitAddedTag_Callback);
-
 	AbilityTask_WaitGameplayTagAdded->ReadyForActivation();
 }
 
@@ -489,7 +498,6 @@ void UPEGameplayAbility::ActivateWaitRemovedTagTask(const FGameplayTag Tag)
 		UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(this, Tag);
 
 	AbilityTask_WaitGameplayTagRemoved->Removed.AddDynamic(this, &UPEGameplayAbility::WaitRemovedTag_Callback);
-
 	AbilityTask_WaitGameplayTagRemoved->ReadyForActivation();
 }
 
@@ -499,7 +507,6 @@ void UPEGameplayAbility::ActivateWaitGameplayEventTask(const FGameplayTag EventT
 		UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, EventTag);
 
 	AbilityTask_WaitGameplayEvent->EventReceived.AddDynamic(this, &UPEGameplayAbility::WaitGameplayEvent_Callback);
-
 	AbilityTask_WaitGameplayEvent->ReadyForActivation();
 }
 
@@ -511,7 +518,6 @@ void UPEGameplayAbility::ActivateSpawnActorTask(const FGameplayAbilityTargetData
 
 	AbilityTask_SpawnActor->DidNotSpawn.AddDynamic(this, &UPEGameplayAbility::SpawnActor_Callback);
 	AbilityTask_SpawnActor->Success.AddDynamic(this, &UPEGameplayAbility::SpawnActor_Callback);
-
 	AbilityTask_SpawnActor->ReadyForActivation();
 }
 

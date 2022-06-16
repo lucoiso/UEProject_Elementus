@@ -23,13 +23,16 @@ void UPECrouchAbility::ActivateAbility
 
 	APECharacter* Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get());
 
+	// Only characters can activate this ability
 	if (!IsValid(Player))
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
 
-	Player->CanCrouch() && !Player->bIsCrouched ? Player->Crouch() : Player->UnCrouch();
+	Player->CanCrouch() && !Player->bIsCrouched
+		? Player->Crouch()
+		: Player->UnCrouch();
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }

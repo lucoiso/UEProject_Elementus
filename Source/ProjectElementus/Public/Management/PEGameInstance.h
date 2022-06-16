@@ -91,12 +91,12 @@ protected:
 public:
 	/* Connect the user to a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString ChannelName,
+	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName,
 	                                      const FEOSVoiceChatChannelCredentials Credentials);
 
 	/* Disconnect the user from a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void LeaveVoiceChatSessionChannel(const int32 LocalUserNum, const FString ChannelName);
+	void LeaveVoiceChatSessionChannel(const int32 LocalUserNum, const FString& ChannelName);
 
 protected:
 	FOnVoiceChatChannelJoinCompleteDelegate OnVoiceChatChannelJoinCompleteDelegate;
@@ -178,7 +178,7 @@ private:
 public:
 	/* Login to Epic Online Services */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Login to EOS"))
-	bool EOSLogin(const int32 LocalUserNum, const FString Token, const int32 Port, const bool bUsePortal = false);
+	bool EOSLogin(const int32 LocalUserNum, const FString& Token, const int32 Port, const bool bUsePortal = false);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FUserLoginDelegate UserLoginDelegate;

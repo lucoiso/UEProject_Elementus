@@ -199,7 +199,7 @@ void UPEGameInstance::OnVoiceChatLogout(const FString& PlayerName, const FVoiceC
 	OnVoiceChatLogoutCompleteDelegate.Unbind();
 }
 
-void UPEGameInstance::ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString ChannelName,
+void UPEGameInstance::ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName,
                                                        const FEOSVoiceChatChannelCredentials Credentials)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum,
@@ -221,7 +221,7 @@ void UPEGameInstance::ConnectVoiceChatToSessionChannel(const int32 LocalUserNum,
 	}
 }
 
-void UPEGameInstance::LeaveVoiceChatSessionChannel(const int32 LocalUserNum, const FString ChannelName)
+void UPEGameInstance::LeaveVoiceChatSessionChannel(const int32 LocalUserNum, const FString& ChannelName)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum,
 	       *ChannelName);
@@ -522,7 +522,7 @@ void UPEGameInstance::OnSessionInviteAccepted(const bool bWasSuccessful, const i
 	}
 }
 
-bool UPEGameInstance::EOSLogin(const int32 LocalUserNum, const FString Token, const int32 Port,
+bool UPEGameInstance::EOSLogin(const int32 LocalUserNum, const FString& Token, const int32 Port,
                                const bool bUsePortal)
 {
 	return EOS_Login(LocalUserNum,

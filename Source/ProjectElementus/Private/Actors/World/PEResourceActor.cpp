@@ -10,4 +10,6 @@ APEResourceActor::APEResourceActor(const FObjectInitializer& ObjectInitializer)
 	bReplicates = false;
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
+
+	// Not implemented yet
 }

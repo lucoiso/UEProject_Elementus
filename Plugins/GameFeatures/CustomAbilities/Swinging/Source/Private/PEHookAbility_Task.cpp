@@ -14,15 +14,13 @@ UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitial
 }
 
 UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility,
-                                                              const FName TaskInstanceName,
+                                                              const FName& TaskInstanceName,
                                                               const FHitResult HitResult,
                                                               const float HookIntensity)
 {
 	UPEHookAbility_Task* MyObj = NewAbilityTask<UPEHookAbility_Task>(OwningAbility, TaskInstanceName);
-
 	MyObj->Intensity = HookIntensity;
 	MyObj->HitDataHandle = HitResult;
-
 	return MyObj;
 }
 
@@ -30,11 +28,11 @@ void UPEHookAbility_Task::Activate()
 {
 	Super::Activate();
 
-	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
+	if (ensureAlwaysMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
 		HookOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
 
-		if (ensureMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+		if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 		{
 			CurrentHookLocation = HitDataHandle.Location;
 
@@ -91,7 +89,8 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 
 	Super::TickTask(DeltaTime);
 
-	if (IsValid(HitDataHandle.GetActor()) && IsValid(HitDataHandle.GetComponent()))
+	if (IsValid(HitDataHandle.GetActor())
+		&& IsValid(HitDataHandle.GetComponent()))
 	{
 		const bool bIsTargetMovable = HitDataHandle.GetComponent()->Mobility == EComponentMobility::Movable;
 
@@ -100,15 +99,15 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 				? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName)
 				: HitDataHandle.Location;
 
-		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation(); Difference.Size() >= 100.f)
+		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation();
+			Difference.Size() >= 100.f)
 		{
 			const FVector HookForce = Difference * Intensity * DeltaTime;
-
 			HookOwner->GetCharacterMovement()->AddForce(HookForce);
 
-			if (bIsTargetMovable &&
-				HitDataHandle.GetComponent()->IsSimulatingPhysics() &&
-				!HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacter>())
+			if (bIsTargetMovable
+				&& HitDataHandle.GetComponent()->IsSimulatingPhysics()
+				&& !HitDataHandle.GetActor()->GetClass()->IsChildOf<APECharacter>())
 			{
 				HitDataHandle.GetComponent()->AddForce(-1.f * HookForce);
 			}

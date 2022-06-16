@@ -4,7 +4,7 @@
 
 #include "GAS/Attributes/PECustomStatusAS.h"
 #include "Actors/Character/PECharacter.h"
-#include "Actors/Character/PEPlayerState.h"
+#include "GameFramework/PlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystemComponent.h"
@@ -33,13 +33,14 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 	if (Attribute == GetSpeedRateAttribute() || Attribute == GetJumpRateAttribute())
 	{
-		if (const APEPlayerState* State = Cast<APEPlayerState>(GetOwningActor()))
+		if (const APlayerState* State = Cast<APlayerState>(GetOwningActor()))
 		{
 			if (const APECharacter* Character = State->GetPawn<APECharacter>())
 			{
 				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement();
-					ensureMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
+					ensureAlwaysMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
 				{
+					//Check if the attribute is equal to speed or jump rate and multiply the value by the rate
 					if (Attribute == GetSpeedRateAttribute())
 					{
 						MovComp->MaxWalkSpeed = NewValue * Character->GetDefaultWalkSpeed();
@@ -55,6 +56,7 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 	}
 }
 
+#pragma region Attribute Replication
 void UPECustomStatusAS::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -90,3 +92,4 @@ void UPECustomStatusAS::OnRep_Gold(const FGameplayAttributeData& OldValue) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPECustomStatusAS, Gold, OldValue);
 }
+#pragma endregion Attribute Replication

@@ -36,16 +36,15 @@ void UPEBasicStatusAS::PreAttributeChange(const FGameplayAttribute& Attribute, f
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 
+	// Check which attribute is being modified and clamp it with AdjustAttributeForMaxChange function
 	if (Attribute == GetMaxHealthAttribute())
 	{
 		AdjustAttributeForMaxChange(Health, MaxHealth, NewValue, GetHealthAttribute());
 	}
-
 	else if (Attribute == GetMaxManaAttribute())
 	{
 		AdjustAttributeForMaxChange(Mana, MaxMana, NewValue, GetManaAttribute());
 	}
-
 	else if (Attribute == GetMaxStaminaAttribute())
 	{
 		AdjustAttributeForMaxChange(Stamina, MaxStamina, NewValue, GetStaminaAttribute());
@@ -59,6 +58,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 
 	if (NewValue <= 0.f)
 	{
+		// If health is 0 or less, call the death function
 		if (Attribute == GetHealthAttribute())
 		{
 			GetOwningAbilitySystemComponentChecked()->CancelAllAbilities();
@@ -71,6 +71,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 			}
 		}
 
+		// If stamina is 0 or less, cancel abilities that use stamina
 		if (Attribute == GetStaminaAttribute())
 		{
 			const FGameplayTagContainer StaminaCostTagContainer
@@ -81,6 +82,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 			GetOwningAbilitySystemComponentChecked()->CancelAbilities(&StaminaCostTagContainer);
 		}
 
+		// If mana is 0 or less, cancel abilities that use mana
 		if (Attribute == GetManaAttribute())
 		{
 			const FGameplayTagContainer ManaCostTagContainer
@@ -97,6 +99,7 @@ void UPEBasicStatusAS::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 {
 	Super::PostGameplayEffectExecute(Data);
 
+	// Check if the effect is a damage effect and apply it to decrease the health
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
 		const float DamageDone = GetDamage();
@@ -126,18 +129,6 @@ void UPEBasicStatusAS::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	}
 }
 
-void UPEBasicStatusAS::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, Health, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, MaxHealth, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, Mana, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, MaxMana, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, Stamina, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, MaxStamina, COND_None, REPNOTIFY_Always);
-}
-
 void UPEBasicStatusAS::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
                                                    const FGameplayAttributeData& MaxAttribute, const float NewMaxValue,
                                                    const FGameplayAttribute& AffectedAttributeProperty) const
@@ -155,6 +146,19 @@ void UPEBasicStatusAS::AdjustAttributeForMaxChange(const FGameplayAttributeData&
 			AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
 		}
 	}
+}
+
+#pragma region Attribute Replication
+void UPEBasicStatusAS::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, Health, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, MaxHealth, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, Mana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, MaxMana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, Stamina, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UPEBasicStatusAS, MaxStamina, COND_None, REPNOTIFY_Always);
 }
 
 void UPEBasicStatusAS::OnRep_Health(const FGameplayAttributeData& OldValue) const
@@ -186,3 +190,4 @@ void UPEBasicStatusAS::OnRep_MaxStamina(const FGameplayAttributeData& OldValue) 
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPEBasicStatusAS, MaxStamina, OldValue);
 }
+#pragma endregion Attribute Replication

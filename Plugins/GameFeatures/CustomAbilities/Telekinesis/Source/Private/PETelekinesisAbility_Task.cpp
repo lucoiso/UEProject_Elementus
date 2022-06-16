@@ -15,14 +15,14 @@ UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer&
 	bIsFinished = false;
 }
 
-UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(
-	UGameplayAbility* OwningAbility, const FName TaskInstanceName, const float ThrowIntensity,
+UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
+	const FName& TaskInstanceName,
+	const float ThrowIntensity,
 	const TWeakObjectPtr<AActor> Target)
 {
 	UPETelekinesisAbility_Task* MyObj = NewAbilityTask<UPETelekinesisAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->TelekinesisTarget = Target;
 	MyObj->Intensity = ThrowIntensity;
-
 	return MyObj;
 }
 
@@ -30,11 +30,11 @@ void UPETelekinesisAbility_Task::Activate()
 {
 	Super::Activate();
 
-	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
+	if (ensureAlwaysMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
 		TelekinesisOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
 
-		if (ensureMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+		if (ensureAlwaysMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 		{
 			PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(),
 			                                                   UPhysicsHandleComponent::StaticClass(),
@@ -134,8 +134,8 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		QueryParams.AddIgnoredActor(Ability->GetAvatarActorFromActorInfo());
 		QueryParams.AddIgnoredActor(GrabbedPrimitive_Temp->GetAttachmentRootActor());
 
-		FVector StartLocation = TelekinesisOwner->GetCameraComponentLocation();
-		FVector EndLocation = StartLocation + TelekinesisOwner->GetCameraForwardVector() * 999999.f;
+		const FVector StartLocation = TelekinesisOwner->GetCameraComponentLocation();
+		const FVector EndLocation = StartLocation + TelekinesisOwner->GetCameraForwardVector() * 999999.f;
 
 		FHitResult HitResult;
 		FGameplayTargetDataFilterHandle DataFilterHandle;
@@ -143,8 +143,8 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		APELineTargeting::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation,
 		                                      EndLocation, "Target", QueryParams);
 
-		const FVector Direction = ((HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation) -
-			GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
+		const FVector Temp_EndLoc = HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation;
+		const FVector Direction = (Temp_EndLoc - GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
 		const FVector Velocity = Direction * Intensity;
 
 		GrabbedPrimitive_Temp->SetAllPhysicsLinearVelocity(Velocity);
