@@ -37,7 +37,6 @@ APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializ
 void APEProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
-
 	CollisionComponent->OnComponentHit.AddDynamic(this, &APEProjectileActor::OnProjectileHit);
 }
 
@@ -60,7 +59,7 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 
 			if (UPEAbilitySystemComponent* TargetGASC =
 					Cast<UPEAbilitySystemComponent>(Character->GetAbilitySystemComponent());
-				ensureMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
+				ensureAlwaysMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 			{
 				ApplyProjectileEffect(TargetGASC);
 			}
@@ -76,13 +75,13 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 
 void APEProjectileActor::ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC)
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
 	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
-		if (GetLocalRole() != ROLE_Authority)
-		{
-			return;
-		}
-
 		for (const FGameplayEffectGroupedData& Effect : ProjectileEffects)
 		{
 			TargetGASC->ApplyEffectGroupedDataToSelf(Effect);

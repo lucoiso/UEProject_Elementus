@@ -25,10 +25,12 @@ void UPETelekinesisAbility::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	// Targeting: Params	
 	FTargetActorSpawnParams TargetingParams;
 	TargetingParams.TargetFilter.RequiredActorClass = APEThrowableActor::StaticClass();
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("head");
 
+	// Targeting: Start task	
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
 	                           APELineTargeting::StaticClass(), TargetingParams);
 }
@@ -50,16 +52,19 @@ void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle
 void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 	const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	// If target is invalid, end the ability
 	if (!TargetDataHandle.IsValid(0))
 	{
-		RemoveCooldownEffect(GetCurrentActorInfo()->AbilitySystemComponent.Get());
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+		RemoveCooldownEffect(GetCurrentActorInfo()->AbilitySystemComponent.Get());
 		return;
 	}
 
+	// Get the first target only since this is a single target ability
 	const FGameplayAbilityTargetData* TargetData = TargetDataHandle.Get(0);
 	const FHitResult* TargetHit = TargetData->GetHitResult();
 
+	// If there's no actor at the target data, end the ability: Invalid Target
 	if (!IsValid(TargetHit->GetActor()))
 	{
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
@@ -67,9 +72,13 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 		return;
 	}
 
-	AbilityTask = UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(
-		this, FName("TelekinesisTask"), ThrowIntensity, TargetHit->GetActor());
+	// Create the telekinesis movement task:
+	// This task will perform the physical grabbing movement on target
+	AbilityTask =
+		UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this, FName("TelekinesisTask"),
+		                                                         ThrowIntensity, TargetHit->GetActor());
 
+	// When the grabbing task returns a result, will call GrabbingComplete function
 	AbilityTask->OnGrabbing.BindDynamic(this, &UPETelekinesisAbility::GrabbingComplete);
 
 	AbilityTask->ReadyForActivation();
@@ -86,6 +95,9 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 
 void UPETelekinesisAbility::GrabbingComplete(const bool ValidTarget)
 {
+	// Check if the telekinesis task returned a valid target and if true
+	// initialize the Wait Confirm Input task and Wait Gameplay Event:
+	// When the AnimNotify is triggered, will launch the grabbed actor in the direction of the camera
 	if (ValidTarget)
 	{
 		ActivateWaitConfirmInputTask();
@@ -100,12 +112,14 @@ void UPETelekinesisAbility::GrabbingComplete(const bool ValidTarget)
 
 void UPETelekinesisAbility::WaitConfirmInput_Callback_Implementation()
 {
+	// Play a animation montage
 	ActivateWaitMontageTask();
 }
 
 void UPETelekinesisAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
 {
+	// When the AnimNotify is triggered, will launch the grabbed actor
+	// in the direction of the camera and end the ability
 	AbilityTask->ThrowObject();
-
 	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
 }

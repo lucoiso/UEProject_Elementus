@@ -18,13 +18,15 @@ class PROJECTELEMENTUS_API UPEAbilityFunctions final : public UBlueprintFunction
 	GENERATED_BODY()
 
 public:
+	/* Create a FGameplayAbilityTargetDataHandle with the specified HitResult data */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromSingleHitResult(const FHitResult HitResult);
 
+	/* Create a FGameplayAbilityTargetDataHandle with the specified HitResults data */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromHitResultArray(
-		const TArray<FHitResult> HitResults);
+	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromHitResultArray(const TArray<FHitResult> HitResults);
 
+	/* Create a FGameplayAbilityTargetDataHandle with the specified Target Actors */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static FGameplayAbilityTargetDataHandle
 	MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);

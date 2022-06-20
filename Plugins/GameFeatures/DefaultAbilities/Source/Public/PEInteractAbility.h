@@ -20,6 +20,8 @@ class UPEInteractAbility final : public UPEGameplayAbility
 public:
 	explicit UPEInteractAbility(const FObjectInitializer& ObjectInitializer);
 
+	/* Activate/Deactivate custom depth usage
+	 * This is useful if you're using a post process material to apply outlines/highlights */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bUseCustomDepth;
 

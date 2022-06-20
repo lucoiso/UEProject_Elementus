@@ -10,7 +10,6 @@ UPEWalkAbility::UPEWalkAbility(const FObjectInitializer& ObjectInitializer)
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
 
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Walk"));
-
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Sprint"));
 }
 
@@ -22,6 +21,7 @@ void UPEWalkAbility::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	//We don't need this ability if the character is not walking
 	if (ActorInfo->AvatarActor.Get()->GetVelocity().Size() <= 0.f)
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);

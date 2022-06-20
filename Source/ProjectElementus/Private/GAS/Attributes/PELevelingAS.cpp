@@ -41,6 +41,8 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, con
 	{
 		UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponentChecked();
 
+		// This block will verify if the leveling bonus table exists and modify
+		// the attributes accordingly the current (new) level
 		if (const UDataTable* LevelingBonus_Table = LevelingBonusData.LoadSynchronous())
 		{
 			const FPELevelingData LevelingInfo =
@@ -69,6 +71,7 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, con
 	}
 }
 
+#pragma region Attribute Replication
 void UPELevelingAS::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -92,3 +95,4 @@ void UPELevelingAS::OnRep_RequiredExperience(const FGameplayAttributeData& OldVa
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UPELevelingAS, RequiredExperience, OldValue);
 }
+#pragma endregion Attribute Replication

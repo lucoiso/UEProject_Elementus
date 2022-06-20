@@ -41,6 +41,7 @@ void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
 		if (IsValid(TaskHandle->GetInteractable()) &&
 			IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
 		{
+			// Will interact only if has authority / Execute interaction on server only
 			if (HasAuthority(&ActivationInfo))
 			{
 				IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(),

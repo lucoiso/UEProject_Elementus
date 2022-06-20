@@ -21,7 +21,8 @@ APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer)
 
 void APEHUD::BeginPlay()
 {
-	if (ensureMsgf(IsValid(GetOwningPlayerController()), TEXT("%s have a invalid Controller"), *GetName()))
+	// Initialize a Blueprint Widget as HUD if Player Controller is valid
+	if (ensureAlwaysMsgf(IsValid(GetOwningPlayerController()), TEXT("%s have a invalid Controller"), *GetName()))
 	{
 		HUDHandle = CreateWidget(GetOwningPlayerController(), HUDClass, FName("Main HUD"));
 		HUDHandle->AddToPlayerScreen();

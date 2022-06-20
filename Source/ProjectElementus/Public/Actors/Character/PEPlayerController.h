@@ -40,23 +40,28 @@ class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController,
 public:
 	explicit APEPlayerController(const FObjectInitializer& ObjectInitializer);
 
-	// Start of IAbilityInputBinding interface
-	/* This function came from IAbilityInputBinding interface, provided by GameFeatures_ExtraActions plugin to manage ability bindings */
+#pragma region IAbilityInputBinding
+	/* This function came from IAbilityInputBinding interface,
+	 * provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
 	virtual void SetupAbilityInputBinding_Implementation(UInputAction* Action, const int32 InputID) override;
 
-	/* This function came from IAbilityInputBinding interface, provided by GameFeatures_ExtraActions plugin to manage ability bindings */
+	/* This function came from IAbilityInputBinding interface,
+	 * provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
 	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const override;
-	// End of IAbilityInputBinding interface
+#pragma endregion IAbilityInputBinding
 
+	/* Setup the spectating state on both client and server */
 	UFUNCTION(NetMulticast, Unreliable)
 	void SetupControllerSpectator();
 
+	/* Will respawn the character if the player is in spectating state */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeRespawn(const float InSeconds);
 
 protected:
+	/* Perform the respawn task on server */
 	UFUNCTION(Server, Reliable)
 	void RespawnAndPossess();
 

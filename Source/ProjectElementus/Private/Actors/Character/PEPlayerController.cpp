@@ -40,6 +40,7 @@ void APEPlayerController::InitializeRespawn(const float InSeconds)
 {
 	if (IsInState(NAME_Spectating))
 	{
+		// If InSeconds is 0, then we want to respawn instantly
 		if (InSeconds > 0.f)
 		{
 			FTimerDelegate TimerDelegate;
@@ -94,13 +95,13 @@ void APEPlayerController::SetupControllerSpectator_Implementation()
 	PlayerState->SetIsSpectator(true);
 }
 
-// Start of IAbilityInputBinding interface
+#pragma region IAbilityInputBinding
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
-void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(
-	UInputAction* Action, const int32 InputID)
+void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(UInputAction* Action,
+	const int32 InputID)
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
-		ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
+		ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
 		const FAbilityInputData AbilityBinding
 		{
@@ -119,36 +120,36 @@ void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation
 void APEPlayerController::RemoveAbilityInputBinding_Implementation_Implementation(const UInputAction* Action) const
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
-		ensureMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
+		ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnPressedHandle);
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnReleasedHandle);
 	}
 }
-
-// End of IAbilityInputBinding interface
+#pragma endregion IAbilityInputBinding
 
 void APEPlayerController::OnAbilityInputPressed(UInputAction* Action) const
 {
 	if (!IsValid(GetPawn()))
 	{
 		CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
-
 		return;
 	}
 
-	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
+	const uint32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
-	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"),
-	                     *FString(__func__), InputID);
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"), *FString(__func__), InputID);
 
+	// Check if controller owner is valid and owns a ability system component
 	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>();
-		ensureMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		           TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
+		ensureAlwaysMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()),
+		                 TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
 	{
+		// Send the input pressed event to the ability system component with the found input ID
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputPressed(InputID);
 
-		if (ensureMsgf(InputEnumHandle.IsValid(), TEXT("%s have a invalid InputEnumHandle"), *GetName()))
+		// Verify if the found input ID is equal to Confirm or Cancel input from the specified Enumeration class
+		if (ensureAlwaysMsgf(InputEnumHandle.IsValid(), TEXT("%s have a invalid InputEnumHandle"), *GetName()))
 		{
 			if (InputID == InputEnumHandle->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName))
 			{
@@ -168,19 +169,19 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 	if (!IsValid(GetPawn()))
 	{
 		CONTROLLER_BASE_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
-
 		return;
 	}
 
-	const int32 InputID = AbilityActionBindings.FindRef(Action).InputID;
+	const uint32 InputID = AbilityActionBindings.FindRef(Action).InputID;
 
-	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"),
-	                     *FString(__func__), InputID);
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input ID Value %u"), *FString(__func__), InputID);
 
+	// Check if controller owner is valid and owns a ability system component
 	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>();
-		ensureMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		           TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
+		ensureAlwaysMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()),
+		                 TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
 	{
+		// Send the input released event to the ability system component with the found input ID
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
 	}
 }
@@ -191,21 +192,21 @@ void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) co
 	                     *FString(__func__),
 	                     *Value.ToString(), Value.GetMagnitude());
 
+	// [EOS] Call the static function responsible for activating/deactivating the voice chat
 	UPEEOSLibrary::MuteEOSSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
 }
 
+#pragma region Default Movement Functions
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 {
 	if (!IsValid(GetPawnOrSpectator()))
 	{
 		CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
-
 		return;
 	}
 
 	CONTROLLER_AXIS_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__),
-	                     *Value.ToString(), Value.GetMagnitude());
+	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	AddYawInput(-1.f * Value[1] * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 	AddPitchInput(Value[0] * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
@@ -220,8 +221,7 @@ void APEPlayerController::Move(const FInputActionValue& Value) const
 	}
 
 	CONTROLLER_AXIS_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__),
-	                     *Value.ToString(), Value.GetMagnitude());
+	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
 	{
@@ -243,13 +243,11 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 	if (!IsValid(GetPawn()))
 	{
 		CONTROLLER_AXIS_VLOG(this, Warning, TEXT(" %s called with invalid Pawn"), *FString(__func__));
-
 		return;
 	}
 
 	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__),
-	                     *Value.ToString(), Value.GetMagnitude());
+	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	if (APECharacter* ControllerOwner = GetPawn<APECharacter>())
 	{
@@ -258,3 +256,4 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 			: ControllerOwner->StopJumping();
 	}
 }
+#pragma endregion Default Movement Functions

@@ -25,7 +25,7 @@ public:
 
 	/* Create a reference to manage this ability task */
 	static UPEHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility,
-	                                                FName TaskInstanceName,
+	                                                const FName& TaskInstanceName,
 	                                                const FHitResult HitResult,
 	                                                const float HookIntensity);
 

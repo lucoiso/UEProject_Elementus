@@ -17,14 +17,16 @@ APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer
 	  bDestroyAfterExplosion(true),
 	  bDebug(false)
 {
-	bReplicates = true;
-
+	bReplicates = false;
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 }
 
 void APEExplosiveActor::PerformExplosion()
 {
+	// Only replicates while exploding
+	SetReplicates(true);
+
 	TArray<FHitResult> HitOut;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
@@ -64,8 +66,8 @@ void APEExplosiveActor::PerformExplosion()
 				{
 					Player->LaunchCharacter(Velocity, true, true);
 
-					if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()),
-					               TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+					if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()),
+					                     TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 					{
 						ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
 					}
@@ -83,18 +85,22 @@ void APEExplosiveActor::PerformExplosion()
 	if (bDestroyAfterExplosion)
 	{
 		Destroy();
+		return;
 	}
+
+	// Only replicates while exploding
+	SetReplicates(false);
 }
 
 void APEExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
 	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
-		if (GetLocalRole() != ROLE_Authority)
-		{
-			return;
-		}
-
 		for (const FGameplayEffectGroupedData& Effect : ExplosionEffects)
 		{
 			TargetGASC->ApplyEffectGroupedDataToSelf(Effect);

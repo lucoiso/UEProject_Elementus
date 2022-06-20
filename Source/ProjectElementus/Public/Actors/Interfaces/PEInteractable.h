@@ -26,12 +26,15 @@ class PROJECTELEMENTUS_API IPEInteractable
 	GENERATED_BODY()
 
 public:
+	/* This function will perform the interaction behavior */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Project Elementus | Functions")
 	void DoInteractionBehavior(APECharacter* CharacterInteracting, const FHitResult& HitResult);
 
+	/* Set if the actor is focusing or not the interactable object */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Project Elementus | Functions")
 	void SetIsCurrentlyFocusedByActor(const bool bIsFocused, AActor* ActorFocusing, const FHitResult& HitResult);
 
+	/* Is Interact enabled in the current state? */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Project Elementus | Functions")
 	bool IsInteractEnabled();
 };

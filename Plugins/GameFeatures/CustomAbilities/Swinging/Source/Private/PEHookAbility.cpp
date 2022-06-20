@@ -28,8 +28,10 @@ void UPEHookAbility::ActivateAbility
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	// Make sure that this ability will ignore cooldown at this point
 	bIgnoreCooldown = true;
 
+	// Activate tasks: Animation Montage and Wait for GameplayEvent (Anim Notify)
 	ActivateWaitMontageTask(NAME_None, 1.5f);
 	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
 }
@@ -39,11 +41,13 @@ void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, cons
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
+	// Ability will end when the input is released: Release the hook
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }
 
 void UPEHookAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
 {
+	// Will start a targeting task when the animation notify is triggered (will try to start the hook)
 	FTargetActorSpawnParams TargetingParams;
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
 
@@ -53,23 +57,26 @@ void UPEHookAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventDat
 
 void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	// If target is invalid, end the ability
 	if (!TargetDataHandle.IsValid(0))
 	{
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 		return;
 	}
 
+	// Get the first target only since this is a single target ability
 	const FGameplayAbilityTargetData* TargetData = TargetDataHandle.Get(0);
 	const FHitResult* TargetHit = TargetData->GetHitResult();
 
+	// If there's no actor at the target data, end the ability: Invalid Target
 	if (!IsValid(TargetHit->GetActor()))
 	{
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 		return;
 	}
 
+	// Create and initialize the hook movement task: This task will perform the physical hook movement
 	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this, FName("HookTask"), *TargetHit, HookIntensity);
-
 	TaskHandle->ReadyForActivation();
 
 	FGameplayCueParameters Params;
@@ -81,6 +88,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params,
 	                     GetCurrentActorInfo()->AbilitySystemComponent.Get());
 
+	// If the target is a character, will finish this ability after AbilityActiveTime seconds
 	if (Cast<APECharacter>(TargetHit->GetActor()) && TargetHit->GetActor() != GetAvatarActorFromActorInfo())
 	{
 		FTimerDelegate TimerDelegate;
@@ -88,19 +96,25 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 		{
 			if (IsActive())
 			{
-				EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true,
-				           false);
+				EndAbility(GetCurrentAbilitySpecHandle(),
+				           GetCurrentActorInfo(),
+				           GetCurrentActivationInfo(),
+				           true, false);
 			}
 		});
 
 		GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime, false);
 	}
 
+	// Start waiting for confirm input
 	ActivateWaitConfirmInputTask();
 }
 
 void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 {
+	// If the confirm input is pressed, will add a impulse to ability owner
+	// and to the target/grabbed actor, if simulates physics
+
 	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
 	{
 		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() *
@@ -117,6 +131,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 			TargetPlayer->LaunchCharacter(-1.f * ImpulseVector, false, true);
 		}
 
+		// This ability will commit cooldown after this point
 		bIgnoreCooldown = false;
 		CommitAbilityCooldown(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 	}

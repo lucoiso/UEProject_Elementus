@@ -14,8 +14,7 @@ APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer),
 	  bDestroyAfterConsumption(true)
 {
-	bReplicates = true;
-
+	bReplicates = false;
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
@@ -32,30 +31,23 @@ APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializ
 
 void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC)
 {
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
+	if (GetLocalRole() != ROLE_Authority)
 	{
-		if (GetLocalRole() != ROLE_Authority)
-		{
-			if (bDestroyAfterConsumption)
-			{
-				Destroy();
-			}
+		return;
+	}
 
-			return;
+	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
+		TargetGASC->HasAllMatchingGameplayTags(ConsumableData->RequirementsTags)
+		|| ConsumableData->RequirementsTags.IsEmpty())
+	{
+		for (const FGameplayEffectGroupedData& Effect : ConsumableData->ConsumableEffects)
+		{
+			TargetGASC->ApplyEffectGroupedDataToSelf(Effect);
 		}
 
-		if (TargetGASC->HasAllMatchingGameplayTags(ConsumableData->RequirementsTags)
-			|| ConsumableData->RequirementsTags.IsEmpty())
+		if (bDestroyAfterConsumption)
 		{
-			for (const FGameplayEffectGroupedData& Effect : ConsumableData->ConsumableEffects)
-			{
-				TargetGASC->ApplyEffectGroupedDataToSelf(Effect);
-			}
-
-			if (bDestroyAfterConsumption)
-			{
-				Destroy();
-			}
+			Destroy();
 		}
 	}
 }
@@ -67,9 +59,10 @@ void APEConsumableActor::DoInteractionBehavior_Implementation(APECharacter* Char
 	{
 		if (UPEAbilitySystemComponent* AbilitySystemComponent =
 				Cast<UPEAbilitySystemComponent>(CharacterInteracting->GetAbilitySystemComponent());
-			ensureAlwaysMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"),
-			                 *GetName()))
+			ensureAlwaysMsgf(IsValid(AbilitySystemComponent),
+			                 TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 		{
+			// Only replicates while a character is consuming
 			SetReplicates(true);
 			PerformConsumption(AbilitySystemComponent);
 			SetReplicates(false);
@@ -86,6 +79,7 @@ void APEConsumableActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 	{
 		if (PropertyChangedEvent.Property->GetFName() == GET_MEMBER_NAME_CHECKED(APEConsumableActor, ConsumableData))
 		{
+			// Update data with values in the given UDataAsset
 			if (IsValid(ConsumableData))
 			{
 				!ConsumableData->ObjectMesh.IsNull()

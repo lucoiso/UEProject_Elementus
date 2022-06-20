@@ -10,10 +10,12 @@
 APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	SetRootComponent(GetStaticMeshComponent());
+	GetStaticMeshComponent()->SetIsReplicated(true);
 	GetStaticMeshComponent()->SetSimulatePhysics(true);
 	GetStaticMeshComponent()->SetGenerateOverlapEvents(true);
 	GetStaticMeshComponent()->SetNotifyRigidBodyCollision(true);
@@ -21,9 +23,6 @@ APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer
 	GetStaticMeshComponent()->SetCollisionProfileName(TEXT("PhysicsBody"));
 	GetStaticMeshComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	SetMobility(EComponentMobility::Movable);
-
-	bReplicates = true;
-	GetStaticMeshComponent()->SetIsReplicated(true);
 }
 
 void APEThrowableActor::ThrowSetup(AActor* Caller)
@@ -48,8 +47,8 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent* Hit
 
 				Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
 
-				if (ensureMsgf(IsValid(Player->GetAbilitySystemComponent()),
-				               TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+				if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()),
+				                     TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 				{
 					ApplyThrowableEffect(Player->GetAbilitySystemComponent());
 				}
@@ -66,13 +65,13 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent* Hit
 
 void APEThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
 	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
-		if (GetLocalRole() != ROLE_Authority)
-		{
-			return;
-		}
-
 		for (const FGameplayEffectGroupedData& Effect : HitEffects)
 		{
 			TargetGASC->ApplyEffectGroupedDataToSelf(Effect);

@@ -136,7 +136,7 @@ FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 Nu
 	return FSessionSettingsHandler{SessionSettings};
 }
 
-void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString PresenceText, const bool bOnline)
+void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString& PresenceText, const bool bOnline)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{

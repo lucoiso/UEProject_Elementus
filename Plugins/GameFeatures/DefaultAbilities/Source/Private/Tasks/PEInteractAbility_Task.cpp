@@ -18,7 +18,7 @@ UPEInteractAbility_Task::UPEInteractAbility_Task(const FObjectInitializer& Objec
 }
 
 UPEInteractAbility_Task* UPEInteractAbility_Task::InteractionTask(UGameplayAbility* OwningAbility,
-                                                                  const FName TaskInstanceName,
+                                                                  const FName& TaskInstanceName,
                                                                   const float InteractionRange,
                                                                   const bool bUseCustomDepth)
 {
@@ -33,11 +33,11 @@ void UPEInteractAbility_Task::Activate()
 {
 	Super::Activate();
 
-	if (ensureMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
+	if (ensureAlwaysMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
 	{
 		InteractionOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
 
-		if (ensureMsgf(InteractionOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+		if (ensureAlwaysMsgf(InteractionOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 		{
 			UAbilityTask_WaitGameplayTagAdded* WaitGameplayTagAdd =
 				UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability,

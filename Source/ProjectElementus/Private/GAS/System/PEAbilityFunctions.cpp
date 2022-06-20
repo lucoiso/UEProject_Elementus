@@ -58,6 +58,7 @@ void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
 			return;
 		}
 
+		// If can't find the input value, will cancel the ability addition
 		const uint32 InputID = EnumerationClass->GetValueByName(InputId, EGetByNameFlags::CheckAuthoredName);
 		if (InputID == INDEX_NONE)
 		{

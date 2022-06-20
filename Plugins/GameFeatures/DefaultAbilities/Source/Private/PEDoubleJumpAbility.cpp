@@ -27,11 +27,14 @@ void UPEDoubleJumpAbility::ActivateAbility
 
 	APECharacter* Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get());
 
+	// Only characters can activate this ability
 	if (!IsValid(Player))
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
+
+	// Check if the player is in air and launch him (second jump) or just do a normal jump (first jump)
 	if (!Player->GetCharacterMovement()->IsFalling())
 	{
 		Player->Jump();
@@ -49,6 +52,7 @@ void UPEDoubleJumpAbility::InputReleased(const FGameplayAbilitySpecHandle Handle
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
+	// Send the StopJumping event to the player if valid
 	if (APECharacter* Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get()))
 	{
 		Player->StopJumping();

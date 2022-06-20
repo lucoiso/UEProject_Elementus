@@ -74,12 +74,15 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 }
 
+// Called on server when the player is possessed by a controller
 void APECharacter::PossessedBy(AController* InController)
 {
 	Super::PossessedBy(InController);
 
+	// Check if this character is controlled by a player or AI
 	if (InController->IsPlayerController())
 	{
+		// Initialize the ability system component that is stored by Player State
 		if (APEPlayerState* State = GetPlayerStateChecked<APEPlayerState>())
 		{
 			InitializeAbilitySystemComponent(State->GetAbilitySystemComponent(), State);
@@ -87,20 +90,26 @@ void APECharacter::PossessedBy(AController* InController)
 	}
 	else
 	{
-		// Bot
+		// Bot / AI
+		// Not implemented yet
+
+		// Initialize the ability system component that is stored by AI Controller
 	}
 }
 
+// Called on client when the player state is initialized
 void APECharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
 	if (APEPlayerState* State = GetPlayerState<APEPlayerState>())
 	{
+		// Initialize the ability system component that is stored by Player State
 		InitializeAbilitySystemComponent(State->GetAbilitySystemComponent(), State);
 	}
 }
 
+// Called when controller is replicated, will use it to refresh the actor info on ABSC and reset the Death Tag state
 void APECharacter::OnRep_Controller()
 {
 	Super::OnRep_Controller();
@@ -113,6 +122,7 @@ void APECharacter::OnRep_Controller()
 	}
 }
 
+#pragma region Default Getters
 float APECharacter::GetDefaultWalkSpeed() const
 {
 	return DefaultWalkSpeed;
@@ -142,6 +152,7 @@ float APECharacter::GetCameraTargetArmLength() const
 {
 	return CameraBoom->TargetArmLength;
 }
+#pragma endregion Default Getters
 
 UAbilitySystemComponent* APECharacter::GetAbilitySystemComponent() const
 {
@@ -180,6 +191,7 @@ void APECharacter::BeginPlay()
 		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, "AbilityFailed");
 	}
 
+	// Check if this character have a valid Skeletal Mesh and paint it
 	if (IsValid(GetMesh()))
 	{
 		const auto DynamicColor_Lambda = [&](const uint8 Index, const FLinearColor Color) -> void
@@ -190,6 +202,7 @@ void APECharacter::BeginPlay()
 			}
 		};
 
+		// Bot: Red | Player: Blue
 		const FLinearColor DestColor =
 			IsBotControlled()
 				? FLinearColor::Red
@@ -221,11 +234,13 @@ void APECharacter::PerformDeath()
 
 void APECharacter::Server_PerformDeath_Implementation()
 {
+	// Destroy the character only on server (Will replicate to clients)
 	Destroy();
 }
 
 void APECharacter::Multicast_DeathSetup_Implementation()
 {
+	// Will perform each step above on both server and client
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
 	if (IsValid(GetMesh()) && IsValid(GetCharacterMovement()) && IsValid(GetCapsuleComponent()))
@@ -241,6 +256,7 @@ void APECharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
+	// Check if this player have a valid ABSC and cancel the Double Jump ability (if active)
 	if (!AbilitySystemComponent.IsValid())
 	{
 		return;
@@ -256,6 +272,7 @@ void APECharacter::Landed(const FHitResult& Hit)
 
 void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason)
 {
+	// Only for debugging, will print the reason of the failed ability	
 	ABILITY_VLOG(this, Warning,
 	             TEXT("Ability %s failed to activate. Owner: %s; Reasons:"), *Ability->GetName(), *GetName());
 
