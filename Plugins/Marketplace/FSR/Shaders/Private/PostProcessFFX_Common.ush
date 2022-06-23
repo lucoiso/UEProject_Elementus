@@ -1,0 +1,180 @@
+//------------------------------------------------------------------------------
+// FidelityFX Super Resolution UE4 Plugin
+//
+// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//------------------------------------------------------------------------------
+
+// !!!
+// FidelityFX Super Resolution - Common
+// This header should be included after ffx_a.ush
+// !!!
+
+// =====================================================================================
+// 
+// EOTF Conversions
+// 
+// =====================================================================================
+// FSR output device definitions : matching EFSR_OutputDevice enum in PostProcessFSR.cpp
+#define FSR_SRGB   0
+#define FSR_LINEAR 1
+#define FSR_ST2084 2
+#define FSR_scRGB  3
+
+#include "/Engine/Private/ACES.ush"
+#include "/Engine/Private/GammaCorrectionCommon.ush"
+
+float4 LinearToGamma2(float4 Color) { return sqrt(Color); }
+float3 LinearToGamma2(float3 Color) { return sqrt(Color); }
+float2 LinearToGamma2(float2 Color) { return sqrt(Color); }
+float  LinearToGamma2(float  Color) { return sqrt(Color); }
+
+float4 Gamma2ToLinear(float4 Color) { return Color * Color; }
+float3 Gamma2ToLinear(float3 Color) { return Color * Color; }
+float2 Gamma2ToLinear(float2 Color) { return Color * Color; }
+float  Gamma2ToLinear(float  Color) { return Color * Color; }
+
+#if ENABLE_FP16
+AH4 LinearToGamma2(AH4 Color) { return sqrt(Color); }
+AH3 LinearToGamma2(AH3 Color) { return sqrt(Color); }
+AH2 LinearToGamma2(AH2 Color) { return sqrt(Color); }
+AH1 LinearToGamma2(AH1 Color) { return sqrt(Color); }
+
+AH4 Gamma2ToLinear(AH4 Color) { return Color * Color; }
+AH3 Gamma2ToLinear(AH3 Color) { return Color * Color; }
+AH2 Gamma2ToLinear(AH2 Color) { return Color * Color; }
+AH1 Gamma2ToLinear(AH1 Color) { return Color * Color; }
+#endif
+
+//-----------------------------------------------------------------
+
+// only float3 ST2084ToLinear() is defined in GammaCorrectionCommon.ush
+float ST2084ToLinear_F(float pq)
+{
+	const float m1 = 0.1593017578125; // = 2610. / 4096. * .25;
+	const float m2 = 78.84375;        // = 2523. / 4096. *  128;
+	const float c1 = 0.8359375;       // = 2392. / 4096. * 32 - 2413./4096.*32 + 1;
+	const float c2 = 18.8515625;      // = 2413. / 4096. * 32;
+	const float c3 = 18.6875;         // = 2392. / 4096. * 32;
+	const float C = 10000.;
+
+	float Np = pow(pq, 1. / m2);
+	float L = Np - c1;
+	L = max(0., L);
+	L = L / (c2 - c3 * Np);
+	L = pow(L, 1. / m1);
+	float P = L * C;
+
+	return P;
+}
+float  ST2084ToGamma2(float  pq) { return LinearToGamma2(ST2084ToLinear_F(pq)); }
+float2 ST2084ToGamma2(float2 pq) { return LinearToGamma2(float2(ST2084ToLinear_F(pq.r), ST2084ToLinear_F(pq.g))); }
+float3 ST2084ToGamma2(float3 pq) { return LinearToGamma2(ST2084ToLinear(pq)); }
+float4 ST2084ToGamma2(float4 pq) { return LinearToGamma2(float4(ST2084ToLinear(pq.rgb), ST2084ToLinear_F(pq.a))); }
+
+//-----------------------------------------------------------------
+
+// Either 1000 or 2000 depending on UE4 Tonemapper enum, 
+// should be provided by the engine
+#if MAX_ODT_NITS_ENUM == 1
+#define HDR_MAX_ODT_NITS 2000
+#else 
+#define HDR_MAX_ODT_NITS 1000
+#endif
+
+#define HDR_MAX_NITS     10000
+#define HDR_MAX_NITS_INV 0.0001f
+
+// matches white point in ST2084ToScRGB()
+#define HDR_WHITE_POINT 80.0f
+
+float3 Gamma2ToScRGB(float3 Color)
+{
+	const float3x3 Rec2020_2_sRGB = mul(XYZ_2_sRGB_MAT, Rec2020_2_XYZ_MAT);
+	const float MaxODTNits = HDR_MAX_ODT_NITS;
+	const float scRGBScale = MaxODTNits / HDR_WHITE_POINT;
+
+	// Gamma2 -> Linear encoding
+	float3 LinearColor_Rec2020 = Gamma2ToLinear(Color);
+
+	// Rec2020 -> sRGB primaries
+	float3 LinearColor_sRGB = mul(Rec2020_2_sRGB, LinearColor_Rec2020);
+
+	// Linear_sRGB -> scRGB
+	return LinearColor_sRGB * scRGBScale;
+}
+
+float3 scRGBToGamma2(float3 Color_scRGB)
+{
+	const float3x3 sRGB_2_Rec2020 = mul(XYZ_2_Rec2020_MAT, sRGB_2_XYZ_MAT);
+	const float MaxODTNits = HDR_MAX_ODT_NITS;
+	const float scRGBScale = MaxODTNits / HDR_WHITE_POINT;
+	const float scRGBScaleInv = HDR_WHITE_POINT / MaxODTNits;
+
+	// normalize to [0-1]
+	Color_scRGB *= scRGBScaleInv;
+
+	// convert primaries sRGB -> Rec2020 
+	float3 Color_Rec2020 = mul(sRGB_2_Rec2020, Color_scRGB);
+
+	// clamp negatives
+	Color_Rec2020 = max(Color_Rec2020, 0); 
+
+	// Gamma2-encode
+	return LinearToGamma2(Color_Rec2020);
+}
+
+float3 LinearToScRGB(float3 LinearColor_Rec2020)
+{
+	const float3x3 Rec2020_2_sRGB = mul(XYZ_2_sRGB_MAT, Rec2020_2_XYZ_MAT);
+	const float MaxODTNits = HDR_MAX_ODT_NITS;
+	const float scRGBScale = MaxODTNits / HDR_WHITE_POINT;
+
+	// Rec2020 -> sRGB primaries
+	float3 LinearColor_sRGB = mul(Rec2020_2_sRGB, LinearColor_Rec2020);
+
+	// Linear_sRGB -> scRGB
+	return LinearColor_sRGB * scRGBScale;
+}
+
+// =====================================================================================
+// 
+// UE4 Film Grain (GrainIntensity)
+// 
+// =====================================================================================
+// applied inline in FSR/RCAS
+#if USE_GRAIN_INTENSITY
+half GrainFromUV(float2 GrainUV)
+{
+	half Grain = frac(sin(GrainUV.x + GrainUV.y * 543.31) * 493013.0);
+	return Grain;
+}
+void ApplyUE4Grain(inout AF3 LinearColor, AU2 gxy, AF2 VPColor_ExtentInverse)
+{
+	const float2 TexCoord = gxy * VPColor_ExtentInverse;;
+	float4 GrainUV;
+
+	// VS
+	GrainUV.xy = TexCoord + VPColor_ExtentInverse * float2(-0.5, 0.5);
+	GrainUV.zw = TexCoord + GrainRandomFull.xy;
+
+	// PS 
+	half Grain = GrainFromUV(GrainUV.zw);
+	half GrainMul = Grain * GrainScaleBiasJitter.x + GrainScaleBiasJitter.y;
+	LinearColor *= GrainMul;
+}
+#endif // USE_GRAIN_INTENSITY
