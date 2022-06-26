@@ -24,6 +24,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float HookIntensity;
 
+	/* Max intensity value of the hook movement - Set 0 to disable */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (ClampMin = "0", UIMin = "0"))
+	float MaxHookIntensity;
+
 private:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	                             const FGameplayAbilityActorInfo* ActorInfo,

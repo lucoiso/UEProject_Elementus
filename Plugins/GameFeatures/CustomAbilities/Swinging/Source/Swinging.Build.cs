@@ -22,5 +22,10 @@ public class Swinging : ModuleRules
 			"GameplayTasks",
 			"ProjectElementus"
 		});
+
+		PrivateDependencyModuleNames.AddRange(new[]
+		{
+			"GeometryCollectionEngine"
+		});
 	}
 }
