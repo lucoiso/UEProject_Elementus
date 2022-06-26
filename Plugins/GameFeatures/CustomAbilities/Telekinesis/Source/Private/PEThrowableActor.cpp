@@ -10,19 +10,23 @@
 APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bReplicates = true;
+	bNetStartup = false;
+	bNetLoadOnClient = false;
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	SetRootComponent(GetStaticMeshComponent());
-	GetStaticMeshComponent()->SetIsReplicated(true);
+	SetMobility(EComponentMobility::Movable);
+
 	GetStaticMeshComponent()->SetSimulatePhysics(true);
 	GetStaticMeshComponent()->SetGenerateOverlapEvents(true);
 	GetStaticMeshComponent()->SetNotifyRigidBodyCollision(true);
 	GetStaticMeshComponent()->SetCollisionObjectType(ECC_PhysicsBody);
 	GetStaticMeshComponent()->SetCollisionProfileName(TEXT("PhysicsBody"));
 	GetStaticMeshComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	SetMobility(EComponentMobility::Movable);
+
+	bReplicates = true;
+	GetStaticMeshComponent()->SetIsReplicated(true);
 }
 
 void APEThrowableActor::ThrowSetup(AActor* Caller)
