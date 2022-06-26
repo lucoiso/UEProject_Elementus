@@ -6,10 +6,12 @@
 #include "PEHookAbility_Task.h"
 #include "Actors/Character/PECharacter.h"
 #include "GAS/Targeting/PELineTargeting.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	  HookIntensity(3000.f)
+	  HookIntensity(3000.f),
+	  MaxHookIntensity(0.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
@@ -76,7 +78,11 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	}
 
 	// Create and initialize the hook movement task: This task will perform the physical hook movement
-	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this, FName("HookTask"), *TargetHit, HookIntensity);
+	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this,
+	                                                      FName("HookTask"),
+	                                                      *TargetHit,
+	                                                      HookIntensity,
+	                                                      MaxHookIntensity);
 	TaskHandle->ReadyForActivation();
 
 	FGameplayCueParameters Params;
@@ -89,7 +95,9 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	                     GetCurrentActorInfo()->AbilitySystemComponent.Get());
 
 	// If the target is a character, will finish this ability after AbilityActiveTime seconds
-	if (Cast<APECharacter>(TargetHit->GetActor()) && TargetHit->GetActor() != GetAvatarActorFromActorInfo())
+	if (TargetHit->GetActor()->GetClass()->IsChildOf<APECharacter>()
+		&& TargetHit->GetActor() != GetAvatarActorFromActorInfo()
+		|| TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
 	{
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindLambda([=]() -> void
