@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Engine/DataTable.h"
 #include "PEAbilityData.generated.h"
 
 class UGameplayEffect;
@@ -43,8 +44,11 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId("Ability Data", GetFName());
+		return FPrimaryAssetId(*("Ability_" + FString::FromInt(AbilityId)));
 	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	int32 AbilityId;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TSoftClassPtr<UGameplayAbility> AbilityClass;
@@ -57,4 +61,23 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TSoftObjectPtr<UTexture2D> AbilityImage;
+};
+
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
+struct FPEAbilityRowData : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (DisplayAfter = "Id"))
+	TSoftObjectPtr<UPEAbilityData> Data;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	FName Id;
+
+	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override
+	{
+		Super::OnDataTableChanged(InDataTable, InRowName);
+
+		Id = Data ? *FString::FromInt(Data.LoadSynchronous()->AbilityId) : TEXT("Undefined");
+	}
 };

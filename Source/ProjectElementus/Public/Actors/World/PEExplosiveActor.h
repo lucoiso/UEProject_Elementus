@@ -23,11 +23,6 @@ class PROJECTELEMENTUS_API APEExplosiveActor final : public AActor
 public:
 	explicit APEExplosiveActor(const FObjectInitializer& ObjectInitializer);
 
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Explosive Actor", GetFName());
-	}
-
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void PerformExplosion();
 

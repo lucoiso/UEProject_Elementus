@@ -9,10 +9,12 @@
 #include "ElementusInventoryPackage.generated.h"
 
 UCLASS(Category = "Project Elementus | Classes")
-class ELEMENTUSINVENTORY_API AElementusInventoryPackage : public AActor
+class ELEMENTUSINVENTORY_API AElementusInventoryPackage final : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	AElementusInventoryPackage();
+
+	// Not implemented yet
 };

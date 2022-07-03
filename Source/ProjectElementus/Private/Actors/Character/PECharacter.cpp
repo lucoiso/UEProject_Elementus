@@ -10,8 +10,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemLog.h"
+#include "../../../../../Plugins/ElementusInventory/Source/ElementusInventory/Public/ElementusInventoryComponent.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
@@ -72,6 +72,8 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = true;
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
+
+	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(TEXT("InventoryComponent"));
 }
 
 // Called on server when the player is possessed by a controller

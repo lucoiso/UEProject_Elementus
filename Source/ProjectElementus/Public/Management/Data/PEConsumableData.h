@@ -8,6 +8,7 @@
 #include "GameplayTagContainer.h"
 #include "GAS/System/PEAbilityData.h"
 #include "Engine/DataAsset.h"
+#include "Engine/DataTable.h"
 #include "PEConsumableData.generated.h"
 
 class UGameplayEffect;
@@ -25,8 +26,11 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId("Consumable Data", GetFName());
+		return FPrimaryAssetId(*("Consumable_" + FString::FromInt(ConsumableId)));
 	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	int32 ConsumableId;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TSoftObjectPtr<UStaticMesh> ObjectMesh;
@@ -39,4 +43,23 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	FGameplayTagContainer RequirementsTags;
+};
+
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
+struct FPEConsumableRowData : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (DisplayAfter = "Id"))
+	TSoftObjectPtr<UPEConsumableData> Data;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	FName Id;
+
+	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override
+	{
+		Super::OnDataTableChanged(InDataTable, InRowName);
+
+		Id = Data ? *FString::FromInt(Data.LoadSynchronous()->ConsumableId) : TEXT("Undefined");
+	}
 };

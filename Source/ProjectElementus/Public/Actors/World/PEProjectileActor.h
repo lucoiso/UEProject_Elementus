@@ -23,11 +23,6 @@ class PROJECTELEMENTUS_API APEProjectileActor final : public AActor
 public:
 	explicit APEProjectileActor(const FObjectInitializer& ObjectInitializer);
 
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Projectile Actor", GetFName());
-	}
-
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TObjectPtr<USphereComponent> CollisionComponent;

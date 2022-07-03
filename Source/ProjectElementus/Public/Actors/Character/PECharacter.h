@@ -15,6 +15,7 @@ class UGameplayAbility;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
+class UElementusInventoryComponent;
 struct FGameplayTag;
 /**
  *
@@ -40,11 +41,6 @@ private:
 
 public:
 	explicit APECharacter(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Character", GetFName());
-	}
 
 	/** Returns CameraBoom sub object **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const
@@ -85,6 +81,9 @@ public:
 
 	/* Initialize the specified Ability System Component with the given owner actor in this character (AvatarActor) */
 	void InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
 
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;

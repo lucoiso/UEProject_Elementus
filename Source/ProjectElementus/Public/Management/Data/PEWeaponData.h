@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Engine/DataTable.h"
 #include "PEWeaponData.generated.h"
 
 /**
@@ -21,6 +22,28 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId("Weapon Data", GetFName());
+		return FPrimaryAssetId(*("Weapon_" + FString::FromInt(WeaponId)));
+	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	int32 WeaponId;
+};
+
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
+struct FPEWeaponRowData : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (DisplayAfter = "Id"))
+	TSoftObjectPtr<UPEWeaponData> Data;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	FName Id;
+
+	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override
+	{
+		Super::OnDataTableChanged(InDataTable, InRowName);
+
+		Id = Data ? *FString::FromInt(Data.LoadSynchronous()->WeaponId) : TEXT("Undefined");
 	}
 };

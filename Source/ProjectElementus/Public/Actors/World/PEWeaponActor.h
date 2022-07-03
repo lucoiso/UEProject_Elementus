@@ -18,9 +18,4 @@ class PROJECTELEMENTUS_API APEWeaponActor final : public AActor
 
 public:
 	explicit APEWeaponActor(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Weapon Actor", GetFName());
-	}
 };

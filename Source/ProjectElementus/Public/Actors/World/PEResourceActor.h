@@ -18,9 +18,4 @@ class PROJECTELEMENTUS_API APEResourceActor final : public AActor
 
 public:
 	explicit APEResourceActor(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Resource Actor", GetFName());
-	}
 };
