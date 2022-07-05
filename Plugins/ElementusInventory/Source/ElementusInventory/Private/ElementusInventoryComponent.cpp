@@ -3,11 +3,12 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "ElementusInventoryComponent.h"
-
 #include "ElementusInventoryFunctions.h"
 
 UElementusInventoryComponent::UElementusInventoryComponent()
 {
+	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bStartWithTickEnabled = false;
 }
 
 TArray<FElementusItemInfo> UElementusInventoryComponent::GetItemStack()

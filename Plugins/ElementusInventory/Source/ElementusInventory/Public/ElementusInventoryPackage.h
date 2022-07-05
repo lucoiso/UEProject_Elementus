@@ -8,6 +8,9 @@
 #include "GameFramework/Actor.h"
 #include "ElementusInventoryPackage.generated.h"
 
+class UNiagaraComponent;
+class UElementusInventoryComponent;
+
 UCLASS(Category = "Project Elementus | Classes")
 class ELEMENTUSINVENTORY_API AElementusInventoryPackage final : public AActor
 {
@@ -16,5 +19,9 @@ class ELEMENTUSINVENTORY_API AElementusInventoryPackage final : public AActor
 public:
 	AElementusInventoryPackage();
 
-	// Not implemented yet
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	TObjectPtr<UStaticMeshComponent> PackageMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	TObjectPtr<UElementusInventoryComponent> PackageInventory;
 };

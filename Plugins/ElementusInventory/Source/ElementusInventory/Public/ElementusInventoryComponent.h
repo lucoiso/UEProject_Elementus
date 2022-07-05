@@ -39,9 +39,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void DiscardItemById(const int32 ItemId, const int32 Quantity, const bool bDropItem = false);
 
-protected:
-	UPROPERTY(BlueprintReadWrite, Category = "Elementus Inventory")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
 	TArray<FElementusItemInfo> ItemStack;
-
-	float CurrentWeight;
 };
