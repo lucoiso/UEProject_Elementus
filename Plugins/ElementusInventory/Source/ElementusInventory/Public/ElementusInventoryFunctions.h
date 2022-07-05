@@ -26,16 +26,17 @@ class ELEMENTUSINVENTORY_API UElementusInventoryFunctions final : public UBluepr
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
-	static bool GetItemInfoByData(const UInventoryItemData* InData, TArray<FElementusItemInfo> InArr, int& ItemIndex);
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	static bool FindElementusItemInfoByDataInArr(const UInventoryItemData* InData, TArray<FElementusItemInfo> InArr,
+	                                             int& ItemIndex);
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
-	static bool GetItemInfoById(const int32 InId, TArray<FElementusItemInfo> InArr, int& ItemIndex);
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	static bool FindElementusItemInfoByIdInArr(const int32 InId, TArray<FElementusItemInfo> InArr, int& ItemIndex);
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
-	static UInventoryItemData* GetUniqueElementusItemById(const FString InID);
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	static UInventoryItemData* GetElementusItemDataById(const FString InID);
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
-	static TArray<UInventoryItemData*> SearchElementusItem(const EElementusSearchType SearchType,
-	                                                       const FString SearchString);
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	static TArray<UInventoryItemData*> SearchElementusItemData(const EElementusSearchType SearchType,
+	                                                           const FString SearchString);
 };

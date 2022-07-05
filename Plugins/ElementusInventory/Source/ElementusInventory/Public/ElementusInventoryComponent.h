@@ -18,25 +18,25 @@ class ELEMENTUSINVENTORY_API UElementusInventoryComponent final : public UActorC
 public:
 	UElementusInventoryComponent();
 
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Inventory")
+	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
 	TArray<FElementusItemInfo> GetItemStack();
 
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Inventory")
+	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
 	float GetCurrentWeight() const;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Elementus Inventory")
 	float MaxWeight;
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void AddItemByData(UInventoryItemData* ItemData, const int32 Quantity);
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void AddItemById(const int32 ItemId, const int32 Quantity);
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void DiscardItemByData(const UInventoryItemData* ItemData, const int32 Quantity, const bool bDropItem = false);
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void DiscardItemById(const int32 ItemId, const int32 Quantity, const bool bDropItem = false);
 
 protected:

@@ -44,6 +44,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
 		meta = (AssetBundles = "Data"))
 	int32 ItemId;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AssetBundles = "Actor"))
+	TSoftClassPtr<UObject> ItemClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
 		meta = (AssetBundles = "Data"))
@@ -64,7 +68,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
 		meta = (UIMin = 0, ClampMin = 0, AssetBundles = "Data"))
 	float ItemWeight;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
 		meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> ItemIcon;

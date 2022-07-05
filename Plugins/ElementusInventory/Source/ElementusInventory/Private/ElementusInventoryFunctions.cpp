@@ -5,8 +5,9 @@
 #include "ElementusInventoryFunctions.h"
 #include "Engine/AssetManager.h"
 
-bool UElementusInventoryFunctions::GetItemInfoByData(const UInventoryItemData* InData, TArray<FElementusItemInfo> InArr,
-                                                     int& ItemIndex)
+bool UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(const UInventoryItemData* InData,
+                                                                    TArray<FElementusItemInfo> InArr,
+                                                                    int& ItemIndex)
 {
 	for (auto Iterator = InArr.CreateIterator(); Iterator; ++Iterator)
 	{
@@ -24,7 +25,9 @@ bool UElementusInventoryFunctions::GetItemInfoByData(const UInventoryItemData* I
 	return false;
 }
 
-bool UElementusInventoryFunctions::GetItemInfoById(const int32 InId, TArray<FElementusItemInfo> InArr, int& ItemIndex)
+bool UElementusInventoryFunctions::FindElementusItemInfoByIdInArr(const int32 InId,
+                                                                  TArray<FElementusItemInfo> InArr,
+                                                                  int& ItemIndex)
 {
 	for (auto Iterator = InArr.CreateIterator(); Iterator; ++Iterator)
 	{
@@ -42,7 +45,7 @@ bool UElementusInventoryFunctions::GetItemInfoById(const int32 InId, TArray<FEle
 	return false;
 }
 
-UInventoryItemData* UElementusInventoryFunctions::GetUniqueElementusItemById(const FString InID)
+UInventoryItemData* UElementusInventoryFunctions::GetElementusItemDataById(const FString InID)
 {
 	if (UAssetManager* AssetManager = UAssetManager::GetIfValid())
 	{
@@ -74,8 +77,8 @@ UInventoryItemData* UElementusInventoryFunctions::GetUniqueElementusItemById(con
 	return nullptr;
 }
 
-TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItem(const EElementusSearchType SearchType,
-                                                                              const FString SearchString)
+TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItemData(const EElementusSearchType SearchType,
+	const FString SearchString)
 {
 	TArray<UInventoryItemData*> OutputArr;
 
