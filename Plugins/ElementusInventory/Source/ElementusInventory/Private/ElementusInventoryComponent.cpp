@@ -55,7 +55,7 @@ void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Q
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning,
+		UE_LOG(LogTemp, Error,
 		       TEXT("Elementus Inventory - %s: Item with id %d not found!"),
 		       *FString(__func__), ItemId);
 	}
@@ -113,7 +113,7 @@ void UElementusInventoryComponent::DiscardItemById(const int32 ItemId, const int
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning,
+		UE_LOG(LogTemp, Error,
 		       TEXT("Elementus Inventory - %s: Item with given data not found!"), *FString(__func__));
 	}
 }

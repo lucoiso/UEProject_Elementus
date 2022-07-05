@@ -99,7 +99,7 @@ TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItemDat
 				if (LoadedAssets.IsEmpty())
 				{
 					UE_LOG(LogTemp, Error,
-					       TEXT("Elementus Inventory - %s: Failed to load items data"),
+					       TEXT("Elementus Inventory - %s: Failed to find items with the given parameters"),
 					       *FString(__func__));
 				}
 
@@ -112,10 +112,6 @@ TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItemDat
 
 					if (UInventoryItemData* CastedAsset = Cast<UInventoryItemData>(Iterator))
 					{
-						UE_LOG(LogTemp, Display,
-						       TEXT("Elementus Inventory - %s: Returned Item Name: %s"),
-						       *FString(__func__), *CastedAsset->ItemName.ToString());
-
 						bool bAddItem = false;
 						switch (SearchType)
 						{
