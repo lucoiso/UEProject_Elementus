@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "ElementusInventoryData.h"
-#include "Engine/DataTable.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ElementusInventoryFunctions.generated.h"
 
@@ -34,9 +33,9 @@ public:
 	static bool GetItemInfoById(const int32 InId, TArray<FElementusItemInfo> InArr, int& ItemIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
-	static UInventoryItemData* GetUniqueElementusItemById(const FString SearchString, const UDataTable* InDataTable);
+	static UInventoryItemData* GetUniqueElementusItemById(const FString InID);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
 	static TArray<UInventoryItemData*> SearchElementusItem(const EElementusSearchType SearchType,
-	                                                       const FString SearchString, const UDataTable* InDataTable);
+	                                                       const FString SearchString);
 };

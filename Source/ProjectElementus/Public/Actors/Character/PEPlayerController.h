@@ -7,7 +7,6 @@
 #include "CoreMinimal.h"
 #include "InputTriggers.h"
 #include "AbilityInputBinding.h"
-#include "AbilitySystemInterface.h"
 #include "PEPlayerController.generated.h"
 
 /**

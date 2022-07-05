@@ -26,40 +26,27 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(*("Consumable_" + FString::FromInt(ConsumableId)));
+		return FPrimaryAssetId(TEXT("PE_ConsumableData"),
+		                       *("Consumable_" + FString::FromInt(ConsumableId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Data"))
 	int32 ConsumableId;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Actor"))
 	TSoftObjectPtr<UStaticMesh> ObjectMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Actor"))
 	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Effects"))
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Tags"))
 	FGameplayTagContainer RequirementsTags;
-};
-
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
-struct FPEConsumableRowData : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (DisplayAfter = "Id"))
-	TSoftObjectPtr<UPEConsumableData> Data;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
-	FName Id;
-
-	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override
-	{
-		Super::OnDataTableChanged(InDataTable, InRowName);
-
-		Id = Data ? *FString::FromInt(Data.LoadSynchronous()->ConsumableId) : TEXT("Undefined");
-	}
 };

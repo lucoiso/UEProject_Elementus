@@ -3,6 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "ElementusInventoryFunctions.h"
+#include "Engine/AssetManager.h"
 
 bool UElementusInventoryFunctions::GetItemInfoByData(const UInventoryItemData* InData, TArray<FElementusItemInfo> InArr,
                                                      int& ItemIndex)
@@ -41,63 +42,109 @@ bool UElementusInventoryFunctions::GetItemInfoById(const int32 InId, TArray<FEle
 	return false;
 }
 
-UInventoryItemData* UElementusInventoryFunctions::GetUniqueElementusItemById(const FString SearchString,
-                                                                             const UDataTable* InDataTable)
+UInventoryItemData* UElementusInventoryFunctions::GetUniqueElementusItemById(const FString InID)
 {
-	if (const FElementusItemRowData* RowData =
-			InDataTable->FindRow<FElementusItemRowData>(*SearchString, TEXT(""));
-		RowData && !RowData->Data.IsNull())
+	if (UAssetManager* AssetManager = UAssetManager::GetIfValid())
 	{
-		return RowData->Data.LoadSynchronous();
+		if (const TSharedPtr<FStreamableHandle> StreamableHandle =
+				AssetManager->LoadPrimaryAsset(
+					FPrimaryAssetId(TEXT("ElementusInventory_ItemData"), *FString("Item_" + InID)));
+			StreamableHandle.IsValid())
+		{
+			StreamableHandle->WaitUntilComplete(2.5f);
+			UObject* OutputAsset = StreamableHandle->GetLoadedAsset();
+
+			if (IsValid(OutputAsset))
+			{
+				UE_LOG(LogTemp, Display,
+				       TEXT("Elementus Inventory - %s: Found item data: %s"),
+				       *FString(__func__), *OutputAsset->GetName());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error,
+				       TEXT("Elementus Inventory - %s: Failed to load item data"),
+				       *FString(__func__));
+			}
+
+			return Cast<UInventoryItemData>(OutputAsset);
+		}
 	}
 
 	return nullptr;
 }
 
-TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItem(
-	const EElementusSearchType SearchType, const FString SearchString, const UDataTable* InDataTable)
+TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItem(const EElementusSearchType SearchType,
+                                                                              const FString SearchString)
 {
-	TArray<UInventoryItemData*> Output;
+	TArray<UInventoryItemData*> OutputArr;
 
-	const auto ForEachRow_Lambda =
-		[&Output, SearchType, SearchString]
-	([[maybe_unused]] const FName& Key, const FElementusItemRowData& RowData)
+	if (UAssetManager* AssetManager = UAssetManager::GetIfValid())
 	{
-		if (!RowData.Data.IsNull())
+		if (TArray<FPrimaryAssetId> IdList;
+			AssetManager->GetPrimaryAssetIdList(TEXT("ElementusInventory_ItemData"), IdList))
 		{
-			UInventoryItemData* LoadedItem = RowData.Data.
-			                                         LoadSynchronous();
-
-			UE_LOG(LogTemp, Display,
-			       TEXT("Elementus Inventory - SearchElementusItem: Returned Item Name: %s"),
-			       *LoadedItem->ItemName.ToString());
-
-			bool bAddItem = false;
-			switch (SearchType)
+			if (const TSharedPtr<FStreamableHandle> StreamableHandle =
+					AssetManager->LoadPrimaryAssets(IdList, TArray<FName>{TEXT("Data")});
+				StreamableHandle.IsValid())
 			{
-			case EElementusSearchType::Name:
-				bAddItem = LoadedItem->ItemName.ToString().Contains(SearchString);
-				break;
+				StreamableHandle->WaitUntilComplete(10.f);
 
-			case EElementusSearchType::ID:
-				bAddItem = FString::FromInt(LoadedItem->ItemId).Contains(SearchString);
-				break;
+				TArray<UObject*> LoadedAssets;
+				StreamableHandle->GetLoadedAssets(LoadedAssets);
 
-			case EElementusSearchType::Type:
-				bAddItem = static_cast<int8>(LoadedItem->ItemType) == FCString::Atoi(*SearchString);
-				break;
+				if (LoadedAssets.IsEmpty())
+				{
+					UE_LOG(LogTemp, Error,
+					       TEXT("Elementus Inventory - %s: Failed to load items data"),
+					       *FString(__func__));
+				}
 
-			default:
-				break;
-			}
+				for (UObject* Iterator : LoadedAssets)
+				{
+					if (!IsValid(Iterator))
+					{
+						continue;
+					}
 
-			if (bAddItem)
-			{
-				Output.Add(LoadedItem);
+					if (UInventoryItemData* CastedAsset = Cast<UInventoryItemData>(Iterator))
+					{
+						UE_LOG(LogTemp, Display,
+						       TEXT("Elementus Inventory - %s: Returned Item Name: %s"),
+						       *FString(__func__), *CastedAsset->ItemName.ToString());
+
+						bool bAddItem = false;
+						switch (SearchType)
+						{
+						case EElementusSearchType::Name:
+							bAddItem = CastedAsset->ItemName.ToString().Contains(SearchString);
+							break;
+
+						case EElementusSearchType::ID:
+							bAddItem = FString::FromInt(CastedAsset->ItemId).Contains(SearchString);
+							break;
+
+						case EElementusSearchType::Type:
+							bAddItem = static_cast<int8>(CastedAsset->ItemType) == FCString::Atoi(*SearchString);
+							break;
+
+						default:
+							break;
+						}
+
+						if (bAddItem)
+						{
+							UE_LOG(LogTemp, Display,
+							       TEXT("Elementus Inventory - %s: Added Item Name: %s"),
+							       *FString(__func__), *CastedAsset->ItemName.ToString());
+
+							OutputArr.Add(CastedAsset);
+						}
+					}
+				}
 			}
 		}
-	};
+	}
 
-	InDataTable->ForeachRow<FElementusItemRowData>(TEXT(""), ForEachRow_Lambda);
-	return Output;
+	return OutputArr;
 }

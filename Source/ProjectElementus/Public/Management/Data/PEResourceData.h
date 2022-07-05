@@ -22,28 +22,11 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(*("Resource_" + FString::FromInt(ResourceId)));
+		return FPrimaryAssetId(TEXT("PE_ResourceData"),
+		                       *("Resource_" + FString::FromInt(ResourceId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Data"))
 	int32 ResourceId;
-};
-
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
-struct FPEResourceRowData : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (DisplayAfter = "Id"))
-	TSoftObjectPtr<UPEResourceData> Data;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
-	FName Id;
-
-	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override
-	{
-		Super::OnDataTableChanged(InDataTable, InRowName);
-
-		Id = Data ? *FString::FromInt(Data.LoadSynchronous()->ResourceId) : TEXT("Undefined");
-	}
 };

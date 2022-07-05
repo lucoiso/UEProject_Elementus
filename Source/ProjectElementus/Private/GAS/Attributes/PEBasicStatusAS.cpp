@@ -18,7 +18,7 @@ UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer)
 	  , MaxMana(100.f)
 {
 	static const ConstructorHelpers::FObjectFinder<UDataTable> MainAttributesMetaData_ObjRef(
-		TEXT("/Game/Main/GAS/Data/DT_BasicStatusAS"));
+		TEXT("/Game/Main/Data/GAS/DT_BasicStatusAS"));
 	if constexpr (&MainAttributesMetaData_ObjRef.Object != nullptr)
 	{
 		UAttributeSet::InitFromMetaDataTable(MainAttributesMetaData_ObjRef.Object);

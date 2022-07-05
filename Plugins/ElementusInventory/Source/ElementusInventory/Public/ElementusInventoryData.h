@@ -37,51 +37,41 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(*("ElementusInventoryItem_" + FString::FromInt(ItemId)));
+		return FPrimaryAssetId(TEXT("ElementusInventory_ItemData"),
+		                       *("Item_" + FString::FromInt(ItemId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AssetBundles = "Data"))
 	int32 ItemId;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AssetBundles = "Data"))
 	FName ItemName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AssetBundles = "Data"))
 	FText ItemDescription;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AssetBundles = "Data"))
 	EElementusItemType ItemType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AssetBundles = "Data"))
 	float ItemValue;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory", meta = (UIMin = 0, ClampMin = 0))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (UIMin = 0, ClampMin = 0, AssetBundles = "Data"))
 	float ItemWeight;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> ItemIcon;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> ItemImage;
-};
-
-USTRUCT(BlueprintType, Category = "Elementus Inventory | Structs | Data")
-struct FElementusItemRowData : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (DisplayAfter = "Id"))
-	TSoftObjectPtr<UInventoryItemData> Data;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
-	FName Id;
-
-	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override
-	{
-		Super::OnDataTableChanged(InDataTable, InRowName);
-
-		Id = Data ? *FString::FromInt(Data.LoadSynchronous()->ItemId) : TEXT("Undefined");
-	}
 };
 
 USTRUCT(BlueprintType, Category = "Elementus Inventory | Structs | Data")

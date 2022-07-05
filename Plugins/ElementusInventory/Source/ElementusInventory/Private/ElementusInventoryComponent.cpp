@@ -40,7 +40,7 @@ void UElementusInventoryComponent::AddItemByData(UInventoryItemData* ItemData, c
 	}
 }
 
-void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Quantity, UDataTable* InDataTable)
+void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Quantity)
 {
 	if (int ItemIndex = -1;
 		UElementusInventoryFunctions::GetItemInfoById(ItemId, ItemStack, ItemIndex))
@@ -48,7 +48,7 @@ void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Q
 		ItemStack[ItemIndex].ItemQuantity += Quantity;
 	}
 	else if (UInventoryItemData* ReturnedItem =
-		UElementusInventoryFunctions::GetUniqueElementusItemById(FString::FromInt(ItemId), InDataTable))
+		UElementusInventoryFunctions::GetUniqueElementusItemById(FString::FromInt(ItemId)))
 	{
 		UE_LOG(LogTemp, Display, TEXT("Elementus Inventory - %s: Item not found in inventory."), *FString(__func__));
 		ItemStack.Add(FElementusItemInfo(ReturnedItem, Quantity));
@@ -56,8 +56,8 @@ void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Q
 	else
 	{
 		UE_LOG(LogTemp, Warning,
-		       TEXT("Elementus Inventory - %s: Item with id %d not found in the %s!"),
-		       *FString(__func__), ItemId, *InDataTable->GetName());
+		       TEXT("Elementus Inventory - %s: Item with id %d not found!"),
+		       *FString(__func__), ItemId);
 	}
 }
 

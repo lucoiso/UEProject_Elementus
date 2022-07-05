@@ -44,40 +44,27 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(*("Ability_" + FString::FromInt(AbilityId)));
+		return FPrimaryAssetId(TEXT("PE_AbilityData"),
+		                       *("Ability_" + FString::FromInt(AbilityId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Data"))
 	int32 AbilityId;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Class"))
 	TSoftClassPtr<UGameplayAbility> AbilityClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Data"))
 	FName AbilityName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "Data"))
 	FText AbilityDescription;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+		meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> AbilityImage;
-};
-
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
-struct FPEAbilityRowData : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (DisplayAfter = "Id"))
-	TSoftObjectPtr<UPEAbilityData> Data;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
-	FName Id;
-
-	virtual void OnDataTableChanged(const UDataTable* InDataTable, const FName InRowName) override
-	{
-		Super::OnDataTableChanged(InDataTable, InRowName);
-
-		Id = Data ? *FString::FromInt(Data.LoadSynchronous()->AbilityId) : TEXT("Undefined");
-	}
 };

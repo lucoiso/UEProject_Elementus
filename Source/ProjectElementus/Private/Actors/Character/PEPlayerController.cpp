@@ -29,7 +29,7 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(
-		TEXT("/Game/Main/GAS/Data/EN_AbilityInputID"));
+		TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
 	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
 	{
 		InputEnumHandle = InputIDEnum_ObjRef.Object;

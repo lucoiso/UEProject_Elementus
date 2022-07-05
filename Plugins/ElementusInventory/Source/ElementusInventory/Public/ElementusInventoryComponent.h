@@ -31,7 +31,7 @@ public:
 	void AddItemByData(UInventoryItemData* ItemData, const int32 Quantity);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
-	void AddItemById(const int32 ItemId, const int32 Quantity, UDataTable* InDataTable);
+	void AddItemById(const int32 ItemId, const int32 Quantity);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Inventory")
 	void DiscardItemByData(const UInventoryItemData* ItemData, const int32 Quantity, const bool bDropItem = false);
