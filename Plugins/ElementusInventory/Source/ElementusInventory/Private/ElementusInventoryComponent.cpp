@@ -11,11 +11,6 @@ UElementusInventoryComponent::UElementusInventoryComponent()
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 }
 
-TArray<FElementusItemInfo> UElementusInventoryComponent::GetItemStack()
-{
-	return ItemStack;
-}
-
 float UElementusInventoryComponent::GetCurrentWeight() const
 {
 	float OutputValue = 0.f;
@@ -29,6 +24,10 @@ float UElementusInventoryComponent::GetCurrentWeight() const
 
 void UElementusInventoryComponent::AddItemByData(UInventoryItemData* ItemData, const int32 Quantity)
 {
+	UE_LOG(LogTemp, Display,
+	       TEXT("Elementus Inventory - %s: Adding %d item with name '%s' to inventory"),
+	       *FString(__func__), Quantity, *ItemData->ItemName.ToString());
+
 	if (int ItemIndex = -1;
 		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemData, ItemStack, ItemIndex))
 	{
@@ -36,13 +35,16 @@ void UElementusInventoryComponent::AddItemByData(UInventoryItemData* ItemData, c
 	}
 	else
 	{
-		UE_LOG(LogTemp, Display, TEXT("Elementus Inventory - %s: Item not found in inventory."), *FString(__func__));
 		ItemStack.Add(FElementusItemInfo(ItemData, Quantity));
 	}
 }
 
 void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Quantity)
 {
+	UE_LOG(LogTemp, Display,
+	       TEXT("Elementus Inventory - %s: Adding %d item with id '%d' to inventory"),
+	       *FString(__func__), Quantity, ItemId);
+
 	if (int ItemIndex = -1;
 		UElementusInventoryFunctions::FindElementusItemInfoByIdInArr(ItemId, ItemStack, ItemIndex))
 	{
@@ -51,7 +53,6 @@ void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Q
 	else if (UInventoryItemData* ReturnedItem =
 		UElementusInventoryFunctions::GetElementusItemDataById(FString::FromInt(ItemId)))
 	{
-		UE_LOG(LogTemp, Display, TEXT("Elementus Inventory - %s: Item not found in inventory."), *FString(__func__));
 		ItemStack.Add(FElementusItemInfo(ReturnedItem, Quantity));
 	}
 	else
@@ -65,11 +66,13 @@ void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Q
 void UElementusInventoryComponent::DiscardItemByData(const UInventoryItemData* ItemData, const int32 Quantity,
                                                      const bool bDropItem)
 {
+	UE_LOG(LogTemp, Display,
+	       TEXT("Elementus Inventory - %s: Discarding %d item with name '%s' from inventory"),
+	       *FString(__func__), Quantity, *ItemData->ItemName.ToString());
+
 	if (int ItemIndex = -1;
 		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemData, ItemStack, ItemIndex))
 	{
-		ItemStack[ItemIndex].ItemQuantity += Quantity;
-
 		if (Quantity >= ItemStack[ItemIndex].ItemQuantity)
 		{
 			ItemStack.RemoveAt(ItemIndex);
@@ -83,21 +86,18 @@ void UElementusInventoryComponent::DiscardItemByData(const UInventoryItemData* I
 		{
 			// TO DO: Spawn a ElementusInventoryPackage with the items
 		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning,
-		       TEXT("Elementus Inventory - %s: Item with given data not found!"), *FString(__func__));
 	}
 }
 
 void UElementusInventoryComponent::DiscardItemById(const int32 ItemId, const int32 Quantity, const bool bDropItem)
 {
+	UE_LOG(LogTemp, Display,
+	       TEXT("Elementus Inventory - %s: Discarding %d item with id '%d' from inventory"),
+	       *FString(__func__), Quantity, ItemId);
+
 	if (int ItemIndex = -1;
 		UElementusInventoryFunctions::FindElementusItemInfoByIdInArr(ItemId, ItemStack, ItemIndex))
 	{
-		ItemStack[ItemIndex].ItemQuantity += Quantity;
-
 		if (Quantity >= ItemStack[ItemIndex].ItemQuantity)
 		{
 			ItemStack.RemoveAt(ItemIndex);
@@ -112,9 +112,16 @@ void UElementusInventoryComponent::DiscardItemById(const int32 ItemId, const int
 			// TO DO: Spawn a ElementusInventoryPackage with the items
 		}
 	}
-	else
+}
+
+void UElementusInventoryComponent::DebugInventoryStack()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Elementus Inventory - %s"), *FString(__func__));
+	UE_LOG(LogTemp, Warning, TEXT("Owning Actor: %s"), *GetOwner()->GetName());
+
+	for (const auto& Iterator : ItemStack)
 	{
-		UE_LOG(LogTemp, Error,
-		       TEXT("Elementus Inventory - %s: Item with given data not found!"), *FString(__func__));
+		UE_LOG(LogTemp, Warning, TEXT("Item: %s"), *Iterator.ItemData->ItemName.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Quantity: %d"), Iterator.ItemQuantity);
 	}
 }

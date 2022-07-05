@@ -19,9 +19,6 @@ public:
 	UElementusInventoryComponent();
 
 	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
-	TArray<FElementusItemInfo> GetItemStack();
-
-	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
 	float GetCurrentWeight() const;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Elementus Inventory")
@@ -41,4 +38,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
 	TArray<FElementusItemInfo> ItemStack;
+
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	void DebugInventoryStack();
 };
