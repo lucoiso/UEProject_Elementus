@@ -17,6 +17,7 @@ enum class EElementusSearchType : uint8
 	Type
 };
 
+class UElementusInventoryComponent;
 /**
  * 
  */
@@ -26,6 +27,12 @@ class ELEMENTUSINVENTORY_API UElementusInventoryFunctions final : public UBluepr
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
+	static bool CompareItemInfoIds(const FElementusItemInfo& Info1, const FElementusItemInfo& Info2);
+
+	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
+	static bool CompareItemDataIds(const UInventoryItemData* Data1, const UInventoryItemData* Data2);
+
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	static bool FindElementusItemInfoByDataInArr(const UInventoryItemData* InData, TArray<FElementusItemInfo> InArr,
 	                                             int& ItemIndex);
@@ -39,4 +46,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	static TArray<UInventoryItemData*> SearchElementusItemData(const EElementusSearchType SearchType,
 	                                                           const FString SearchString);
+
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	static void TradeElementusItem(FElementusItemInfo ItemInfo,
+	                               UElementusInventoryComponent* FromInventory,
+	                               UElementusInventoryComponent* ToInventory);
 };

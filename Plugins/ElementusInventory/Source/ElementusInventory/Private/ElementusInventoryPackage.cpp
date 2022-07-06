@@ -23,39 +23,14 @@ AElementusInventoryPackage::AElementusInventoryPackage()
 	PackageInventory->SetIsReplicated(true);
 }
 
-void AElementusInventoryPackage::PutItemIntoPackage(FElementusItemInfo ItemInfo,
+void AElementusInventoryPackage::PutItemIntoPackage(const FElementusItemInfo ItemInfo,
                                                     UElementusInventoryComponent* FromInventory) const
 {
-	if (int ItemIndex;
-		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemInfo.ItemData,
-		                                                               FromInventory->ItemStack,
-		                                                               ItemIndex))
-	{
-		ItemInfo.ItemQuantity =
-			FMath::Clamp(ItemInfo.ItemQuantity, 0, FromInventory->ItemStack[ItemIndex].ItemQuantity);
-
-		FromInventory->DiscardItemByData(ItemInfo.ItemData, ItemInfo.ItemQuantity);
-		PackageInventory->AddItemByData(ItemInfo.ItemData, ItemInfo.ItemQuantity);
-	}
+	UElementusInventoryFunctions::TradeElementusItem(ItemInfo, FromInventory, PackageInventory);
 }
 
-void AElementusInventoryPackage::GetItemFromPackage(FElementusItemInfo ItemInfo,
-                                                    UElementusInventoryComponent* ToInventory)
+void AElementusInventoryPackage::GetItemFromPackage(const FElementusItemInfo ItemInfo,
+                                                    UElementusInventoryComponent* ToInventory) const
 {
-	if (int ItemIndex;
-		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemInfo.ItemData,
-		                                                               PackageInventory->ItemStack,
-		                                                               ItemIndex))
-	{
-		ItemInfo.ItemQuantity =
-			FMath::Clamp(ItemInfo.ItemQuantity, 0, PackageInventory->ItemStack[ItemIndex].ItemQuantity);
-
-		PackageInventory->DiscardItemByData(ItemInfo.ItemData, ItemInfo.ItemQuantity);
-		ToInventory->AddItemByData(ItemInfo.ItemData, ItemInfo.ItemQuantity);
-
-		if (PackageInventory->ItemStack.IsEmpty())
-		{
-			Destroy();
-		}
-	}
+	UElementusInventoryFunctions::TradeElementusItem(ItemInfo, PackageInventory, ToInventory);
 }

@@ -3,7 +3,18 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "ElementusInventoryFunctions.h"
+#include "ElementusInventoryComponent.h"
 #include "Engine/AssetManager.h"
+
+bool UElementusInventoryFunctions::CompareItemInfoIds(const FElementusItemInfo& Info1, const FElementusItemInfo& Info2)
+{
+	return Info1.ItemData->ItemId == Info2.ItemData->ItemId;
+}
+
+bool UElementusInventoryFunctions::CompareItemDataIds(const UInventoryItemData* Data1, const UInventoryItemData* Data2)
+{
+	return Data1->ItemId == Data2->ItemId;
+}
 
 bool UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(const UInventoryItemData* InData,
                                                                     TArray<FElementusItemInfo> InArr,
@@ -146,4 +157,19 @@ TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItemDat
 	}
 
 	return OutputArr;
+}
+
+void UElementusInventoryFunctions::TradeElementusItem(FElementusItemInfo ItemInfo,
+                                                      UElementusInventoryComponent* FromInventory,
+                                                      UElementusInventoryComponent* ToInventory)
+{
+	if (int ItemIndex;
+		FindElementusItemInfoByDataInArr(ItemInfo.ItemData, FromInventory->ItemStack, ItemIndex))
+	{
+		ItemInfo.ItemQuantity =
+			FMath::Clamp(ItemInfo.ItemQuantity, 0, FromInventory->ItemStack[ItemIndex].ItemQuantity);
+
+		FromInventory->DiscardItemByData(ItemInfo.ItemData, ItemInfo.ItemQuantity);
+		ToInventory->AddItemByData(ItemInfo.ItemData, ItemInfo.ItemQuantity);
+	}
 }

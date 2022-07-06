@@ -30,5 +30,5 @@ public:
 	void PutItemIntoPackage(FElementusItemInfo ItemInfo, UElementusInventoryComponent* FromInventory) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void GetItemFromPackage(FElementusItemInfo ItemInfo, UElementusInventoryComponent* ToInventory);
+	void GetItemFromPackage(FElementusItemInfo ItemInfo, UElementusInventoryComponent* ToInventory) const;
 };

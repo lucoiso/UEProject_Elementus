@@ -32,10 +32,12 @@ void UElementusInventoryComponent::AddItemByData(UInventoryItemData* ItemData, c
 		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemData, ItemStack, ItemIndex))
 	{
 		ItemStack[ItemIndex].ItemQuantity += Quantity;
+		OnInventoryUpdate.Broadcast(ItemStack[ItemIndex]);
 	}
 	else
 	{
 		ItemStack.Add(FElementusItemInfo(ItemData, Quantity));
+		OnInventoryUpdate.Broadcast(ItemStack.Last());
 	}
 }
 
@@ -49,11 +51,13 @@ void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Q
 		UElementusInventoryFunctions::FindElementusItemInfoByIdInArr(ItemId, ItemStack, ItemIndex))
 	{
 		ItemStack[ItemIndex].ItemQuantity += Quantity;
+		OnInventoryUpdate.Broadcast(ItemStack[ItemIndex]);
 	}
 	else if (UInventoryItemData* ReturnedItem =
 		UElementusInventoryFunctions::GetElementusItemDataById(FString::FromInt(ItemId)))
 	{
 		ItemStack.Add(FElementusItemInfo(ReturnedItem, Quantity));
+		OnInventoryUpdate.Broadcast(ItemStack.Last());
 	}
 	else
 	{
@@ -73,19 +77,23 @@ void UElementusInventoryComponent::DiscardItemByData(const UInventoryItemData* I
 	if (int ItemIndex = -1;
 		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemData, ItemStack, ItemIndex))
 	{
+		ItemStack[ItemIndex].ItemQuantity =
+			FMath::Clamp<int32>(ItemStack[ItemIndex].ItemQuantity - Quantity,
+			                    0,
+			                    ItemStack[ItemIndex].ItemQuantity);
+
+		const FElementusItemInfo DiscardedItem = ItemStack[ItemIndex];
 		if (Quantity >= ItemStack[ItemIndex].ItemQuantity)
 		{
 			ItemStack.RemoveAt(ItemIndex);
-		}
-		else
-		{
-			ItemStack[ItemIndex].ItemQuantity -= Quantity;
 		}
 
 		if (bDropItem)
 		{
 			// TO DO: Spawn a ElementusInventoryPackage with the items
 		}
+
+		OnInventoryUpdate.Broadcast(DiscardedItem);
 	}
 }
 
@@ -98,19 +106,23 @@ void UElementusInventoryComponent::DiscardItemById(const int32 ItemId, const int
 	if (int ItemIndex = -1;
 		UElementusInventoryFunctions::FindElementusItemInfoByIdInArr(ItemId, ItemStack, ItemIndex))
 	{
+		ItemStack[ItemIndex].ItemQuantity =
+			FMath::Clamp<int32>(ItemStack[ItemIndex].ItemQuantity - Quantity,
+			                    0,
+			                    ItemStack[ItemIndex].ItemQuantity);
+
+		const FElementusItemInfo DiscardedItem = ItemStack[ItemIndex];
 		if (Quantity >= ItemStack[ItemIndex].ItemQuantity)
 		{
 			ItemStack.RemoveAt(ItemIndex);
-		}
-		else
-		{
-			ItemStack[ItemIndex].ItemQuantity -= Quantity;
 		}
 
 		if (bDropItem)
 		{
 			// TO DO: Spawn a ElementusInventoryPackage with the items
 		}
+
+		OnInventoryUpdate.Broadcast(DiscardedItem);
 	}
 }
 

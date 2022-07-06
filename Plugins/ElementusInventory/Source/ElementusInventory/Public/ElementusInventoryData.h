@@ -84,8 +84,8 @@ struct FElementusItemInfo
 	GENERATED_USTRUCT_BODY()
 
 	FElementusItemInfo()
-		: ItemData(nullptr), ItemQuantity(0) 
-	{	
+		: ItemData(nullptr), ItemQuantity(0)
+	{
 	}
 
 	explicit FElementusItemInfo(UInventoryItemData* ItemData, const int Quantity = 1)

@@ -9,6 +9,8 @@
 #include "Components/ActorComponent.h"
 #include "ElementusInventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FElementusInventoryUpdate, struct FElementusItemInfo, InventoryData);
+
 UCLASS(Blueprintable, ClassGroup=(Custom), meta =(BlueprintSpawnableComponent),
 	Category = "Project Elementus | Classes")
 class ELEMENTUSINVENTORY_API UElementusInventoryComponent final : public UActorComponent
@@ -41,4 +43,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void DebugInventoryStack();
+
+	UPROPERTY(BlueprintAssignable, Category = "Elementus Inventory")
+	FElementusInventoryUpdate OnInventoryUpdate;
 };
