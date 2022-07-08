@@ -9,6 +9,8 @@
 #include "Engine/DataTable.h"
 #include "ElementusInventoryData.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogElementusInventory, Display, Verbose);
+
 UENUM(BlueprintType, Category = "Elementus Inventory | Enumerations")
 enum class EElementusItemType : uint8
 {

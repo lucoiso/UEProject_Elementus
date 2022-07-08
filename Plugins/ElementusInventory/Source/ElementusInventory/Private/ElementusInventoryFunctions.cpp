@@ -26,7 +26,7 @@ bool UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(const UInven
 		{
 			ItemIndex = Iterator.GetIndex();
 
-			UE_LOG(LogTemp, Display,
+			UE_LOG(LogElementusInventory, Display,
 			       TEXT("Elementus Inventory - %s: Found item with index: %d"), *FString(__func__), ItemIndex);
 
 			return true;
@@ -46,7 +46,7 @@ bool UElementusInventoryFunctions::FindElementusItemInfoByIdInArr(const int32 In
 		{
 			ItemIndex = Iterator.GetIndex();
 
-			UE_LOG(LogTemp, Display,
+			UE_LOG(LogElementusInventory, Display,
 			       TEXT("Elementus Inventory - %s: Found item with index: %d"), *FString(__func__), ItemIndex);
 
 			return true;
@@ -70,13 +70,13 @@ UInventoryItemData* UElementusInventoryFunctions::GetElementusItemDataById(const
 
 			if (IsValid(OutputAsset))
 			{
-				UE_LOG(LogTemp, Display,
+				UE_LOG(LogElementusInventory, Display,
 				       TEXT("Elementus Inventory - %s: Found item data: %s"),
 				       *FString(__func__), *OutputAsset->GetName());
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error,
+				UE_LOG(LogElementusInventory, Error,
 				       TEXT("Elementus Inventory - %s: Failed to load item data"),
 				       *FString(__func__));
 			}
@@ -109,7 +109,7 @@ TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItemDat
 
 				if (LoadedAssets.IsEmpty())
 				{
-					UE_LOG(LogTemp, Error,
+					UE_LOG(LogElementusInventory, Error,
 					       TEXT("Elementus Inventory - %s: Failed to find items with the given parameters"),
 					       *FString(__func__));
 				}
@@ -144,7 +144,7 @@ TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItemDat
 
 						if (bAddItem)
 						{
-							UE_LOG(LogTemp, Display,
+							UE_LOG(LogElementusInventory, Display,
 							       TEXT("Elementus Inventory - %s: Added Item Name: %s"),
 							       *FString(__func__), *CastedAsset->ItemName.ToString());
 

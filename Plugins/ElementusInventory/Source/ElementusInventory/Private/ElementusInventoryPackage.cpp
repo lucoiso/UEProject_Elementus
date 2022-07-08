@@ -8,18 +8,16 @@
 
 AElementusInventoryPackage::AElementusInventoryPackage()
 {
-	// The target dev will define if it should replicate or not
-	bReplicates = false;
-
+	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
 	PackageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PackageMesh"));
-	RootComponent = PackageMesh;
+	PackageMesh->SetupAttachment(RootComponent);
 
 	PackageInventory = CreateDefaultSubobject<UElementusInventoryComponent>(TEXT("PackageInventory"));
-
-	// Turn component replication on - will be not replicated if owning actor is set to not replicate.
 	PackageInventory->SetIsReplicated(true);
 }
 

@@ -74,6 +74,7 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 
 	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(TEXT("InventoryComponent"));
+	InventoryComponent->SetIsReplicated(true);
 }
 
 // Called on server when the player is possessed by a controller

@@ -4,6 +4,8 @@
 
 #include "ElementusInventoryData.h"
 
+DEFINE_LOG_CATEGORY(LogElementusInventory);
+
 UInventoryItemData::UInventoryItemData(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {

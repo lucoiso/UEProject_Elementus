@@ -26,6 +26,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Elementus Inventory")
 	float MaxWeight;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
+	TArray<FElementusItemInfo> ItemStack;
+
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	void DebugInventoryStack();
+
+	UPROPERTY(BlueprintAssignable, Category = "Elementus Inventory")
+	FElementusInventoryUpdate OnInventoryUpdate;
+
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void AddItemByData(UInventoryItemData* ItemData, const int32 Quantity);
 
@@ -38,12 +47,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void DiscardItemById(const int32 ItemId, const int32 Quantity, const bool bDropItem = false);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
-	TArray<FElementusItemInfo> ItemStack;
-
-	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void DebugInventoryStack();
-
-	UPROPERTY(BlueprintAssignable, Category = "Elementus Inventory")
-	FElementusInventoryUpdate OnInventoryUpdate;
+private:
+	void AddItem_Worker(UInventoryItemData* ItemData, const int32 Quantity);
+	void DiscardItem_Worker(const UInventoryItemData* ItemData, const int32 Quantity, const bool bDropItem = false);
 };
