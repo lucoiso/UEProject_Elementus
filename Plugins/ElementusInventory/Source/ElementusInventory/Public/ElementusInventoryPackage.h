@@ -6,11 +6,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ElementusInventoryData.h"
 #include "ElementusInventoryPackage.generated.h"
 
 class UNiagaraComponent;
 class UElementusInventoryComponent;
-struct FElementusItemInfo;
 
 UCLASS(Category = "Project Elementus | Classes")
 class ELEMENTUSINVENTORY_API AElementusInventoryPackage final : public AActor
@@ -27,8 +27,8 @@ public:
 	TObjectPtr<UElementusInventoryComponent> PackageInventory;
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void PutItemIntoPackage(FElementusItemInfo ItemInfo, UElementusInventoryComponent* FromInventory) const;
+	void PutItemIntoPackage(const FElementusItemInfo ItemInfo, UElementusInventoryComponent* FromInventory) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void GetItemFromPackage(FElementusItemInfo ItemInfo, UElementusInventoryComponent* ToInventory) const;
+	void GetItemFromPackage(const FElementusItemInfo ItemInfo, UElementusInventoryComponent* ToInventory) const;
 };

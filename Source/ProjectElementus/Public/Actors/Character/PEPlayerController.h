@@ -7,6 +7,7 @@
 #include "CoreMinimal.h"
 #include "InputTriggers.h"
 #include "AbilityInputBinding.h"
+#include "ElementusInventoryData.h"
 #include "PEPlayerController.generated.h"
 
 /**
@@ -27,6 +28,8 @@ DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
 	UE_LOG(LogController_Axis, Verbosity, Format, ##__VA_ARGS__); \
 	UE_VLOG(Actor, LogController_Axis, Verbosity, Format, ##__VA_ARGS__); \
 }
+
+class UElementusInventoryComponent;
 
 /**
  *
@@ -58,6 +61,17 @@ public:
 	/* Will respawn the character if the player is in spectating state */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeRespawn(const float InSeconds);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void ProcessTrade(const FElementusItemInfo ItemInfo,
+	                  UElementusInventoryComponent* OtherComponent,
+	                  const bool bIsFromPlayer = false);
+
+private:
+	UFUNCTION(Server, Reliable)
+	void Server_ProcessTrade(const FElementusItemInfo ItemInfo,
+	                         UElementusInventoryComponent* OtherComponent,
+	                         const bool bIsFromPlayer);
 
 protected:
 	/* Perform the respawn task on server */

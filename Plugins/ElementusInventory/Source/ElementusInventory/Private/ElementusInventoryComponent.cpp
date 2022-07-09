@@ -24,7 +24,7 @@ float UElementusInventoryComponent::GetCurrentWeight() const
 
 void UElementusInventoryComponent::AddItemByData(UInventoryItemData* ItemData, const int32 Quantity)
 {
-	AddItem_Worker(ItemData, Quantity);
+	AddElementusItem_Internal(ItemData, Quantity);
 }
 
 void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Quantity)
@@ -32,7 +32,7 @@ void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Q
 	if (UInventoryItemData* ReturnedItem =
 		UElementusInventoryFunctions::GetElementusItemDataById(FString::FromInt(ItemId)))
 	{
-		AddItem_Worker(ReturnedItem, Quantity);
+		AddElementusItem_Internal(ReturnedItem, Quantity);
 	}
 }
 
@@ -40,7 +40,7 @@ void UElementusInventoryComponent::DiscardItemByData(const UInventoryItemData* I
                                                      const int32 Quantity,
                                                      const bool bDropItem)
 {
-	DiscardItem_Worker(ItemData, Quantity, bDropItem);
+	DiscardElementusItem_Internal(ItemData, Quantity, bDropItem);
 }
 
 void UElementusInventoryComponent::DiscardItemById(const int32 ItemId,
@@ -50,34 +50,52 @@ void UElementusInventoryComponent::DiscardItemById(const int32 ItemId,
 	if (const UInventoryItemData* ReturnedItem =
 		UElementusInventoryFunctions::GetElementusItemDataById(FString::FromInt(ItemId)))
 	{
-		DiscardItem_Worker(ReturnedItem, Quantity, bDropItem);
+		DiscardElementusItem_Internal(ReturnedItem, Quantity, bDropItem);
 	}
 }
 
-void UElementusInventoryComponent::AddItem_Worker(UInventoryItemData* ItemData, const int32 Quantity)
+constexpr void DoMulticastLoggingIdentification(const ENetMode& CurrentNetMode)
+{	
+	if (CurrentNetMode == NM_Client)
+	{		
+		UE_LOG(LogElementusInventory, Warning, TEXT("Elementus Inventory - %s: Client logging: "), *FString(__func__));
+	}
+	else if (CurrentNetMode != NM_Standalone)
+	{
+		UE_LOG(LogElementusInventory, Warning, TEXT("Elementus Inventory - %s: Server logging: "), *FString(__func__));
+	}
+}
+
+void UElementusInventoryComponent::AddElementusItem_Internal_Implementation(UInventoryItemData* ItemData,
+                                                                            const int32 Quantity)
 {
+	DoMulticastLoggingIdentification(GetOwner()->GetNetMode());
+
 	UE_LOG(LogElementusInventory, Display,
-	       TEXT("Elementus Inventory - %s: Adding %d item with name '%s' to inventory"),
+	       TEXT("Elementus Inventory - %s: Adding %d item(s) with name '%s' to inventory"),
 	       *FString(__func__), Quantity, *ItemData->ItemName.ToString());
 
 	if (int ItemIndex = -1;
 		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemData, ItemStack, ItemIndex))
 	{
 		ItemStack[ItemIndex].ItemQuantity += Quantity;
-		OnInventoryUpdate.Broadcast(ItemStack[ItemIndex]);
+		OnInventoryUpdate.Broadcast(ItemStack[ItemIndex], EElementusInventoryUpdateChange::Add);
 	}
 	else
 	{
 		ItemStack.Add(FElementusItemInfo(ItemData, Quantity));
-		OnInventoryUpdate.Broadcast(ItemStack.Last());
+		OnInventoryUpdate.Broadcast(ItemStack.Last(), EElementusInventoryUpdateChange::Add);
 	}
 }
 
-void UElementusInventoryComponent::DiscardItem_Worker(const UInventoryItemData* ItemData, const int32 Quantity,
-                                                      const bool bDropItem)
+void UElementusInventoryComponent::DiscardElementusItem_Internal_Implementation(const UInventoryItemData* ItemData,
+	const int32 Quantity,
+	const bool bDropItem)
 {
+	DoMulticastLoggingIdentification(GetOwner()->GetNetMode());
+
 	UE_LOG(LogElementusInventory, Display,
-	       TEXT("Elementus Inventory - %s: Discarding %d item with name '%s' from inventory"),
+	       TEXT("Elementus Inventory - %s: Discarding %d item(s) with name '%s' from inventory"),
 	       *FString(__func__), Quantity, *ItemData->ItemName.ToString());
 
 	if (int ItemIndex = -1;
@@ -94,11 +112,12 @@ void UElementusInventoryComponent::DiscardItem_Worker(const UInventoryItemData* 
 			ItemStack.RemoveAt(ItemIndex);
 		}
 
-		OnInventoryUpdate.Broadcast(DiscardedItem);
+		OnInventoryUpdate.Broadcast(DiscardedItem, EElementusInventoryUpdateChange::Remove);
 
 		if (bDropItem)
 		{
 			// TO DO: Spawn a ElementusInventoryPackage with the items
+			// Note: The user needs to choose the class and the look of the package
 		}
 	}
 }

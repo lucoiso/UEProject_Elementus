@@ -8,6 +8,8 @@
 #include "EnhancedPlayerInput.h"
 #include "InputAction.h"
 #include "AbilitySystemComponent.h"
+#include "ElementusInventoryComponent.h"
+#include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/GameModeBase.h"
@@ -61,6 +63,41 @@ void APEPlayerController::InitializeRespawn(const float InSeconds)
 		}
 	}
 }
+
+#pragma region Elementus Inventory Trade
+
+#define TRADE_ELEMENTUS_ITEM(ItemInfo, OtherComponent, bIsFromPlayer) \
+if (const APECharacter* ControllerOwner = GetPawn<APECharacter>(); \
+ensureAlwaysMsgf(ControllerOwner->InventoryComponent, \
+TEXT("%s owner have a invalid InventoryComponent"), *GetName())) \
+{ \
+bIsFromPlayer \
+? UElementusInventoryFunctions::TradeElementusItem(ItemInfo, ControllerOwner->InventoryComponent, OtherComponent) \
+: UElementusInventoryFunctions::TradeElementusItem(ItemInfo, OtherComponent, ControllerOwner->InventoryComponent); \
+}
+
+void APEPlayerController::ProcessTrade(const FElementusItemInfo ItemInfo,
+                                       UElementusInventoryComponent* OtherComponent,
+                                       const bool bIsFromPlayer)
+{
+	if (HasAuthority())
+	{
+		TRADE_ELEMENTUS_ITEM(ItemInfo, OtherComponent, bIsFromPlayer);
+	}
+	else
+	{
+		Server_ProcessTrade(ItemInfo, OtherComponent, bIsFromPlayer);
+	}
+}
+
+void APEPlayerController::Server_ProcessTrade_Implementation(const FElementusItemInfo ItemInfo,
+                                                             UElementusInventoryComponent* OtherComponent,
+                                                             const bool bIsFromPlayer)
+{
+	TRADE_ELEMENTUS_ITEM(ItemInfo, OtherComponent, bIsFromPlayer);
+}
+#undef TRADE_ELEMENTUS_ITEM
+#pragma endregion Elementus Inventory Trade
 
 void APEPlayerController::RespawnAndPossess_Implementation()
 {

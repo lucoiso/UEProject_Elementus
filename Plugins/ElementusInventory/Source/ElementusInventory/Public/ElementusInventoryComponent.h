@@ -9,7 +9,15 @@
 #include "Components/ActorComponent.h"
 #include "ElementusInventoryComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FElementusInventoryUpdate, struct FElementusItemInfo, InventoryData);
+UENUM(BlueprintType)
+enum class EElementusInventoryUpdateChange : uint8
+{
+	Add,
+	Remove
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FElementusInventoryUpdate, struct FElementusItemInfo, InventoryData,
+                                             const EElementusInventoryUpdateChange, ChangeMode);
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta =(BlueprintSpawnableComponent),
 	Category = "Project Elementus | Classes")
@@ -29,9 +37,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
 	TArray<FElementusItemInfo> ItemStack;
 
-	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void DebugInventoryStack();
-
 	UPROPERTY(BlueprintAssignable, Category = "Elementus Inventory")
 	FElementusInventoryUpdate OnInventoryUpdate;
 
@@ -47,7 +52,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void DiscardItemById(const int32 ItemId, const int32 Quantity, const bool bDropItem = false);
 
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	void DebugInventoryStack();
+
 private:
-	void AddItem_Worker(UInventoryItemData* ItemData, const int32 Quantity);
-	void DiscardItem_Worker(const UInventoryItemData* ItemData, const int32 Quantity, const bool bDropItem = false);
+	UFUNCTION(NetMulticast, Reliable)
+	void AddElementusItem_Internal(UInventoryItemData* ItemData,
+	                               const int32 Quantity);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void DiscardElementusItem_Internal(const UInventoryItemData* ItemData,
+	                                   const int32 Quantity,
+	                                   const bool bDropItem = false);
 };
