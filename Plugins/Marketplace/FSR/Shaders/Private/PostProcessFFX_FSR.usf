@@ -1,0 +1,214 @@
+//------------------------------------------------------------------------------
+// FidelityFX Super Resolution UE4 Plugin
+//
+// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//------------------------------------------------------------------------------
+
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/ScreenPass.ush"
+
+
+// =====================================================================================
+//
+// SHADER RESOURCES
+//
+// =====================================================================================
+uint4 Const0;
+uint4 Const1;
+uint4 Const2;
+uint4 Const3;
+
+SamplerState samLinearClamp;
+
+
+// UE4 GrainIntensity
+float4 GrainRandomFull; // zw:unused
+float4 GrainScaleBiasJitter; // x:Scale y:Bias z:Jitter
+
+float2 VPColor_ExtentInverse;
+float2 VPColor_ViewportMin;
+
+
+// =====================================================================================
+//
+// FIDELITYFX SETUP
+//
+// =====================================================================================
+#define A_GPU  1
+#define A_HLSL 1
+
+// Note: Input is expected to be in Gamma2-encoding.
+// LDR: This is already the case.
+// HDR: A ColorConversionCS runs before FSR to provide Gamma2 input to FSR passes
+#if ENABLE_FP16
+	#define A_HALF
+	#include "ffx_a.ush"
+	Texture2D<AH4> InputTexture;
+	RWTexture2D<AH4> OutputTexture;
+	#define FSR_EASU_H 1
+	AH4 FsrEasuRH(AF2 p) { AH4 res = InputTexture.GatherRed  (samLinearClamp, p, ASU2(0, 0)); return res; }
+	AH4 FsrEasuGH(AF2 p) { AH4 res = InputTexture.GatherGreen(samLinearClamp, p, ASU2(0, 0)); return res; }
+	AH4 FsrEasuBH(AF2 p) { AH4 res = InputTexture.GatherBlue (samLinearClamp, p, ASU2(0, 0)); return res; }
+#else
+	#include "ffx_a.ush"
+	Texture2D InputTexture;
+	RWTexture2D<float4> OutputTexture;
+	#define FSR_EASU_F 1
+	AF4 FsrEasuRF(AF2 p) { AF4 res = InputTexture.GatherRed  (samLinearClamp, p, ASU2(0, 0)); return res; }
+	AF4 FsrEasuGF(AF2 p) { AF4 res = InputTexture.GatherGreen(samLinearClamp, p, ASU2(0, 0)); return res; }
+	AF4 FsrEasuBF(AF2 p) { AF4 res = InputTexture.GatherBlue (samLinearClamp, p, ASU2(0, 0)); return res; }
+#endif
+
+// should be included after ffx_a.ush, defines FSR_OUTPUTDEVICE
+#include "PostProcessFFX_Common.ush"
+
+#include "ffx_fsr1.ush"
+
+// =====================================================================================
+// 
+// FIDELITYFX SUPER RESOLUTION
+// 
+// =====================================================================================
+#if ENABLE_FP16
+AH4 FidelityFXSuperResolution(AU2 gxy)
+#else
+AF4 FidelityFXSuperResolution(AU2 gxy)
+#endif
+{
+
+	// 
+	// FSR / EASU()
+	//
+#if ENABLE_FP16
+	AH3 Gamma2Color = AH3(0,0,0);
+	FsrEasuH(Gamma2Color, gxy, Const0, Const1, Const2, Const3);
+#else
+	AF3 Gamma2Color = AF3(0,0,0);
+	FsrEasuF(Gamma2Color, gxy, Const0, Const1, Const2, Const3);
+#endif // ENABLE_FP16
+
+	AF3 OutColor = AF3(Gamma2Color);
+
+	//
+	// Grain()
+	//
+	// if RCAS & ChromAb are not running, we will apply Grain Intensity post-upscale here.
+	// App should disable this path based on pass inputs on the CPU-side;
+	#if USE_GRAIN_INTENSITY
+		AF3 LinearColor = Gamma2ToLinear(AF3(Gamma2Color));
+		ApplyUE4Grain(LinearColor, gxy, VPColor_ExtentInverse);
+	#endif // USE_GRAIN_INTENSITY
+
+
+	//
+	// Color Conversions
+	//
+	// For the HDR path, a CS converts the FSR input into Gamma2-encoding w/ Rec2020 primaries.
+	// If this is the last pass of the FSR pass chain (RCAS=off, ChromAb=off), then convert
+	// back to output device space.
+	#if CONVERT_TO_OUTPUT_DEVICE
+		#if FSR_OUTPUTDEVICE == FSR_scRGB // scRGB ------------------------------------
+			#if USE_GRAIN_INTENSITY
+				OutColor = LinearToScRGB(LinearColor);
+			#else
+				OutColor = Gamma2ToScRGB(Gamma2Color);
+			#endif
+		
+		#elif FSR_OUTPUTDEVICE == FSR_ST2084 // PQ ------------------------------------
+
+			#if USE_GRAIN_INTENSITY
+				OutColor = LinearToST2084(LinearColor * HDR_MAX_NITS);
+			#else
+				AF3 LinearColor = Gamma2ToLinear(Gamma2Color);
+				OutColor = LinearToST2084(LinearColor * HDR_MAX_NITS);
+			#endif
+			
+		
+		#elif FSR_OUTPUTDEVICE == FSR_LINEAR // Linear --------------------------------
+
+			#if USE_GRAIN_INTENSITY
+				// FidelityFX SuperResolution / SRTM: Simple Reversible Tonemapper
+				FsrSrtmInvF(LinearColor); // [0-1] -> [0, FP16_MAX)
+				OutColor = LinearColor;
+			#else
+				AF3 LinearColor = Gamma2ToLinear(Gamma2Color);
+				// FidelityFX SuperResolution / SRTM: Simple Reversible Tonemapper
+				FsrSrtmInvF(LinearColor); // [0-1] -> [0, FP16_MAX)
+				OutColor = LinearColor;
+			#endif
+		#endif // FSR_OUTPUTDEVICE == FSR_scRGB
+
+	#else // == 'FSR_OUTPUTDEVICE == FSR_SRGB' ---------------------------------------
+
+		// No HDR conversions, but we still need to convert from 
+		// Linear back to Gamma2 if we've used GrainIntensity()
+		#if USE_GRAIN_INTENSITY
+			OutColor = LinearToGamma2(LinearColor);
+		#endif
+
+	#endif // CONVERT_TO_OUTPUT_DEVICE
+
+
+#if ENABLE_FP16
+	return AH4(OutColor, 1);
+#else
+	return AF4(OutColor, 1);
+#endif
+}
+
+
+
+// =====================================================================================
+//
+// ENTRY POINTS
+//
+// =====================================================================================
+#if COMPUTE_SHADER
+[numthreads(THREADGROUP_SIZEX, THREADGROUP_SIZEY, THREADGROUP_SIZEZ)] 
+void MainCS(uint3 LocalThreadId : SV_GroupThreadID, uint3 WorkGroupId : SV_GroupID, uint3 Dtid : SV_DispatchThreadID)
+{
+	// Do remapping of local xy in workgroup for a more PS-like swizzle pattern.
+	// Threadgroup of 64 threads, each working on a cache-friendly 2x2 region (= 16x16 workgroup if 1px/thread assumed)
+	AU2 gxy = ARmp8x8(LocalThreadId.x) + AU2(WorkGroupId.x << 4u, WorkGroupId.y << 4u);
+
+	OutputTexture[gxy + VPColor_ViewportMin] = FidelityFXSuperResolution(gxy);
+	
+	gxy.x += 8u;
+	OutputTexture[gxy + VPColor_ViewportMin] = FidelityFXSuperResolution(gxy);
+	
+	gxy.y += 8u;
+	OutputTexture[gxy + VPColor_ViewportMin] = FidelityFXSuperResolution(gxy);
+	
+	gxy.x -= 8u;
+	OutputTexture[gxy + VPColor_ViewportMin] = FidelityFXSuperResolution(gxy);
+}
+#endif // COMPUTE SHADER
+
+#if ENABLE_FP16
+void MainPS(noperspective float4 UVAndScreenPos : TEXCOORD0, float4 SvPosition : SV_POSITION, out AH4 OutColor : SV_Target0)
+{
+	AU2 gxy = AU2(SvPosition.xy - VPColor_ViewportMin);
+	OutColor = FidelityFXSuperResolution(gxy);
+}
+#else
+void MainPS(noperspective float4 UVAndScreenPos : TEXCOORD0, float4 SvPosition : SV_POSITION, out float4 OutColor : SV_Target0)
+{
+	AU2 gxy = AU2(SvPosition.xy - VPColor_ViewportMin);
+	OutColor = FidelityFXSuperResolution(gxy);
+}
+#endif

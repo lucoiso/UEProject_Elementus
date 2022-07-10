@@ -1,0 +1,243 @@
+//------------------------------------------------------------------------------
+// FidelityFX Super Resolution UE4 Plugin
+//
+// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//------------------------------------------------------------------------------
+
+// FidelityFX Super Resolution 
+
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/ScreenPass.ush"
+
+
+// =====================================================================================
+//
+// SHADER RESOURCES
+//
+// =====================================================================================
+// UE4 Color Fringe Parameters
+float4 ChromaticAberrationParams;
+float4 LensPrincipalPointOffsetScale;
+float4 LensPrincipalPointOffsetScaleInverse;
+SCREEN_PASS_TEXTURE_VIEWPORT(Color)
+
+Texture2D    ColorTexture;
+SamplerState ColorSampler;
+
+
+// UE4 GrainIntensity
+float4 GrainRandomFull; // zw:unused
+float4 GrainScaleBiasJitter; // x:Scale y:Bias z:Jitter
+
+// =====================================================================================
+//
+// FIDELITYFX SETUP
+//
+// =====================================================================================
+#define A_HLSL 1
+#define A_GPU  1
+#include "ffx_a.ush"
+#include "ffx_fsr1.ush"
+#include "PostProcessFFX_Common.ush"
+
+
+// =====================================================================================
+// 
+// UE4 Chromatic Aberration
+// 
+// =====================================================================================
+float2 UVToScreenPos(float2 UV, float2 Extent)
+{
+#if NEEDTOSWITCHVERTICLEAXIS
+	UV.y = 1.0 - UV.y;
+#endif
+
+	return (UV * Extent - Color_ScreenPosToViewportBias) / Color_ScreenPosToViewportScale;
+}
+float2 ScreenPosToUV(float2 ScreenPos, float2 ExtentInverse)
+{
+	float2 UV = (ScreenPos * Color_ScreenPosToViewportScale + Color_ScreenPosToViewportBias) * ExtentInverse;
+
+#if NEEDTOSWITCHVERTICLEAXIS
+	UV.y = 1.0 - UV.y;
+#endif
+
+	return UV;
+}
+
+#define RED   0
+#define GREEN 1
+#define BLUE  2
+#define ALPHA 3
+
+float SampleSceneColorSingleChannel(float2 SceneUV, uint channel)
+{
+	float2 SampleCoord = SceneUV * Color_Extent + 0.5;
+	int2 GatherCoord = int2(SampleCoord);
+	float2 Fract = SampleCoord - GatherCoord;
+	float2 GatherUV = GatherCoord * (1 / Color_Extent);
+
+	// At this point in the pipeline, the color is not stored as linear anymore so we can't sample.
+	// We load each channel here, convert to linear, then run the 'sampling' logic.
+	// Gather() pixel order:
+	//   w z
+	//   x y
+	float4 SingleChannel;
+	if (channel == RED)        { SingleChannel = ColorTexture.GatherRed(ColorSampler, GatherUV, 0);   } 
+	else if (channel == GREEN) { SingleChannel = ColorTexture.GatherGreen(ColorSampler, GatherUV, 0); } 
+	else if (channel == BLUE)  { SingleChannel = ColorTexture.GatherBlue(ColorSampler, GatherUV, 0);  }
+	else if (channel == ALPHA) { SingleChannel = ColorTexture.GatherAlpha(ColorSampler, GatherUV, 0); }
+
+	// FSR input/output is encoded in Gamma2
+	SingleChannel = Gamma2ToLinear(SingleChannel);
+#if FSR_OUTPUTDEVICE == FSR_ST2084 // PQ -----------------
+	SingleChannel *= HDR_MAX_NITS;
+#endif
+
+	float TopRow = lerp(SingleChannel.w, SingleChannel.z, Fract.x);
+	float BottomRow = lerp(SingleChannel.x, SingleChannel.y, Fract.x);
+	float SampledLinearColor = lerp(TopRow, BottomRow, Fract.y);
+	return SampledLinearColor;
+}
+
+
+// converts from screen [-1,1] space to the lens [-1,1] viewport space
+float2 ConvertScreenViewportSpaceToLensViewportSpace(float2 UV)
+{
+	return LensPrincipalPointOffsetScale.xy + UV * LensPrincipalPointOffsetScale.zw;
+}
+float2 ConvertLensViewportSpaceToScreenViewportSpace(float2 UV)
+{
+	// reference version
+	//return (UV - LensPrincipalPointOffsetScale.xy)/LensPrincipalPointOffsetScale.zw;
+
+	// optimized version
+	return LensPrincipalPointOffsetScaleInverse.xy + UV * LensPrincipalPointOffsetScaleInverse.zw;
+}
+AF4 ApplyChromaticAberration(AF2 ScreenPos, AF2 UV, AU2 gxy)
+{
+	float2 SceneUV = UV.xy;
+#if USE_GRAIN_JITTER
+	SceneUV = lerp(UV.xy, GrainUV.xy, (1.0 - Grain * Grain) * GrainScaleBiasJitter.z);
+#endif
+
+	float2 SceneUVJitter = float2(0.0, 0.0);
+#if USE_GRAIN_JITTER
+	SceneUVJitter = SceneUV.xy - UV.xy;
+#endif
+
+	float2 CAScale = ChromaticAberrationParams.rg;
+	float StartOffset = ChromaticAberrationParams.z;
+
+	float2 LensUV = ConvertScreenViewportSpaceToLensViewportSpace(ScreenPos);
+
+	float4 CAUV;
+	CAUV = LensUV.xyxy - sign(LensUV).xyxy * saturate(abs(LensUV) - StartOffset).xyxy * CAScale.rrgg;
+
+	CAUV.xy = ConvertLensViewportSpaceToScreenViewportSpace(CAUV.xy);
+	CAUV.zw = ConvertLensViewportSpaceToScreenViewportSpace(CAUV.zw);
+
+	CAUV.xy = ScreenPosToUV(CAUV.xy, Color_ExtentInverse);
+	CAUV.zw = ScreenPosToUV(CAUV.zw, Color_ExtentInverse);
+
+	float3 LinearColor;
+	LinearColor.r = SampleSceneColorSingleChannel(CAUV.xy + SceneUVJitter.xy, RED);
+	LinearColor.g = SampleSceneColorSingleChannel(CAUV.zw + SceneUVJitter.xy, GREEN);
+	LinearColor.b = SampleSceneColorSingleChannel(SceneUV, BLUE);
+
+	//
+	// UE4Grain() is post ChromAb()
+	//
+#if USE_GRAIN_INTENSITY
+	ApplyUE4Grain(LinearColor, gxy, Color_ExtentInverse);
+#endif
+
+
+	//
+	// Color Conversion
+	//
+	// ChromAb is the last pass in the chain so convert back to output device color space.
+	#if FSR_OUTPUTDEVICE == FSR_scRGB // -----------------------
+
+		float3 OutColor = LinearToScRGB(LinearColor);
+
+	#elif FSR_OUTPUTDEVICE == FSR_ST2084 // PQ -----------------
+
+		// LinearColor is already multiplied by HDR_MAX_NITS, no need to do it here for the conversion
+		float3 OutColor = LinearToST2084(LinearColor);
+
+	#elif FSR_OUTPUTDEVICE == FSR_LINEAR  // -------------------
+
+		// FidelityFX SuperResolution / SRTM: Simple Reversible Tonemapper
+		FsrSrtmInvF(LinearColor); // [0-1] -> [0, FP16_MAX)
+		float3 OutColor = LinearColor;
+
+	#elif FSR_OUTPUTDEVICE == FSR_SRGB // ----------------------
+
+		float3 OutColor = LinearToGamma2(LinearColor);
+
+	#endif
+
+	return AF4(OutColor, 1);
+}
+
+
+// =====================================================================================
+// 
+// ENTRY POINTS
+// 
+// =====================================================================================
+#if COMPUTE_SHADER
+RWTexture2D<float4> OutputTexture;
+[numthreads(THREADGROUP_SIZEX, THREADGROUP_SIZEY, THREADGROUP_SIZEZ)]
+void MainCS(uint3 LocalThreadId : SV_GroupThreadID, uint3 WorkGroupId : SV_GroupID, uint3 Dtid : SV_DispatchThreadID)
+{
+	// Do remapping of local xy in workgroup for a more PS-like swizzle pattern.
+	AU2 gxy = ARmp8x8(LocalThreadId.x) + AU2(WorkGroupId.x << 4u, WorkGroupId.y << 4u);
+
+	AF2 UV = gxy * Color_ExtentInverse;
+	AF2 NormalizedScreenPosition = UVToScreenPos(UV, Color_Extent);
+	OutputTexture[gxy] = ApplyChromaticAberration(NormalizedScreenPosition, UV, gxy);
+	
+	gxy.x += 8u;
+	UV = gxy * Color_ExtentInverse;
+	NormalizedScreenPosition = UVToScreenPos(UV, Color_Extent);
+	OutputTexture[gxy] = ApplyChromaticAberration(NormalizedScreenPosition, UV, gxy);
+
+
+	gxy.y += 8u;
+	UV = gxy * Color_ExtentInverse;
+	NormalizedScreenPosition = UVToScreenPos(UV, Color_Extent);
+	OutputTexture[gxy] = ApplyChromaticAberration(NormalizedScreenPosition, UV, gxy);
+
+
+	gxy.x -= 8u;
+	UV = gxy * Color_ExtentInverse;
+	NormalizedScreenPosition = UVToScreenPos(UV, Color_Extent);
+	OutputTexture[gxy] = ApplyChromaticAberration(NormalizedScreenPosition, UV, gxy);
+}
+#else
+
+void MainPS(noperspective float4 UVAndScreenPos : TEXCOORD0, float4 SvPosition : SV_POSITION, out float4 OutColor : SV_Target0)
+{
+	AU2 gxy = AU2(SvPosition.xy);
+	AF2 UV = UVAndScreenPos.xy;
+	AF2 NormalizedScreenPosition = UVToScreenPos(UV, Color_Extent);
+	OutColor = ApplyChromaticAberration(NormalizedScreenPosition, UV, gxy);
+}
+#endif // COMPUTE_SHADER
