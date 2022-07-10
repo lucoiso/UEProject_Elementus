@@ -56,7 +56,7 @@ public:
 	FName ItemName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
-		meta = (AssetBundles = "Data"))
+		meta = (AssetBundles = "Data", MultiLine = "true"))
 	FText ItemDescription;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elementus Inventory",
