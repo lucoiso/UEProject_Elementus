@@ -9,15 +9,8 @@
 #include "Components/ActorComponent.h"
 #include "ElementusInventoryComponent.generated.h"
 
-UENUM(BlueprintType)
-enum class EElementusInventoryUpdateChange : uint8
-{
-	Add,
-	Remove
-};
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FElementusInventoryUpdate, struct FElementusItemInfo, InventoryData,
-                                             const EElementusInventoryUpdateChange, ChangeMode);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FElementusInventoryUpdate, const FPrimaryAssetId, ItemId, const int32,
+                                             NewQuantity);
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta =(BlueprintSpawnableComponent),
 	Category = "Project Elementus | Classes")
@@ -28,40 +21,44 @@ class ELEMENTUSINVENTORY_API UElementusInventoryComponent final : public UActorC
 public:
 	UElementusInventoryComponent();
 
-	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
 	float GetCurrentWeight() const;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Elementus Inventory")
 	float MaxWeight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
-	TArray<FElementusItemInfo> ItemStack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory",
+		meta = (TitleProperty = "{Item Data} -> {Quantity}", AllowedClasses = "ElementusItemData"))
+	TMap<FPrimaryAssetId, int32> ItemStack;
 
 	UPROPERTY(BlueprintAssignable, Category = "Elementus Inventory")
 	FElementusInventoryUpdate OnInventoryUpdate;
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void AddItemByData(UInventoryItemData* ItemData, const int32 Quantity);
+	void AddElementusItem(const FPrimaryAssetId& ItemId, const int32 Quantity);
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void AddItemById(const int32 ItemId, const int32 Quantity);
-
-	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void DiscardItemByData(const UInventoryItemData* ItemData, const int32 Quantity, const bool bDropItem = false);
-
-	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void DiscardItemById(const int32 ItemId, const int32 Quantity, const bool bDropItem = false);
+	void DiscardElementusItem(const FPrimaryAssetId& ItemId, const int32 Quantity);
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void DebugInventoryStack();
 
+protected:
+	virtual void BeginPlay() override;
+
 private:
 	UFUNCTION(NetMulticast, Reliable)
-	void AddElementusItem_Internal(UInventoryItemData* ItemData,
+	void AddElementusItem_Internal(const FPrimaryAssetId& ItemId,
 	                               const int32 Quantity);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void DiscardElementusItem_Internal(const UInventoryItemData* ItemData,
-	                                   const int32 Quantity,
-	                                   const bool bDropItem = false);
+	void DiscardElementusItem_Internal(const FPrimaryAssetId& ItemId,
+	                                   const int32 Quantity);
+
+	void NotifyInventoryChange(const FPrimaryAssetId& ItemId, const int32 Quantity);
+
+	void UpdateCurrentWeight();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (AllowPrivateAccess = "true"))
+	float CurrentWeight;
 };

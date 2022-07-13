@@ -79,26 +79,3 @@ public:
 		meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> ItemImage;
 };
-
-USTRUCT(BlueprintType, Category = "Elementus Inventory | Structs | Data")
-struct FElementusItemInfo
-{
-	GENERATED_USTRUCT_BODY()
-
-	FElementusItemInfo()
-		: ItemData(nullptr), ItemQuantity(0)
-	{
-	}
-
-	explicit FElementusItemInfo(UInventoryItemData* ItemData, const int Quantity = 1)
-		: ItemData(ItemData), ItemQuantity(Quantity)
-	{
-	}
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
-	TObjectPtr<UInventoryItemData> ItemData;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory",
-		meta = (UIMin = 0, ClampMin = 0))
-	int32 ItemQuantity;
-};

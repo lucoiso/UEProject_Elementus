@@ -27,8 +27,10 @@ public:
 	TObjectPtr<UElementusInventoryComponent> PackageInventory;
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void PutItemIntoPackage(const FElementusItemInfo ItemInfo, UElementusInventoryComponent* FromInventory) const;
+	void PutItemIntoPackage(TMap<FPrimaryAssetId, int32>& ItemInfo,
+	                        UElementusInventoryComponent* FromInventory) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void GetItemFromPackage(const FElementusItemInfo ItemInfo, UElementusInventoryComponent* ToInventory) const;
+	void GetItemFromPackage(TMap<FPrimaryAssetId, int32>& ItemInfo,
+	                        UElementusInventoryComponent* ToInventory) const;
 };

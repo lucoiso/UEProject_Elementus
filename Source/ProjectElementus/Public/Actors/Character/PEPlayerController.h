@@ -63,15 +63,9 @@ public:
 	void InitializeRespawn(const float InSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ProcessTrade(const FElementusItemInfo ItemInfo,
+	void ProcessTrade(TMap<FPrimaryAssetId, int32> ItemInfo,
 	                  UElementusInventoryComponent* OtherComponent,
 	                  const bool bIsFromPlayer = false);
-
-private:
-	UFUNCTION(Server, Reliable)
-	void Server_ProcessTrade(const FElementusItemInfo ItemInfo,
-	                         UElementusInventoryComponent* OtherComponent,
-	                         const bool bIsFromPlayer);
 
 protected:
 	/* Perform the respawn task on server */
@@ -79,6 +73,15 @@ protected:
 	void RespawnAndPossess();
 
 private:
+	UFUNCTION(Server, Reliable)
+	void Server_ProcessTrade(const FPrimaryAssetId ItemId, const int32 Quantity,
+	                         UElementusInventoryComponent* OtherComponent,
+	                         const bool bIsFromPlayer);
+
+	void ProcessTrade_Internal(const TMap<FPrimaryAssetId, int32>& ItemInfo,
+	                           UElementusInventoryComponent* OtherComponent,
+	                           const bool bIsFromPlayer) const;
+
 	struct FAbilityInputData
 	{
 		uint32 OnPressedHandle = 0;

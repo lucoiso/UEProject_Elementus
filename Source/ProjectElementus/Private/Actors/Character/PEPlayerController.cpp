@@ -38,6 +38,12 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	}
 }
 
+void APEPlayerController::SetupControllerSpectator_Implementation()
+{
+	ChangeState(NAME_Spectating);
+	PlayerState->SetIsSpectator(true);
+}
+
 void APEPlayerController::InitializeRespawn(const float InSeconds)
 {
 	if (IsInState(NAME_Spectating))
@@ -63,41 +69,6 @@ void APEPlayerController::InitializeRespawn(const float InSeconds)
 		}
 	}
 }
-
-#pragma region Elementus Inventory Trade
-
-#define TRADE_ELEMENTUS_ITEM(ItemInfo, OtherComponent, bIsFromPlayer) \
-if (const APECharacter* ControllerOwner = GetPawn<APECharacter>(); \
-ensureAlwaysMsgf(ControllerOwner->InventoryComponent, \
-TEXT("%s owner have a invalid InventoryComponent"), *GetName())) \
-{ \
-bIsFromPlayer \
-? UElementusInventoryFunctions::TradeElementusItem(ItemInfo, ControllerOwner->InventoryComponent, OtherComponent) \
-: UElementusInventoryFunctions::TradeElementusItem(ItemInfo, OtherComponent, ControllerOwner->InventoryComponent); \
-}
-
-void APEPlayerController::ProcessTrade(const FElementusItemInfo ItemInfo,
-                                       UElementusInventoryComponent* OtherComponent,
-                                       const bool bIsFromPlayer)
-{
-	if (HasAuthority())
-	{
-		TRADE_ELEMENTUS_ITEM(ItemInfo, OtherComponent, bIsFromPlayer);
-	}
-	else
-	{
-		Server_ProcessTrade(ItemInfo, OtherComponent, bIsFromPlayer);
-	}
-}
-
-void APEPlayerController::Server_ProcessTrade_Implementation(const FElementusItemInfo ItemInfo,
-                                                             UElementusInventoryComponent* OtherComponent,
-                                                             const bool bIsFromPlayer)
-{
-	TRADE_ELEMENTUS_ITEM(ItemInfo, OtherComponent, bIsFromPlayer);
-}
-#undef TRADE_ELEMENTUS_ITEM
-#pragma endregion Elementus Inventory Trade
 
 void APEPlayerController::RespawnAndPossess_Implementation()
 {
@@ -126,11 +97,52 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 	}
 }
 
-void APEPlayerController::SetupControllerSpectator_Implementation()
+#pragma region Elementus Inventory Trade
+void APEPlayerController::ProcessTrade(TMap<FPrimaryAssetId, int32> ItemInfo,
+                                       UElementusInventoryComponent* OtherComponent,
+                                       const bool bIsFromPlayer)
 {
-	ChangeState(NAME_Spectating);
-	PlayerState->SetIsSpectator(true);
+	if (HasAuthority())
+	{
+		ProcessTrade_Internal(ItemInfo, OtherComponent, bIsFromPlayer);
+	}
+	else
+	{
+		for (const auto& Item : ItemInfo)
+		{
+			Server_ProcessTrade(Item.Key, Item.Value, OtherComponent, bIsFromPlayer);
+		}
+	}
 }
+
+void APEPlayerController::Server_ProcessTrade_Implementation(const FPrimaryAssetId ItemId, const int32 Quantity,
+                                                             UElementusInventoryComponent* OtherComponent,
+                                                             const bool bIsFromPlayer)
+{
+	TMap<FPrimaryAssetId, int32> ItemInfo;
+	ItemInfo.Add(ItemId, Quantity);
+
+	ProcessTrade_Internal(ItemInfo, OtherComponent, bIsFromPlayer);
+}
+
+void APEPlayerController::ProcessTrade_Internal(const TMap<FPrimaryAssetId, int32>& ItemInfo,
+                                                UElementusInventoryComponent* OtherComponent,
+                                                const bool bIsFromPlayer) const
+{
+	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>();
+		ensureAlwaysMsgf(ControllerOwner->InventoryComponent,
+		                 TEXT("%s owner have a invalid InventoryComponent"), *GetName()))
+	{
+		bIsFromPlayer
+			? UElementusInventoryFunctions::TradeElementusItem(ItemInfo,
+			                                                   ControllerOwner->InventoryComponent,
+			                                                   OtherComponent)
+			: UElementusInventoryFunctions::TradeElementusItem(ItemInfo,
+			                                                   OtherComponent,
+			                                                   ControllerOwner->InventoryComponent);
+	}
+}
+#pragma endregion Elementus Inventory Trade
 
 #pragma region IAbilityInputBinding
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface

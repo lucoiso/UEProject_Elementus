@@ -28,27 +28,34 @@ class ELEMENTUSINVENTORY_API UElementusInventoryFunctions final : public UBluepr
 
 public:
 	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
-	static bool CompareItemInfoIds(const FElementusItemInfo& Info1, const FElementusItemInfo& Info2);
+	static bool CompareItemInfoIds(const FPrimaryAssetId& Info1, const FPrimaryAssetId& Info2);
 
 	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
 	static bool CompareItemDataIds(const UInventoryItemData* Data1, const UInventoryItemData* Data2);
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	static bool FindElementusItemInfoByDataInArr(const UInventoryItemData* InData, TArray<FElementusItemInfo> InArr,
-	                                             int& ItemIndex);
+	static UInventoryItemData* GetElementusItemDataById(const FPrimaryAssetId& InID,
+	                                                    const TArray<FName>& InBundles);
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	static bool FindElementusItemInfoByIdInArr(const int32 InId, TArray<FElementusItemInfo> InArr, int& ItemIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	static UInventoryItemData* GetElementusItemDataById(const FString InID);
+	static TArray<UInventoryItemData*> GetElementusItemDataArrayById(const TArray<FPrimaryAssetId> InIDs,
+	                                                                 const TArray<FName>& InBundles);
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	static TArray<UInventoryItemData*> SearchElementusItemData(const EElementusSearchType SearchType,
-	                                                           const FString SearchString);
+	                                                           const FString& SearchString,
+	                                                           const TArray<FName>& InBundles);
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	static void TradeElementusItem(FElementusItemInfo ItemInfo,
+	static TArray<FPrimaryAssetId> GetElementusItemIds();
+
+	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
+	static void TradeElementusItem(TMap<FPrimaryAssetId, int32> ItemsToTrade,
 	                               UElementusInventoryComponent* FromInventory,
 	                               UElementusInventoryComponent* ToInventory);
+
+private:
+	static TArray<UInventoryItemData*> LoadElementusItemDatas_Internal(UAssetManager* InAssetManager,
+	                                                                   const TArray<FPrimaryAssetId> InIDs,
+	                                                                   const TArray<FName>& InBundles);
 };

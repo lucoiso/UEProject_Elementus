@@ -4,8 +4,10 @@
 
 #include "ElementusInventoryComponent.h"
 #include "ElementusInventoryFunctions.h"
+#include "Engine/AssetManager.h"
 
 UElementusInventoryComponent::UElementusInventoryComponent()
+	: CurrentWeight(0.f)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
@@ -13,51 +15,23 @@ UElementusInventoryComponent::UElementusInventoryComponent()
 
 float UElementusInventoryComponent::GetCurrentWeight() const
 {
-	float OutputValue = 0.f;
-	for (const auto& [ItemData, ItemQuantity] : ItemStack)
-	{
-		OutputValue += ItemData->ItemWeight * ItemQuantity;
-	}
-
-	return OutputValue;
+	return CurrentWeight;
 }
 
-void UElementusInventoryComponent::AddItemByData(UInventoryItemData* ItemData, const int32 Quantity)
+void UElementusInventoryComponent::AddElementusItem(const FPrimaryAssetId& ItemId, const int32 Quantity)
 {
-	AddElementusItem_Internal(ItemData, Quantity);
+	AddElementusItem_Internal(ItemId, Quantity);
 }
 
-void UElementusInventoryComponent::AddItemById(const int32 ItemId, const int32 Quantity)
+void UElementusInventoryComponent::DiscardElementusItem(const FPrimaryAssetId& ItemId, const int32 Quantity)
 {
-	if (UInventoryItemData* ReturnedItem =
-		UElementusInventoryFunctions::GetElementusItemDataById(FString::FromInt(ItemId)))
-	{
-		AddElementusItem_Internal(ReturnedItem, Quantity);
-	}
-}
-
-void UElementusInventoryComponent::DiscardItemByData(const UInventoryItemData* ItemData,
-                                                     const int32 Quantity,
-                                                     const bool bDropItem)
-{
-	DiscardElementusItem_Internal(ItemData, Quantity, bDropItem);
-}
-
-void UElementusInventoryComponent::DiscardItemById(const int32 ItemId,
-                                                   const int32 Quantity,
-                                                   const bool bDropItem)
-{
-	if (const UInventoryItemData* ReturnedItem =
-		UElementusInventoryFunctions::GetElementusItemDataById(FString::FromInt(ItemId)))
-	{
-		DiscardElementusItem_Internal(ReturnedItem, Quantity, bDropItem);
-	}
+	DiscardElementusItem_Internal(ItemId, Quantity);
 }
 
 constexpr void DoMulticastLoggingIdentification(const ENetMode& CurrentNetMode)
-{	
+{
 	if (CurrentNetMode == NM_Client)
-	{		
+	{
 		UE_LOG(LogElementusInventory, Warning, TEXT("Elementus Inventory - %s: Client logging: "), *FString(__func__));
 	}
 	else if (CurrentNetMode != NM_Standalone)
@@ -66,59 +40,53 @@ constexpr void DoMulticastLoggingIdentification(const ENetMode& CurrentNetMode)
 	}
 }
 
-void UElementusInventoryComponent::AddElementusItem_Internal_Implementation(UInventoryItemData* ItemData,
+void UElementusInventoryComponent::AddElementusItem_Internal_Implementation(const FPrimaryAssetId& ItemId,
                                                                             const int32 Quantity)
 {
 	DoMulticastLoggingIdentification(GetOwner()->GetNetMode());
 
 	UE_LOG(LogElementusInventory, Display,
 	       TEXT("Elementus Inventory - %s: Adding %d item(s) with name '%s' to inventory"),
-	       *FString(__func__), Quantity, *ItemData->ItemName.ToString());
+	       *FString(__func__), Quantity, *ItemId.ToString());
 
-	if (int ItemIndex = -1;
-		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemData, ItemStack, ItemIndex))
+	if (ItemStack.Contains(ItemId))
 	{
-		ItemStack[ItemIndex].ItemQuantity += Quantity;
-		OnInventoryUpdate.Broadcast(ItemStack[ItemIndex], EElementusInventoryUpdateChange::Add);
+		*ItemStack.Find(ItemId) += Quantity;
 	}
 	else
 	{
-		ItemStack.Add(FElementusItemInfo(ItemData, Quantity));
-		OnInventoryUpdate.Broadcast(ItemStack.Last(), EElementusInventoryUpdateChange::Add);
+		ItemStack.Add(ItemId, Quantity);
 	}
+
+	NotifyInventoryChange(ItemId, Quantity);
 }
 
-void UElementusInventoryComponent::DiscardElementusItem_Internal_Implementation(const UInventoryItemData* ItemData,
-	const int32 Quantity,
-	const bool bDropItem)
+void UElementusInventoryComponent::DiscardElementusItem_Internal_Implementation(const FPrimaryAssetId& ItemId,
+	const int32 Quantity)
 {
 	DoMulticastLoggingIdentification(GetOwner()->GetNetMode());
 
 	UE_LOG(LogElementusInventory, Display,
 	       TEXT("Elementus Inventory - %s: Discarding %d item(s) with name '%s' from inventory"),
-	       *FString(__func__), Quantity, *ItemData->ItemName.ToString());
+	       *FString(__func__), Quantity, *ItemId.ToString());
 
-	if (int ItemIndex = -1;
-		UElementusInventoryFunctions::FindElementusItemInfoByDataInArr(ItemData, ItemStack, ItemIndex))
+	if (auto CurrentItemQuant = ItemStack.FindRef(ItemId))
 	{
-		ItemStack[ItemIndex].ItemQuantity =
-			FMath::Clamp<int32>(ItemStack[ItemIndex].ItemQuantity - Quantity,
+		CurrentItemQuant =
+			FMath::Clamp<int32>(CurrentItemQuant - Quantity,
 			                    0,
-			                    ItemStack[ItemIndex].ItemQuantity);
+			                    CurrentItemQuant);
 
-		const FElementusItemInfo DiscardedItem = ItemStack[ItemIndex];
-		if (Quantity >= ItemStack[ItemIndex].ItemQuantity)
+		if (CurrentItemQuant == 0)
 		{
-			ItemStack.RemoveAt(ItemIndex);
+			ItemStack.Remove(ItemId);
+		}
+		else
+		{
+			*ItemStack.Find(ItemId) = CurrentItemQuant;
 		}
 
-		OnInventoryUpdate.Broadcast(DiscardedItem, EElementusInventoryUpdateChange::Remove);
-
-		if (bDropItem)
-		{
-			// TO DO: Spawn a ElementusInventoryPackage with the items
-			// Note: The user needs to choose the class and the look of the package
-		}
+		NotifyInventoryChange(ItemId, CurrentItemQuant);
 	}
 }
 
@@ -129,7 +97,53 @@ void UElementusInventoryComponent::DebugInventoryStack()
 
 	for (const auto& Iterator : ItemStack)
 	{
-		UE_LOG(LogElementusInventory, Warning, TEXT("Item: %s"), *Iterator.ItemData->ItemName.ToString());
-		UE_LOG(LogElementusInventory, Warning, TEXT("Quantity: %d"), Iterator.ItemQuantity);
+		UE_LOG(LogElementusInventory, Warning, TEXT("Item: %s"), *Iterator.Key.ToString());
+		UE_LOG(LogElementusInventory, Warning, TEXT("Quantity: %d"), Iterator.Value);
 	}
+
+	UE_LOG(LogElementusInventory, Warning, TEXT("Weight: %d"), CurrentWeight);
+}
+
+void UElementusInventoryComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	UpdateCurrentWeight();
+}
+
+void UElementusInventoryComponent::NotifyInventoryChange(const FPrimaryAssetId& ItemId, const int32 Quantity)
+{
+	OnInventoryUpdate.Broadcast(ItemId, ItemStack.Contains(ItemId) ? ItemStack.FindRef(ItemId) : 0);
+
+	if (const UInventoryItemData* ItemData =
+			UElementusInventoryFunctions::GetElementusItemDataById(ItemId, {"Data"});
+		ItemStack.Contains(ItemId))
+	{
+		CurrentWeight += ItemData->ItemWeight * Quantity;
+	}
+	else
+	{
+		UpdateCurrentWeight();
+	}
+}
+
+void UElementusInventoryComponent::UpdateCurrentWeight()
+{
+	TArray<FPrimaryAssetId> ItemIds;
+	ItemStack.GetKeys(ItemIds);
+
+	float NewWeigth = 0.f;
+	if (const TArray<UInventoryItemData*>& ItemDataArr =
+			UElementusInventoryFunctions::GetElementusItemDataArrayById(ItemIds, {"Data"});
+		!ItemDataArr.IsEmpty())
+	{
+		for (const auto& Iterator : ItemDataArr)
+		{
+			if (ItemStack.Contains(Iterator->GetPrimaryAssetId()))
+			{
+				NewWeigth += Iterator->ItemWeight * ItemStack.FindRef(Iterator->GetPrimaryAssetId());
+			}
+		}
+	}
+
+	CurrentWeight = NewWeigth;
 }
