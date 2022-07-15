@@ -107,7 +107,9 @@ void UElementusInventoryComponent::DebugInventoryStack()
 void UElementusInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
 	UpdateCurrentWeight();
+	ValidateItemStack();
 }
 
 void UElementusInventoryComponent::NotifyInventoryChange(const FPrimaryAssetId& ItemId, const int32 Quantity)
@@ -124,6 +126,8 @@ void UElementusInventoryComponent::NotifyInventoryChange(const FPrimaryAssetId& 
 	{
 		UpdateCurrentWeight();
 	}
+
+	ValidateItemStack();
 }
 
 void UElementusInventoryComponent::UpdateCurrentWeight()
@@ -146,4 +150,32 @@ void UElementusInventoryComponent::UpdateCurrentWeight()
 	}
 
 	CurrentWeight = NewWeigth;
+}
+
+void UElementusInventoryComponent::ValidateItemStack()
+{
+	TArray<FPrimaryAssetId> ItemIds;
+	ItemStack.GetKeys(ItemIds);
+
+	bool bHasInvalidItems = false;
+
+	for (const auto& Iterator : ItemIds)
+	{
+		if (!Iterator.PrimaryAssetType.IsValid()
+			|| Iterator.PrimaryAssetType != FPrimaryAssetType(ElementusItemDataType))
+		{
+			ItemStack.Remove(Iterator);
+			bHasInvalidItems = true;
+
+			UE_LOG(LogElementusInventory, Error,
+			       TEXT("Elementus Inventory - %s: Item '%s' is not an InventoryItemData object"),
+			       *FString(__func__), *Iterator.ToString());
+		}
+	}
+
+	if (ensureAlwaysMsgf(!bHasInvalidItems,
+	                     TEXT("Elementus Inventory only supports Item Data Assets derived from UInventoryItemData")))
+	{
+		UpdateCurrentWeight();
+	}
 }

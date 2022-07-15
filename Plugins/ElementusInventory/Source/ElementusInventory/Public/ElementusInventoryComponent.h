@@ -9,8 +9,9 @@
 #include "Components/ActorComponent.h"
 #include "ElementusInventoryComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FElementusInventoryUpdate, const FPrimaryAssetId, ItemId, const int32,
-                                             NewQuantity);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FElementusInventoryUpdate,
+                                             const FPrimaryAssetId, ItemId,
+                                             const int32, NewQuantity);
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta =(BlueprintSpawnableComponent),
 	Category = "Project Elementus | Classes")
@@ -26,8 +27,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Elementus Inventory")
 	float MaxWeight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory",
-		meta = (TitleProperty = "{Item Data} -> {Quantity}", AllowedClasses = "ElementusItemData"))
+	/* UInventoryItemData -> Quantity */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
 	TMap<FPrimaryAssetId, int32> ItemStack;
 
 	UPROPERTY(BlueprintAssignable, Category = "Elementus Inventory")
@@ -57,6 +58,7 @@ private:
 	void NotifyInventoryChange(const FPrimaryAssetId& ItemId, const int32 Quantity);
 
 	void UpdateCurrentWeight();
+	void ValidateItemStack();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Elementus Inventory",
 		meta = (AllowPrivateAccess = "true"))

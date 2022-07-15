@@ -6,8 +6,6 @@
 #include "ElementusInventoryComponent.h"
 #include "Engine/AssetManager.h"
 
-constexpr auto& ElementusItemDataType = TEXT("ElementusInventory_ItemData");
-
 bool UElementusInventoryFunctions::CompareItemInfoIds(const FPrimaryAssetId& Info1, const FPrimaryAssetId& Info2)
 {
 	return Info1 == Info2;
@@ -15,7 +13,7 @@ bool UElementusInventoryFunctions::CompareItemInfoIds(const FPrimaryAssetId& Inf
 
 bool UElementusInventoryFunctions::CompareItemDataIds(const UInventoryItemData* Data1, const UInventoryItemData* Data2)
 {
-	return Data1->ItemId == Data2->ItemId;
+	return Data1->GetPrimaryAssetId() == Data2->GetPrimaryAssetId();
 }
 
 UInventoryItemData* UElementusInventoryFunctions::GetElementusItemDataById(const FPrimaryAssetId& InID,
@@ -34,13 +32,6 @@ UInventoryItemData* UElementusInventoryFunctions::GetElementusItemDataById(const
 		else // The object is already loaded
 		{
 			Output = AssetManager->GetPrimaryAssetObject<UInventoryItemData>(InID);
-
-			if (IsValid(Output))
-			{
-				UE_LOG(LogElementusInventory, Warning,
-				       TEXT("Elementus Inventory - %s: Weight = "),
-				       *FString(__func__), Output->ItemWeight);
-			}
 		}
 
 		AssetManager->UnloadPrimaryAsset(InID);
@@ -93,7 +84,7 @@ TArray<UInventoryItemData*> UElementusInventoryFunctions::SearchElementusItemDat
 
 			if (bAddItem)
 			{
-				UE_LOG(LogElementusInventory, Display,
+				UE_LOG(LogElementusInventory_Internal, Display,
 				       TEXT("Elementus Inventory - %s: Added Item Name: %s"),
 				       *FString(__func__), *Iterator->ItemName.ToString());
 
@@ -118,13 +109,13 @@ TArray<UInventoryItemData*> UElementusInventoryFunctions::LoadElementusItemDatas
 		const bool bOutput = IsValid(InAsset);
 		if (IsValid(InAsset))
 		{
-			UE_LOG(LogElementusInventory, Display,
+			UE_LOG(LogElementusInventory_Internal, Display,
 			       TEXT("Elementus Inventory - %s: Item data %s found and loaded"),
 			       *FString(FuncNam_LambVer), *InAsset->GetName());
 		}
 		else
 		{
-			UE_LOG(LogElementusInventory, Error,
+			UE_LOG(LogElementusInventory_Internal, Error,
 			       TEXT("Elementus Inventory - %s: Failed to load item data: Invalid Asset"),
 			       *FString(FuncNam_LambVer));
 		}
@@ -137,7 +128,7 @@ TArray<UInventoryItemData*> UElementusInventoryFunctions::LoadElementusItemDatas
 	{
 		if (InArr.IsEmpty())
 		{
-			UE_LOG(LogElementusInventory, Error,
+			UE_LOG(LogElementusInventory_Internal, Error,
 			       TEXT("Elementus Inventory - %s: Failed to find items with the given parameters"),
 			       *FString(__func__));
 		}
