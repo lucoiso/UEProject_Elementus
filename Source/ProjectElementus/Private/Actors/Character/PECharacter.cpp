@@ -10,7 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemLog.h"
-#include "../../../../../Plugins/ElementusInventory/Source/ElementusInventory/Public/ElementusInventoryComponent.h"
+#include "ElementusInventoryComponent.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 
