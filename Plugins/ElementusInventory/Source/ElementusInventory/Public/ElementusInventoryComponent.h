@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FElementusInventoryUpdate,
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta =(BlueprintSpawnableComponent),
 	Category = "Project Elementus | Classes")
-class ELEMENTUSINVENTORY_API UElementusInventoryComponent final : public UActorComponent
+class ELEMENTUSINVENTORY_API UElementusInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -24,15 +24,14 @@ public:
 
 	float GetCurrentWeight() const;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Elementus Inventory")
-	float MaxWeight;
-
-	/* UInventoryItemData -> Quantity */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elementus Inventory")
-	TMap<FPrimaryAssetId, int32> ItemStack;
+	float MaxWeight;
 
 	UPROPERTY(BlueprintAssignable, Category = "Elementus Inventory")
 	FElementusInventoryUpdate OnInventoryUpdate;
+
+	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
+	TMap<FPrimaryAssetId, int32> GetItemStack() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
 	void AddElementusItem(const FPrimaryAssetId& ItemId, const int32 Quantity);
@@ -41,10 +40,25 @@ public:
 	void DiscardElementusItem(const FPrimaryAssetId& ItemId, const int32 Quantity);
 
 	UFUNCTION(BlueprintCallable, Category = "Elementus Inventory")
-	void DebugInventoryStack();
+	virtual void DebugInventoryStack();
+
+	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
+	virtual bool CanReceiveItem(const FPrimaryAssetId& ItemId, const int32 Quantity) const;
+
+	UFUNCTION(BlueprintPure, Category = "Elementus Inventory")
+	virtual bool CanGiveItem(const FPrimaryAssetId& ItemId, const int32 Quantity) const;
 
 protected:
+	/* UInventoryItemData -> Quantity */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elementus Inventory",
+		meta = (Getter = "GetItemStack"))
+	TMap<FPrimaryAssetId, int32> ItemStack;
+
 	virtual void BeginPlay() override;
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 
 private:
 	UFUNCTION(NetMulticast, Reliable)

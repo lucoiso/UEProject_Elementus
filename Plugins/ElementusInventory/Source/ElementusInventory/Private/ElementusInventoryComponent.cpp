@@ -6,6 +6,10 @@
 #include "ElementusInventoryFunctions.h"
 #include "Engine/AssetManager.h"
 
+#if WITH_EDITOR
+#include "Misc/MessageDialog.h"
+#endif
+
 UElementusInventoryComponent::UElementusInventoryComponent()
 	: CurrentWeight(0.f)
 {
@@ -18,13 +22,26 @@ float UElementusInventoryComponent::GetCurrentWeight() const
 	return CurrentWeight;
 }
 
+TMap<FPrimaryAssetId, int32> UElementusInventoryComponent::GetItemStack() const
+{
+	return ItemStack;
+}
+
 void UElementusInventoryComponent::AddElementusItem(const FPrimaryAssetId& ItemId, const int32 Quantity)
 {
+	UE_LOG(LogElementusInventory, Display,
+	       TEXT("Elementus Inventory - %s: Adding %d item(s) with name '%s' to inventory"),
+	       *FString(__func__), Quantity, *ItemId.ToString());
+
 	AddElementusItem_Internal(ItemId, Quantity);
 }
 
 void UElementusInventoryComponent::DiscardElementusItem(const FPrimaryAssetId& ItemId, const int32 Quantity)
 {
+	UE_LOG(LogElementusInventory, Display,
+	       TEXT("Elementus Inventory - %s: Discarding %d item(s) with name '%s' from inventory"),
+	       *FString(__func__), Quantity, *ItemId.ToString());
+
 	DiscardElementusItem_Internal(ItemId, Quantity);
 }
 
@@ -32,11 +49,13 @@ constexpr void DoMulticastLoggingIdentification(const ENetMode& CurrentNetMode)
 {
 	if (CurrentNetMode == NM_Client)
 	{
-		UE_LOG(LogElementusInventory, Warning, TEXT("Elementus Inventory - %s: Client logging: "), *FString(__func__));
+		UE_LOG(LogElementusInventory_Internal, Warning, TEXT("Elementus Inventory - %s: Client logging: "),
+		       *FString(__func__));
 	}
 	else if (CurrentNetMode != NM_Standalone)
 	{
-		UE_LOG(LogElementusInventory, Warning, TEXT("Elementus Inventory - %s: Server logging: "), *FString(__func__));
+		UE_LOG(LogElementusInventory_Internal, Warning, TEXT("Elementus Inventory - %s: Server logging: "),
+		       *FString(__func__));
 	}
 }
 
@@ -45,7 +64,7 @@ void UElementusInventoryComponent::AddElementusItem_Internal_Implementation(cons
 {
 	DoMulticastLoggingIdentification(GetOwner()->GetNetMode());
 
-	UE_LOG(LogElementusInventory, Display,
+	UE_LOG(LogElementusInventory_Internal, Display,
 	       TEXT("Elementus Inventory - %s: Adding %d item(s) with name '%s' to inventory"),
 	       *FString(__func__), Quantity, *ItemId.ToString());
 
@@ -66,7 +85,7 @@ void UElementusInventoryComponent::DiscardElementusItem_Internal_Implementation(
 {
 	DoMulticastLoggingIdentification(GetOwner()->GetNetMode());
 
-	UE_LOG(LogElementusInventory, Display,
+	UE_LOG(LogElementusInventory_Internal, Display,
 	       TEXT("Elementus Inventory - %s: Discarding %d item(s) with name '%s' from inventory"),
 	       *FString(__func__), Quantity, *ItemId.ToString());
 
@@ -104,6 +123,25 @@ void UElementusInventoryComponent::DebugInventoryStack()
 	UE_LOG(LogElementusInventory, Warning, TEXT("Weight: %d"), CurrentWeight);
 }
 
+bool UElementusInventoryComponent::CanReceiveItem(const FPrimaryAssetId& ItemId, const int32 Quantity) const
+{
+	if (const UInventoryItemData* ItemData =
+		UElementusInventoryFunctions::GetElementusItemDataById(ItemId, {"Data"}))
+	{
+		if (CurrentWeight + ItemData->ItemWeight * Quantity <= MaxWeight)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UElementusInventoryComponent::CanGiveItem(const FPrimaryAssetId& ItemId, const int32 Quantity) const
+{
+	return ItemStack.Contains(ItemId) && ItemStack.FindRef(ItemId) >= Quantity;
+}
+
 void UElementusInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -111,6 +149,18 @@ void UElementusInventoryComponent::BeginPlay()
 	UpdateCurrentWeight();
 	ValidateItemStack();
 }
+
+#if WITH_EDITOR
+void UElementusInventoryComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (PropertyChangedEvent.Property == FindFieldChecked<FProperty>(GetClass(), "ItemStack"))
+	{
+		ValidateItemStack();
+	}
+}
+#endif
 
 void UElementusInventoryComponent::NotifyInventoryChange(const FPrimaryAssetId& ItemId, const int32 Quantity)
 {
@@ -126,8 +176,6 @@ void UElementusInventoryComponent::NotifyInventoryChange(const FPrimaryAssetId& 
 	{
 		UpdateCurrentWeight();
 	}
-
-	ValidateItemStack();
 }
 
 void UElementusInventoryComponent::UpdateCurrentWeight()
@@ -158,24 +206,43 @@ void UElementusInventoryComponent::ValidateItemStack()
 	ItemStack.GetKeys(ItemIds);
 
 	bool bHasInvalidItems = false;
+	const bool bEnableLogging = GetOwner()->IsTemplate()
+		|| GetOwner()->GetWorld()->IsGameWorld()
+#if WITH_EDITOR
+		|| GetOwner()->IsSelectedInEditor();
+#else
+		|| false; // just to add the ';' to the end of the line
+#endif
 
 	for (const auto& Iterator : ItemIds)
 	{
-		if (!Iterator.PrimaryAssetType.IsValid()
-			|| Iterator.PrimaryAssetType != FPrimaryAssetType(ElementusItemDataType))
+		if (Iterator.PrimaryAssetType.IsValid()
+			&& Iterator.PrimaryAssetType != FPrimaryAssetType(ElementusItemDataType))
 		{
+			if (bEnableLogging)
+			{
+				UE_LOG(LogElementusInventory, Error,
+				       TEXT("Elementus Inventory - %s: Removing item %s from %s inventory"),
+				       *FString(__func__), *Iterator.ToString(), *GetOwner()->GetName());
+			}
+
 			ItemStack.Remove(Iterator);
 			bHasInvalidItems = true;
-
-			UE_LOG(LogElementusInventory, Error,
-			       TEXT("Elementus Inventory - %s: Item '%s' is not an InventoryItemData object"),
-			       *FString(__func__), *Iterator.ToString());
 		}
 	}
 
-	if (ensureAlwaysMsgf(!bHasInvalidItems,
-	                     TEXT("Elementus Inventory only supports Item Data Assets derived from UInventoryItemData")))
+	if (bHasInvalidItems && bEnableLogging)
 	{
-		UpdateCurrentWeight();
+		UE_LOG(LogElementusInventory, Error,
+		       TEXT(
+			       "Elementus Inventory - %s: Elementus Inventory only supports Item Data Assets derived from UInventoryItemData"
+		       ),
+		       *FString(__func__));
+
+#if WITH_EDITOR
+		FMessageDialog::Open(EAppMsgType::Ok,
+		                     FText::FromString(
+			                     "Elementus Inventory only supports Item Data Assets derived from UInventoryItemData."));
+#endif
 	}
 }
