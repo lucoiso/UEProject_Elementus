@@ -8,5 +8,5 @@
 	path = Plugins/UEElementusInventory
 	url = https://github.com/lucoiso/UEElementusInventory.git
 [submodule "Plugins/UEEOSSDKHandler"]
-	path = PluginS/UEEOSSDKHandler
+	path = Plugins/UEEOSSDKHandler
 	url = https://github.com/lucoiso/UEEOSSDKHandler.git
