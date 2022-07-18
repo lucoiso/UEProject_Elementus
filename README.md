@@ -1,9 +1,9 @@
-# Project Elementus - WiP
+# Project Elementus - Work in Progress
 
 ![HighresScreenshot00000](https://user-images.githubusercontent.com/77353979/171550569-09dc7c78-c921-4b60-92a1-0a50b9e8ccca.png)
 
 
-**This project is being built on Unreal Engine 5.**
+**This project is being built on Unreal Engine 5.0.x.**
 
 ## About
 
@@ -15,14 +15,32 @@ My intention with this development is to help other developers in their projects
 already implemented functionalities. ❤️
 
 I will be posting updates frequently on this forum
-thread: [Project Elementus - Custom TPS Template w/ Extra Features](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)  
+thread: [Epic Developer Community](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)  
 Please give some feedback and feel invited to test the project and help me with this work. : )
 
 ## Dependencies
 
 1. [AMD FidelityFX Super Resolution 1.0 - UE5 Adapted ver.](https://github.com/lucoiso/fsr-amd-ue/releases/tag/v1.0)
 2. [Modular Game Features - Extra Actions](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions)
-3. If you are cloning this repository with Git: [Git Large File Storage](https://git-lfs.github.com/)
+3. [Elementus Inventory](https://github.com/lucoiso/UEElementusInventory)
+4. [EOS SDK Handler](https://github.com/lucoiso/UEEOSSDKHandler)
+5. [Git Large File Storage](https://git-lfs.github.com/) _(If you're cloning this repository)_
+
+## If you're cloning this repository
+
+All [dependencies](#dependencies) are included as Git Submodules. They will be installed automatically on clone.
+
+To check if the dependencies are installed, run the following command:
+
+```
+git submodule status
+```
+
+To update the dependencies, run the following command:
+
+```
+git submodule update --init --recursive
+```
 
 ## Links
 
