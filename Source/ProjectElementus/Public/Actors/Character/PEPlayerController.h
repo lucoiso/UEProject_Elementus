@@ -90,6 +90,8 @@ private:
 	};
 
 	TWeakObjectPtr<UEnum> InputEnumHandle;
+	TSoftClassPtr<UUserWidget> InventoryWidgetClass;
+	TWeakObjectPtr<UUserWidget> InventoryWidgetHandle;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION()
@@ -104,4 +106,10 @@ private:
 
 	UFUNCTION()
 	void SetVoiceChatEnabled(const FInputActionValue& Value) const;
+
+	UFUNCTION()
+	void ToggleInventory(const FInputActionValue& Value);
+
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Project Elementus | Functions")
+	void ToggleInventoryWidget();
 };

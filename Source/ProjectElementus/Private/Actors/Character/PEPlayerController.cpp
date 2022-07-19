@@ -17,6 +17,7 @@
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Management/PEGameInstance.h"
+#include "Blueprint/UserWidget.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -35,6 +36,13 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
 	{
 		InputEnumHandle = InputIDEnum_ObjRef.Object;
+	}
+
+	static const ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(
+		TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
+	if constexpr (&InventoryWidget_ClassRef.Class != nullptr)
+	{
+		InventoryWidgetClass = InventoryWidget_ClassRef.Class;
 	}
 }
 
@@ -245,6 +253,15 @@ void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) co
 	UPEEOSLibrary::MuteEOSSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
 }
 
+void APEPlayerController::ToggleInventory(const FInputActionValue& Value)
+{
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
+	                     *FString(__func__),
+	                     *Value.ToString(), Value.GetMagnitude());
+
+	ToggleInventoryWidget();
+}
+
 #pragma region Default Movement Functions
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 {
@@ -306,3 +323,24 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 	}
 }
 #pragma endregion Default Movement Functions
+
+void APEPlayerController::ToggleInventoryWidget_Implementation()
+{
+	if (InventoryWidgetHandle.IsValid())
+	{
+		InventoryWidgetHandle->RemoveFromParent();
+		InventoryWidgetHandle.Reset();
+	}
+	else
+	{
+		InventoryWidgetHandle =
+			CreateWidget(this,
+			             InventoryWidgetClass.LoadSynchronous(),
+			             TEXT("InventoryWidget"));
+
+		if (InventoryWidgetHandle.IsValid())
+		{
+			InventoryWidgetHandle->AddToViewport();
+		}
+	}
+}
