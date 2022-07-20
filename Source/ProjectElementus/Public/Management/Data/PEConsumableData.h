@@ -16,7 +16,7 @@ class UNiagaraSystem;
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes | Data")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEConsumableData final : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

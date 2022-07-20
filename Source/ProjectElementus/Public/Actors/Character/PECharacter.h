@@ -21,7 +21,7 @@ struct FGameplayTag;
  *
  */
 UCLASS(config = Game, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbilitySystemInterface
+class PROJECTELEMENTUS_API APECharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 

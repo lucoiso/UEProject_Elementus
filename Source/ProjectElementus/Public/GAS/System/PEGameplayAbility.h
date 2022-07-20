@@ -16,7 +16,7 @@ class APEProjectileActor;
 /**
  *
  */
-UCLASS(Abstract, NotPlaceable, Blueprintable, HideDropdown, Category = "Project Elementus | Classes | Abilities")
+UCLASS(Abstract, NotPlaceable, Blueprintable, HideDropdown, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()

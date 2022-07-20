@@ -35,7 +35,7 @@ class UElementusInventoryComponent;
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IAbilityInputBinding
+class PROJECTELEMENTUS_API APEPlayerController : public APlayerController, public IAbilityInputBinding
 {
 	GENERATED_BODY()
 

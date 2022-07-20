@@ -12,7 +12,7 @@
  * 
  */
 UCLASS(Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEGroundTargeting final : public AGameplayAbilityTargetActor_GroundTrace
+class PROJECTELEMENTUS_API APEGroundTargeting : public AGameplayAbilityTargetActor_GroundTrace
 {
 	GENERATED_BODY()
 

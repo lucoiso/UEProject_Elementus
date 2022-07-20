@@ -38,7 +38,7 @@ enum class EAchievementMod : uint8
 	Subtract
 };
 
-UCLASS(Category = "Project Elementus | Classes | Functions")
+UCLASS(Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEEOSLibrary final : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()

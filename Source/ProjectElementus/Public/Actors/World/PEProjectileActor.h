@@ -16,7 +16,7 @@ class UProjectileMovementComponent;
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEProjectileActor final : public AActor
+class PROJECTELEMENTUS_API APEProjectileActor : public AActor
 {
 	GENERATED_BODY()
 

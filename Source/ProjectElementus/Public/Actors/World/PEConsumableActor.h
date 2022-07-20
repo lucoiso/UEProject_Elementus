@@ -15,7 +15,7 @@
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEConsumableActor final : public AActor, public IPEInteractable
+class PROJECTELEMENTUS_API APEConsumableActor : public AActor, public IPEInteractable
 {
 	GENERATED_BODY()
 

@@ -13,7 +13,7 @@
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 {
 	GENERATED_USTRUCT_BODY()

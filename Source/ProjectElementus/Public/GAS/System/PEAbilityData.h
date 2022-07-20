@@ -15,7 +15,7 @@ class UGameplayAbility;
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FGameplayEffectGroupedData
 {
 	GENERATED_USTRUCT_BODY()
@@ -34,7 +34,7 @@ struct FGameplayEffectGroupedData
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes | Data")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEAbilityData final : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

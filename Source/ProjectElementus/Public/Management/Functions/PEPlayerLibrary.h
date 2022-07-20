@@ -10,7 +10,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PEPlayerLibrary.generated.h"
 
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FPlayerInputBindingHandle
 {
 	GENERATED_USTRUCT_BODY()
@@ -25,27 +25,32 @@ struct FPlayerInputBindingHandle
 /**
  * 
  */
-UCLASS(Category = "Project Elementus | Classes | Functions")
+UCLASS(Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEPlayerLibrary final : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
 public:
+	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static FPlayerInputBindingHandle BindDynamicInput(APlayerController* Controller, UInputAction* Action,
 	                                                  UObject* Object, const FName UFunctionName,
 	                                                  const ETriggerEvent TriggerEvent);
 
+	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static void RemoveDynamicInput(const FPlayerInputBindingHandle BindingHandle);
 
+	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static void AddDynamicMapping(APlayerController* Controller, UInputMappingContext* InputMapping,
 	                              const int32 Priority);
 
+	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static void RemoveDynamicMapping(APlayerController* Controller, UInputMappingContext* InputMapping);
 
+	/*  */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static bool CheckIfPlayerContainsDynamicInput(APlayerController* Controller,
 	                                              TArray<FPlayerInputBindingHandle> BindingArray,

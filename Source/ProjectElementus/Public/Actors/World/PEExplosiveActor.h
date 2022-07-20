@@ -16,7 +16,7 @@ class UAbilitySystemComponent;
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEExplosiveActor final : public AActor
+class PROJECTELEMENTUS_API APEExplosiveActor : public AActor
 {
 	GENERATED_BODY()
 
