@@ -1,12 +1,12 @@
 [submodule "Plugins/UEModularFeatures_ExtraActions"]
 	path = Plugins/UEModularFeatures_ExtraActions
 	url = https://github.com/lucoiso/UEModularFeatures_ExtraActions.git
-[submodule "Plugins/FSR"]
-	path = Plugins/FSR
-	url = https://github.com/lucoiso/fsr-amd-ue.git
 [submodule "Plugins/UEElementusInventory"]
 	path = Plugins/UEElementusInventory
 	url = https://github.com/lucoiso/UEElementusInventory.git
 [submodule "Plugins/UEEOSSDKHandler"]
 	path = Plugins/UEEOSSDKHandler
 	url = https://github.com/lucoiso/UEEOSSDKHandler.git
+[submodule "Plugins/UEFSR"]
+	path = Plugins/UEFSR
+	url = https://github.com/lucoiso/UEFSR.git

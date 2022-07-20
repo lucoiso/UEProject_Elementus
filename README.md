@@ -20,7 +20,7 @@ Please give some feedback and feel invited to test the project and help me with 
 
 ## Dependencies
 
-1. [AMD FidelityFX Super Resolution 1.0 - UE5 Adapted ver.](https://github.com/lucoiso/fsr-amd-ue/releases/tag/v1.0)
+1. [AMD FidelityFX Super Resolution 1.0 - UE5 Adapted ver.](https://github.com/lucoiso/UEFSR/releases/tag/v1.0)
 2. [Modular Game Features - Extra Actions](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions)
 3. [Elementus Inventory](https://github.com/lucoiso/UEElementusInventory)
 4. [EOS SDK Handler](https://github.com/lucoiso/UEEOSSDKHandler)
