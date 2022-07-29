@@ -30,6 +30,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
 }
 
 class UElementusInventoryComponent;
+struct FElementusItemId;
 
 /**
  *
@@ -63,7 +64,7 @@ public:
 	void InitializeRespawn(const float InSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ProcessTrade(TMap<FPrimaryAssetId, int32> ItemInfo,
+	void ProcessTrade(TMap<FElementusItemId, int32> ItemInfo,
 	                  UElementusInventoryComponent* OtherComponent,
 	                  const bool bIsFromPlayer = false);
 
@@ -74,11 +75,11 @@ protected:
 
 private:
 	UFUNCTION(Server, Reliable)
-	void Server_ProcessTrade(const FPrimaryAssetId ItemId, const int32 Quantity,
+	void Server_ProcessTrade(const FElementusItemId ItemId, const int32 Quantity,
 	                         UElementusInventoryComponent* OtherComponent,
 	                         const bool bIsFromPlayer);
 
-	void ProcessTrade_Internal(const TMap<FPrimaryAssetId, int32>& ItemInfo,
+	void ProcessTrade_Internal(const TMap<FElementusItemId, int32>& ItemInfo,
 	                           UElementusInventoryComponent* OtherComponent,
 	                           const bool bIsFromPlayer) const;
 

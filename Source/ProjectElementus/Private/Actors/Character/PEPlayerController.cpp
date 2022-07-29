@@ -106,7 +106,7 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 }
 
 #pragma region Elementus Inventory Trade
-void APEPlayerController::ProcessTrade(TMap<FPrimaryAssetId, int32> ItemInfo,
+void APEPlayerController::ProcessTrade(TMap<FElementusItemId, int32> ItemInfo,
                                        UElementusInventoryComponent* OtherComponent,
                                        const bool bIsFromPlayer)
 {
@@ -123,17 +123,17 @@ void APEPlayerController::ProcessTrade(TMap<FPrimaryAssetId, int32> ItemInfo,
 	}
 }
 
-void APEPlayerController::Server_ProcessTrade_Implementation(const FPrimaryAssetId ItemId, const int32 Quantity,
+void APEPlayerController::Server_ProcessTrade_Implementation(const FElementusItemId ItemId, const int32 Quantity,
                                                              UElementusInventoryComponent* OtherComponent,
                                                              const bool bIsFromPlayer)
 {
-	TMap<FPrimaryAssetId, int32> ItemInfo;
+	TMap<FElementusItemId, int32> ItemInfo;
 	ItemInfo.Add(ItemId, Quantity);
 
 	ProcessTrade_Internal(ItemInfo, OtherComponent, bIsFromPlayer);
 }
 
-void APEPlayerController::ProcessTrade_Internal(const TMap<FPrimaryAssetId, int32>& ItemInfo,
+void APEPlayerController::ProcessTrade_Internal(const TMap<FElementusItemId, int32>& ItemInfo,
                                                 UElementusInventoryComponent* OtherComponent,
                                                 const bool bIsFromPlayer) const
 {
