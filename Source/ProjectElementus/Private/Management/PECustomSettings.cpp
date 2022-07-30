@@ -10,20 +10,20 @@ UPECustomSettings::UPECustomSettings(const FObjectInitializer& ObjectInitializer
 	UPECustomSettings::SetToDefaults();
 }
 
-void UPECustomSettings::ApplyCustomSettings(const bool bCheckForCommandLineOverrides) const
+void UPECustomSettings::ApplyNonResolutionSettings()
 {
-	const EConsoleVariableFlags Flags = bCheckForCommandLineOverrides ? ECVF_SetByCommandline : ECVF_SetByCode;
-
+	Super::ApplyNonResolutionSettings();
+	
 	if (IConsoleVariable* AntiAliasingCVar =
-		IConsoleManager::Get().FindConsoleVariable(TEXT("r.DefaultFeature.AntiAliasing")))
+		IConsoleManager::Get().FindConsoleVariable(TEXT("r.AntiAliasingMethod")))
 	{
-		AntiAliasingCVar->Set(AntiAliasingMode, Flags);
+		AntiAliasingCVar->Set(AntiAliasingMode, ECVF_SetByConsole);
 	}
 
 	if (IConsoleVariable* FSREnabledCVar =
 		IConsoleManager::Get().FindConsoleVariable(TEXT("r.FidelityFX.FSR.Enabled")))
 	{
-		FSREnabledCVar->Set(bFSREnabled, Flags);
+		FSREnabledCVar->Set(bFSREnabled, ECVF_SetByConsole);
 	}
 
 	if (IConsoleVariable* ScreenPercentageCVar =
@@ -33,16 +33,16 @@ void UPECustomSettings::ApplyCustomSettings(const bool bCheckForCommandLineOverr
 		switch (FSRMode)
 		{
 		case 0: // Performance
-			ScreenPercentageCVar->Set(50, Flags);
+			ScreenPercentageCVar->Set(50, ECVF_SetByConsole);
 			break;
 		case 1: // Balanced
-			ScreenPercentageCVar->Set(59, Flags);
+			ScreenPercentageCVar->Set(59, ECVF_SetByConsole);
 			break;
 		case 2: // Quality
-			ScreenPercentageCVar->Set(67, Flags);
+			ScreenPercentageCVar->Set(67, ECVF_SetByConsole);
 			break;
 		case 3: // Ultra Quality
-			ScreenPercentageCVar->Set(77, Flags);
+			ScreenPercentageCVar->Set(77, ECVF_SetByConsole);
 			break;
 		default: break;
 		}
@@ -52,14 +52,8 @@ void UPECustomSettings::ApplyCustomSettings(const bool bCheckForCommandLineOverr
 			IConsoleManager::Get().FindConsoleVariable(TEXT("r.TemporalAA.Upsampling"));
 		TemporalUpsamplingCVar && AntiAliasingMode == 2)
 	{
-		TemporalUpsamplingCVar->Set(bEnableTemporalUpscaling, Flags);
+		TemporalUpsamplingCVar->Set(bEnableTemporalUpscaling, ECVF_SetByConsole);
 	}
-}
-
-void UPECustomSettings::ApplySettings(const bool bCheckForCommandLineOverrides)
-{
-	Super::ApplySettings(bCheckForCommandLineOverrides);
-	ApplyCustomSettings(bCheckForCommandLineOverrides);
 }
 
 void UPECustomSettings::SetToDefaults()

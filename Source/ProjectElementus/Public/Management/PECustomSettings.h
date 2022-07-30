@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(Config=GameUserSettings, configdonotcheckdefaults, Category = "Project Elementus | Classes")
+UCLASS(config=GameUserSettings, configdonotcheckdefaults, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPECustomSettings final : public UGameUserSettings
 {
 	GENERATED_BODY()
@@ -19,11 +19,8 @@ class PROJECTELEMENTUS_API UPECustomSettings final : public UGameUserSettings
 public:
 	explicit UPECustomSettings(const FObjectInitializer& ObjectInitializer);
 
-	UFUNCTION(BlueprintCallable, Category = Settings)
-	void ApplyCustomSettings(const bool bCheckForCommandLineOverrides = false) const;
-
-	// Start of UGameUserSettings	
-	virtual void ApplySettings(bool bCheckForCommandLineOverrides) override;
+	// Start of UGameUserSettings
+	virtual void ApplyNonResolutionSettings() override;
 	virtual void SetToDefaults() override;
 	// End of UGameUserSettings
 
