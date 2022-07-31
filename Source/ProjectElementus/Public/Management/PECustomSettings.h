@@ -51,6 +51,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = Settings)
 	bool GetTemporalUpscalingEnabled() const;
 
+	UFUNCTION(BlueprintCallable, Category = Settings)
+	void SetLumenEnabled(const bool bEnable);
+
+	UFUNCTION(BlueprintPure, Category = Settings)
+	bool GetLumenEnabled() const;
+
 private:
 	UPROPERTY(config, meta = (Setter = "SetAntiAliasingMode", Getter = "GetAntiAliasingMode"))
 	int AntiAliasingMode;
@@ -63,4 +69,7 @@ private:
 
 	UPROPERTY(config, meta = (Setter = "SetTemporalUpscalingEnabled", Getter = "GetTemporalUpscalingEnabled"))
 	bool bEnableTemporalUpscaling;
+
+	UPROPERTY(config, meta = (Setter = "SetLumenEnabled", Getter = "GetLumenEnabled"))
+	bool bEnableLumen;
 };

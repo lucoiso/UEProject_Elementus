@@ -111,6 +111,9 @@ public:
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_PerformDeath();
+	
+	UFUNCTION(Server, Reliable)
+	void Server_SpawnInventoryPackage();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_DeathSetup();

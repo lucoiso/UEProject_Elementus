@@ -12,7 +12,7 @@ APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUD_ClassRef(
-		TEXT("/Game/Main/Blueprints/Widgets/WB_ScreenInformations"));
+		TEXT("/Game/Main/Blueprints/Widgets/WB_HUD"));
 	if constexpr (&UserHUD_ClassRef.Class != nullptr)
 	{
 		HUDClass = UserHUD_ClassRef.Class;

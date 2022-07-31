@@ -11,8 +11,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemLog.h"
 #include "ElementusInventoryComponent.h"
+#include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
+#include "Actors/World/PEInventoryPackage.h"
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -218,6 +220,7 @@ void APECharacter::BeginPlay()
 
 void APECharacter::PerformDeath()
 {
+	Server_SpawnInventoryPackage();
 	Multicast_DeathSetup();
 
 	bAlwaysRelevant = false;
@@ -242,7 +245,7 @@ void APECharacter::Server_PerformDeath_Implementation()
 }
 
 void APECharacter::Multicast_DeathSetup_Implementation()
-{
+{	
 	// Will perform each step above on both server and client
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
@@ -250,9 +253,26 @@ void APECharacter::Multicast_DeathSetup_Implementation()
 	{
 		GetCharacterMovement()->DisableMovement();
 		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 		GetMesh()->SetAllBodiesBelowSimulatePhysics(NAME_None, true, true);
 	}
+}
+
+void APECharacter::Server_SpawnInventoryPackage_Implementation()
+{
+	AElementusInventoryPackage* SpawnedPackage =
+			GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(),
+																GetTransform(),
+																nullptr,
+																nullptr,
+																ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemStack(),
+													InventoryComponent,
+													SpawnedPackage->PackageInventory);
+	
+	SpawnedPackage->SetDestroyOnEmpty(true);		
+	SpawnedPackage->FinishSpawning(GetTransform());
 }
 
 void APECharacter::Landed(const FHitResult& Hit)

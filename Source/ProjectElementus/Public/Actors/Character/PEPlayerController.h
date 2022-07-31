@@ -30,6 +30,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
 }
 
 class UElementusInventoryComponent;
+class UGameplayEffect;
 struct FElementusItemId;
 
 /**
@@ -68,6 +69,9 @@ public:
 	                  UElementusInventoryComponent* OtherComponent,
 	                  const bool bIsFromPlayer = false);
 
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass);
+	
 protected:
 	/* Perform the respawn task on server */
 	UFUNCTION(Server, Reliable)
@@ -82,6 +86,9 @@ private:
 	void ProcessTrade_Internal(const TMap<FElementusItemId, int32>& ItemInfo,
 	                           UElementusInventoryComponent* OtherComponent,
 	                           const bool bIsFromPlayer) const;
+	
+	UFUNCTION(Server, Reliable)
+	void Server_ProcessGEApplication(TSubclassOf<UGameplayEffect> EffectClass);
 
 	struct FAbilityInputData
 	{
@@ -92,7 +99,6 @@ private:
 
 	TWeakObjectPtr<UEnum> InputEnumHandle;
 	TSoftClassPtr<UUserWidget> InventoryWidgetClass;
-	TWeakObjectPtr<UUserWidget> InventoryWidgetHandle;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION()
@@ -109,8 +115,8 @@ private:
 	void SetVoiceChatEnabled(const FInputActionValue& Value) const;
 
 	UFUNCTION()
-	void ToggleInventory(const FInputActionValue& Value);
+	void OpenInventory(const FInputActionValue& Value);
 
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Project Elementus | Functions")
-	void ToggleInventoryWidget();
+	void Client_OpenInventory();
 };

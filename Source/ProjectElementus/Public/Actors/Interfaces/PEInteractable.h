@@ -36,5 +36,5 @@ public:
 
 	/* Is Interact enabled in the current state? */
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Project Elementus | Functions")
-	bool IsInteractEnabled();
+	bool IsInteractEnabled() const;
 };

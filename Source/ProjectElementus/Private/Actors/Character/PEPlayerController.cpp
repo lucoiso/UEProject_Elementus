@@ -8,10 +8,10 @@
 #include "EnhancedPlayerInput.h"
 #include "InputAction.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "ElementusInventoryComponent.h"
 #include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/PlayerState.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
@@ -120,6 +120,24 @@ void APEPlayerController::ProcessTrade(TMap<FElementusItemId, int32> ItemInfo,
 		{
 			Server_ProcessTrade(Item.Key, Item.Value, OtherComponent, bIsFromPlayer);
 		}
+	}
+}
+
+void APEPlayerController::ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass)
+{
+	Server_ProcessGEApplication(EffectClass);
+}
+
+void APEPlayerController::Server_ProcessGEApplication_Implementation(const TSubclassOf<UGameplayEffect> EffectClass)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (UAbilitySystemComponent* TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn()))
+	{
+		TargetABSC->ApplyGameplayEffectToSelf(EffectClass.GetDefaultObject(), 1.f, TargetABSC->MakeEffectContext());
 	}
 }
 
@@ -253,13 +271,12 @@ void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) co
 	UPEEOSLibrary::MuteEOSSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
 }
 
-void APEPlayerController::ToggleInventory(const FInputActionValue& Value)
+void APEPlayerController::OpenInventory(const FInputActionValue& Value)
 {
 	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__),
-	                     *Value.ToString(), Value.GetMagnitude());
+	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
-	ToggleInventoryWidget();
+	Client_OpenInventory();
 }
 
 #pragma region Default Movement Functions
@@ -324,23 +341,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 }
 #pragma endregion Default Movement Functions
 
-void APEPlayerController::ToggleInventoryWidget_Implementation()
+void APEPlayerController::Client_OpenInventory_Implementation()
 {
-	if (InventoryWidgetHandle.IsValid())
-	{
-		InventoryWidgetHandle->RemoveFromParent();
-		InventoryWidgetHandle.Reset();
-	}
-	else
-	{
-		InventoryWidgetHandle =
-			CreateWidget(this,
-			             InventoryWidgetClass.LoadSynchronous(),
-			             TEXT("InventoryWidget"));
-
-		if (InventoryWidgetHandle.IsValid())
-		{
-			InventoryWidgetHandle->AddToViewport();
-		}
-	}
+	CreateWidget(this, InventoryWidgetClass.LoadSynchronous(), TEXT("InventoryWidget"))->AddToViewport();
 }

@@ -14,7 +14,8 @@
 				"EnhancedInput",
 				"AIModule",
 				"GameFeatures",
-				"ModularFeatures_ExtraActions"
+				"ModularFeatures_ExtraActions",
+				"ElementusInventory"
 			]
 		}
 	],
