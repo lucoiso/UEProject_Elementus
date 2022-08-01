@@ -22,7 +22,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
 	TObjectPtr<UStaticMeshComponent> PackageMesh;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
 	TSoftClassPtr<UUserWidget> TradeWidgetClass;
 
@@ -30,5 +30,6 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual bool IsInteractEnabled_Implementation() const override;
-	virtual void DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult) override;
+	virtual void
+	DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult) override;
 };

@@ -105,24 +105,6 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 	}
 }
 
-#pragma region Elementus Inventory Trade
-void APEPlayerController::ProcessTrade(TMap<FElementusItemId, int32> ItemInfo,
-                                       UElementusInventoryComponent* OtherComponent,
-                                       const bool bIsFromPlayer)
-{
-	if (HasAuthority())
-	{
-		ProcessTrade_Internal(ItemInfo, OtherComponent, bIsFromPlayer);
-	}
-	else
-	{
-		for (const auto& Item : ItemInfo)
-		{
-			Server_ProcessTrade(Item.Key, Item.Value, OtherComponent, bIsFromPlayer);
-		}
-	}
-}
-
 void APEPlayerController::ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass)
 {
 	Server_ProcessGEApplication(EffectClass);
@@ -141,17 +123,29 @@ void APEPlayerController::Server_ProcessGEApplication_Implementation(const TSubc
 	}
 }
 
-void APEPlayerController::Server_ProcessTrade_Implementation(const FElementusItemId ItemId, const int32 Quantity,
+#pragma region Elementus Inventory Trade
+void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo> TradeInfo,
+                                       UElementusInventoryComponent* OtherComponent,
+                                       const bool bIsFromPlayer)
+{
+	if (HasAuthority())
+	{
+		ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
+	}
+	else
+	{
+		Server_ProcessTrade(TradeInfo, OtherComponent, bIsFromPlayer);
+	}
+}
+
+void APEPlayerController::Server_ProcessTrade_Implementation(const TArray<FElementusItemInfo>& TradeInfo,
                                                              UElementusInventoryComponent* OtherComponent,
                                                              const bool bIsFromPlayer)
 {
-	TMap<FElementusItemId, int32> ItemInfo;
-	ItemInfo.Add(ItemId, Quantity);
-
-	ProcessTrade_Internal(ItemInfo, OtherComponent, bIsFromPlayer);
+	ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
 }
 
-void APEPlayerController::ProcessTrade_Internal(const TMap<FElementusItemId, int32>& ItemInfo,
+void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo> TradeInfo,
                                                 UElementusInventoryComponent* OtherComponent,
                                                 const bool bIsFromPlayer) const
 {
@@ -159,13 +153,23 @@ void APEPlayerController::ProcessTrade_Internal(const TMap<FElementusItemId, int
 		ensureAlwaysMsgf(ControllerOwner->InventoryComponent,
 		                 TEXT("%s owner have a invalid InventoryComponent"), *GetName()))
 	{
-		bIsFromPlayer
-			? UElementusInventoryFunctions::TradeElementusItem(ItemInfo,
-			                                                   ControllerOwner->InventoryComponent,
-			                                                   OtherComponent)
-			: UElementusInventoryFunctions::TradeElementusItem(ItemInfo,
-			                                                   OtherComponent,
-			                                                   ControllerOwner->InventoryComponent);
+		if (bIsFromPlayer && OtherComponent == nullptr)
+		{
+			for (const auto& Iterator : TradeInfo)
+			{
+				ControllerOwner->InventoryComponent->RemoveElementusItem(Iterator);
+			}
+		}
+		else
+		{
+			bIsFromPlayer
+				? UElementusInventoryFunctions::TradeElementusItem(TradeInfo,
+				                                                   ControllerOwner->InventoryComponent,
+				                                                   OtherComponent)
+				: UElementusInventoryFunctions::TradeElementusItem(TradeInfo,
+				                                                   OtherComponent,
+				                                                   ControllerOwner->InventoryComponent);
+		}
 	}
 }
 #pragma endregion Elementus Inventory Trade

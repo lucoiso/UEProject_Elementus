@@ -65,13 +65,13 @@ public:
 	void InitializeRespawn(const float InSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ProcessTrade(TMap<FElementusItemId, int32> ItemInfo,
+	void ProcessTrade(const TArray<FElementusItemInfo> TradeInfo,
 	                  UElementusInventoryComponent* OtherComponent,
 	                  const bool bIsFromPlayer = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass);
-	
+
 protected:
 	/* Perform the respawn task on server */
 	UFUNCTION(Server, Reliable)
@@ -79,14 +79,14 @@ protected:
 
 private:
 	UFUNCTION(Server, Reliable)
-	void Server_ProcessTrade(const FElementusItemId ItemId, const int32 Quantity,
+	void Server_ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo,
 	                         UElementusInventoryComponent* OtherComponent,
 	                         const bool bIsFromPlayer);
 
-	void ProcessTrade_Internal(const TMap<FElementusItemId, int32>& ItemInfo,
+	void ProcessTrade_Internal(const TArray<FElementusItemInfo> TradeInfo,
 	                           UElementusInventoryComponent* OtherComponent,
 	                           const bool bIsFromPlayer) const;
-	
+
 	UFUNCTION(Server, Reliable)
 	void Server_ProcessGEApplication(TSubclassOf<UGameplayEffect> EffectClass);
 

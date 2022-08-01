@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "Engine/DataTable.h"
 #include "PEAbilityData.generated.h"
 
 class UGameplayEffect;

@@ -245,7 +245,7 @@ void APECharacter::Server_PerformDeath_Implementation()
 }
 
 void APECharacter::Multicast_DeathSetup_Implementation()
-{	
+{
 	// Will perform each step above on both server and client
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
@@ -261,17 +261,17 @@ void APECharacter::Multicast_DeathSetup_Implementation()
 void APECharacter::Server_SpawnInventoryPackage_Implementation()
 {
 	AElementusInventoryPackage* SpawnedPackage =
-			GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(),
-																GetTransform(),
-																nullptr,
-																nullptr,
-																ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(),
+		                                                    GetTransform(),
+		                                                    nullptr,
+		                                                    nullptr,
+		                                                    ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemStack(),
-													InventoryComponent,
-													SpawnedPackage->PackageInventory);
-	
-	SpawnedPackage->SetDestroyOnEmpty(true);		
+	                                                 InventoryComponent,
+	                                                 SpawnedPackage->PackageInventory);
+
+	SpawnedPackage->SetDestroyOnEmpty(true);
 	SpawnedPackage->FinishSpawning(GetTransform());
 }
 
