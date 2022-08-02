@@ -19,6 +19,8 @@ APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitial
 	PackageMesh->SetupAttachment(RootComponent);
 	PackageMesh->SetRelativeLocation(FVector(0.f, 0.f, 50.f));
 	PackageMesh->SetRelativeScale3D(FVector(0.5f));
+	PackageMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	PackageMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	static const ConstructorHelpers::FObjectFinder<UStaticMesh> PackageMesh_Obj(
 		TEXT("/Game/Main/Meshes/LevelPrototyping/SM_ChamferCube"));

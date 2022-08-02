@@ -47,23 +47,23 @@ public:
 		                       *("Ability_" + FString::FromInt(AbilityId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Data"))
 	int32 AbilityId;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Class"))
 	TSoftClassPtr<UGameplayAbility> AbilityClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Data"))
 	FName AbilityName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Data"))
 	FText AbilityDescription;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> AbilityImage;
 };

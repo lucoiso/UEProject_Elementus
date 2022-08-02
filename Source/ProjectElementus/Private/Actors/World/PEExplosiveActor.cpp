@@ -23,7 +23,13 @@ APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer
 }
 
 void APEExplosiveActor::PerformExplosion()
-{
+{	
+	// Only call SetReplicates if has authority
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+	
 	// Only replicates while exploding
 	SetReplicates(true);
 
@@ -94,11 +100,6 @@ void APEExplosiveActor::PerformExplosion()
 
 void APEExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
 {
-	if (GetLocalRole() != ROLE_Authority)
-	{
-		return;
-	}
-
 	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
 		for (const FGameplayEffectGroupedData& Effect : ExplosionEffects)

@@ -157,3 +157,8 @@ void UPETelekinesisAbility_Task::ThrowObject()
 
 	EndTask();
 }
+
+AActor* UPETelekinesisAbility_Task::GetTelekinesisTarget() const
+{
+	return TelekinesisTarget.Get();
+}

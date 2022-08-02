@@ -10,6 +10,8 @@
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
+
 class UPEAbilitySystemComponent;
 class UGameplayAbility;
 class UInputAction;
@@ -108,6 +110,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void AbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason);
 
+	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
+	FOnCharacterDeath OnCharacterDeath;
+	
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_PerformDeath();

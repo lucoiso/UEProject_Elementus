@@ -30,23 +30,23 @@ public:
 		                       *("Consumable_" + FString::FromInt(ConsumableId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Data"))
 	int32 ConsumableId;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Actor"))
 	TSoftObjectPtr<UStaticMesh> ObjectMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Actor"))
 	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Effects"))
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Tags"))
 	FGameplayTagContainer RequirementsTags;
 };

@@ -31,7 +31,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
 
 class UElementusInventoryComponent;
 class UGameplayEffect;
-struct FElementusItemId;
+struct FPrimaryElementusItemId;
 
 /**
  *

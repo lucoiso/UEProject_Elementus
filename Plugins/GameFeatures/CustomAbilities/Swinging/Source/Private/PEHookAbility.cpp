@@ -7,6 +7,7 @@
 #include "Actors/Character/PECharacter.h"
 #include "GAS/Targeting/PELineTargeting.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
@@ -20,6 +21,12 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 
 	bWaitCancel = false;
 	bIgnoreCooldown = true;
+
+	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Swinging/Sounds/MS_Impulse"));
+	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
+	{
+		ImpulseSound = ImpulseSound_ObjRef.Object;
+	}
 }
 
 void UPEHookAbility::ActivateAbility
@@ -125,8 +132,10 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 
 	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
 	{
-		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() *
-			HookIntensity;
+		UGameplayStatics::SpawnSoundAttached(ImpulseSound, Player->GetMesh());
+		
+		const FVector ImpulseVector =
+			(TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() * HookIntensity;
 
 		Player->LaunchCharacter(ImpulseVector, false, true);
 

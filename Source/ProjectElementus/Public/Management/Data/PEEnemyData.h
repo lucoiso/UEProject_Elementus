@@ -26,7 +26,7 @@ public:
 		                       *("Enemy_" + FString::FromInt(EnemyId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Data"))
 	int32 EnemyId;
 };

@@ -26,7 +26,7 @@ public:
 		                       *("Resource_" + FString::FromInt(ResourceId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
 		meta = (AssetBundles = "Data"))
 	int32 ResourceId;
 };

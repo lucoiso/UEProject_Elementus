@@ -220,6 +220,8 @@ void APECharacter::BeginPlay()
 
 void APECharacter::PerformDeath()
 {
+	OnCharacterDeath.Broadcast();
+	
 	Server_SpawnInventoryPackage();
 	Multicast_DeathSetup();
 
@@ -297,11 +299,11 @@ void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
 {
 	// Only for debugging, will print the reason of the failed ability	
 	ABILITY_VLOG(this, Warning,
-	             TEXT("Ability %s failed to activate. Owner: %s; Reasons:"), *Ability->GetName(), *GetName());
+	             TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
 
 	for (const auto& i : Reason)
 	{
-		ABILITY_VLOG(this, Warning, TEXT("%s"), *i.ToString());
+		ABILITY_VLOG(this, Warning, TEXT("Reason: %s"), *i.ToString());
 	}
 
 #if WITH_EDITOR
