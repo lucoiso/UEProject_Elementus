@@ -125,6 +125,11 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
                                     const bool bReplicateEndAbility,
                                     const bool bWasCancelled)
 {
+	if (!ActorInfo && IsInstantiated())
+	{
+		ActorInfo = GetCurrentActorInfo();
+	}
+	
 	ABILITY_VLOG(this, Display, TEXT("Ending %s ability."), *GetName());
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -132,7 +137,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	// Remove active time based cost effects
 	if (IsValid(GetCostGameplayEffect())
 		&& GetCostGameplayEffect()->DurationPolicy == EGameplayEffectDurationType::Infinite)
-	{
+	{		
 		ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
 			GetCostGameplayEffect()->GetClass(), ActorInfo->AbilitySystemComponent.Get());
 	}

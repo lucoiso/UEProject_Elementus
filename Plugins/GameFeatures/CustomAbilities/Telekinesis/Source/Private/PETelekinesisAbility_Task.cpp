@@ -104,11 +104,12 @@ void UPETelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 	if (PhysicsHandle.IsValid())
 	{
+		UPrimitiveComponent* GrabbedComponent = PhysicsHandle->GetGrabbedComponent();
 		PhysicsHandle->ReleaseComponent();
 
-		if (IsValid(PhysicsHandle->GetGrabbedComponent()))
+		if (IsValid(GrabbedComponent))
 		{
-			PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
+			GrabbedComponent->WakeAllRigidBodies();
 		}
 	}
 
