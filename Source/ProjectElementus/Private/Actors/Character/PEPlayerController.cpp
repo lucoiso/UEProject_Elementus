@@ -60,7 +60,7 @@ void APEPlayerController::InitializeRespawn(const float InSeconds)
 		if (InSeconds > 0.f)
 		{
 			FTimerDelegate TimerDelegate;
-			TimerDelegate.BindLambda([this]
+			TimerDelegate.BindLambda([&]
 			{
 				if (IsValid(this))
 				{

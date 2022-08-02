@@ -95,9 +95,9 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 	if (bEndAbilityAfterActiveTime)
 	{
 		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([=]() -> void
+		TimerDelegate.BindLambda([&]() -> void
 		{
-			if (IsActive())
+			if (IsValid(this) && IsActive())
 			{
 				EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 			}
