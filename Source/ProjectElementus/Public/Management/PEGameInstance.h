@@ -37,8 +37,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUserLoginDelegate);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUserLogoutDelegate);
 
-UCLASS(Category = "Project Elementus | Classes | Management")
-class UPEGameInstance final : public UGameInstance
+UCLASS(Category = "Project Elementus | Classes")
+class UPEGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
@@ -152,6 +152,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ClientTravelToSessionLevel(const int32 LocalUserNum) const;
 
+	/*  */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	TArray<FSessionDataHandler> GetSessionsDataHandles() const;
 

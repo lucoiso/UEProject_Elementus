@@ -12,7 +12,7 @@
  * 
  */
 UCLASS(Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APELineTargeting final : public AGameplayAbilityTargetActor_SingleLineTrace
+class PROJECTELEMENTUS_API APELineTargeting : public AGameplayAbilityTargetActor_SingleLineTrace
 {
 	GENERATED_BODY()
 

@@ -31,11 +31,6 @@ APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializ
 
 void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC)
 {
-	if (GetLocalRole() != ROLE_Authority)
-	{
-		return;
-	}
-
 	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
 		TargetGASC->HasAllMatchingGameplayTags(ConsumableData->RequirementsTags)
 		|| ConsumableData->RequirementsTags.IsEmpty())
@@ -55,18 +50,20 @@ void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC)
 void APEConsumableActor::DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting,
                                                               const FHitResult& HitResult)
 {
-	if (CharacterInteracting->Implements<UAbilitySystemInterface>())
+	// Only call SetReplicates if has authority
+	if (GetLocalRole() != ROLE_Authority)
 	{
-		if (UPEAbilitySystemComponent* AbilitySystemComponent =
-				Cast<UPEAbilitySystemComponent>(CharacterInteracting->GetAbilitySystemComponent());
-			ensureAlwaysMsgf(IsValid(AbilitySystemComponent),
-			                 TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
-		{
-			// Only replicates while a character is consuming
-			SetReplicates(true);
-			PerformConsumption(AbilitySystemComponent);
-			SetReplicates(false);
-		}
+		return;
+	}
+	
+	if (ensureAlwaysMsgf(IsValid(CharacterInteracting->GetAbilitySystemComponent()),
+										 TEXT("%s have a invalid Ability System Component"),
+										 *CharacterInteracting->GetName()))
+	{
+		// Only replicates while a character is consuming
+		SetReplicates(true);
+		PerformConsumption(CharacterInteracting->GetAbilitySystemComponent());
+		SetReplicates(false);
 	}
 }
 

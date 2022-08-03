@@ -11,7 +11,7 @@
 /**
  *
  */
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs | Data")
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FPELevelingData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
@@ -26,35 +26,29 @@ struct FPELevelingData : public FTableRowBase
 	{
 	}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Settings")
 	float BonusMaxHealth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Settings")
 	float BonusMaxMana;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Settings")
 	float BonusMaxStamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Settings")
 	float BonusAttackRate;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Settings")
 	float BonusDefenseRate;
 
 	/* Required experience to pass to next level */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Required Xp to Level Up"), Category = "Settings")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Settings",
+		meta = (DisplayName = "Required Xp to Level Up"))
 	float RequiredExp;
 };
 
-/**
- *
- */
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
-
-/**
- *
- */

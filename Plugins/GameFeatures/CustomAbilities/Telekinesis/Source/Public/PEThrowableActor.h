@@ -22,11 +22,6 @@ class APEThrowableActor final : public AStaticMeshActor
 public:
 	explicit APEThrowableActor(const FObjectInitializer& ObjectInitializer);
 
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Throwable Actor", GetFName());
-	}
-
 	void ThrowSetup(AActor* Caller);
 
 protected:

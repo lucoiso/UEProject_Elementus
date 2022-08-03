@@ -11,14 +11,15 @@
 /**
  *
  */
-UCLASS(MinimalAPI, Category = "Project Elementus | Classes | Management")
-class APEGameMode final : public AGameModeBase
+UCLASS(MinimalAPI, Category = "Project Elementus | Classes")
+class APEGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
 	explicit APEGameMode(const FObjectInitializer& ObjectInitializer);
 
+	/*  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	bool bCanRespawn;
 };

@@ -14,7 +14,8 @@
 				"EnhancedInput",
 				"AIModule",
 				"GameFeatures",
-				"ModularFeatures_ExtraActions"
+				"ModularFeatures_ExtraActions",
+				"ElementusInventory"
 			]
 		}
 	],
@@ -67,6 +68,10 @@
 		},
 		{
 			"Name": "ModelingToolsEditorMode",
+			"Enabled": true
+		},
+		{
+			"Name": "Metasound",
 			"Enabled": true
 		}
 	]

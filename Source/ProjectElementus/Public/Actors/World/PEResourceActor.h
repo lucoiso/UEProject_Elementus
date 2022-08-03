@@ -12,15 +12,10 @@
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEResourceActor final : public AActor
+class PROJECTELEMENTUS_API APEResourceActor : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	explicit APEResourceActor(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Resource Actor", GetFName());
-	}
 };

@@ -33,6 +33,8 @@ public:
 
 	void ThrowObject();
 
+	AActor* GetTelekinesisTarget() const;
+
 private:
 	virtual void TickTask(float DeltaTime) override;
 

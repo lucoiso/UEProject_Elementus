@@ -16,17 +16,12 @@ class UProjectileMovementComponent;
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEProjectileActor final : public AActor
+class PROJECTELEMENTUS_API APEProjectileActor : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	explicit APEProjectileActor(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Projectile Actor", GetFName());
-	}
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")

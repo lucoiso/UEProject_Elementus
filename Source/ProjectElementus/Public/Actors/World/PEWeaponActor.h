@@ -12,15 +12,10 @@
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEWeaponActor final : public AActor
+class PROJECTELEMENTUS_API APEWeaponActor : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	explicit APEWeaponActor(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Weapon Actor", GetFName());
-	}
 };

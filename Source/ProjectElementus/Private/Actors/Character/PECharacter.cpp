@@ -10,9 +10,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemLog.h"
+#include "ElementusInventoryComponent.h"
+#include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
+#include "Actors/World/PEInventoryPackage.h"
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -72,6 +74,9 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = true;
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
+
+	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(TEXT("InventoryComponent"));
+	InventoryComponent->SetIsReplicated(true);
 }
 
 // Called on server when the player is possessed by a controller
@@ -215,6 +220,9 @@ void APECharacter::BeginPlay()
 
 void APECharacter::PerformDeath()
 {
+	OnCharacterDeath.Broadcast();
+	
+	Server_SpawnInventoryPackage();
 	Multicast_DeathSetup();
 
 	bAlwaysRelevant = false;
@@ -247,9 +255,26 @@ void APECharacter::Multicast_DeathSetup_Implementation()
 	{
 		GetCharacterMovement()->DisableMovement();
 		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 		GetMesh()->SetAllBodiesBelowSimulatePhysics(NAME_None, true, true);
 	}
+}
+
+void APECharacter::Server_SpawnInventoryPackage_Implementation()
+{
+	AElementusInventoryPackage* SpawnedPackage =
+		GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(),
+		                                                    GetTransform(),
+		                                                    nullptr,
+		                                                    nullptr,
+		                                                    ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemStack(),
+	                                                 InventoryComponent,
+	                                                 SpawnedPackage->PackageInventory);
+
+	SpawnedPackage->SetDestroyOnEmpty(true);
+	SpawnedPackage->FinishSpawning(GetTransform());
 }
 
 void APECharacter::Landed(const FHitResult& Hit)
@@ -274,11 +299,11 @@ void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
 {
 	// Only for debugging, will print the reason of the failed ability	
 	ABILITY_VLOG(this, Warning,
-	             TEXT("Ability %s failed to activate. Owner: %s; Reasons:"), *Ability->GetName(), *GetName());
+	             TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
 
 	for (const auto& i : Reason)
 	{
-		ABILITY_VLOG(this, Warning, TEXT("%s"), *i.ToString());
+		ABILITY_VLOG(this, Warning, TEXT("Reason: %s"), *i.ToString());
 	}
 
 #if WITH_EDITOR

@@ -12,7 +12,7 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEAIController final : public AAIController
+class PROJECTELEMENTUS_API APEAIController : public AAIController
 {
 	GENERATED_BODY()
 

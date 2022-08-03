@@ -8,6 +8,7 @@
 #include "GameplayTagContainer.h"
 #include "GAS/System/PEAbilityData.h"
 #include "Engine/DataAsset.h"
+#include "Engine/DataTable.h"
 #include "PEConsumableData.generated.h"
 
 class UGameplayEffect;
@@ -15,7 +16,7 @@ class UNiagaraSystem;
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes | Data")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEConsumableData final : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -25,18 +26,27 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId("Consumable Data", GetFName());
+		return FPrimaryAssetId(TEXT("PE_ConsumableData"),
+		                       *("Consumable_" + FString::FromInt(ConsumableId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
+		meta = (AssetBundles = "Data"))
+	int32 ConsumableId;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
+		meta = (AssetBundles = "Actor"))
 	TSoftObjectPtr<UStaticMesh> ObjectMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
+		meta = (AssetBundles = "Actor"))
 	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
+		meta = (AssetBundles = "Effects"))
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
+		meta = (AssetBundles = "Tags"))
 	FGameplayTagContainer RequirementsTags;
 };

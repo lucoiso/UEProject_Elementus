@@ -13,32 +13,33 @@ public class ProjectElementus : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new[]
 		{
-			"Core",
-			"CoreOnline",
-			"CoreUObject",
-			"Engine",
-			"InputCore",
-			"EnhancedInput",
-			"AIModule",
-			"Niagara",
-			"UMG",
-			"ModularGameplay",
-			"GameplayAbilities",
-			"GameplayTags",
-			"GameplayTasks",
-			"GameFeatures",
-			"ModularFeatures_ExtraActions",
-			"JsonUtilities"
+			"Core"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new[]
 		{
+			"Engine",
+			"CoreUObject",
+			"CoreOnline",
+			"InputCore",
+			"EnhancedInput",
+			"ModularGameplay",
+			"GameFeatures",
+			"ModularFeatures_ExtraActions",
+			"GameplayAbilities",
+			"GameplayTags",
+			"GameplayTasks",
+			"AIModule",
+			"UMG",
+			"Niagara",
 			"EOSSDKHandler",
 			"EOSShared",
 			"OnlineSubsystemEOS",
 			"OnlineSubsystem",
 			"EOSVoiceChat",
-			"VoiceChat"
+			"VoiceChat",
+			"JsonUtilities",
+			"ElementusInventory"
 		});
 	}
 }

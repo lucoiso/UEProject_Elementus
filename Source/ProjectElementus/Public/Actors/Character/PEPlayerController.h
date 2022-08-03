@@ -7,7 +7,7 @@
 #include "CoreMinimal.h"
 #include "InputTriggers.h"
 #include "AbilityInputBinding.h"
-#include "AbilitySystemInterface.h"
+#include "ElementusInventoryData.h"
 #include "PEPlayerController.generated.h"
 
 /**
@@ -29,11 +29,15 @@ DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
 	UE_VLOG(Actor, LogController_Axis, Verbosity, Format, ##__VA_ARGS__); \
 }
 
+class UElementusInventoryComponent;
+class UGameplayEffect;
+struct FPrimaryElementusItemId;
+
 /**
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IAbilityInputBinding
+class PROJECTELEMENTUS_API APEPlayerController : public APlayerController, public IAbilityInputBinding
 {
 	GENERATED_BODY()
 
@@ -60,12 +64,32 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeRespawn(const float InSeconds);
 
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void ProcessTrade(const TArray<FElementusItemInfo> TradeInfo,
+	                  UElementusInventoryComponent* OtherComponent,
+	                  const bool bIsFromPlayer = false);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass);
+
 protected:
 	/* Perform the respawn task on server */
 	UFUNCTION(Server, Reliable)
 	void RespawnAndPossess();
 
 private:
+	UFUNCTION(Server, Reliable)
+	void Server_ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo,
+	                         UElementusInventoryComponent* OtherComponent,
+	                         const bool bIsFromPlayer);
+
+	void ProcessTrade_Internal(const TArray<FElementusItemInfo> TradeInfo,
+	                           UElementusInventoryComponent* OtherComponent,
+	                           const bool bIsFromPlayer) const;
+
+	UFUNCTION(Server, Reliable)
+	void Server_ProcessGEApplication(TSubclassOf<UGameplayEffect> EffectClass);
+
 	struct FAbilityInputData
 	{
 		uint32 OnPressedHandle = 0;
@@ -74,6 +98,7 @@ private:
 	};
 
 	TWeakObjectPtr<UEnum> InputEnumHandle;
+	TSoftClassPtr<UUserWidget> InventoryWidgetClass;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION()
@@ -88,4 +113,10 @@ private:
 
 	UFUNCTION()
 	void SetVoiceChatEnabled(const FInputActionValue& Value) const;
+
+	UFUNCTION()
+	void OpenInventory(const FInputActionValue& Value);
+
+	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Project Elementus | Functions")
+	void Client_OpenInventory();
 };

@@ -13,18 +13,18 @@ public class Swinging : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new[]
 		{
-			"Core",
-			"CoreUObject",
-			"Engine",
-			"InputCore",
-			"GameplayAbilities",
-			"GameplayTags",
-			"GameplayTasks",
-			"ProjectElementus"
+			"Core"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new[]
 		{
+			"Engine",
+			"CoreUObject",
+			"InputCore",
+			"GameplayAbilities",
+			"GameplayTags",
+			"GameplayTasks",
+			"ProjectElementus",
 			"GeometryCollectionEngine"
 		});
 	}
