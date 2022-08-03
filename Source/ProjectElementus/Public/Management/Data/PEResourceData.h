@@ -6,12 +6,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Engine/DataTable.h"
 #include "PEResourceData.generated.h"
 
 /**
  *
  */
-UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes | Data")
+UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEResourceData final : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -21,6 +22,11 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId("Resource Data", GetFName());
+		return FPrimaryAssetId(TEXT("PE_ResourceData"),
+		                       *("Resource_" + FString::FromInt(ResourceId)));
 	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
+		meta = (AssetBundles = "Data"))
+	int32 ResourceId;
 };

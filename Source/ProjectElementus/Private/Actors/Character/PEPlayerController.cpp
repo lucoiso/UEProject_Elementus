@@ -8,13 +8,16 @@
 #include "EnhancedPlayerInput.h"
 #include "InputAction.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
+#include "ElementusInventoryComponent.h"
+#include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/PlayerState.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Management/PEGameInstance.h"
+#include "Blueprint/UserWidget.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -29,11 +32,24 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(
-		TEXT("/Game/Main/GAS/Data/EN_AbilityInputID"));
+		TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
 	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
 	{
 		InputEnumHandle = InputIDEnum_ObjRef.Object;
 	}
+
+	static const ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(
+		TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
+	if constexpr (&InventoryWidget_ClassRef.Class != nullptr)
+	{
+		InventoryWidgetClass = InventoryWidget_ClassRef.Class;
+	}
+}
+
+void APEPlayerController::SetupControllerSpectator_Implementation()
+{
+	ChangeState(NAME_Spectating);
+	PlayerState->SetIsSpectator(true);
 }
 
 void APEPlayerController::InitializeRespawn(const float InSeconds)
@@ -44,7 +60,7 @@ void APEPlayerController::InitializeRespawn(const float InSeconds)
 		if (InSeconds > 0.f)
 		{
 			FTimerDelegate TimerDelegate;
-			TimerDelegate.BindLambda([this]
+			TimerDelegate.BindLambda([&]
 			{
 				if (IsValid(this))
 				{
@@ -89,11 +105,74 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 	}
 }
 
-void APEPlayerController::SetupControllerSpectator_Implementation()
+void APEPlayerController::ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass)
 {
-	ChangeState(NAME_Spectating);
-	PlayerState->SetIsSpectator(true);
+	Server_ProcessGEApplication(EffectClass);
 }
+
+void APEPlayerController::Server_ProcessGEApplication_Implementation(const TSubclassOf<UGameplayEffect> EffectClass)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (UAbilitySystemComponent* TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn()))
+	{
+		TargetABSC->ApplyGameplayEffectToSelf(EffectClass.GetDefaultObject(), 1.f, TargetABSC->MakeEffectContext());
+	}
+}
+
+#pragma region Elementus Inventory Trade
+void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo> TradeInfo,
+                                       UElementusInventoryComponent* OtherComponent,
+                                       const bool bIsFromPlayer)
+{
+	if (HasAuthority())
+	{
+		ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
+	}
+	else
+	{
+		Server_ProcessTrade(TradeInfo, OtherComponent, bIsFromPlayer);
+	}
+}
+
+void APEPlayerController::Server_ProcessTrade_Implementation(const TArray<FElementusItemInfo>& TradeInfo,
+                                                             UElementusInventoryComponent* OtherComponent,
+                                                             const bool bIsFromPlayer)
+{
+	ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
+}
+
+void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo> TradeInfo,
+                                                UElementusInventoryComponent* OtherComponent,
+                                                const bool bIsFromPlayer) const
+{
+	if (const APECharacter* ControllerOwner = GetPawn<APECharacter>();
+		ensureAlwaysMsgf(ControllerOwner->InventoryComponent,
+		                 TEXT("%s owner have a invalid InventoryComponent"), *GetName()))
+	{
+		if (bIsFromPlayer && OtherComponent == nullptr)
+		{
+			for (const auto& Iterator : TradeInfo)
+			{
+				ControllerOwner->InventoryComponent->RemoveElementusItem(Iterator);
+			}
+		}
+		else
+		{
+			bIsFromPlayer
+				? UElementusInventoryFunctions::TradeElementusItem(TradeInfo,
+				                                                   ControllerOwner->InventoryComponent,
+				                                                   OtherComponent)
+				: UElementusInventoryFunctions::TradeElementusItem(TradeInfo,
+				                                                   OtherComponent,
+				                                                   ControllerOwner->InventoryComponent);
+		}
+	}
+}
+#pragma endregion Elementus Inventory Trade
 
 #pragma region IAbilityInputBinding
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
@@ -196,6 +275,14 @@ void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) co
 	UPEEOSLibrary::MuteEOSSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
 }
 
+void APEPlayerController::OpenInventory(const FInputActionValue& Value)
+{
+	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
+	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
+
+	Client_OpenInventory();
+}
+
 #pragma region Default Movement Functions
 void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 {
@@ -257,3 +344,8 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 	}
 }
 #pragma endregion Default Movement Functions
+
+void APEPlayerController::Client_OpenInventory_Implementation()
+{
+	CreateWidget(this, InventoryWidgetClass.LoadSynchronous(), TEXT("InventoryWidget"))->AddToViewport();
+}

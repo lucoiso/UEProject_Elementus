@@ -13,9 +13,13 @@ public class DefaultAbilities : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new[]
 		{
-			"Core",
-			"CoreUObject",
+			"Core"
+		});
+
+		PrivateDependencyModuleNames.AddRange(new[]
+		{
 			"Engine",
+			"CoreUObject",
 			"InputCore",
 			"GameplayAbilities",
 			"GameplayTags",

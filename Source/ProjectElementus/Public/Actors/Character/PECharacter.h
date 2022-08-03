@@ -10,17 +10,20 @@
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
+
 class UPEAbilitySystemComponent;
 class UGameplayAbility;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
+class UElementusInventoryComponent;
 struct FGameplayTag;
 /**
  *
  */
 UCLASS(config = Game, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbilitySystemInterface
+class PROJECTELEMENTUS_API APECharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -40,11 +43,6 @@ private:
 
 public:
 	explicit APECharacter(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Character", GetFName());
-	}
 
 	/** Returns CameraBoom sub object **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const
@@ -86,6 +84,9 @@ public:
 	/* Initialize the specified Ability System Component with the given owner actor in this character (AvatarActor) */
 	void InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
+
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
@@ -109,9 +110,15 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
 	void AbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason);
 
+	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
+	FOnCharacterDeath OnCharacterDeath;
+	
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_PerformDeath();
+
+	UFUNCTION(Server, Reliable)
+	void Server_SpawnInventoryPackage();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_DeathSetup();

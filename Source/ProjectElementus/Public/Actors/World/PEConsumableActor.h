@@ -15,17 +15,12 @@
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEConsumableActor final : public AActor, public IPEInteractable
+class PROJECTELEMENTUS_API APEConsumableActor : public AActor, public IPEInteractable
 {
 	GENERATED_BODY()
 
 public:
 	explicit APEConsumableActor(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Consumable Actor", GetFName());
-	}
 
 	virtual void
 	DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult) override;

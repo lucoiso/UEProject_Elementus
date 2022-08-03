@@ -16,18 +16,13 @@ class APEProjectileActor;
 /**
  *
  */
-UCLASS(Abstract, NotPlaceable, Blueprintable, HideDropdown, Category = "Project Elementus | Classes | Abilities")
+UCLASS(Abstract, NotPlaceable, Blueprintable, HideDropdown, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
 	explicit UPEGameplayAbility(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Ability", GetFName());
-	}
 
 	/* This will determine the line trace distance to perform */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Project Elementus | Properties")

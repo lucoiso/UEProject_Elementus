@@ -19,7 +19,7 @@ UPECustomStatusAS::UPECustomStatusAS(const FObjectInitializer& ObjectInitializer
 	  , Gold(0.f)
 {
 	static const ConstructorHelpers::FObjectFinder<UDataTable> CustomAttributesMetaData_ObjRef(
-		TEXT("/Game/Main/GAS/Data/DT_CustomStatusAS"));
+		TEXT("/Game/Main/Data/GAS/DT_CustomStatusAS"));
 	if constexpr (&CustomAttributesMetaData_ObjRef.Object != nullptr)
 	{
 		UAttributeSet::InitFromMetaDataTable(CustomAttributesMetaData_ObjRef.Object);

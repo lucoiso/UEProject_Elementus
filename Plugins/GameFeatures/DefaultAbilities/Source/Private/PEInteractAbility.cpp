@@ -16,6 +16,8 @@ UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializ
 
 	AbilityMaxRange = 1000.f;
 	bUseCustomDepth = false;
+
+	bReplicateInputDirectly = true;
 }
 
 void UPEInteractAbility::ActivateAbility
@@ -41,17 +43,9 @@ void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
 		if (IsValid(TaskHandle->GetInteractable()) &&
 			IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
 		{
-			// Will interact only if has authority / Execute interaction on server only
-			if (HasAuthority(&ActivationInfo))
-			{
-				IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(),
-				                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()),
-				                                               TaskHandle->GetInteractableHitResult());
-			}
-			else
-			{
-				ActorInfo->AbilitySystemComponent->ServerSetInputPressed(Handle);
-			}
+			IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(),
+			                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()),
+			                                               TaskHandle->GetInteractableHitResult());
 		}
 	}
 }

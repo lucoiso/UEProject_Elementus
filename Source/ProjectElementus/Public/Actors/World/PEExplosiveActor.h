@@ -16,17 +16,12 @@ class UAbilitySystemComponent;
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEExplosiveActor final : public AActor
+class PROJECTELEMENTUS_API APEExplosiveActor : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	explicit APEExplosiveActor(const FObjectInitializer& ObjectInitializer);
-
-	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("Explosive Actor", GetFName());
-	}
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void PerformExplosion();

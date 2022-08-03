@@ -7,6 +7,7 @@
 #include "Actors/Character/PECharacter.h"
 #include "GAS/Targeting/PELineTargeting.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
@@ -20,6 +21,12 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 
 	bWaitCancel = false;
 	bIgnoreCooldown = true;
+
+	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Swinging/Sounds/MS_Impulse"));
+	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
+	{
+		ImpulseSound = ImpulseSound_ObjRef.Object;
+	}
 }
 
 void UPEHookAbility::ActivateAbility
@@ -29,9 +36,6 @@ void UPEHookAbility::ActivateAbility
  const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	// Make sure that this ability will ignore cooldown at this point
-	bIgnoreCooldown = true;
 
 	// Activate tasks: Animation Montage and Wait for GameplayEvent (Anim Notify)
 	ActivateWaitMontageTask(NAME_None, 1.5f);
@@ -62,6 +66,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	// If target is invalid, end the ability
 	if (!TargetDataHandle.IsValid(0))
 	{
+		bIgnoreCooldown = true;
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 		return;
 	}
@@ -73,6 +78,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	// If there's no actor at the target data, end the ability: Invalid Target
 	if (!IsValid(TargetHit->GetActor()))
 	{
+		bIgnoreCooldown = true;
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 		return;
 	}
@@ -100,9 +106,9 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 		|| TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
 	{
 		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([=]() -> void
+		TimerDelegate.BindLambda([&]() -> void
 		{
-			if (IsActive())
+			if (IsValid(this) && IsActive())
 			{
 				EndAbility(GetCurrentAbilitySpecHandle(),
 				           GetCurrentActorInfo(),
@@ -125,8 +131,10 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 
 	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
 	{
-		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() *
-			HookIntensity;
+		UGameplayStatics::SpawnSoundAttached(ImpulseSound, Player->GetMesh());
+		
+		const FVector ImpulseVector =
+			(TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() * HookIntensity;
 
 		Player->LaunchCharacter(ImpulseVector, false, true);
 
