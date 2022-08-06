@@ -129,7 +129,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	{
 		ActorInfo = GetCurrentActorInfo();
 	}
-	
+
 	ABILITY_VLOG(this, Display, TEXT("Ending %s ability."), *GetName());
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -137,7 +137,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	// Remove active time based cost effects
 	if (IsValid(GetCostGameplayEffect())
 		&& GetCostGameplayEffect()->DurationPolicy == EGameplayEffectDurationType::Infinite)
-	{		
+	{
 		ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
 			GetCostGameplayEffect()->GetClass(), ActorInfo->AbilitySystemComponent.Get());
 	}
@@ -205,6 +205,11 @@ void UPEGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag,
                                               FGameplayCueParameters Parameters,
                                               UAbilitySystemComponent* SourceAbilitySystem)
 {
+	if (SourceAbilitySystem == nullptr)
+	{
+		SourceAbilitySystem = GetAbilitySystemComponentFromActorInfo_Checked();
+	}
+
 	if (GameplayCueTag.IsValid())
 	{
 		ABILITY_VLOG(this, Display, TEXT("Activating %s ability associated Gameplay Cues with Tag %s."), *GetName(),

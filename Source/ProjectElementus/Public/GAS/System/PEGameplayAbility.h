@@ -219,7 +219,7 @@ protected:
 	/* Activate a Gameplay Cue with passed parameters */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
-	                          UAbilitySystemComponent* SourceAbilitySystem);
+	                          UAbilitySystemComponent* SourceAbilitySystem = nullptr);
 
 	/* Apply SelfAbilityEffects to self */
 	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToSelf", Category = "Project Elementus | Functions")

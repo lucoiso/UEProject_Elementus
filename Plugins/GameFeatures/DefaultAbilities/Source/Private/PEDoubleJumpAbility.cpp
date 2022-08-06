@@ -5,6 +5,7 @@
 #include "PEDoubleJumpAbility.h"
 #include "Actors/Character/PECharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -15,6 +16,13 @@ UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectIniti
 
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Dash"));
+
+	static const ConstructorHelpers::FObjectFinder<USoundBase>
+		ImpulseSound_ObjRef(TEXT("/DefaultAbilities/Sounds/MS_DoubleJump"));
+	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
+	{
+		ImpulseSound = ImpulseSound_ObjRef.Object;
+	}
 }
 
 void UPEDoubleJumpAbility::ActivateAbility
@@ -42,6 +50,16 @@ void UPEDoubleJumpAbility::ActivateAbility
 	}
 	else
 	{
+		const FVector& VFXLocation = Player->GetMesh()->GetSocketLocation("Pelvis_Socket");
+
+		FGameplayCueParameters Params;
+		Params.Location = VFXLocation;
+		ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Default.DoubleJump"),
+		                     Params,
+		                     ActorInfo->AbilitySystemComponent.Get());
+
+		UGameplayStatics::SpawnSoundAtLocation(ActorInfo->AvatarActor.Get(), ImpulseSound, VFXLocation);
+
 		Player->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
 	}
 }

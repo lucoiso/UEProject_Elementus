@@ -112,7 +112,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FOnCharacterDeath OnCharacterDeath;
-	
+
 private:
 	UFUNCTION(Server, Reliable)
 	void Server_PerformDeath();

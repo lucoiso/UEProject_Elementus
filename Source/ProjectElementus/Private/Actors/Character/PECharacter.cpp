@@ -221,7 +221,7 @@ void APECharacter::BeginPlay()
 void APECharacter::PerformDeath()
 {
 	OnCharacterDeath.Broadcast();
-	
+
 	Server_SpawnInventoryPackage();
 	Multicast_DeathSetup();
 

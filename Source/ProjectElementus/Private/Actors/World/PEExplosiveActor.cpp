@@ -23,13 +23,13 @@ APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer
 }
 
 void APEExplosiveActor::PerformExplosion()
-{	
+{
 	// Only call SetReplicates if has authority
 	if (GetLocalRole() != ROLE_Authority)
 	{
 		return;
 	}
-	
+
 	// Only replicates while exploding
 	SetReplicates(true);
 
