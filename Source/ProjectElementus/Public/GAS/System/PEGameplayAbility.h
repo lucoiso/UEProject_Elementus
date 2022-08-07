@@ -66,8 +66,8 @@ protected:
 	TObjectPtr<UAnimMontage> AbilityAnimation;
 
 private:
-	virtual void
-	OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override final;
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo,
+	                           const FGameplayAbilitySpec& Spec) override final;
 
 	virtual void PreActivate(const FGameplayAbilitySpecHandle Handle,
 	                         const FGameplayAbilityActorInfo* ActorInfo,
@@ -219,7 +219,7 @@ protected:
 	/* Activate a Gameplay Cue with passed parameters */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
-	                          UAbilitySystemComponent* SourceAbilitySystem);
+	                          UAbilitySystemComponent* SourceAbilitySystem = nullptr);
 
 	/* Apply SelfAbilityEffects to self */
 	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToSelf", Category = "Project Elementus | Functions")

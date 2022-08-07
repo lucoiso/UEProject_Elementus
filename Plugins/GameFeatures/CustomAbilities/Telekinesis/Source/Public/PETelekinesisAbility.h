@@ -23,10 +23,10 @@ public:
 	/* Float value that represents the force that will be applied to the grabbed object when throwed */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float ThrowIntensity;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TObjectPtr<USoundBase> ImpulseSound;
-	
+
 private:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	                             const FGameplayAbilityActorInfo* ActorInfo,
