@@ -84,9 +84,9 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 		}
 		if (GetCooldownTimeRemaining() > 0.f)
 		{
-			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.Cooldown"));			
+			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.Cooldown"));
 		}
-		
+
 		const FGameplayTagContainer& FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
 		ActorInfo->AbilitySystemComponent->NotifyAbilityFailed(Handle, this, FailureContainer);
 
