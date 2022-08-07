@@ -16,7 +16,7 @@ I will be posting updates frequently on this forum
 thread: [Epic Developer Community](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)  
 Please give some feedback and feel invited to test the project and help me with this work. : )
 
-## Some implemented features
+## Features
 
 * Gameplay Ability System;
 * Modular Game Features plugins;
@@ -24,30 +24,8 @@ Please give some feedback and feel invited to test the project and help me with 
 * Enhanced Input;
 * Networking/Replication/Multiplayer;
 * Custom plugins;
-* And others.
+* Others.
 
-## Dependencies
-
-* [AMD FidelityFX Super Resolution 1.0 - UE5 Adapted ver.](https://github.com/lucoiso/UEFSR/releases/tag/v1.0.1)
-* [Modular Game Features - Extra Actions](https://unrealengine.com/marketplace/en-US/product/modular-game-features-extra-actions)
-* [Elementus Inventory](https://github.com/lucoiso/UEElementusInventory)
-* [EOS SDK Handler](https://github.com/lucoiso/UEEOSSDKHandler)
-* [Git Large File Storage](https://git-lfs.github.com/) _(Only if you're cloning this repository)_
-
-## If you're cloning this repository
-
-All [dependencies](#dependencies) are included as Git Submodules. They will be installed automatically on clone.
-
-> To check if the dependencies are installed, run the following command:
->
-> ```
-> git submodule status
-> ```
-
-> To update the dependencies, run the following command:
->
-> ```
-> git submodule update --init --recursive
-> ```
-
-## More infos on the way!
+## Links
+* [Documentation](https://github.com/lucoiso/UEProject_Elementus/wiki)
+* [Unreal Engine Forum](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)
