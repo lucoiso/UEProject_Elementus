@@ -55,10 +55,10 @@ void APEConsumableActor::DoInteractionBehavior_Implementation(APECharacter* Char
 	{
 		return;
 	}
-	
+
 	if (ensureAlwaysMsgf(IsValid(CharacterInteracting->GetAbilitySystemComponent()),
-										 TEXT("%s have a invalid Ability System Component"),
-										 *CharacterInteracting->GetName()))
+	                     TEXT("%s have a invalid Ability System Component"),
+	                     *CharacterInteracting->GetName()))
 	{
 		// Only replicates while a character is consuming
 		SetReplicates(true);

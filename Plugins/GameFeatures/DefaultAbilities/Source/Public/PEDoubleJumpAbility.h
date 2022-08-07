@@ -17,6 +17,9 @@ class UPEDoubleJumpAbility final : public UPEGameplayAbility
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	TObjectPtr<USoundBase> ImpulseSound;
+
 	explicit UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer);
 
 private:

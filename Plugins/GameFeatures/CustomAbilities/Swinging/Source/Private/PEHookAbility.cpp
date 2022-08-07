@@ -97,8 +97,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 
 	TargetData->AddTargetDataToGameplayCueParameters(Params);
 
-	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params,
-	                     GetCurrentActorInfo()->AbilitySystemComponent.Get());
+	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params);
 
 	// If the target is a character, will finish this ability after AbilityActiveTime seconds
 	if (TargetHit->GetActor()->GetClass()->IsChildOf<APECharacter>()
@@ -132,7 +131,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
 	{
 		UGameplayStatics::SpawnSoundAttached(ImpulseSound, Player->GetMesh());
-		
+
 		const FVector ImpulseVector =
 			(TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() * HookIntensity;
 

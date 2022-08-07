@@ -17,7 +17,8 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
 
-	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Telekinesis/Sounds/MS_Impulse"));
+	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(
+		TEXT("/Telekinesis/Sounds/MS_Impulse"));
 	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
 	{
 		ImpulseSound = ImpulseSound_ObjRef.Object;
@@ -96,8 +97,7 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 
 	TargetData->AddTargetDataToGameplayCueParameters(Params);
 
-	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Telekinesis"), Params,
-	                     GetCurrentActorInfo()->AbilitySystemComponent.Get());
+	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Telekinesis"), Params);
 }
 
 void UPETelekinesisAbility::GrabbingComplete(const bool ValidTarget)
@@ -126,7 +126,7 @@ void UPETelekinesisAbility::WaitConfirmInput_Callback_Implementation()
 void UPETelekinesisAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
 {
 	UGameplayStatics::SpawnSoundAttached(ImpulseSound, AbilityTask->GetTelekinesisTarget()->GetRootComponent());
-	
+
 	// When the AnimNotify is triggered, will launch the grabbed actor
 	// in the direction of the camera and end the ability
 	AbilityTask->ThrowObject();	
