@@ -37,7 +37,7 @@ void APEThrowableActor::ThrowSetup(AActor* Caller)
 	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &APEThrowableActor::OnThrowableHit);
 }
 
-void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent* HitComponent, AActor* OtherActor,
+void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AActor* OtherActor,
                                        UPrimitiveComponent* OtherComp, const FVector NormalImpulse,
                                        const FHitResult& Hit)
 {

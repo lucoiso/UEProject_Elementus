@@ -129,6 +129,6 @@ void UPETelekinesisAbility::WaitGameplayEvent_Callback_Implementation(FGameplayE
 
 	// When the AnimNotify is triggered, will launch the grabbed actor
 	// in the direction of the camera and end the ability
-	AbilityTask->ThrowObject();	
+	AbilityTask->ThrowObject();
 	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
 }

@@ -350,10 +350,9 @@ void UPEGameplayAbility::BP_SpawnProjectileWithTargetEffects(
 void UPEGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APEProjectileActor> ProjectileClass,
                                                           const FTransform ProjectileTransform,
                                                           const FVector ProjectileFireDirection,
-                                                          [[maybe_unused]] const FGameplayAbilitySpecHandle Handle,
-                                                          [[maybe_unused]] const FGameplayAbilityActorInfo* ActorInfo,
-                                                          [[maybe_unused]] const FGameplayAbilityActivationInfo
-                                                          ActivationInfo)
+                                                          [[maybe_unused]] const FGameplayAbilitySpecHandle,
+                                                          [[maybe_unused]] const FGameplayAbilityActorInfo*,
+                                                          [[maybe_unused]] const FGameplayAbilityActivationInfo)
 {
 	UPESpawnProjectile_Task* PESpawnProjectile_Task =
 		UPESpawnProjectile_Task::SpawnProjectile(this, ProjectileClass, ProjectileTransform,
