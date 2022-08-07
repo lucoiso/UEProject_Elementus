@@ -45,8 +45,13 @@ void UPEGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInf
 	// If the ability failed to activate on granting, will notify the ability system component
 	if (bAutoActivateOnGrant && !ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle))
 	{
-		ABILITY_VLOG(this, Warning, TEXT("%s failed to auto activate on grant."), *GetName());
-		ActorInfo->AbilitySystemComponent->NotifyAbilityFailed(Spec.Handle, this, FGameplayTagContainer());
+		const TArray<FGameplayTag>& FailureTags =
+		{
+			FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.OnGive"),
+			FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.TryActivate")
+		};
+		const FGameplayTagContainer& FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
+		ActorInfo->AbilitySystemComponent->NotifyAbilityFailed(Spec.Handle, this, FailureContainer);
 	}
 }
 
@@ -61,9 +66,30 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 	Super::PreActivate(Handle, ActorInfo, ActivationInfo, OnGameplayAbilityEndedDelegate, TriggerEventData);
 
 	// Cancel the ability if can't commit cost or cooldown. Also cancel if has not auth or is not predicted
-	if (!CommitCheck(Handle, ActorInfo, ActivationInfo) || !HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+	if (const bool bCanCommit = CommitCheck(Handle, ActorInfo, ActivationInfo);
+		!bCanCommit || !HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
 	{
-		ABILITY_VLOG(this, Warning, TEXT("%s failed to pre-activate."), *GetName());
+		TArray FailureTags =
+		{
+			FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.PreActivate"),
+		};
+
+		if (!bCanCommit)
+		{
+			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.CommitCheck"));
+		}
+		if (!HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+		{
+			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.HasAuthorityOrPredictionKey"));
+		}
+		if (GetCooldownTimeRemaining() > 0.f)
+		{
+			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.Cooldown"));
+		}
+
+		const FGameplayTagContainer& FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
+		ActorInfo->AbilitySystemComponent->NotifyAbilityFailed(Handle, this, FailureContainer);
+
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 	}
 
@@ -129,7 +155,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	{
 		ActorInfo = GetCurrentActorInfo();
 	}
-	
+
 	ABILITY_VLOG(this, Display, TEXT("Ending %s ability."), *GetName());
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -137,7 +163,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	// Remove active time based cost effects
 	if (IsValid(GetCostGameplayEffect())
 		&& GetCostGameplayEffect()->DurationPolicy == EGameplayEffectDurationType::Infinite)
-	{		
+	{
 		ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
 			GetCostGameplayEffect()->GetClass(), ActorInfo->AbilitySystemComponent.Get());
 	}
@@ -205,10 +231,15 @@ void UPEGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag,
                                               FGameplayCueParameters Parameters,
                                               UAbilitySystemComponent* SourceAbilitySystem)
 {
+	if (SourceAbilitySystem == nullptr)
+	{
+		SourceAbilitySystem = GetAbilitySystemComponentFromActorInfo_Checked();
+	}
+
 	if (GameplayCueTag.IsValid())
 	{
-		ABILITY_VLOG(this, Display, TEXT("Activating %s ability associated Gameplay Cues with Tag %s."), *GetName(),
-		             *GameplayCueTag.ToString());
+		ABILITY_VLOG(this, Display, TEXT("Activating %s ability associated Gameplay Cues with Tag %s."),
+		             *GetName(), *GameplayCueTag.ToString());
 
 		Parameters.AbilityLevel = GetAbilityLevel();
 		SourceAbilitySystem->GetOwnedGameplayTags(Parameters.AggregatedSourceTags);
@@ -240,8 +271,8 @@ void UPEGameplayAbility::ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHan
 
 	for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
 	{
-		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingGameplayEffectSpec(
-			Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
+		const FGameplayEffectSpecHandle& SpecHandle =
+			MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
 		{
@@ -291,8 +322,8 @@ void UPEGameplayAbility::ApplyAbilityEffectsToTarget(const FGameplayAbilityTarge
 
 	for (const FGameplayEffectGroupedData& EffectGroup : TargetAbilityEffects)
 	{
-		const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingGameplayEffectSpec(
-			Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
+		const FGameplayEffectSpecHandle& SpecHandle =
+			MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
 		{
@@ -312,8 +343,8 @@ void UPEGameplayAbility::BP_SpawnProjectileWithTargetEffects(
 {
 	check(CurrentActorInfo);
 
-	SpawnProjectileWithTargetEffects(ProjectileClass, ProjectileTransform, ProjectileFireDirection, CurrentSpecHandle,
-	                                 CurrentActorInfo, CurrentActivationInfo);
+	SpawnProjectileWithTargetEffects(ProjectileClass, ProjectileTransform, ProjectileFireDirection,
+	                                 CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo);
 }
 
 void UPEGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APEProjectileActor> ProjectileClass,

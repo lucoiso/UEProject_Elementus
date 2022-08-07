@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
 		meta = (ClampMin = "0", UIMin = "0"))
 	float MaxHookIntensity;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TObjectPtr<USoundBase> ImpulseSound;
 

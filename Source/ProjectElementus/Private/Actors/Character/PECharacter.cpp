@@ -221,7 +221,7 @@ void APECharacter::BeginPlay()
 void APECharacter::PerformDeath()
 {
 	OnCharacterDeath.Broadcast();
-	
+
 	Server_SpawnInventoryPackage();
 	Multicast_DeathSetup();
 
@@ -295,26 +295,29 @@ void APECharacter::Landed(const FHitResult& Hit)
 	AbilitySystemComponent->CancelAbilities(&DoubleJumpTagContainer);
 }
 
-void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason)
+void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
+                                                const FGameplayTagContainer& TagContainer)
 {
-	// Only for debugging, will print the reason of the failed ability	
-	ABILITY_VLOG(this, Warning,
+	ABILITY_VLOG(Ability, Warning,
 	             TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
 
-	for (const auto& i : Reason)
+	for (const auto& TagIterator : TagContainer)
 	{
-		ABILITY_VLOG(this, Warning, TEXT("Reason: %s"), *i.ToString());
+		if (TagIterator.IsValid())
+		{
+			ABILITY_VLOG(Ability, Warning, TEXT("Tag: %s"), *TagIterator.ToString());
+		}
 	}
 
 #if WITH_EDITOR
 	if (bPrintAbilityFailure)
 	{
-		ABILITY_VLOG(this, Warning,
+		ABILITY_VLOG(Ability, Warning,
 		             TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
 
 		AbilitySystemComponent->PrintDebug();
 
-		ABILITY_VLOG(this, Warning,
+		ABILITY_VLOG(Ability, Warning,
 		             TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
 	}
 #endif
