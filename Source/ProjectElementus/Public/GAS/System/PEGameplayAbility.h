@@ -66,8 +66,8 @@ protected:
 	TObjectPtr<UAnimMontage> AbilityAnimation;
 
 private:
-	virtual void
-	OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override final;
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo,
+	                           const FGameplayAbilitySpec& Spec) override final;
 
 	virtual void PreActivate(const FGameplayAbilitySpecHandle Handle,
 	                         const FGameplayAbilityActorInfo* ActorInfo,

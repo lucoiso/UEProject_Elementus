@@ -58,7 +58,11 @@ void UPEDoubleJumpAbility::ActivateAbility
 		                     Params,
 		                     ActorInfo->AbilitySystemComponent.Get());
 
-		UGameplayStatics::SpawnSoundAtLocation(ActorInfo->AvatarActor.Get(), ImpulseSound, VFXLocation);
+		UGameplayStatics::SpawnSoundAtLocation(ActorInfo->AvatarActor.Get(),
+		                                       ImpulseSound,
+		                                       VFXLocation,
+		                                       FRotator::ZeroRotator,
+		                                       0.3f);
 
 		Player->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
 	}

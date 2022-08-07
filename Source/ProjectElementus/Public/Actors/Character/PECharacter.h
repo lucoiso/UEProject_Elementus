@@ -108,7 +108,7 @@ public:
 	void AbilityEnded(UGameplayAbility* Ability);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
-	void AbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& Reason);
+	void AbilityFailed(const UGameplayAbility* Ability, const FGameplayTagContainer& TagContainer);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FOnCharacterDeath OnCharacterDeath;
