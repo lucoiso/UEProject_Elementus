@@ -13,8 +13,11 @@
 #include "ElementusInventoryComponent.h"
 #include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
+#include "Actors/Interfaces/PEEquipment.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
+
+static const FGameplayTag& GenericEquipTag = FGameplayTag::RequestGameplayTag(FName("EquipSlot.Generic.Equipped"));
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -171,6 +174,74 @@ void APECharacter::InitializeAbilitySystemComponent(UAbilitySystemComponent* InA
 
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
 		this, UGameFrameworkComponentManager::NAME_GameActorReady);
+}
+
+// ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
+void APECharacter::EquipItem(const FElementusItemInfo InItem, const FGameplayTag EquipmentSlotTag)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (int32 FoundIndex;
+		InventoryComponent->FindElementusItemInStack(InItem, FoundIndex))
+	{
+		if (InventoryComponent->GetItemStack()[FoundIndex].Tags.HasTag(GenericEquipTag))
+		{
+			// Already equipped
+			return;
+		}
+
+		const FGameplayTagContainer& EquipTags = FGameplayTagContainer::CreateFromArray(TArray{
+			GenericEquipTag, EquipmentSlotTag
+		});
+		InventoryComponent->GetItemStack()[FoundIndex].Tags.AppendTags(EquipTags);
+
+		if (const UElementusItemData* ItemData =
+			UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}))
+		{
+			if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass->GetDefaultObject()))
+			{
+				for (const auto& Effect : EquipedItem->EquipmentEffects)
+				{
+					AbilitySystemComponent->ApplyEffectGroupedDataToSelf(Effect);
+				}
+			}
+		}
+	}
+}
+
+// ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
+void APECharacter::UnnequipItem(const FElementusItemInfo InItem, const FGameplayTag EquipmentSlotTag)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (int32 FoundIndex;
+		InventoryComponent->FindElementusItemInStack(InItem, FoundIndex))
+	{
+		const FGameplayTagContainer& EquipTags = FGameplayTagContainer::CreateFromArray(TArray{
+			GenericEquipTag, EquipmentSlotTag
+		});
+		InventoryComponent->GetItemStack()[FoundIndex].Tags.RemoveTags(EquipTags);
+
+		if (const UElementusItemData* ItemData =
+			UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}))
+		{
+			if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(
+				ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
+			{
+				for (const auto& Effect : EquipedItem->EquipmentEffects)
+				{
+					AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
+						Effect.EffectClass, AbilitySystemComponent.Get());
+				}
+			}
+		}
+	}
 }
 
 void APECharacter::PreInitializeComponents()

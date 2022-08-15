@@ -18,7 +18,7 @@ UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer)
 	  , MaxMana(100.f)
 {
 	static const ConstructorHelpers::FObjectFinder<UDataTable> MainAttributesMetaData_ObjRef(
-		TEXT("/Game/Main/Data/GAS/DT_BasicStatusAS"));
+		TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_BasicStatusAS"));
 	if constexpr (&MainAttributesMetaData_ObjRef.Object != nullptr)
 	{
 		UAttributeSet::InitFromMetaDataTable(MainAttributesMetaData_ObjRef.Object);
@@ -126,25 +126,6 @@ void UPEBasicStatusAS::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	else if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
 		SetStamina(FMath::Clamp(GetStamina(), 0.f, GetMaxStamina()));
-	}
-}
-
-void UPEBasicStatusAS::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
-                                                   const FGameplayAttributeData& MaxAttribute, const float NewMaxValue,
-                                                   const FGameplayAttribute& AffectedAttributeProperty) const
-{
-	if (UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent())
-	{
-		if (const float CurrentMaxValue = MaxAttribute.GetCurrentValue();
-			!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
-		{
-			const float CurrentValue = AffectedAttribute.GetCurrentValue();
-			const float NewDelta = CurrentMaxValue > 0.f
-				                       ? CurrentValue * NewMaxValue / CurrentMaxValue - CurrentValue
-				                       : NewMaxValue;
-
-			AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
-		}
 	}
 }
 

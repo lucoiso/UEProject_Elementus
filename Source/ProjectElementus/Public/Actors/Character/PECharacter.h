@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "ElementusInventoryData.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
@@ -86,6 +87,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void EquipItem(const FElementusItemInfo InItem, const FGameplayTag EquipmentSlotTag);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void UnnequipItem(const FElementusItemInfo InItem, const FGameplayTag EquipmentSlotTag);
 
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;

@@ -13,7 +13,9 @@ public class ProjectElementus : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new[]
 		{
-			"Core"
+			"Core",
+			"ElementusInventory",
+			"GameplayTags"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new[]
@@ -27,7 +29,6 @@ public class ProjectElementus : ModuleRules
 			"GameFeatures",
 			"ModularFeatures_ExtraActions",
 			"GameplayAbilities",
-			"GameplayTags",
 			"GameplayTasks",
 			"AIModule",
 			"UMG",
@@ -38,8 +39,7 @@ public class ProjectElementus : ModuleRules
 			"OnlineSubsystem",
 			"EOSVoiceChat",
 			"VoiceChat",
-			"JsonUtilities",
-			"ElementusInventory"
+			"JsonUtilities"
 		});
 	}
 }

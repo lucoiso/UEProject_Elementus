@@ -10,12 +10,14 @@
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
-	  ThrowIntensity(2750)
+	  ThrowIntensity(2750.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
 
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
+	
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Weapon.Equipped")));
 
 	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(
 		TEXT("/Telekinesis/Sounds/MS_Impulse"));

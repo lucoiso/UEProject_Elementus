@@ -19,6 +19,8 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Weapon.Equipped")));
+
 	bWaitCancel = false;
 	bIgnoreCooldown = true;
 
@@ -48,6 +50,7 @@ void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, cons
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
 	// Ability will end when the input is released: Release the hook
+	bIgnoreCooldown = true;
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }
 

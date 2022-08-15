@@ -1,0 +1,20 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Weapons",
+	"Description": "Modular Weapons",
+	"Category": "Game Features",
+	"CreatedBy": "Lucas Vilas-Boas",
+	"CreatedByURL": "https://dev.epicgames.com/community/profile/4ePp/lucoiso",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EnabledByDefault": false,
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"ExplicitlyLoaded": true,
+	"BuiltInInitialFeatureState": "Active"
+}

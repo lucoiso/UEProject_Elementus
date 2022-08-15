@@ -69,6 +69,10 @@
 		{
 			"Name": "Metasound",
 			"Enabled": true
+		},
+		{
+			"Name": "Weapons",
+			"Enabled": true
 		}
 	]
 }
