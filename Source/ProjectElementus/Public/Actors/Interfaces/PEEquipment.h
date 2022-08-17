@@ -5,20 +5,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/Object.h"
 #include "GAS/System/PEAbilityData.h"
-#include "Components/ActorComponent.h"
 #include "PEEquipment.generated.h"
 
-struct FGameplayEffectGroupedData;
+class APECharacter;
 /**
  *
  */
 UCLASS(Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class UPEEquipment : public UActorComponent
+class UPEEquipment : public UObject
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> EquipmentEffects;
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	virtual void ProcessEquipmentApplication(APECharacter* EquipmentOwner);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	virtual void ProcessEquipmentRemoval(APECharacter* EquipmentOwner);
 };

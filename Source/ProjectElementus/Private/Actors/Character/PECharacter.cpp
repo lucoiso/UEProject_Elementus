@@ -184,29 +184,34 @@ void APECharacter::EquipItem(const FElementusItemInfo InItem, const FGameplayTag
 		return;
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("1 - Equipping item: %s"), *InItem.ItemId.ToString());
+
 	if (int32 FoundIndex;
-		InventoryComponent->FindElementusItemInStack(InItem, FoundIndex))
+		InventoryComponent->FindElementusItemInStack(InItem,
+		                                             FoundIndex,
+		                                             FGameplayTagContainer::CreateFromArray(TArray{EquipmentSlotTag})))
 	{
-		if (InventoryComponent->GetItemStack()[FoundIndex].Tags.HasTag(GenericEquipTag))
+		if (InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.HasTag(GenericEquipTag))
 		{
 			// Already equipped
+			UE_LOG(LogTemp, Warning, TEXT("Already equipped"));
+			UnnequipItem(InItem, EquipmentSlotTag);
 			return;
 		}
 
 		const FGameplayTagContainer& EquipTags = FGameplayTagContainer::CreateFromArray(TArray{
 			GenericEquipTag, EquipmentSlotTag
 		});
-		InventoryComponent->GetItemStack()[FoundIndex].Tags.AppendTags(EquipTags);
+		InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.AppendTags(EquipTags);
 
 		if (const UElementusItemData* ItemData =
 			UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}))
 		{
-			if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass->GetDefaultObject()))
+			if (UPEEquipment* EquipedItem =
+				Cast<UPEEquipment>(ItemData->ItemClass->GetDefaultObject()))
 			{
-				for (const auto& Effect : EquipedItem->EquipmentEffects)
-				{
-					AbilitySystemComponent->ApplyEffectGroupedDataToSelf(Effect);
-				}
+				UE_LOG(LogTemp, Warning, TEXT("2 - Equipping item: %s"), *InItem.ItemId.ToString());
+				EquipedItem->ProcessEquipmentApplication(this);
 			}
 		}
 	}
@@ -220,25 +225,26 @@ void APECharacter::UnnequipItem(const FElementusItemInfo InItem, const FGameplay
 		return;
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("1 - Unnequipping item: %s"), *InItem.ItemId.ToString());
+
 	if (int32 FoundIndex;
-		InventoryComponent->FindElementusItemInStack(InItem, FoundIndex))
+		InventoryComponent->FindElementusItemInStack(InItem,
+		                                             FoundIndex,
+		                                             FGameplayTagContainer::CreateFromArray(TArray{EquipmentSlotTag})))
 	{
 		const FGameplayTagContainer& EquipTags = FGameplayTagContainer::CreateFromArray(TArray{
 			GenericEquipTag, EquipmentSlotTag
 		});
-		InventoryComponent->GetItemStack()[FoundIndex].Tags.RemoveTags(EquipTags);
+		InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.RemoveTags(EquipTags);
 
 		if (const UElementusItemData* ItemData =
 			UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}))
 		{
-			if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(
-				ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
+			if (UPEEquipment* EquipedItem =
+				Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 			{
-				for (const auto& Effect : EquipedItem->EquipmentEffects)
-				{
-					AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
-						Effect.EffectClass, AbilitySystemComponent.Get());
-				}
+				UE_LOG(LogTemp, Warning, TEXT("2 - Unnequipping item: %s"), *InItem.ItemId.ToString());
+				EquipedItem->ProcessEquipmentRemoval(this);
 			}
 		}
 	}

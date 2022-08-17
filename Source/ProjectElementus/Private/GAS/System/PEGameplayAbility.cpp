@@ -174,7 +174,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 		for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
 		{
 			ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
-				EffectGroup.EffectClass, ActorInfo->AbilitySystemComponent.Get());
+				EffectGroup.EffectClass, ActorInfo->AbilitySystemComponent.Get(), 1);
 		}
 	}
 
