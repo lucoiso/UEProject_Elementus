@@ -2,7 +2,7 @@ using UnrealBuildTool;
 
 public class Telekinesis : ModuleRules
 {
-	public Telekinesis(ReadOnlyTargetRules target) : base(target)
+	public Telekinesis(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		CppStandard = CppStandardVersion.Cpp17;
