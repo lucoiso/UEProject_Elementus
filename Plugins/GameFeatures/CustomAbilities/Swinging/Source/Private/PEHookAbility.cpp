@@ -8,6 +8,7 @@
 #include "GAS/Targeting/PELineTargeting.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Management/Data/PEGlobalTags.h"
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
@@ -19,7 +20,7 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Weapon.Equipped")));
+	ActivationBlockedTags.AddTag(WeaponEquippedTag);
 
 	bWaitCancel = false;
 	bIgnoreCooldown = true;

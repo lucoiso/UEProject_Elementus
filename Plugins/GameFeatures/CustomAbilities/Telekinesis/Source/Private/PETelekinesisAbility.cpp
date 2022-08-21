@@ -7,6 +7,7 @@
 #include "PEThrowableActor.h"
 #include "GAS/Targeting/PELineTargeting.h"
 #include "Kismet/GameplayStatics.h"
+#include "Management/Data/PEGlobalTags.h"
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
@@ -17,7 +18,7 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
 
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Weapon.Equipped")));
+	ActivationBlockedTags.AddTag(WeaponEquippedTag);
 
 	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(
 		TEXT("/Telekinesis/Sounds/MS_Impulse"));

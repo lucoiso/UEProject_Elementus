@@ -18,6 +18,7 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/World/PEProjectileActor.h"
 #include "GameplayEffect.h"
+#include "Management/Data/PEGlobalTags.h"
 
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
@@ -28,8 +29,8 @@ UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializ
 	  AbilityActiveTime(0),
 	  bEndAbilityAfterActiveTime(false)
 {
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Dead"));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Stunned"));
+	ActivationBlockedTags.AddTag(DeadStateTag);
+	ActivationBlockedTags.AddTag(StunStateTag);
 
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
@@ -99,14 +100,14 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 	if (IsInstantiated())
 	{
 		UAbilityTask_WaitGameplayTagAdded* WaitDeadTagAddedTask =
-			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, FGameplayTag::RequestGameplayTag("State.Dead"));
+			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, DeadStateTag);
 
 		WaitDeadTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitDeadTagAddedTask->ReadyForActivation();
 
 		UAbilityTask_WaitGameplayTagAdded* WaitStunTagAddedTask =
 			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
-				this, FGameplayTag::RequestGameplayTag("State.Stunned"));
+				this, StunStateTag);
 
 		WaitStunTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitStunTagAddedTask->ReadyForActivation();

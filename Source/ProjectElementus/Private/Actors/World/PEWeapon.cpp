@@ -3,7 +3,9 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/World/PEWeapon.h"
+#include "AbilitySystemComponent.h"
 #include "Actors/Character/PECharacter.h"
+#include "Management/Data/PEGlobalTags.h"
 
 UPEWeapon::UPEWeapon(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -13,6 +15,8 @@ UPEWeapon::UPEWeapon(const FObjectInitializer& ObjectInitializer)
 void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 {
 	check(!WeaponMesh.IsNull());
+
+	EquipmentOwner->GetAbilitySystemComponent()->AddLooseGameplayTag(WeaponEquippedTag);
 
 	USkeletalMeshComponent* InMesh = NewObject<USkeletalMeshComponent>(EquipmentOwner);
 	InMesh->SetSkeletalMesh(WeaponMesh.LoadSynchronous());
@@ -31,6 +35,8 @@ void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 
 void UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 {
+	EquipmentOwner->GetAbilitySystemComponent()->RemoveLooseGameplayTag(WeaponEquippedTag);
+
 	check(!WeaponMesh.IsNull());
 
 	const TArray<UActorComponent*> CompArr =
