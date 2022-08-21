@@ -184,8 +184,6 @@ void APECharacter::EquipItem(const FElementusItemInfo InItem, const FGameplayTag
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("1 - Equipping item: %s"), *InItem.ItemId.ToString());
-
 	if (int32 FoundIndex;
 		InventoryComponent->FindElementusItemInStack(InItem,
 		                                             FoundIndex,
@@ -194,7 +192,6 @@ void APECharacter::EquipItem(const FElementusItemInfo InItem, const FGameplayTag
 		if (InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.HasTag(GenericEquipTag))
 		{
 			// Already equipped
-			UE_LOG(LogTemp, Warning, TEXT("Already equipped"));
 			UnnequipItem(InItem, EquipmentSlotTag);
 			return;
 		}
@@ -208,9 +205,8 @@ void APECharacter::EquipItem(const FElementusItemInfo InItem, const FGameplayTag
 			UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}))
 		{
 			if (UPEEquipment* EquipedItem =
-				Cast<UPEEquipment>(ItemData->ItemClass->GetDefaultObject()))
+				Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("2 - Equipping item: %s"), *InItem.ItemId.ToString());
 				EquipedItem->ProcessEquipmentApplication(this);
 			}
 		}
@@ -224,8 +220,6 @@ void APECharacter::UnnequipItem(const FElementusItemInfo InItem, const FGameplay
 	{
 		return;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("1 - Unnequipping item: %s"), *InItem.ItemId.ToString());
 
 	if (int32 FoundIndex;
 		InventoryComponent->FindElementusItemInStack(InItem,
@@ -243,7 +237,6 @@ void APECharacter::UnnequipItem(const FElementusItemInfo InItem, const FGameplay
 			if (UPEEquipment* EquipedItem =
 				Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("2 - Unnequipping item: %s"), *InItem.ItemId.ToString());
 				EquipedItem->ProcessEquipmentRemoval(this);
 			}
 		}

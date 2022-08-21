@@ -17,8 +17,6 @@ void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 	USkeletalMeshComponent* InMesh = NewObject<USkeletalMeshComponent>(EquipmentOwner);
 	InMesh->SetSkeletalMesh(WeaponMesh.LoadSynchronous());
 	InMesh->ComponentTags.Add(*FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
-	UE_LOG(LogTemp, Warning, TEXT("Tag 1: %s"),
-	       *FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
 
 	EquipmentOwner->AddOwnedComponent(InMesh);
 
@@ -39,14 +37,8 @@ void UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 		EquipmentOwner->GetComponentsByTag(USkeletalMeshComponent::StaticClass(),
 		                                   *FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
 
-	UE_LOG(LogTemp, Warning, TEXT("CompArr.Num(): %d"), CompArr.Num());
-	UE_LOG(LogTemp, Warning, TEXT("Tag 2: %s"),
-	       *FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
-
 	for (const auto& Iterator : CompArr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Removing Component: %s"), *Iterator->GetName());
-
 		Iterator->UnregisterComponent();
 		Iterator->RemoveFromRoot();
 		Iterator->DestroyComponent();
