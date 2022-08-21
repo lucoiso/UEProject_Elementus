@@ -6,7 +6,7 @@ using UnrealBuildTool;
 
 public class ProjectElementus : ModuleRules
 {
-	public ProjectElementus(ReadOnlyTargetRules target) : base(target)
+	public ProjectElementus(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		CppStandard = CppStandardVersion.Cpp17;

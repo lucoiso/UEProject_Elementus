@@ -4,7 +4,7 @@ using UnrealBuildTool;
 
 public class ProjectElementusTarget : TargetRules
 {
-	public ProjectElementusTarget(TargetInfo target) : base(target)
+	public ProjectElementusTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
