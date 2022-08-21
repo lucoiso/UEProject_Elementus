@@ -129,7 +129,8 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 			}
 		});
 
-		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate,
+		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle,
+		                                                               TimerDelegate,
 		                                                               AbilityActiveTime,
 		                                                               false);
 	}
@@ -171,10 +172,15 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	// Remove active time based buff/debuff effects from self
 	if (AbilityActiveTime <= 0.f)
 	{
-		for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
+		if (UPEAbilitySystemComponent* TargetABSC =
+			Cast<UPEAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get()))
 		{
-			ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
-				EffectGroup.EffectClass, ActorInfo->AbilitySystemComponent.Get(), 1);
+			for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
+			{
+				TargetABSC->RemoveEffectGroupedDataFromSelf(EffectGroup,
+				                                            ActorInfo->AbilitySystemComponent.Get(),
+				                                            1);
+			}
 		}
 	}
 

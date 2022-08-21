@@ -20,12 +20,12 @@ void UPEEquipment::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 
 void UPEEquipment::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 {
-	for (const auto& Effect : EquipmentEffects)
+	if (UPEAbilitySystemComponent* TargetABSC =
+		Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
 	{
-		EquipmentOwner->GetAbilitySystemComponent()->RemoveActiveGameplayEffectBySourceEffect(
-			Effect.EffectClass,
-			EquipmentOwner->GetAbilitySystemComponent(),
-			1
-		);
+		for (const auto& Effect : EquipmentEffects)
+		{
+			TargetABSC->RemoveEffectGroupedDataFromSelf(Effect, EquipmentOwner->GetAbilitySystemComponent(), 1);
+		}
 	}
 }

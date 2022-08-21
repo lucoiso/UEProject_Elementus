@@ -31,12 +31,12 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	}
 }
 
-void UPEHookAbility::ActivateAbility
-(const FGameplayAbilitySpecHandle Handle,
- const FGameplayAbilityActorInfo* ActorInfo,
- const FGameplayAbilityActivationInfo ActivationInfo,
- const FGameplayEventData* TriggerEventData)
+void UPEHookAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+                                     const FGameplayAbilityActorInfo* ActorInfo,
+                                     const FGameplayAbilityActivationInfo ActivationInfo,
+                                     const FGameplayEventData* TriggerEventData)
 {
+	bIgnoreCooldown = true;
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	// Activate tasks: Animation Montage and Wait for GameplayEvent (Anim Notify)
@@ -44,7 +44,8 @@ void UPEHookAbility::ActivateAbility
 	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
 }
 
-void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle,
+                                   const FGameplayAbilityActorInfo* ActorInfo,
                                    const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);

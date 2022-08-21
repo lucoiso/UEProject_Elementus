@@ -28,6 +28,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC);
 
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void RemoveEffectGroupedDataFromSelf(FGameplayEffectGroupedData GroupedData,
+	                                     UAbilitySystemComponent* InstigatorABSC,
+	                                     const int32 StacksToRemove = 1);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void RemoveEffectGroupedDataFromTarget(FGameplayEffectGroupedData GroupedData,
+	                                       UAbilitySystemComponent* InstigatorABSC,
+	                                       UAbilitySystemComponent* TargetABSC,
+	                                       const int32 StacksToRemove = 1);
+
 	template <typename T>
 	const T* GetCustomAttributeSet() const
 	{
