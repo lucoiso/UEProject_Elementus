@@ -106,8 +106,10 @@ FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 Nu
                                                                   const int32 NumPrivateConnections,
                                                                   const bool bShouldAdvertise,
                                                                   const bool bAllowJoinInProgress,
-                                                                  const bool bIsLANMatch, const bool bIsDedicated,
-                                                                  const bool bUsesStats, const bool bAllowInvites,
+                                                                  const bool bIsLANMatch,
+                                                                  const bool bIsDedicated,
+                                                                  const bool bUsesStats,
+                                                                  const bool bAllowInvites,
                                                                   const bool bUsesPresence,
                                                                   const bool bAllowJoinViaPresence,
                                                                   const bool bAllowJoinViaPresenceFriendsOnly,
@@ -155,7 +157,9 @@ void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString& P
 	}
 }
 
-void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchievementMod Modifier, const FName StatName,
+void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum,
+                                        const EAchievementMod Modifier,
+                                        const FName StatName,
                                         const float Percentage)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
@@ -171,31 +175,35 @@ void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchieve
 
 				switch (Modifier)
 				{
-				case EAchievementMod::Set:
-					NewAchievement->SetFloatStat(StatName, Percentage);
-					break;
-				case EAchievementMod::Add:
-					NewAchievement->IncrementFloatStat(StatName, Percentage);
-					break;
-				case EAchievementMod::Subtract:
-					NewAchievement->DecrementFloatStat(StatName, Percentage);
-					break;
-				default: break;
+					case EAchievementMod::Set:
+						NewAchievement->SetFloatStat(StatName, Percentage);
+						break;
+					
+					case EAchievementMod::Add:
+						NewAchievement->IncrementFloatStat(StatName, Percentage);
+						break;
+					
+					case EAchievementMod::Subtract:
+						NewAchievement->DecrementFloatStat(StatName, Percentage);
+						break;
+					
+					default:
+						break;
 				}
 
 				FOnlineAchievementsWriteRef WriteObject = NewAchievement.ToSharedRef();
 
-				AchievementsInterface->WriteAchievements(
-					*IdentityInterface->GetUniquePlayerId(LocalUserNum).Get(),
-					WriteObject,
-					FOnAchievementsWrittenDelegate::CreateLambda(
-						[](const FUniqueNetId& UserID, const bool bResult)
+				const FUniqueNetId& UserNetId = *IdentityInterface->GetUniquePlayerId(LocalUserNum).Get();
+				
+				const FOnAchievementsWrittenDelegate& AchievementsWriteDelegate =
+					FOnAchievementsWrittenDelegate::CreateLambda([](const FUniqueNetId& UserID, const bool bResult)
 						{
 							UE_LOG(LogTemp, Log,
-							       TEXT("WriteEOSAchievement - User ID: %s; Result: %d"),
-							       *UserID.ToString(),
-							       bResult);
-						}));
+								   TEXT("WriteEOSAchievement - User ID: %s; Result: %d"),
+								   *UserID.ToString(), bResult);
+						});				
+
+				AchievementsInterface->WriteAchievements(UserNetId, WriteObject, AchievementsWriteDelegate);
 			}
 		}
 	}

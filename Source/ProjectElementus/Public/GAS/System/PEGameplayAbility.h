@@ -134,8 +134,10 @@ protected:
 
 	/* Perform a animation montage and call WaitMontage_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
-	void ActivateWaitMontageTask(const FName MontageSection = NAME_None, const float Rate = 1.f,
-	                             const bool bRandomSection = false, const bool bStopsWhenAbilityEnds = true);
+	void ActivateWaitMontageTask(const FName MontageSection = NAME_None,
+	                             const float Rate = 1.f,
+	                             const bool bRandomSection = false,
+	                             const bool bStopsWhenAbilityEnds = true);
 
 	/* Performs targeting and call WaitTargetData_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
@@ -218,7 +220,8 @@ protected:
 
 	/* Activate a Gameplay Cue with passed parameters */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
+	void ActivateGameplayCues(const FGameplayTag GameplayCueTag,
+	                          FGameplayCueParameters Parameters,
 	                          UAbilitySystemComponent* SourceAbilitySystem = nullptr);
 
 	/* Apply SelfAbilityEffects to self */
@@ -249,18 +252,16 @@ protected:
 	/* Spawn and fire a projectile with TargetAbilityEffects effects applied */
 	UFUNCTION(BlueprintCallable, DisplayName = "SpawnProjectileWithTargetEffects",
 		Category = "Project Elementus | Functions")
-	void BP_SpawnProjectileWithTargetEffects(
-		const TSubclassOf<APEProjectileActor> ProjectileClass,
-		const FTransform ProjectileTransform,
-		const FVector ProjectileFireDirection);
+	void BP_SpawnProjectileWithTargetEffects(const TSubclassOf<APEProjectileActor> ProjectileClass,
+											 const FTransform ProjectileTransform,
+											 const FVector ProjectileFireDirection);
 
-	void SpawnProjectileWithTargetEffects(
-		TSubclassOf<APEProjectileActor> ProjectileClass,
-		const FTransform ProjectileTransform,
-		const FVector ProjectileFireDirection,
-		const FGameplayAbilitySpecHandle Handle,
-		const FGameplayAbilityActorInfo* ActorInfo,
-		const FGameplayAbilityActivationInfo ActivationInfo);
+	void SpawnProjectileWithTargetEffects(TSubclassOf<APEProjectileActor> ProjectileClass,
+										  const FTransform ProjectileTransform,
+										  const FVector ProjectileFireDirection,
+										  const FGameplayAbilitySpecHandle Handle,
+										  const FGameplayAbilityActorInfo* ActorInfo,
+										  const FGameplayAbilityActivationInfo ActivationInfo);
 
 	/* Default callback for SpawnProjectileWithTargetEffects function */
 	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")

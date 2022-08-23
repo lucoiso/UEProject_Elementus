@@ -16,7 +16,7 @@ void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 {
 	check(!WeaponMesh.IsNull());
 
-	EquipmentOwner->GetAbilitySystemComponent()->AddLooseGameplayTag(WeaponEquippedTag);
+	EquipmentOwner->GetAbilitySystemComponent()->AddLooseGameplayTag(GlobalTag_WeaponEquipped);
 
 	USkeletalMeshComponent* InMesh = NewObject<USkeletalMeshComponent>(EquipmentOwner);
 	InMesh->SetSkeletalMesh(WeaponMesh.LoadSynchronous());
@@ -35,13 +35,14 @@ void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 
 void UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 {
-	EquipmentOwner->GetAbilitySystemComponent()->RemoveLooseGameplayTag(WeaponEquippedTag);
+	EquipmentOwner->GetAbilitySystemComponent()->RemoveLooseGameplayTag(GlobalTag_WeaponEquipped);
 
 	check(!WeaponMesh.IsNull());
 
 	const TArray<UActorComponent*> CompArr =
 		EquipmentOwner->GetComponentsByTag(USkeletalMeshComponent::StaticClass(),
-		                                   *FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
+		                                   *FString::Printf(TEXT("ElementusEquipment_%s"),
+		                                   *WeaponMesh->GetName()));
 
 	for (const auto& Iterator : CompArr)
 	{

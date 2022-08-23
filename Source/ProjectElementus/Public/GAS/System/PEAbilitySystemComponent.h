@@ -13,7 +13,7 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPEAbilitySystemComponent : public UAbilitySystemComponent
+class PROJECTELEMENTUS_API UPEAbilitySystemComponent final : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 

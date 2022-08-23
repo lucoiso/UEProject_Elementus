@@ -69,11 +69,13 @@ public:
 	static int32 GetEOSSessionPingFromHandle(const FSessionDataHandler DataHandle);
 
 	/*  */
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions", meta = (DisplayName = "Get EOS Session Name"))
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Get EOS Session Name"))
 	static FName GetEOSSessionName();
 
 	/*  */
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions", meta = (DisplayName = "Is User Logged in EOS"))
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Is User Logged in EOS"))
 	static bool IsUserLoggedInEOS(const int32 LocalUserNum);
 
 	/*  */

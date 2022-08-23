@@ -8,6 +8,7 @@
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
+#include "Management/Data/PEGlobalTags.h"
 
 DEFINE_LOG_CATEGORY(LogPlayerState);
 
@@ -35,13 +36,11 @@ void APEPlayerState::BeginPlay()
 	// Check if the player state have a valid ABSC and bind functions to wait Death and Stun tags
 	if (ensureAlwaysMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
-		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Dead")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(this,
-			&APEPlayerState::DeathStateChanged_Callback);
+		AbilitySystemComponent->RegisterGameplayTagEvent(GlobalTag_DeadState,
+			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::DeathStateChanged_Callback);
 
-		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName("State.Stunned")),
-		                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(this,
-			&APEPlayerState::StunStateChanged_Callback);
+		AbilitySystemComponent->RegisterGameplayTagEvent(GlobalTag_StunState,
+			EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::StunStateChanged_Callback);
 	}
 }
 
@@ -83,7 +82,8 @@ void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, c
 		return;
 	}
 
-	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
+	PLAYERSTATE_VLOG(this, Display,
+					 TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
 	                 *FString(__func__), *CallbackTag.ToString(), NewCount);
 
 	// Just ignore/activate movement inputs if have a valid player controller

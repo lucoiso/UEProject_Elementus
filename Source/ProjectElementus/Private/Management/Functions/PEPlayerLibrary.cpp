@@ -5,22 +5,26 @@
 #include "Management/Functions/PEPlayerLibrary.h"
 #include "EnhancedInputSubsystems.h"
 
-FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* Controller, UInputAction* Action,
-                                                             UObject* Object, const FName UFunctionName,
+FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* Controller,
+                                                             UInputAction* Action,
+                                                             UObject* Object,
+                                                             const FName UFunctionName,
                                                              const ETriggerEvent TriggerEvent)
 {
 	if (IsValid(Controller))
 	{
-		if (UEnhancedInputComponent* EnhancedInputComponent =
-				Cast<UEnhancedInputComponent>(Controller->InputComponent.Get());
-			ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"),
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(Controller->InputComponent.Get());
+			ensureAlwaysMsgf(IsValid(EnhancedInputComponent),
+			                 TEXT("%s have a invalid EnhancedInputComponent"),
 			                 *Controller->GetName()))
 		{
 			return FPlayerInputBindingHandle
 			{
 				Controller,
-				static_cast<int32>(EnhancedInputComponent->BindAction(Action, TriggerEvent, Object, UFunctionName).
-				                                           GetHandle())
+				static_cast<int32>(EnhancedInputComponent->BindAction(Action,
+																					 TriggerEvent,
+																					 Object,
+																					 UFunctionName).GetHandle())
 			};
 		}
 	}
@@ -34,7 +38,8 @@ void UPEPlayerLibrary::RemoveDynamicInput(const FPlayerInputBindingHandle Bindin
 	{
 		if (UEnhancedInputComponent* EnhancedInputComponent =
 				Cast<UEnhancedInputComponent>(BindingHandle.PlayerController->InputComponent.Get());
-			ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"),
+			ensureAlwaysMsgf(IsValid(EnhancedInputComponent),
+			                 TEXT("%s have a invalid EnhancedInputComponent"),
 			                 *BindingHandle.PlayerController->GetName()))
 		{
 			EnhancedInputComponent->RemoveBindingByHandle(BindingHandle.InputBindingHandle);
@@ -43,14 +48,14 @@ void UPEPlayerLibrary::RemoveDynamicInput(const FPlayerInputBindingHandle Bindin
 }
 
 void UPEPlayerLibrary::AddDynamicMapping(APlayerController* Controller,
-                                         UInputMappingContext* InputMapping, const int32 Priority)
+                                         UInputMappingContext* InputMapping,
+                                         const int32 Priority)
 {
 	if (IsValid(Controller))
 	{
 		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer())
 		{
-			if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-				LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{
 				Subsystem->AddMappingContext(InputMapping, Priority);
 			}
@@ -64,8 +69,7 @@ void UPEPlayerLibrary::RemoveDynamicMapping(APlayerController* Controller, UInpu
 	{
 		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer())
 		{
-			if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-				LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{
 				Subsystem->RemoveMappingContext(InputMapping);
 			}

@@ -94,7 +94,8 @@ void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
 void UPEAbilityFunctions::RemoveAbility(UAbilitySystemComponent* TargetABSC,
                                         const TSubclassOf<UGameplayAbility> Ability)
 {
-	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"),
+	if (ensureAlwaysMsgf(IsValid(TargetABSC),
+	                     TEXT("%s have a invalid Ability System Component"),
 	                     *TargetABSC->GetAvatarActor()->GetName()))
 	{
 		if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))

@@ -4,6 +4,8 @@
 
 #include "PESprintAbility.h"
 
+#include "Management/Data/PEGlobalTags.h"
+
 UPESprintAbility::UPESprintAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -11,7 +13,7 @@ UPESprintAbility::UPESprintAbility(const FObjectInitializer& ObjectInitializer)
 
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Sprint"));
 
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
+	ActivationOwnedTags.AddTag(GlobalTag_CanInteract);
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Walk"));
 }
 

@@ -6,6 +6,7 @@
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
 #include "AbilitySystemComponent.h"
+#include "Management/Data/PEGlobalTags.h"
 
 struct FDamageAttributesStatics
 {
@@ -48,19 +49,21 @@ void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 	EvaluationParameters.TargetTags = TargetTags;
 
 	float BaseDamage = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().DamageDef, EvaluationParameters,
-	                                                           BaseDamage);
-	BaseDamage += FMath::Max<float>(
-		Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().DamageDef,
+	                                                           EvaluationParameters,
+	                                                           BaseDamage);	
+	BaseDamage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(GlobalTag_Damage, false, -1.0f), 0.0f);
 
 	float AttackRate = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef,
-	                                                           EvaluationParameters, AttackRate);
+	                                                           EvaluationParameters,
+	                                                           AttackRate);
 	AttackRate = FMath::Max<float>(AttackRate, 0.0f);
 
 	float DefenseRate = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef,
-	                                                           EvaluationParameters, DefenseRate);
+	                                                           EvaluationParameters,
+	                                                           DefenseRate);
 	DefenseRate = FMath::Max<float>(DefenseRate, 0.0f);
 
 	const auto CalculateDamage = [BaseDamage, AttackRate, DefenseRate]() -> float
@@ -75,7 +78,7 @@ void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 		return DamageDone;
 	};
 
-	OutExecutionOutput.AddOutputModifier(
-		FGameplayModifierEvaluatedData(GetAttributesStatics().DamageProperty, EGameplayModOp::Additive,
-		                               CalculateDamage()));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(GetAttributesStatics().DamageProperty,
+		                               									EGameplayModOp::Additive,
+		                               									CalculateDamage()));
 }

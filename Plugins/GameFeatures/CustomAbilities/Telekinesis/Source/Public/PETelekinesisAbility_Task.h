@@ -25,7 +25,7 @@ public:
 
 	/* Create a reference to manage this ability task */
 	static UPETelekinesisAbility_Task* PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-	                                                                const FName& TaskInstanceName,
+	                                                                const FName TaskInstanceName,
 	                                                                const float ThrowIntensity,
 	                                                                const TWeakObjectPtr<AActor> Target);
 

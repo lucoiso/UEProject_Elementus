@@ -33,8 +33,10 @@ class PROJECTELEMENTUS_API UPEPlayerLibrary final : public UBlueprintFunctionLib
 public:
 	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static FPlayerInputBindingHandle BindDynamicInput(APlayerController* Controller, UInputAction* Action,
-	                                                  UObject* Object, const FName UFunctionName,
+	static FPlayerInputBindingHandle BindDynamicInput(APlayerController* Controller,
+	                                                  UInputAction* Action,
+	                                                  UObject* Object,
+	                                                  const FName UFunctionName,
 	                                                  const ETriggerEvent TriggerEvent);
 
 	/*  */
@@ -43,8 +45,7 @@ public:
 
 	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static void AddDynamicMapping(APlayerController* Controller, UInputMappingContext* InputMapping,
-	                              const int32 Priority);
+	static void AddDynamicMapping(APlayerController* Controller, UInputMappingContext* InputMapping, const int32 Priority);
 
 	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")

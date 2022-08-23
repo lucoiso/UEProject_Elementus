@@ -37,7 +37,7 @@ struct FPrimaryElementusItemId;
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEPlayerController : public APlayerController, public IAbilityInputBinding
+class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IAbilityInputBinding
 {
 	GENERATED_BODY()
 
@@ -65,7 +65,7 @@ public:
 	void InitializeRespawn(const float InSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ProcessTrade(const TArray<FElementusItemInfo> TradeInfo,
+	void ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo,
 	                  UElementusInventoryComponent* OtherComponent,
 	                  const bool bIsFromPlayer = false);
 
@@ -83,7 +83,7 @@ private:
 	                         UElementusInventoryComponent* OtherComponent,
 	                         const bool bIsFromPlayer);
 
-	void ProcessTrade_Internal(const TArray<FElementusItemInfo> TradeInfo,
+	void ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo,
 	                           UElementusInventoryComponent* OtherComponent,
 	                           const bool bIsFromPlayer) const;
 

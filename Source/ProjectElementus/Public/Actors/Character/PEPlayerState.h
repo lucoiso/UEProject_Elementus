@@ -28,7 +28,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogPlayerState, Display, NoLogging);
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEPlayerState : public APlayerState, public IAbilitySystemInterface
+class PROJECTELEMENTUS_API APEPlayerState final : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 

@@ -6,26 +6,27 @@
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemComponent.h"
+#include "Management/Data/PEGlobalTags.h"
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"
 
 UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-	  , Health(500.f)
-	  , MaxHealth(500.f)
-	  , Stamina(250.f)
-	  , MaxStamina(250.f)
-	  , Mana(100.f)
-	  , MaxMana(100.f)
+	: Super(ObjectInitializer),
+	Health(500.f),
+	MaxHealth(500.f),
+	Stamina(250.f),
+	MaxStamina(250.f),
+	Mana(100.f),
+	MaxMana(100.f)
 {
-	static const ConstructorHelpers::FObjectFinder<UDataTable> MainAttributesMetaData_ObjRef(
-		TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_BasicStatusAS"));
+	static const ConstructorHelpers::FObjectFinder<UDataTable>
+		MainAttributesMetaData_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_BasicStatusAS"));
 	if constexpr (&MainAttributesMetaData_ObjRef.Object != nullptr)
 	{
 		UAttributeSet::InitFromMetaDataTable(MainAttributesMetaData_ObjRef.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffect_ClassRef(
-		TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
+	static const ConstructorHelpers::FClassFinder<UGameplayEffect>
+		DeathGameplayEffect_ClassRef(TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
 	if constexpr (&DeathGameplayEffect_ClassRef.Class != nullptr)
 	{
 		GlobalDeathEffect = DeathGameplayEffect_ClassRef.Class;
@@ -51,7 +52,8 @@ void UPEBasicStatusAS::PreAttributeChange(const FGameplayAttribute& Attribute, f
 	}
 }
 
-void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue,
+void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
+                                           const float OldValue,
                                            const float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
@@ -65,18 +67,19 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 
 			if (!GlobalDeathEffect.IsNull())
 			{
-				GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(
-					GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>(), 1.f,
-					GetOwningAbilitySystemComponent()->MakeEffectContext());
+				const auto& InDeathEffect = GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>();
+				const auto& InEffectContext = GetOwningAbilitySystemComponent()->MakeEffectContext();
+				
+				GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(InDeathEffect, 1.f, InEffectContext);
 			}
 		}
 
 		// If stamina is 0 or less, cancel abilities that use stamina
 		if (Attribute == GetStaminaAttribute())
 		{
-			const FGameplayTagContainer StaminaCostTagContainer
+			const FGameplayTagContainer& StaminaCostTagContainer
 			{
-				FGameplayTag::RequestGameplayTag(FName("GameplayAbility.State.CostWhileActive.Stamina"))
+				GlobalTag_CostWhileActive_Stamina
 			};
 
 			GetOwningAbilitySystemComponentChecked()->CancelAbilities(&StaminaCostTagContainer);
@@ -85,9 +88,9 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 		// If mana is 0 or less, cancel abilities that use mana
 		if (Attribute == GetManaAttribute())
 		{
-			const FGameplayTagContainer ManaCostTagContainer
+			const FGameplayTagContainer& ManaCostTagContainer
 			{
-				FGameplayTag::RequestGameplayTag(FName("GameplayAbility.State.CostWhileActive.Mana"))
+				GlobalTag_CostWhileActive_Mana
 			};
 
 			GetOwningAbilitySystemComponentChecked()->CancelAbilities(&ManaCostTagContainer);

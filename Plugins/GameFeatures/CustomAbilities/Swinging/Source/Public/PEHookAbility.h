@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
 		meta = (ClampMin = "0", UIMin = "0"))
 	float MaxHookIntensity;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TObjectPtr<USoundBase> ImpulseSound;
 
@@ -44,8 +44,7 @@ private:
 
 	virtual void WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload) override;
 
-	virtual void
-	WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
+	virtual void WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
 
 	virtual void WaitConfirmInput_Callback_Implementation() override;
 

@@ -26,8 +26,7 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(TEXT("PE_ConsumableData"),
-		                       *("Consumable_" + FString::FromInt(ConsumableId)));
+		return FPrimaryAssetId(TEXT("PE_ConsumableData"), *("Consumable_" + FString::FromInt(ConsumableId)));
 	}
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
@@ -35,18 +34,18 @@ public:
 	int32 ConsumableId;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Actor"))
+		meta = (AssetBundles = "SoftData"))
 	TSoftObjectPtr<UStaticMesh> ObjectMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Actor"))
+		meta = (AssetBundles = "SoftData"))
 	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Effects"))
+		meta = (AssetBundles = "Gameplay"))
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Tags"))
+		meta = (AssetBundles = "Gameplay"))
 	FGameplayTagContainer RequirementsTags;
 };

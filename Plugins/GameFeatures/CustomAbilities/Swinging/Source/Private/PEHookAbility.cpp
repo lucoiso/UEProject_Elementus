@@ -17,10 +17,10 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
+	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Stamina);
+	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Mana);
 
-	ActivationBlockedTags.AddTag(WeaponEquippedTag);
+	ActivationBlockedTags.AddTag(GlobalTag_WeaponEquipped);
 
 	bWaitCancel = false;
 	bIgnoreCooldown = true;
@@ -52,7 +52,6 @@ void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle,
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
 	// Ability will end when the input is released: Release the hook
-	bIgnoreCooldown = true;
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }
 
@@ -63,7 +62,8 @@ void UPEHookAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventDat
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
 
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-	                           APELineTargeting::StaticClass(), TargetingParams);
+	                           APELineTargeting::StaticClass(),
+	                           TargetingParams);
 }
 
 void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -71,7 +71,6 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	// If target is invalid, end the ability
 	if (!TargetDataHandle.IsValid(0))
 	{
-		bIgnoreCooldown = true;
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 		return;
 	}
@@ -83,14 +82,13 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	// If there's no actor at the target data, end the ability: Invalid Target
 	if (!IsValid(TargetHit->GetActor()))
 	{
-		bIgnoreCooldown = true;
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 		return;
 	}
 
 	// Create and initialize the hook movement task: This task will perform the physical hook movement
 	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this,
-	                                                      FName("HookTask"),
+	                                                      TEXT("HookTask"),
 	                                                      *TargetHit,
 	                                                      HookIntensity,
 	                                                      MaxHookIntensity);

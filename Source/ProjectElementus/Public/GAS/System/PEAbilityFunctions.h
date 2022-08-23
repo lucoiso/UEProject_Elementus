@@ -28,14 +28,15 @@ public:
 
 	/* Create a FGameplayAbilityTargetDataHandle with the specified Target Actors */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static FGameplayAbilityTargetDataHandle
-	MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
+	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
 
 	/* Give a new Ability to the Player -
 	 * bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static void GiveAbility(UAbilitySystemComponent* TargetABSC, TSubclassOf<UGameplayAbility> Ability,
-	                        const FName InputId, const UEnum* EnumerationClass,
+	static void GiveAbility(UAbilitySystemComponent* TargetABSC,
+	                        TSubclassOf<UGameplayAbility> Ability,
+	                        const FName InputId,
+	                        const UEnum* EnumerationClass,
 	                        const bool bTryRemoveExistingAbilityWithInput,
 	                        const bool bTryRemoveExistingAbilityWithClass);
 

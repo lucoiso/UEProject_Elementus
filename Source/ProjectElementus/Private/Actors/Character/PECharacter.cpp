@@ -16,8 +16,8 @@
 #include "Actors/Interfaces/PEEquipment.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
+#include "Management/Data/PEGlobalTags.h"
 
-static const FGameplayTag& GenericEquipTag = FGameplayTag::RequestGameplayTag(FName("EquipSlot.Generic.Equipped"));
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -35,15 +35,15 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
-	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(
-		TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny_Simple"));
+	static const ConstructorHelpers::FObjectFinder<USkeletalMesh>
+		SkeletalMesh_ObjRef(TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny_Simple"));
 	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh_ObjRef.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(
-		TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
+	static const ConstructorHelpers::FClassFinder<UAnimInstance>
+		Animation_ClassRef(TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
 	if constexpr (&Animation_ClassRef.Class != nullptr)
 	{
 		GetMesh()->SetAnimInstanceClass(Animation_ClassRef.Class);
@@ -125,8 +125,7 @@ void APECharacter::OnRep_Controller()
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->RefreshAbilityActorInfo();
-		AbilitySystemComponent->RemoveActiveEffectsWithTags(
-			FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("State.Dead"))));
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(FGameplayTagContainer(GlobalTag_DeadState));
 	}
 }
 
@@ -172,74 +171,93 @@ void APECharacter::InitializeAbilitySystemComponent(UAbilitySystemComponent* InA
 	AbilitySystemComponent = CastChecked<UPEAbilitySystemComponent>(InABSC);
 	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, this);
 
-	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-		this, UGameFrameworkComponentManager::NAME_GameActorReady);
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this,
+																			 UGameFrameworkComponentManager::NAME_GameActorReady);
 }
 
 // ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
-void APECharacter::EquipItem(const FElementusItemInfo InItem, const FGameplayTag EquipmentSlotTag)
+void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 {
 	if (!HasAuthority())
 	{
 		return;
 	}
 
-	if (int32 FoundIndex;
-		InventoryComponent->FindElementusItemInStack(InItem,
-		                                             FoundIndex,
-		                                             FGameplayTagContainer::CreateFromArray(TArray{EquipmentSlotTag})))
+	if (!InventoryComponent->ContainItemInStack(InItem))
 	{
-		if (InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.HasTag(GenericEquipTag))
+		return;
+	}
+	
+	if (const UElementusItemData* ItemData =
+		UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}, false))
+	{
+		if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
-			// Already equipped
-			UnnequipItem(InItem, EquipmentSlotTag);
-			return;
-		}
-
-		const FGameplayTagContainer& EquipTags = FGameplayTagContainer::CreateFromArray(TArray{
-			GenericEquipTag, EquipmentSlotTag
-		});
-		InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.AppendTags(EquipTags);
-
-		if (const UElementusItemData* ItemData =
-			UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}))
-		{
-			if (UPEEquipment* EquipedItem =
-				Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
+			FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
+			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
+			
+			if (int32 FoundIndex;
+				InventoryComponent->FindElementusItemInStackWithTags(EquipmentSlotTags, FoundIndex))
 			{
+				// Already equipped
+				UnnequipItem(InventoryComponent->GetItemReferenceAt(FoundIndex));
+				return;
+			}	
+
+			if (int32 FoundIndex;
+				InventoryComponent->FindElementusItemInStack(InItem, FoundIndex))
+			{
+				for (const auto& Iterator : EquipmentSlotTags)
+				{
+					if (Iterator != GlobalTag_GenericEquipped)
+					{
+						EquipmentMap.Add(Iterator, InItem);
+					}
+				}
+
+				InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.AppendTags(EquipmentSlotTags);
+
 				EquipedItem->ProcessEquipmentApplication(this);
+				InventoryComponent->OnInventoryUpdate.Broadcast(InItem, EElementusInventoryUpdateOperation::None);
 			}
-		}
+		}		
+
+		UElementusInventoryFunctions::UnloadElementusItem(InItem.ItemId);
 	}
 }
 
 // ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
-void APECharacter::UnnequipItem(const FElementusItemInfo InItem, const FGameplayTag EquipmentSlotTag)
+void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 {
 	if (!HasAuthority())
 	{
 		return;
 	}
 
-	if (int32 FoundIndex;
-		InventoryComponent->FindElementusItemInStack(InItem,
-		                                             FoundIndex,
-		                                             FGameplayTagContainer::CreateFromArray(TArray{EquipmentSlotTag})))
+	if (!InventoryComponent->ContainItemInStack(InItem))
 	{
-		const FGameplayTagContainer& EquipTags = FGameplayTagContainer::CreateFromArray(TArray{
-			GenericEquipTag, EquipmentSlotTag
-		});
-		InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.RemoveTags(EquipTags);
+		return;
+	}
 
-		if (const UElementusItemData* ItemData =
-			UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}))
+	if (const UElementusItemData* ItemData =
+		UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}, false))
+	{
+		if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
-			if (UPEEquipment* EquipedItem =
-				Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
+			FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
+			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
+
+			for (const auto& Iterator : EquipmentSlotTags)
 			{
-				EquipedItem->ProcessEquipmentRemoval(this);
-			}
+				EquipmentMap.Remove(Iterator);
+			}	
+			InItem.Tags.RemoveTags(EquipmentSlotTags);
+			
+			EquipedItem->ProcessEquipmentRemoval(this);
+			InventoryComponent->OnInventoryUpdate.Broadcast(InItem, EElementusInventoryUpdateOperation::None);
 		}
+		
+		UElementusInventoryFunctions::UnloadElementusItem(InItem.ItemId);
 	}
 }
 
@@ -260,10 +278,10 @@ void APECharacter::BeginPlay()
 
 	if (AbilitySystemComponent.IsValid())
 	{
-		AbilitySystemComponent->AbilityActivatedCallbacks.AddUFunction(this, "AbilityActivated");
-		AbilitySystemComponent->AbilityCommittedCallbacks.AddUFunction(this, "AbilityCommited");
-		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, "AbilityEnded");
-		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, "AbilityFailed");
+		AbilitySystemComponent->AbilityActivatedCallbacks.AddUFunction(this, TEXT("AbilityActivated"));
+		AbilitySystemComponent->AbilityCommittedCallbacks.AddUFunction(this, TEXT("AbilityCommited"));
+		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, TEXT("AbilityEnded"));
+		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, TEXT("AbilityFailed"));
 	}
 
 	// Check if this character have a valid Skeletal Mesh and paint it
@@ -278,10 +296,9 @@ void APECharacter::BeginPlay()
 		};
 
 		// Bot: Red | Player: Blue
-		const FLinearColor DestColor =
-			IsBotControlled()
-				? FLinearColor::Red
-				: FLinearColor::Blue;
+		const FLinearColor DestColor = IsBotControlled()
+										? FLinearColor::Red
+										: FLinearColor::Blue;
 
 		DynamicColor_Lambda(0, DestColor);
 		DynamicColor_Lambda(1, DestColor);
@@ -357,9 +374,9 @@ void APECharacter::Landed(const FHitResult& Hit)
 		return;
 	}
 
-	const FGameplayTagContainer DoubleJumpTagContainer
+	const FGameplayTagContainer& DoubleJumpTagContainer
 	{
-		FGameplayTag::RequestGameplayTag(FName("GameplayAbility.Default.DoubleJump"))
+		FGameplayTag::RequestGameplayTag("GameplayAbility.Default.DoubleJump")
 	};
 
 	AbilitySystemComponent->CancelAbilities(&DoubleJumpTagContainer);
@@ -369,13 +386,16 @@ void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
                                                 const FGameplayTagContainer& TagContainer)
 {
 	ABILITY_VLOG(Ability, Warning,
-	             TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
+	             TEXT("Ability %s failed to activate. Owner: %s"),
+	             *Ability->GetName(), *GetName());
 
 	for (const auto& TagIterator : TagContainer)
 	{
 		if (TagIterator.IsValid())
 		{
-			ABILITY_VLOG(Ability, Warning, TEXT("Tag: %s"), *TagIterator.ToString());
+			ABILITY_VLOG(Ability, Warning,
+						 TEXT("Tag: %s"),
+						 *TagIterator.ToString());
 		}
 	}
 

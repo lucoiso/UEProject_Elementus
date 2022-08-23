@@ -72,21 +72,23 @@ void APEConsumableActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	if (PropertyChangedEvent.Property != nullptr)
+	if (PropertyChangedEvent.Property == nullptr)
 	{
-		if (PropertyChangedEvent.Property->GetFName() == GET_MEMBER_NAME_CHECKED(APEConsumableActor, ConsumableData))
+		return;
+	}
+	
+	if (PropertyChangedEvent.Property->GetFName() == GET_MEMBER_NAME_CHECKED(APEConsumableActor, ConsumableData))
+	{
+		// Update data with values in the given UDataAsset
+		if (IsValid(ConsumableData))
 		{
-			// Update data with values in the given UDataAsset
-			if (IsValid(ConsumableData))
-			{
-				!ConsumableData->ObjectMesh.IsNull()
-					? ObjectMesh->SetStaticMesh(ConsumableData->ObjectMesh.LoadSynchronous())
-					: ObjectMesh->SetStaticMesh(nullptr);
+			!ConsumableData->ObjectMesh.IsNull()
+				? ObjectMesh->SetStaticMesh(ConsumableData->ObjectMesh.LoadSynchronous())
+				: ObjectMesh->SetStaticMesh(nullptr);
 
-				!ConsumableData->ObjectVFX.IsNull()
-					? ObjectVFX->SetAsset(ConsumableData->ObjectVFX.LoadSynchronous())
-					: ObjectVFX->SetAsset(nullptr);
-			}
+			!ConsumableData->ObjectVFX.IsNull()
+				? ObjectVFX->SetAsset(ConsumableData->ObjectVFX.LoadSynchronous())
+				: ObjectVFX->SetAsset(nullptr);
 		}
 	}
 }

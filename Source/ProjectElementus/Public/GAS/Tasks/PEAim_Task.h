@@ -20,7 +20,7 @@ public:
 	explicit UPEAim_Task(const FObjectInitializer& ObjectInitializer);
 
 	/* Create a reference to manage this ability task */
-	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility",
-		BlueprintInternalUseOnly = "true"), Category = "Project Elementus | Functions")
-	static UPEAim_Task* Aim(UGameplayAbility* OwningAbility);
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
+		meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "true"))
+	static UPEAim_Task* Aim(UGameplayAbility* OwningAbility, const FName TaskInstanceName);
 };

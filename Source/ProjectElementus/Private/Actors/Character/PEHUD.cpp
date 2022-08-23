@@ -11,8 +11,8 @@ APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUD_ClassRef(
-		TEXT("/Game/Main/Blueprints/Widgets/WB_HUD"));
+	static const ConstructorHelpers::FClassFinder<UUserWidget>
+		UserHUD_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/WB_HUD"));
 	if constexpr (&UserHUD_ClassRef.Class != nullptr)
 	{
 		HUDClass = UserHUD_ClassRef.Class;
@@ -24,7 +24,7 @@ void APEHUD::BeginPlay()
 	// Initialize a Blueprint Widget as HUD if Player Controller is valid
 	if (ensureAlwaysMsgf(IsValid(GetOwningPlayerController()), TEXT("%s have a invalid Controller"), *GetName()))
 	{
-		HUDHandle = CreateWidget(GetOwningPlayerController(), HUDClass, FName("Main HUD"));
+		HUDHandle = CreateWidget(GetOwningPlayerController(), HUDClass, TEXT("Main HUD"));
 		HUDHandle->AddToPlayerScreen();
 	}
 

@@ -13,7 +13,7 @@
  * 
  */
 UCLASS()
-class PROJECTELEMENTUS_API APEInventoryPackage final : public AElementusInventoryPackage, public IPEInteractable
+class PROJECTELEMENTUS_API APEInventoryPackage : public AElementusInventoryPackage, public IPEInteractable
 {
 	GENERATED_BODY()
 

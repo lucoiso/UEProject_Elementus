@@ -11,20 +11,20 @@
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"
 
 UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-	  , CurrentLevel(0.f)
-	  , CurrentExperience(0.f)
-	  , RequiredExperience(1.f)
+	: Super(ObjectInitializer),
+	CurrentLevel(0.f),
+	CurrentExperience(0.f),
+	RequiredExperience(1.f)
 {
-	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingAttributesMetaData_ObjRef(
-		TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_LevelingAS"));
+	static const ConstructorHelpers::FObjectFinder<UDataTable>
+		LevelingAttributesMetaData_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_LevelingAS"));
 	if constexpr (&LevelingAttributesMetaData_ObjRef.Object != nullptr)
 	{
 		UAttributeSet::InitFromMetaDataTable(LevelingAttributesMetaData_ObjRef.Object);
 	}
 
-	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingBonus_ObjRef(
-		TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_LevelingBonus"));
+	static const ConstructorHelpers::FObjectFinder<UDataTable>
+		LevelingBonus_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_LevelingBonus"));
 	if constexpr (&LevelingBonus_ObjRef.Object != nullptr)
 	{
 		LevelingBonusData = LevelingBonus_ObjRef.Object;
@@ -46,7 +46,7 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, con
 		if (const UDataTable* LevelingBonus_Table = LevelingBonusData.LoadSynchronous())
 		{
 			const FPELevelingData LevelingInfo =
-				*LevelingBonus_Table->FindRow<FPELevelingData>(*FString::FromInt(GetCurrentLevel() + 1), "");
+				*LevelingBonus_Table->FindRow<FPELevelingData>(*FString::FromInt(GetCurrentLevel() + 1), FString());
 
 			if constexpr (&LevelingInfo != nullptr)
 			{

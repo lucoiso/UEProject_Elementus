@@ -55,16 +55,15 @@ void APEExplosiveActor::PerformExplosion()
 
 	for (UNiagaraSystem* NiagaraSystem : ExplosionVFXs)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			GetWorld(), NiagaraSystem, GetActorLocation());
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, GetActorLocation());
 	}
 
 	for (const FHitResult& Hit : HitOut)
 	{
 		if (IsValid(Hit.GetActor()))
 		{
-			const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).
-				GetSafeNormal();
+			const FVector Velocity =
+				ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
 			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacter>())
 			{
@@ -73,7 +72,8 @@ void APEExplosiveActor::PerformExplosion()
 					Player->LaunchCharacter(Velocity, true, true);
 
 					if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()),
-					                     TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
+					                     TEXT("%s have a invalid Ability System Component"),
+					                     *Player->GetName()))
 					{
 						ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
 					}

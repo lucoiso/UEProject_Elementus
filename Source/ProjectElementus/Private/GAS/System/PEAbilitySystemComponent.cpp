@@ -18,8 +18,7 @@ void UPEAbilitySystemComponent::ApplyEffectGroupedDataToSelf(FGameplayEffectGrou
 		return;
 	}
 
-	const FGameplayEffectSpecHandle& SpecHandle =
-		MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
+	const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
 
 	for (const TPair<FGameplayTag, float>& StackedData : GroupedData.SetByCallerStackedData)
 	{
@@ -40,8 +39,7 @@ void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGr
 		return;
 	}
 
-	const FGameplayEffectSpecHandle& SpecHandle =
-		MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
+	const FGameplayEffectSpecHandle& SpecHandle = MakeOutgoingSpec(GroupedData.EffectClass, 1.f, MakeEffectContext());
 
 	for (const TPair<FGameplayTag, float>& StackedData : GroupedData.SetByCallerStackedData)
 	{

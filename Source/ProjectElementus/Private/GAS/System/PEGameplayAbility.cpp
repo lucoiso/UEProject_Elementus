@@ -29,8 +29,8 @@ UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializ
 	  AbilityActiveTime(0),
 	  bEndAbilityAfterActiveTime(false)
 {
-	ActivationBlockedTags.AddTag(DeadStateTag);
-	ActivationBlockedTags.AddTag(StunStateTag);
+	ActivationBlockedTags.AddTag(GlobalTag_DeadState);
+	ActivationBlockedTags.AddTag(GlobalTag_StunState);
 
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
@@ -70,7 +70,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 	if (const bool bCanCommit = CommitCheck(Handle, ActorInfo, ActivationInfo);
 		!bCanCommit || !HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
 	{
-		TArray FailureTags =
+		TArray FailureTags
 		{
 			FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.PreActivate"),
 		};
@@ -92,6 +92,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 		ActorInfo->AbilitySystemComponent->NotifyAbilityFailed(Handle, this, FailureContainer);
 
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+		return;
 	}
 
 	ActivationBlockedTags.AppendTags(AbilityTags);
@@ -100,14 +101,14 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 	if (IsInstantiated())
 	{
 		UAbilityTask_WaitGameplayTagAdded* WaitDeadTagAddedTask =
-			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, DeadStateTag);
+			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, GlobalTag_DeadState);
 
 		WaitDeadTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitDeadTagAddedTask->ReadyForActivation();
 
 		UAbilityTask_WaitGameplayTagAdded* WaitStunTagAddedTask =
 			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
-				this, StunStateTag);
+				this, GlobalTag_StunState);
 
 		WaitStunTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitStunTagAddedTask->ReadyForActivation();
@@ -116,6 +117,13 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 		{
 			ActivateWaitCancelInputTask();
 		}
+	}
+
+	// If auto cancel by time is active (by some undef reason), try to clear the timer and invalidate the handle
+	if (CancelationTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(CancelationTimerHandle);
+		CancelationTimerHandle.Invalidate();
 	}
 
 	// If the ability is time based, will cancel after active time
@@ -130,10 +138,10 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 			}
 		});
 
-		ActorInfo->AvatarActor->GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle,
-		                                                               TimerDelegate,
-		                                                               AbilityActiveTime,
-		                                                               false);
+		GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle,
+		                                       TimerDelegate,
+		                                       AbilityActiveTime,
+		                                       false);
 	}
 }
 
@@ -185,9 +193,10 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 		}
 	}
 
-	// If auto cancel by time is active, try to invalidate the timer handle and finish the timer
+	// If auto cancel by time is active, try to clear the timer and invalidate the handle
 	if (CancelationTimerHandle.IsValid())
 	{
+		GetWorld()->GetTimerManager().ClearTimer(CancelationTimerHandle);
 		CancelationTimerHandle.Invalidate();
 	}
 
@@ -195,6 +204,12 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	if (UAbilitySystemComponent* Comp = ActorInfo->AbilitySystemComponent.Get())
 	{
 		Comp->RemoveLooseGameplayTags(AbilityExtraTags);
+	}
+
+	// If the 'Ignore Cooldown' failed, force remove the cooldown tag
+	if (bIgnoreCooldown && GetCooldownTimeRemaining() != 0.f)
+	{
+		RemoveCooldownEffect(ActorInfo->AbilitySystemComponent.Get());
 	}
 }
 
@@ -362,7 +377,8 @@ void UPEGameplayAbility::SpawnProjectileWithTargetEffects(const TSubclassOf<APEP
                                                           [[maybe_unused]] const FGameplayAbilityActivationInfo)
 {
 	UPESpawnProjectile_Task* PESpawnProjectile_Task =
-		UPESpawnProjectile_Task::SpawnProjectile(this, ProjectileClass, ProjectileTransform,
+		UPESpawnProjectile_Task::SpawnProjectile(this, TEXT("SpawnProjectileTask"),
+		                                         ProjectileClass, ProjectileTransform,
 		                                         ProjectileFireDirection, TargetAbilityEffects);
 
 	PESpawnProjectile_Task->OnProjectileSpawn.AddDynamic(this, &UPEGameplayAbility::SpawnProjectile_Callback);
@@ -376,10 +392,7 @@ void UPEGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAbi
 	if (IsValid(GetCooldownGameplayEffect()))
 	{
 		ABILITY_VLOG(this, Display, TEXT("Removing %s ability cooldown."), *GetName());
-
-		FGameplayTagContainer CooldownEffectTags;
-		GetCooldownGameplayEffect()->GetOwnedGameplayTags(CooldownEffectTags);
-		SourceAbilitySystem->RemoveActiveEffectsWithAppliedTags(CooldownEffectTags);
+		SourceAbilitySystem->RemoveActiveGameplayEffectBySourceEffect(CooldownGameplayEffectClass, SourceAbilitySystem);
 	}
 }
 
@@ -470,14 +483,11 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 	{
 		UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
 
-		const FGameplayTag AddTag_Aiming = FGameplayTag::RequestGameplayTag(FName("State.Aiming"));
-		const FGameplayTag AddTag_Confirmation = FGameplayTag::RequestGameplayTag(FName("State.WaitingConfirm"));
+		Comp->AddLooseGameplayTag(GlobalTag_AimingState);
+		Comp->AddLooseGameplayTag(GlobalTag_WaitingConfirmationState);
 
-		Comp->AddLooseGameplayTag(AddTag_Aiming);
-		Comp->AddLooseGameplayTag(AddTag_Confirmation);
-
-		AbilityExtraTags.AddTag(AddTag_Aiming);
-		AbilityExtraTags.AddTag(AddTag_Confirmation);
+		AbilityExtraTags.AddTag(GlobalTag_AimingState);
+		AbilityExtraTags.AddTag(GlobalTag_WaitingConfirmationState);
 	}
 }
 
@@ -485,11 +495,10 @@ void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 {
 	// Add extra tag to the ability system component to tell that we are waiting for confirm input
 	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
-	if (const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingConfirm"));
-		!AbilityExtraTags.HasTag(AddTag))
+	if (!AbilityExtraTags.HasTag(GlobalTag_WaitingConfirmationState))
 	{
-		Comp->AddLooseGameplayTag(AddTag);
-		AbilityExtraTags.AddTag(AddTag);
+		Comp->AddLooseGameplayTag(GlobalTag_WaitingConfirmationState);
+		AbilityExtraTags.AddTag(GlobalTag_WaitingConfirmationState);
 	}
 
 	UAbilityTask_WaitConfirmCancel* AbilityTask_WaitConfirm =
@@ -511,11 +520,10 @@ void UPEGameplayAbility::ActivateWaitCancelInputTask()
 {
 	// Add extra tag to the ability system component to tell that we are waiting for cancel input
 	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
-	if (const FGameplayTag AddTag = FGameplayTag::RequestGameplayTag(FName("State.WaitingCancel"));
-		!AbilityExtraTags.HasTag(AddTag))
+	if (!AbilityExtraTags.HasTag(GlobalTag_WaitingCancelationState))
 	{
-		Comp->AddLooseGameplayTag(AddTag);
-		AbilityExtraTags.AddTag(AddTag);
+		Comp->AddLooseGameplayTag(GlobalTag_WaitingCancelationState);
+		AbilityExtraTags.AddTag(GlobalTag_WaitingCancelationState);
 	}
 
 	UAbilityTask_WaitCancel* AbilityTask_WaitCancel =

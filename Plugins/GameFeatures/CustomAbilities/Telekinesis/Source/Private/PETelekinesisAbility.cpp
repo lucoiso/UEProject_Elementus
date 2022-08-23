@@ -15,13 +15,12 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
 
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
+	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Mana);
+	ActivationOwnedTags.AddTag(GlobalTag_CannotInteract);
 
-	ActivationBlockedTags.AddTag(WeaponEquippedTag);
+	ActivationBlockedTags.AddTag(GlobalTag_WeaponEquipped);
 
-	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(
-		TEXT("/Telekinesis/Sounds/MS_Impulse"));
+	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Telekinesis/Sounds/MS_Impulse"));
 	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
 	{
 		ImpulseSound = ImpulseSound_ObjRef.Object;
@@ -42,7 +41,8 @@ void UPETelekinesisAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	// Targeting: Start task	
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-	                           APELineTargeting::StaticClass(), TargetingParams);
+	                           APELineTargeting::StaticClass(),
+	                           TargetingParams);
 }
 
 void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
@@ -84,9 +84,10 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 
 	// Create the telekinesis movement task:
 	// This task will perform the physical grabbing movement on target
-	AbilityTask =
-		UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this, FName("TelekinesisTask"),
-		                                                         ThrowIntensity, TargetHit->GetActor());
+	AbilityTask = UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this,
+																		   TEXT("TelekinesisTask"),
+																		   ThrowIntensity,
+																		   TargetHit->GetActor());
 
 	// When the grabbing task returns a result, will call GrabbingComplete function
 	AbilityTask->OnGrabbing.BindDynamic(this, &UPETelekinesisAbility::GrabbingComplete);

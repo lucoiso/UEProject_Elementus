@@ -6,6 +6,7 @@
 #include "Actors/Character/PECharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Management/Data/PEGlobalTags.h"
 
 UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -14,11 +15,10 @@ UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectIniti
 
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.DoubleJump"));
 
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina"));
+	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Stamina);
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Dash"));
 
-	static const ConstructorHelpers::FObjectFinder<USoundBase>
-		ImpulseSound_ObjRef(TEXT("/DefaultAbilities/Sounds/MS_DoubleJump"));
+	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/DefaultAbilities/Sounds/MS_DoubleJump"));
 	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
 	{
 		ImpulseSound = ImpulseSound_ObjRef.Object;

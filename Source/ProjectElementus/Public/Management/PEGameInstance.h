@@ -91,7 +91,8 @@ protected:
 public:
 	/* Connect the user to a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName,
+	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum,
+	                                      const FString& ChannelName,
 	                                      const FEOSVoiceChatChannelCredentials Credentials);
 
 	/* Disconnect the user from a voice chat channel */
@@ -115,7 +116,8 @@ public:
 	FCreateSessionDelegate CreateSessionDelegate;
 
 	/* Find created EOS sessions */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Find EOS Sessions"))
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Find EOS Sessions"))
 	bool FindEOSSessions(const int32 LocalUserNum, const bool bIsLANQuery = false, const int32 MaxResults = 100);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
@@ -130,7 +132,8 @@ public:
 	FCancelFindSessionsDelegate CancelFindSessionsDelegate;
 
 	/* Join the specified EOS Session */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Join EOS Session"))
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Join EOS Session"))
 	bool JoinEOSSession(const int32 LocalUserNum, const FSessionDataHandler SessionData);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
@@ -169,8 +172,10 @@ protected:
 	void OnSessionDestroyed(const FName SessionName, const bool bResult);
 
 	FOnSessionUserInviteAcceptedDelegate OnSessionUserInviteAcceptedDelegate;
-	void OnSessionInviteAccepted(const bool bWasSuccessful, const int32 LocalUserNum,
-	                             const FUniqueNetIdPtr UserId, const FOnlineSessionSearchResult& InviteResult);
+	void OnSessionInviteAccepted(const bool bWasSuccessful,
+	                             const int32 LocalUserNum,
+	                             const FUniqueNetIdPtr UserId,
+	                             const FOnlineSessionSearchResult& InviteResult);
 
 private:
 	TSharedPtr<FOnlineSessionSearch> EOSSearchSettings;
@@ -178,14 +183,16 @@ private:
 
 public:
 	/* Login to Epic Online Services */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Login to EOS"))
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Login to EOS"))
 	bool EOSLogin(const int32 LocalUserNum, const FString& Token, const int32 Port, const bool bUsePortal = false);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FUserLoginDelegate UserLoginDelegate;
 
 	/* Logout from Epic Online Services */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Logout from EOS"))
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
+		meta = (DisplayName = "Logout from EOS"))
 	bool EOSLogout(const int32 LocalUserNum);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
@@ -195,7 +202,10 @@ public:
 	bool EOS_Logout(const int8 LocalUserNum);
 
 protected:
-	void OnLoginComplete(const int32 LocalUserNum, const bool bWasSuccessful, const FUniqueNetId& UserId,
+	void OnLoginComplete(const int32 LocalUserNum,
+	                     const bool bWasSuccessful,
+	                     const FUniqueNetId& UserId,
 	                     const FString& Error);
+	
 	void OnLogoutComplete(const int32 LocalUserNum, const bool bWasSuccessful);
 };

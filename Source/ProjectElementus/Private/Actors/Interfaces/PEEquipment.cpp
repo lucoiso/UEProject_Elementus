@@ -8,8 +8,7 @@
 
 void UPEEquipment::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 {
-	if (UPEAbilitySystemComponent* TargetABSC =
-		Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
+	if (UPEAbilitySystemComponent* TargetABSC = Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
 	{
 		for (const auto& Effect : EquipmentEffects)
 		{
@@ -20,8 +19,7 @@ void UPEEquipment::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 
 void UPEEquipment::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 {
-	if (UPEAbilitySystemComponent* TargetABSC =
-		Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
+	if (UPEAbilitySystemComponent* TargetABSC = Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
 	{
 		for (const auto& Effect : EquipmentEffects)
 		{

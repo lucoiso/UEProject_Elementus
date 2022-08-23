@@ -16,13 +16,14 @@ UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer&
 }
 
 UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-	const FName& TaskInstanceName,
+	const FName TaskInstanceName,
 	const float ThrowIntensity,
 	const TWeakObjectPtr<AActor> Target)
 {
 	UPETelekinesisAbility_Task* MyObj = NewAbilityTask<UPETelekinesisAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->TelekinesisTarget = Target;
 	MyObj->Intensity = ThrowIntensity;
+	
 	return MyObj;
 }
 
@@ -38,13 +39,14 @@ void UPETelekinesisAbility_Task::Activate()
 		{
 			PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(),
 			                                                   UPhysicsHandleComponent::StaticClass(),
-			                                                   FName("TelekinesisPhysicsHandle"));
+			                                                   TEXT("TelekinesisPhysicsHandle"));
 
 			if (PhysicsHandle.IsValid())
 			{
 				PhysicsHandle->RegisterComponent();
 				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-				                                       NAME_None, TelekinesisTarget->GetActorLocation());
+				                                       NAME_None,
+				                                       TelekinesisTarget->GetActorLocation());
 
 				if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 				{
@@ -55,8 +57,7 @@ void UPETelekinesisAbility_Task::Activate()
 						OnGrabbing.ExecuteIfBound(true);
 					}
 
-					PhysicsHandle->SetTargetLocation(
-						TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+					PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 
 					bTickingTask = true;
 					return;
@@ -141,8 +142,13 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		FHitResult HitResult;
 		FGameplayTargetDataFilterHandle DataFilterHandle;
 
-		APELineTargeting::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation,
-		                                      EndLocation, "Target", QueryParams);
+		APELineTargeting::LineTraceWithFilter(HitResult,
+		                                      GetWorld(),
+		                                      DataFilterHandle,
+		                                      StartLocation,
+		                                      EndLocation,
+		                                      TEXT("Target"),
+		                                      QueryParams);
 
 		const FVector Temp_EndLoc = HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation;
 		const FVector Direction = (Temp_EndLoc - GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();

@@ -18,6 +18,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Management/PEGameInstance.h"
 #include "Blueprint/UserWidget.h"
+#include "Management/Data/PEGlobalTags.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -31,15 +32,15 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(
-		TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
+	static const ConstructorHelpers::FObjectFinder<UEnum>
+		InputIDEnum_ObjRef(TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
 	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
 	{
 		InputEnumHandle = InputIDEnum_ObjRef.Object;
 	}
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(
-		TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
+	static const ConstructorHelpers::FClassFinder<UUserWidget>
+		InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
 	if constexpr (&InventoryWidget_ClassRef.Class != nullptr)
 	{
 		InventoryWidgetClass = InventoryWidget_ClassRef.Class;
@@ -87,16 +88,14 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 			if (UPEAbilitySystemComponent* AbilitySystemComp_Ref =
 				CastChecked<UPEAbilitySystemComponent>(State->GetAbilitySystemComponent()))
 			{
-				AbilitySystemComp_Ref->RemoveActiveEffectsWithTags(
-					FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("State.Dead"))));
+				AbilitySystemComp_Ref->RemoveActiveEffectsWithTags(FGameplayTagContainer(GlobalTag_DeadState));
 			}
 		}
 
 		const FVector RespawnLocation = PlayerStart->GetActorLocation();
 		const FRotator RespawnRotation = PlayerStart->GetActorRotation();
 
-		if (APECharacter* SpawnedCharacter_Ref =
-			GetWorld()->SpawnActor<APECharacter>(RespawnLocation, RespawnRotation))
+		if (APECharacter* SpawnedCharacter_Ref = GetWorld()->SpawnActor<APECharacter>(RespawnLocation, RespawnRotation))
 		{
 			Possess(SpawnedCharacter_Ref);
 			ChangeState(NAME_Playing);
@@ -124,7 +123,7 @@ void APEPlayerController::Server_ProcessGEApplication_Implementation(const TSubc
 }
 
 #pragma region Elementus Inventory Trade
-void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo> TradeInfo,
+void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo,
                                        UElementusInventoryComponent* OtherComponent,
                                        const bool bIsFromPlayer)
 {
@@ -145,7 +144,7 @@ void APEPlayerController::Server_ProcessTrade_Implementation(const TArray<FEleme
 	ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
 }
 
-void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo> TradeInfo,
+void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo,
                                                 UElementusInventoryComponent* OtherComponent,
                                                 const bool bIsFromPlayer) const
 {
@@ -268,8 +267,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) const
 {
 	CONTROLLER_BASE_VLOG(this, Display, TEXT(" %s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__),
-	                     *Value.ToString(), Value.GetMagnitude());
+	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	// [EOS] Call the static function responsible for activating/deactivating the voice chat
 	UPEEOSLibrary::MuteEOSSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());

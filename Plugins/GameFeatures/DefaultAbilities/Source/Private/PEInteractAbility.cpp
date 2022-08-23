@@ -27,7 +27,7 @@ void UPEInteractAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	TaskHandle = UPEInteractAbility_Task::InteractionTask(this, "InteractTask", AbilityMaxRange, bUseCustomDepth);
+	TaskHandle = UPEInteractAbility_Task::InteractionTask(this, TEXT("InteractTask"), AbilityMaxRange, bUseCustomDepth);
 	TaskHandle->ReadyForActivation();
 }
 

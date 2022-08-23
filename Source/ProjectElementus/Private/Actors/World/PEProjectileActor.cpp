@@ -45,8 +45,10 @@ void APEProjectileActor::FireInDirection(const FVector Direction) const
 	ProjectileMovement->Velocity = ProjectileMovement->InitialSpeed * Direction;
 }
 
-void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor,
-                                                        UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp,
+                                                        AActor* OtherActor,
+                                                        UPrimitiveComponent* OtherComp,
+                                                        FVector NormalImpulse,
                                                         const FHitResult& Hit)
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
@@ -57,8 +59,7 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 		{
 			Character->LaunchCharacter(ImpulseVelocity, true, true);
 
-			if (UPEAbilitySystemComponent* TargetGASC =
-					Cast<UPEAbilitySystemComponent>(Character->GetAbilitySystemComponent());
+			if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(Character->GetAbilitySystemComponent());
 				ensureAlwaysMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 			{
 				ApplyProjectileEffect(TargetGASC);

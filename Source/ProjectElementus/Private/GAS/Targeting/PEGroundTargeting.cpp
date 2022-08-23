@@ -7,5 +7,5 @@
 APEGroundTargeting::APEGroundTargeting(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	TraceProfile = FCollisionProfileName("Target");
+	TraceProfile = FCollisionProfileName(TEXT("Target"));
 }

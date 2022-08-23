@@ -21,6 +21,9 @@ class UPEEquipment : public UObject
 public:
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> EquipmentEffects;
+	
+	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
+	FGameplayTagContainer EquipmentSlotTags;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	virtual void ProcessEquipmentApplication(APECharacter* EquipmentOwner);

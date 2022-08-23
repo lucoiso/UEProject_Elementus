@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
+class UPEEquipment;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
 
 class UPEAbilitySystemComponent;
@@ -24,7 +25,7 @@ struct FGameplayTag;
  *
  */
 UCLASS(config = Game, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APECharacter : public ACharacter, public IAbilitySystemInterface
+class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -87,12 +88,15 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	TMap<FGameplayTag, FElementusItemInfo> EquipmentMap;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void EquipItem(const FElementusItemInfo InItem, const FGameplayTag EquipmentSlotTag);
+	void EquipItem(const FElementusItemInfo& InItem);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void UnnequipItem(const FElementusItemInfo InItem, const FGameplayTag EquipmentSlotTag);
+	void UnnequipItem(FElementusItemInfo& InItem);
 
 protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;

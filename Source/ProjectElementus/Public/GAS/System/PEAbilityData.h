@@ -19,9 +19,7 @@ struct FGameplayEffectGroupedData
 {
 	GENERATED_USTRUCT_BODY()
 
-	FGameplayEffectGroupedData()
-	{
-	}
+	FGameplayEffectGroupedData() = default;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TSubclassOf<UGameplayEffect> EffectClass;
@@ -43,8 +41,7 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(TEXT("PE_AbilityData"),
-		                       *("Ability_" + FString::FromInt(AbilityId)));
+		return FPrimaryAssetId(TEXT("PE_AbilityData"), *("Ability_" + FString::FromInt(AbilityId)));
 	}
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",

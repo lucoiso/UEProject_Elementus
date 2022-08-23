@@ -15,6 +15,7 @@ void UPEAttributeBase::AdjustAttributeForMaxChange(const FGameplayAttributeData&
 			!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
 		{
 			const float CurrentValue = AffectedAttribute.GetCurrentValue();
+			
 			const float NewDelta = CurrentMaxValue > 0.f
 				                       ? CurrentValue * NewMaxValue / CurrentMaxValue - CurrentValue
 				                       : NewMaxValue;

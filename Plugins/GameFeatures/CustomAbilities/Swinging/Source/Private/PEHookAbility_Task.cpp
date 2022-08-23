@@ -15,7 +15,7 @@ UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitial
 }
 
 UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility,
-                                                              const FName& TaskInstanceName,
+                                                              const FName TaskInstanceName,
                                                               const FHitResult HitResult,
                                                               const float HookIntensity,
                                                               const float HookMaxIntensity)
@@ -24,6 +24,7 @@ UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* 
 	MyObj->Intensity = HookIntensity;
 	MyObj->HitDataHandle = HitResult;
 	MyObj->MaxIntensity = HookMaxIntensity;
+	
 	return MyObj;
 }
 

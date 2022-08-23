@@ -22,8 +22,7 @@ public:
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(TEXT("PE_EnemyData"),
-		                       *("Enemy_" + FString::FromInt(EnemyId)));
+		return FPrimaryAssetId(TEXT("PE_EnemyData"), *("Enemy_" + FString::FromInt(EnemyId)));
 	}
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
