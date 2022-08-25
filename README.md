@@ -29,3 +29,4 @@ Please give some feedback and feel invited to test the project and help me with 
 ## Links
 * [Documentation](https://github.com/lucoiso/UEProject_Elementus/wiki)
 * [Unreal Engine Forum](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)
+* [Email](mailto:contatolukevboas@gmail.com)  
