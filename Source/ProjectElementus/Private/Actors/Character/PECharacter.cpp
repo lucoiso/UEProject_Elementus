@@ -183,13 +183,13 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 		return;
 	}
 
-	if (!InventoryComponent->ContainItemInStack(InItem))
+	if (!InventoryComponent->ContainsItem(InItem))
 	{
 		return;
 	}
 	
 	if (const UElementusItemData* ItemData =
-		UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}, false))
+		UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
 	{
 		if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
@@ -197,7 +197,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
 			
 			if (int32 FoundIndex;
-				InventoryComponent->FindElementusItemInStackWithTags(EquipmentSlotTags, FoundIndex))
+				InventoryComponent->FindFirstItemIndexWithTags(EquipmentSlotTags, FoundIndex))
 			{
 				// Already equipped
 				UnnequipItem(InventoryComponent->GetItemReferenceAt(FoundIndex));
@@ -205,7 +205,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 			}	
 
 			if (int32 FoundIndex;
-				InventoryComponent->FindElementusItemInStack(InItem, FoundIndex))
+				InventoryComponent->FindFirstItemIndexWithInfo(InItem, FoundIndex))
 			{
 				for (const auto& Iterator : EquipmentSlotTags)
 				{
@@ -234,13 +234,13 @@ void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 		return;
 	}
 
-	if (!InventoryComponent->ContainItemInStack(InItem))
+	if (!InventoryComponent->ContainsItem(InItem))
 	{
 		return;
 	}
 
 	if (const UElementusItemData* ItemData =
-		UElementusInventoryFunctions::GetElementusItemDataById(InItem.ItemId, {"SoftData"}, false))
+		UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
 	{
 		if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
@@ -356,7 +356,7 @@ void APECharacter::Server_SpawnInventoryPackage_Implementation()
 		                                                    nullptr,
 		                                                    ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemStack(),
+	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemsArray(),
 	                                                 InventoryComponent,
 	                                                 SpawnedPackage->PackageInventory);
 
