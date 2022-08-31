@@ -106,10 +106,10 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 
 void APEPlayerController::ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass)
 {
-	Server_ProcessGEApplication(EffectClass);
+	Server_ProcessGEApplication_Internal(EffectClass);
 }
 
-void APEPlayerController::Server_ProcessGEApplication_Implementation(const TSubclassOf<UGameplayEffect> EffectClass)
+void APEPlayerController::Server_ProcessGEApplication_Internal_Implementation(const TSubclassOf<UGameplayEffect> EffectClass)
 {
 	if (!HasAuthority())
 	{
@@ -133,13 +133,13 @@ void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo>& TradeIn
 	}
 	else
 	{
-		Server_ProcessTrade(TradeInfo, OtherComponent, bIsFromPlayer);
+		Server_ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
 	}
 }
 
-void APEPlayerController::Server_ProcessTrade_Implementation(const TArray<FElementusItemInfo>& TradeInfo,
-                                                             UElementusInventoryComponent* OtherComponent,
-                                                             const bool bIsFromPlayer)
+void APEPlayerController::Server_ProcessTrade_Internal_Implementation(const TArray<FElementusItemInfo>& TradeInfo,
+                                                             		  UElementusInventoryComponent* OtherComponent,
+                                                             		  const bool bIsFromPlayer)
 {
 	ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
 }
@@ -154,10 +154,7 @@ void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>
 	{
 		if (bIsFromPlayer && OtherComponent == nullptr)
 		{
-			for (const auto& Iterator : TradeInfo)
-			{
-				ControllerOwner->InventoryComponent->RemoveElementusItem(Iterator);
-			}
+			ControllerOwner->InventoryComponent->UpdateElementusItems(TradeInfo, EElementusInventoryUpdateOperation::Remove);
 		}
 		else
 		{

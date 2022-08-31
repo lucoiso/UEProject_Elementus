@@ -3,11 +3,11 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/Functions/PEEOSLibrary.h"
+#include "EOSVoiceChatUser.h"
+#include "Interfaces/OnlineAchievementsInterface.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Interfaces/OnlinePresenceInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "Interfaces/OnlineAchievementsInterface.h"
-#include "EOSVoiceChatUser.h"
 
 FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 {

@@ -11,9 +11,9 @@
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
-class UPEEquipment;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
 
+class UPEEquipment;
 class UPEAbilitySystemComponent;
 class UGameplayAbility;
 class UInputAction;
@@ -86,7 +86,7 @@ public:
 	/* Initialize the specified Ability System Component with the given owner actor in this character (AvatarActor) */
 	void InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
@@ -103,6 +103,8 @@ protected:
 
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
 	/* Init a death state with this character */

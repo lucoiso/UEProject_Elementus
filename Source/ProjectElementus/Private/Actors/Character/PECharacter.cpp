@@ -17,6 +17,7 @@
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
 #include "Management/Data/PEGlobalTags.h"
+#include "Net/UnrealNetwork.h"
 
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
@@ -218,7 +219,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 				InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.AppendTags(EquipmentSlotTags);
 
 				EquipedItem->ProcessEquipmentApplication(this);
-				InventoryComponent->OnInventoryUpdate.Broadcast(InItem, EElementusInventoryUpdateOperation::None);
+				InventoryComponent->OnInventoryUpdate.Broadcast();
 			}
 		}		
 
@@ -254,7 +255,7 @@ void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 			InItem.Tags.RemoveTags(EquipmentSlotTags);
 			
 			EquipedItem->ProcessEquipmentRemoval(this);
-			InventoryComponent->OnInventoryUpdate.Broadcast(InItem, EElementusInventoryUpdateOperation::None);
+			InventoryComponent->OnInventoryUpdate.Broadcast();
 		}
 		
 		UElementusInventoryFunctions::UnloadElementusItem(InItem.ItemId);
@@ -303,6 +304,13 @@ void APECharacter::BeginPlay()
 		DynamicColor_Lambda(0, DestColor);
 		DynamicColor_Lambda(1, DestColor);
 	}
+}
+
+void APECharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(APECharacter, InventoryComponent);
 }
 
 void APECharacter::PerformDeath()

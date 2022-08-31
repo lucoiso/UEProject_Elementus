@@ -79,16 +79,16 @@ protected:
 
 private:
 	UFUNCTION(Server, Reliable)
-	void Server_ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo,
-	                         UElementusInventoryComponent* OtherComponent,
-	                         const bool bIsFromPlayer);
+	void Server_ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo,
+	                         		  UElementusInventoryComponent* OtherComponent,
+	                         		  const bool bIsFromPlayer);
 
 	void ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo,
 	                           UElementusInventoryComponent* OtherComponent,
 	                           const bool bIsFromPlayer) const;
 
 	UFUNCTION(Server, Reliable)
-	void Server_ProcessGEApplication(TSubclassOf<UGameplayEffect> EffectClass);
+	void Server_ProcessGEApplication_Internal(TSubclassOf<UGameplayEffect> EffectClass);
 
 	struct FAbilityInputData
 	{

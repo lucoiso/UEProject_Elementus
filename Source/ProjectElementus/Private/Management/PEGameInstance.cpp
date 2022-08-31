@@ -3,11 +3,10 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/PEGameInstance.h"
-#include "Interfaces/OnlineIdentityInterface.h"
 #include "EOSVoiceChatUser.h"
-#include "Kismet/GameplayStatics.h"
 #include "JsonObjectConverter.h"
-
+#include "Interfaces/OnlineIdentityInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 void UPEGameInstance::InitializeVoiceChatFramework()
 {
