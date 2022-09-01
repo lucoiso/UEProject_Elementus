@@ -14,7 +14,7 @@ FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 	return static_cast<FOnlineSubsystemEOS*>(FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM));
 }
 
-FEOSVoiceChatUser* UPEEOSLibrary::GetEOSVoiceChatUser(const int8 LocalUserNum)
+FEOSVoiceChatUser* UPEEOSLibrary::GetEOSVoiceChatUser(const uint8 LocalUserNum)
 {
 	if (FOnlineSubsystemEOS* OnlineSubsystemEOS = GetOnlineSubsystemEOS())
 	{

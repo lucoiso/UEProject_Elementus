@@ -46,7 +46,7 @@ class PROJECTELEMENTUS_API UPEEOSLibrary final : public UBlueprintFunctionLibrar
 public:
 	static FOnlineSubsystemEOS* GetOnlineSubsystemEOS();
 
-	static FEOSVoiceChatUser* GetEOSVoiceChatUser(const int8 LocalUserNum);
+	static FEOSVoiceChatUser* GetEOSVoiceChatUser(const uint8 LocalUserNum);
 
 	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",

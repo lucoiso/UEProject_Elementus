@@ -159,9 +159,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	TArray<FSessionDataHandler> GetSessionsDataHandles() const;
 
-	bool EOS_CreateSession(const int8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings);
-	bool EOS_FindSessions(const int8 SearchingPlayerNum, const bool bIsLANQuery = false, const int8 MaxResults = 100);
-	bool EOS_JoinSession(const int8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession);
+	bool EOS_CreateSession(const uint8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings);
+	bool EOS_FindSessions(const uint8 SearchingPlayerNum, const bool bIsLANQuery = false, const uint8 MaxResults = 100);
+	bool EOS_JoinSession(const uint8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession);
 	bool EOS_DestroySession();
 
 protected:
@@ -198,8 +198,8 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FUserLogoutDelegate UserLogoutDelegate;
 
-	bool EOS_Login(const int8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials);
-	bool EOS_Logout(const int8 LocalUserNum);
+	bool EOS_Login(const uint8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials);
+	bool EOS_Logout(const uint8 LocalUserNum);
 
 protected:
 	void OnLoginComplete(const int32 LocalUserNum,

@@ -332,7 +332,7 @@ TArray<FSessionDataHandler> UPEGameInstance::GetSessionsDataHandles() const
 	return SessionDataHandle_Arr;
 }
 
-bool UPEGameInstance::EOS_CreateSession(const int8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings)
+bool UPEGameInstance::EOS_CreateSession(const uint8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
@@ -347,7 +347,7 @@ bool UPEGameInstance::EOS_CreateSession(const int8 HostingPlayerNum, const FOnli
 	return false;
 }
 
-bool UPEGameInstance::EOS_FindSessions(const int8 SearchingPlayerNum, const bool bIsLANQuery, const int8 MaxResults)
+bool UPEGameInstance::EOS_FindSessions(const uint8 SearchingPlayerNum, const bool bIsLANQuery, const uint8 MaxResults)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
@@ -370,7 +370,7 @@ bool UPEGameInstance::EOS_FindSessions(const int8 SearchingPlayerNum, const bool
 	return false;
 }
 
-bool UPEGameInstance::EOS_JoinSession(const int8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession)
+bool UPEGameInstance::EOS_JoinSession(const uint8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
@@ -552,7 +552,7 @@ bool UPEGameInstance::EOSLogout(const int32 LocalUserNum)
 	return EOS_Logout(LocalUserNum);
 }
 
-bool UPEGameInstance::EOS_Login(const int8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials)
+bool UPEGameInstance::EOS_Login(const uint8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
@@ -568,7 +568,7 @@ bool UPEGameInstance::EOS_Login(const int8 LocalUserNum, const FOnlineAccountCre
 	return false;
 }
 
-bool UPEGameInstance::EOS_Logout(const int8 LocalUserNum)
+bool UPEGameInstance::EOS_Logout(const uint8 LocalUserNum)
 {
 	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
