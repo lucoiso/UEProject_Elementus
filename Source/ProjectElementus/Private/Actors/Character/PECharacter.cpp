@@ -189,7 +189,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 		return;
 	}
 	
-	if (const UElementusItemData* ItemData =
+	if (const UElementusItemData* const ItemData =
 		UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
 	{
 		if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
@@ -208,7 +208,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 			if (int32 FoundIndex;
 				InventoryComponent->FindFirstItemIndexWithInfo(InItem, FoundIndex))
 			{
-				for (const auto& Iterator : EquipmentSlotTags)
+				for (const FGameplayTag& Iterator : EquipmentSlotTags)
 				{
 					if (Iterator != GlobalTag_GenericEquipped)
 					{
@@ -240,7 +240,7 @@ void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 		return;
 	}
 
-	if (const UElementusItemData* ItemData =
+	if (const UElementusItemData* const ItemData =
 		UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
 	{
 		if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
@@ -248,7 +248,7 @@ void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 			FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
 			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
 
-			for (const auto& Iterator : EquipmentSlotTags)
+			for (const FGameplayTag& Iterator : EquipmentSlotTags)
 			{
 				EquipmentMap.Remove(Iterator);
 			}	
@@ -393,17 +393,13 @@ void APECharacter::Landed(const FHitResult& Hit)
 void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
                                                 const FGameplayTagContainer& TagContainer)
 {
-	ABILITY_VLOG(Ability, Warning,
-	             TEXT("Ability %s failed to activate. Owner: %s"),
-	             *Ability->GetName(), *GetName());
+	ABILITY_VLOG(Ability, Warning, TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
 
-	for (const auto& TagIterator : TagContainer)
+	for (const FGameplayTag& TagIterator : TagContainer)
 	{
 		if (TagIterator.IsValid())
 		{
-			ABILITY_VLOG(Ability, Warning,
-						 TEXT("Tag: %s"),
-						 *TagIterator.ToString());
+			ABILITY_VLOG(Ability, Warning, TEXT("Tag: %s"), *TagIterator.ToString());
 		}
 	}
 

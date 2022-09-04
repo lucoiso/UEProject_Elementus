@@ -29,7 +29,7 @@ APEPlayerState::APEPlayerState(const FObjectInitializer& ObjectInitializer)
 
 void APEPlayerState::BeginPlay()
 {
-	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called."), *FString(__func__));
+	PLAYERSTATE_VLOG(this, Display, TEXT("%s called."), *FString(__func__));
 
 	Super::BeginPlay();
 
@@ -52,7 +52,7 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 		return;
 	}
 
-	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
+	PLAYERSTATE_VLOG(this, Display, TEXT("%s called with %s Callback Tag and NewCount equal to %d"),
 	                 *FString(__func__), *CallbackTag.ToString(), NewCount);
 
 	// If death tag != 0, the player is dead
@@ -83,7 +83,7 @@ void APEPlayerState::StunStateChanged_Callback(const FGameplayTag CallbackTag, c
 	}
 
 	PLAYERSTATE_VLOG(this, Display,
-					 TEXT(" %s called with %s Callback Tag and NewCount equal to %d"),
+					 TEXT("%s called with %s Callback Tag and NewCount equal to %d"),
 	                 *FString(__func__), *CallbackTag.ToString(), NewCount);
 
 	// Just ignore/activate movement inputs if have a valid player controller
@@ -100,6 +100,6 @@ APEPlayerController* APEPlayerState::GetPEPlayerController() const
 
 UAbilitySystemComponent* APEPlayerState::GetAbilitySystemComponent() const
 {
-	PLAYERSTATE_VLOG(this, Display, TEXT(" %s called"), *FString(__func__));
+	PLAYERSTATE_VLOG(this, Display, TEXT("%s called"), *FString(__func__));
 	return AbilitySystemComponent;
 }

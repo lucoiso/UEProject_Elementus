@@ -43,7 +43,7 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, con
 
 		// This block will verify if the leveling bonus table exists and modify
 		// the attributes accordingly the current (new) level
-		if (const UDataTable* LevelingBonus_Table = LevelingBonusData.LoadSynchronous())
+		if (const UDataTable* const LevelingBonus_Table = LevelingBonusData.LoadSynchronous())
 		{
 			const FPELevelingData LevelingInfo =
 				*LevelingBonus_Table->FindRow<FPELevelingData>(*FString::FromInt(GetCurrentLevel() + 1), FString());

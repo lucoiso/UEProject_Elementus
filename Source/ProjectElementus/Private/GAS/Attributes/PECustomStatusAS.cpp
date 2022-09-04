@@ -33,9 +33,9 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 	if (Attribute == GetSpeedRateAttribute() || Attribute == GetJumpRateAttribute())
 	{
-		if (const APlayerState* State = Cast<APlayerState>(GetOwningActor()))
+		if (const APlayerState* const State = Cast<APlayerState>(GetOwningActor()))
 		{
-			if (const APECharacter* Character = State->GetPawn<APECharacter>())
+			if (const APECharacter* const Character = State->GetPawn<APECharacter>())
 			{
 				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement();
 					ensureAlwaysMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))

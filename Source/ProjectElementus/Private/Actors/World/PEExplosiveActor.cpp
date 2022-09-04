@@ -53,7 +53,7 @@ void APEExplosiveActor::PerformExplosion()
 	                                   FCollisionShape::MakeSphere(ExplosionRadius),
 	                                   QueryParams);
 
-	for (UNiagaraSystem* NiagaraSystem : ExplosionVFXs)
+	for (UNiagaraSystem* const& NiagaraSystem : ExplosionVFXs)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, GetActorLocation());
 	}

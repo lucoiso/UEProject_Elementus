@@ -53,7 +53,7 @@ void UPEPlayerLibrary::AddDynamicMapping(APlayerController* Controller,
 {
 	if (IsValid(Controller))
 	{
-		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer())
+		if (const ULocalPlayer* const LocalPlayer = Controller->GetLocalPlayer())
 		{
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{
@@ -67,7 +67,7 @@ void UPEPlayerLibrary::RemoveDynamicMapping(APlayerController* Controller, UInpu
 {
 	if (IsValid(Controller))
 	{
-		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer())
+		if (const ULocalPlayer* const LocalPlayer = Controller->GetLocalPlayer())
 		{
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 			{

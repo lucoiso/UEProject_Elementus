@@ -44,7 +44,7 @@ void UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 		                                   *FString::Printf(TEXT("ElementusEquipment_%s"),
 		                                   *WeaponMesh->GetName()));
 
-	for (const auto& Iterator : CompArr)
+	for (UActorComponent* const& Iterator : CompArr)
 	{
 		Iterator->UnregisterComponent();
 		Iterator->RemoveFromRoot();

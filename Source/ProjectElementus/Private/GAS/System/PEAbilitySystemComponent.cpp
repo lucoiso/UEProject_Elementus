@@ -67,7 +67,7 @@ void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromSelf(FGameplayEffectG
 				&& GroupedData.EffectClass == CurEffect.Spec.Def->GetClass()
 				&& InstigatorABSC == CurEffect.Spec.GetEffectContext().GetInstigatorAbilitySystemComponent())
 			{
-				for (const auto& Iterator : GroupedData.SetByCallerStackedData)
+				for (const TPair<FGameplayTag, float>& Iterator : GroupedData.SetByCallerStackedData)
 				{
 					bMatches = CurEffect.Spec.SetByCallerTagMagnitudes.FindRef(Iterator.Key) == Iterator.Value;
 
@@ -102,7 +102,7 @@ void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromTarget(FGameplayEffec
 				&& GroupedData.EffectClass == CurEffect.Spec.Def->GetClass()
 				&& InstigatorABSC == CurEffect.Spec.GetEffectContext().GetInstigatorAbilitySystemComponent())
 			{
-				for (const auto& Iterator : GroupedData.SetByCallerStackedData)
+				for (const TPair<FGameplayTag, float>& Iterator : GroupedData.SetByCallerStackedData)
 				{
 					bMatches = CurEffect.Spec.SetByCallerTagMagnitudes.FindRef(Iterator.Key) == Iterator.Value;
 

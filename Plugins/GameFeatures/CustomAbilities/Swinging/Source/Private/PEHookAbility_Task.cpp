@@ -15,16 +15,16 @@ UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitial
 }
 
 UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility,
-                                                              const FName TaskInstanceName,
-                                                              const FHitResult HitResult,
-                                                              const float HookIntensity,
-                                                              const float HookMaxIntensity)
+															  const FName TaskInstanceName,
+															  const FHitResult HitResult,
+															  const float HookIntensity,
+															  const float HookMaxIntensity)
 {
 	UPEHookAbility_Task* MyObj = NewAbilityTask<UPEHookAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->Intensity = HookIntensity;
 	MyObj->HitDataHandle = HitResult;
 	MyObj->MaxIntensity = HookMaxIntensity;
-	
+
 	return MyObj;
 }
 
@@ -32,41 +32,40 @@ void UPEHookAbility_Task::Activate()
 {
 	Super::Activate();
 
-	if (ensureAlwaysMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
+	check(Ability);
+
+	HookOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
+
+	if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 	{
-		HookOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
+		CurrentHookLocation = HitDataHandle.Location;
 
-		if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+		HitTarget = Cast<APECharacter>(HitDataHandle.GetActor());
+		if (!HitTarget.IsValid())
 		{
-			CurrentHookLocation = HitDataHandle.Location;
-
-			HitTarget = Cast<APECharacter>(HitDataHandle.GetActor());
-			if (!HitTarget.IsValid())
-			{
-				HitTarget.Reset();
-			}
-
-			if (IsValid(HitDataHandle.GetComponent()))
-			{
-				if (HitDataHandle.GetComponent()->IsSimulatingPhysics())
-				{
-					HitDataHandle.GetComponent()->WakeAllRigidBodies();
-				}
-
-				if (ShouldBroadcastAbilityTaskDelegates())
-				{
-					OnHooking.ExecuteIfBound(true);
-				}
-
-				bTickingTask = true;
-				return;
-			}
+			HitTarget.Reset();
 		}
 
-		if (ShouldBroadcastAbilityTaskDelegates())
+		if (IsValid(HitDataHandle.GetComponent()))
 		{
-			OnHooking.ExecuteIfBound(false);
+			if (HitDataHandle.GetComponent()->IsSimulatingPhysics())
+			{
+				HitDataHandle.GetComponent()->WakeAllRigidBodies();
+			}
+
+			if (ShouldBroadcastAbilityTaskDelegates())
+			{
+				OnHooking.ExecuteIfBound(true);
+			}
+
+			bTickingTask = true;
+			return;
 		}
+	}
+
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		OnHooking.ExecuteIfBound(false);
 	}
 
 	bIsFinished = true;
@@ -102,8 +101,8 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 		// To avoid wrong location, we will use the final location of the hook instead of the hit location
 		CurrentHookLocation =
 			bIsTargetMovable && !HitDataHandle.GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>()
-				? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName)
-				: HitDataHandle.Location;
+			? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName)
+			: HitDataHandle.Location;
 
 		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation();
 			Difference.Size() >= 100.f)

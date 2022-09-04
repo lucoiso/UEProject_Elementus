@@ -12,12 +12,12 @@ UPESpawnProjectile_Task::UPESpawnProjectile_Task(const FObjectInitializer& Objec
 }
 
 UPESpawnProjectile_Task* UPESpawnProjectile_Task::SpawnProjectile(UGameplayAbility* OwningAbility,
-                                                                  const FName TaskInstanceName,
-                                                                  const TSubclassOf<APEProjectileActor> ClassToSpawn,
-                                                                  const FTransform SpawnTransform,
-                                                                  const FVector DirectionToFire,
-                                                                  const TArray<FGameplayEffectGroupedData>
-                                                                  EffectDataArray)
+																  const FName TaskInstanceName,
+																  const TSubclassOf<APEProjectileActor> ClassToSpawn,
+																  const FTransform SpawnTransform,
+																  const FVector DirectionToFire,
+																  const TArray<FGameplayEffectGroupedData>
+																  EffectDataArray)
 {
 	UPESpawnProjectile_Task* MyObj = NewAbilityTask<UPESpawnProjectile_Task>(OwningAbility, TaskInstanceName);
 	MyObj->ProjectileClass = ClassToSpawn;
@@ -32,39 +32,38 @@ void UPESpawnProjectile_Task::Activate()
 {
 	Super::Activate();
 
-	if (ensureAlwaysMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
+	check(Ability);
+
+	if (Ability->GetActorInfo().IsNetAuthority())
 	{
-		if (Ability->GetActorInfo().IsNetAuthority())
+		if (ProjectileClass != nullptr)
 		{
-			if (ProjectileClass != nullptr)
+			APEProjectileActor* SpawnedProjectile =
+				GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform,
+					Ability->GetAvatarActorFromActorInfo(),
+					Ability->GetActorInfo().PlayerController->GetPawn(),
+					ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+			SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
+			SpawnedProjectile->FinishSpawning(ProjectileTransform);
+
+			if (IsValid(SpawnedProjectile))
 			{
-				APEProjectileActor* SpawnedProjectile =
-					GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform,
-					                                                   Ability->GetAvatarActorFromActorInfo(),
-					                                                   Ability->GetActorInfo().PlayerController->GetPawn(),
-					                                                   ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+				SpawnedProjectile->FireInDirection(ProjectileFireDirection);
 
-				SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
-				SpawnedProjectile->FinishSpawning(ProjectileTransform);
-
-				if (IsValid(SpawnedProjectile))
+				if (ShouldBroadcastAbilityTaskDelegates())
 				{
-					SpawnedProjectile->FireInDirection(ProjectileFireDirection);
-
-					if (ShouldBroadcastAbilityTaskDelegates())
-					{
-						OnProjectileSpawn.Broadcast(SpawnedProjectile);
-					}
-				}
-				else if (ShouldBroadcastAbilityTaskDelegates())
-				{
-					OnSpawnFailed.Broadcast(nullptr);
+					OnProjectileSpawn.Broadcast(SpawnedProjectile);
 				}
 			}
 			else if (ShouldBroadcastAbilityTaskDelegates())
 			{
 				OnSpawnFailed.Broadcast(nullptr);
 			}
+		}
+		else if (ShouldBroadcastAbilityTaskDelegates())
+		{
+			OnSpawnFailed.Broadcast(nullptr);
 		}
 	}
 

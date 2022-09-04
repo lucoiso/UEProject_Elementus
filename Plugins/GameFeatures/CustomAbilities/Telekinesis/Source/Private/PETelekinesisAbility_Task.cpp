@@ -16,14 +16,14 @@ UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer&
 }
 
 UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-	const FName TaskInstanceName,
-	const float ThrowIntensity,
-	const TWeakObjectPtr<AActor> Target)
+																					 const FName TaskInstanceName,
+																					 const float ThrowIntensity,
+																					 const TWeakObjectPtr<AActor> Target)
 {
 	UPETelekinesisAbility_Task* MyObj = NewAbilityTask<UPETelekinesisAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->TelekinesisTarget = Target;
 	MyObj->Intensity = ThrowIntensity;
-	
+
 	return MyObj;
 }
 
@@ -31,44 +31,43 @@ void UPETelekinesisAbility_Task::Activate()
 {
 	Super::Activate();
 
-	if (ensureAlwaysMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
+	check(Ability);
+
+	TelekinesisOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
+
+	if (ensureAlwaysMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 	{
-		TelekinesisOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
+		PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(),
+			UPhysicsHandleComponent::StaticClass(),
+			TEXT("TelekinesisPhysicsHandle"));
 
-		if (ensureAlwaysMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+		if (PhysicsHandle.IsValid())
 		{
-			PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(),
-			                                                   UPhysicsHandleComponent::StaticClass(),
-			                                                   TEXT("TelekinesisPhysicsHandle"));
+			PhysicsHandle->RegisterComponent();
+			PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
+				NAME_None,
+				TelekinesisTarget->GetActorLocation());
 
-			if (PhysicsHandle.IsValid())
+			if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 			{
-				PhysicsHandle->RegisterComponent();
-				PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-				                                       NAME_None,
-				                                       TelekinesisTarget->GetActorLocation());
+				PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
 
-				if (IsValid(PhysicsHandle->GetGrabbedComponent()))
+				if (ShouldBroadcastAbilityTaskDelegates())
 				{
-					PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
-
-					if (ShouldBroadcastAbilityTaskDelegates())
-					{
-						OnGrabbing.ExecuteIfBound(true);
-					}
-
-					PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
-
-					bTickingTask = true;
-					return;
+					OnGrabbing.ExecuteIfBound(true);
 				}
+
+				PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+
+				bTickingTask = true;
+				return;
 			}
 		}
+	}
 
-		if (ShouldBroadcastAbilityTaskDelegates())
-		{
-			OnGrabbing.ExecuteIfBound(false);
-		}
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		OnGrabbing.ExecuteIfBound(false);
 	}
 
 	bIsFinished = true;
@@ -124,8 +123,6 @@ void UPETelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 void UPETelekinesisAbility_Task::ThrowObject()
 {
-	UE_LOG(LogGameplayTasks, Warning, TEXT(" %s called"), *FString(__func__));
-
 	bIsFinished = true;
 
 	if (UPrimitiveComponent* GrabbedPrimitive_Temp = PhysicsHandle->GetGrabbedComponent())
@@ -143,12 +140,12 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		FGameplayTargetDataFilterHandle DataFilterHandle;
 
 		APELineTargeting::LineTraceWithFilter(HitResult,
-		                                      GetWorld(),
-		                                      DataFilterHandle,
-		                                      StartLocation,
-		                                      EndLocation,
-		                                      TEXT("Target"),
-		                                      QueryParams);
+			GetWorld(),
+			DataFilterHandle,
+			StartLocation,
+			EndLocation,
+			TEXT("Target"),
+			QueryParams);
 
 		const FVector Temp_EndLoc = HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation;
 		const FVector Direction = (Temp_EndLoc - GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
