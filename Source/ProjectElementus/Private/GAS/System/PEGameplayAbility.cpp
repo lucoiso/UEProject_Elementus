@@ -51,7 +51,7 @@ void UPEGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInf
 			FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.OnGive"),
 			FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.TryActivate")
 		};
-		const FGameplayTagContainer& FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
+		const FGameplayTagContainer FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
 		ActorInfo->AbilitySystemComponent->NotifyAbilityFailed(Spec.Handle, this, FailureContainer);
 	}
 }
@@ -88,7 +88,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.Cooldown"));
 		}
 
-		const FGameplayTagContainer& FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
+		const FGameplayTagContainer FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
 		ActorInfo->AbilitySystemComponent->NotifyAbilityFailed(Handle, this, FailureContainer);
 
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
@@ -293,7 +293,7 @@ void UPEGameplayAbility::ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHan
 
 	for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
 	{
-		const FGameplayEffectSpecHandle& SpecHandle =
+		const FGameplayEffectSpecHandle SpecHandle =
 			MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
@@ -344,7 +344,7 @@ void UPEGameplayAbility::ApplyAbilityEffectsToTarget(const FGameplayAbilityTarge
 
 	for (const FGameplayEffectGroupedData& EffectGroup : TargetAbilityEffects)
 	{
-		const FGameplayEffectSpecHandle& SpecHandle =
+		const FGameplayEffectSpecHandle SpecHandle =
 			MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
 
 		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)

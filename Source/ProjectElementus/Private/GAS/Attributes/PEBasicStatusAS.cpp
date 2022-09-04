@@ -67,8 +67,8 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 			if (!GlobalDeathEffect.IsNull())
 			{
-				const auto& InDeathEffect = GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>();
-				const auto& InEffectContext = GetOwningAbilitySystemComponent()->MakeEffectContext();
+				const UGameplayEffect* InDeathEffect = GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>();
+				const FGameplayEffectContextHandle InEffectContext = GetOwningAbilitySystemComponent()->MakeEffectContext();
 				
 				GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(InDeathEffect, 1.f, InEffectContext);
 			}
@@ -77,7 +77,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 		// If stamina is 0 or less, cancel abilities that use stamina
 		if (Attribute == GetStaminaAttribute())
 		{
-			const FGameplayTagContainer& StaminaCostTagContainer
+			const FGameplayTagContainer StaminaCostTagContainer
 			{
 				GlobalTag_CostWhileActive_Stamina
 			};
@@ -88,7 +88,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 		// If mana is 0 or less, cancel abilities that use mana
 		if (Attribute == GetManaAttribute())
 		{
-			const FGameplayTagContainer& ManaCostTagContainer
+			const FGameplayTagContainer ManaCostTagContainer
 			{
 				GlobalTag_CostWhileActive_Mana
 			};

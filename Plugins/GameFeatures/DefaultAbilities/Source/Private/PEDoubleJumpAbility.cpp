@@ -49,7 +49,7 @@ void UPEDoubleJumpAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	}
 	else
 	{
-		const FVector& VFXLocation = Player->GetMesh()->GetSocketLocation("Pelvis_Socket");
+		const FVector VFXLocation = Player->GetMesh()->GetSocketLocation("Pelvis_Socket");
 
 		FGameplayCueParameters Params;
 		Params.Location = VFXLocation;

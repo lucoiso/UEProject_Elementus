@@ -193,9 +193,9 @@ void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum,
 
 				FOnlineAchievementsWriteRef WriteObject = NewAchievement.ToSharedRef();
 
-				const FUniqueNetId& UserNetId = *IdentityInterface->GetUniquePlayerId(LocalUserNum).Get();
+				const FUniqueNetIdPtr UserNetId = IdentityInterface->GetUniquePlayerId(LocalUserNum);
 				
-				const FOnAchievementsWrittenDelegate& AchievementsWriteDelegate =
+				const FOnAchievementsWrittenDelegate AchievementsWriteDelegate =
 					FOnAchievementsWrittenDelegate::CreateLambda([](const FUniqueNetId& UserID, const bool bResult)
 						{
 							UE_LOG(LogTemp, Log,
@@ -203,7 +203,7 @@ void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum,
 								   *UserID.ToString(), bResult);
 						});				
 
-				AchievementsInterface->WriteAchievements(UserNetId, WriteObject, AchievementsWriteDelegate);
+				AchievementsInterface->WriteAchievements(*UserNetId, WriteObject, AchievementsWriteDelegate);
 			}
 		}
 	}

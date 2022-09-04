@@ -382,7 +382,7 @@ void APECharacter::Landed(const FHitResult& Hit)
 		return;
 	}
 
-	const FGameplayTagContainer& DoubleJumpTagContainer
+	const FGameplayTagContainer DoubleJumpTagContainer
 	{
 		FGameplayTag::RequestGameplayTag("GameplayAbility.Default.DoubleJump")
 	};
