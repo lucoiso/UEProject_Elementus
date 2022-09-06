@@ -56,6 +56,12 @@ void UPEGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInf
 	}
 }
 
+void UPEGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{	
+	Super::OnRemoveAbility(ActorInfo, Spec);
+	RemoveAbilityEffectsFromSelf(ActorInfo);
+}
+
 void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
                                      const FGameplayAbilityActorInfo* ActorInfo,
                                      const FGameplayAbilityActivationInfo ActivationInfo,
@@ -107,8 +113,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle,
 		WaitDeadTagAddedTask->ReadyForActivation();
 
 		UAbilityTask_WaitGameplayTagAdded* WaitStunTagAddedTask =
-			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
-				this, GlobalTag_StunState);
+			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, GlobalTag_StunState);
 
 		WaitStunTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitStunTagAddedTask->ReadyForActivation();
@@ -174,8 +179,8 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	if (IsValid(GetCostGameplayEffect())
 		&& GetCostGameplayEffect()->DurationPolicy == EGameplayEffectDurationType::Infinite)
 	{
-		ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(
-			GetCostGameplayEffect()->GetClass(), ActorInfo->AbilitySystemComponent.Get());
+		ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(GetCostGameplayEffect()->GetClass(), 
+																					ActorInfo->AbilitySystemComponent.Get());
 	}
 
 	// Remove active time based buff/debuff effects from self

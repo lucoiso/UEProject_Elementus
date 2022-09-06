@@ -69,6 +69,9 @@ private:
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo,
 	                           const FGameplayAbilitySpec& Spec) override final;
 
+	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo,
+								 const FGameplayAbilitySpec& Spec) override final;
+
 	virtual void PreActivate(const FGameplayAbilitySpecHandle Handle,
 	                         const FGameplayAbilityActorInfo* ActorInfo,
 	                         const FGameplayAbilityActivationInfo ActivationInfo,
