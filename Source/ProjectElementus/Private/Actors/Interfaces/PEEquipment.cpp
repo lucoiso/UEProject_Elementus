@@ -8,7 +8,7 @@
 
 void UPEEquipment::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 {
-	if (UPEAbilitySystemComponent* TargetABSC = Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
+	if (UPEAbilitySystemComponent* const TargetABSC = Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
 	{
 		for (const FGameplayEffectGroupedData& Effect : EquipmentEffects)
 		{
@@ -19,7 +19,7 @@ void UPEEquipment::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 
 void UPEEquipment::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 {
-	if (UPEAbilitySystemComponent* TargetABSC = Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
+	if (UPEAbilitySystemComponent* const TargetABSC = Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
 	{
 		for (const FGameplayEffectGroupedData& Effect : EquipmentEffects)
 		{

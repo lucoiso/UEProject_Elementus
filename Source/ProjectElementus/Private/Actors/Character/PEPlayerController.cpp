@@ -95,7 +95,7 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 		const FVector RespawnLocation = PlayerStart->GetActorLocation();
 		const FRotator RespawnRotation = PlayerStart->GetActorRotation();
 
-		if (APECharacter* SpawnedCharacter_Ref = GetWorld()->SpawnActor<APECharacter>(RespawnLocation, RespawnRotation))
+		if (APECharacter* const SpawnedCharacter_Ref = GetWorld()->SpawnActor<APECharacter>(RespawnLocation, RespawnRotation))
 		{
 			Possess(SpawnedCharacter_Ref);
 			ChangeState(NAME_Playing);
@@ -116,7 +116,7 @@ void APEPlayerController::Server_ProcessGEApplication_Internal_Implementation(co
 		return;
 	}
 
-	if (UAbilitySystemComponent* TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn()))
+	if (UAbilitySystemComponent* const TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn()))
 	{
 		TargetABSC->ApplyGameplayEffectToSelf(EffectClass.GetDefaultObject(), 1.f, TargetABSC->MakeEffectContext());
 	}
@@ -175,7 +175,7 @@ void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>
 void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(UInputAction* Action,
 	const int32 InputID)
 {
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+	if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 		ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
 		const FAbilityInputData AbilityBinding
@@ -194,7 +194,7 @@ void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
 void APEPlayerController::RemoveAbilityInputBinding_Implementation_Implementation(const UInputAction* Action) const
 {
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+	if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 		ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
 		EnhancedInputComponent->RemoveBindingByHandle(AbilityActionBindings.FindRef(Action).OnPressedHandle);
@@ -331,7 +331,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"),
 	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
-	if (APECharacter* ControllerOwner = GetPawn<APECharacter>())
+	if (APECharacter* const ControllerOwner = GetPawn<APECharacter>())
 	{
 		Value.Get<bool>()
 			? ControllerOwner->Jump()

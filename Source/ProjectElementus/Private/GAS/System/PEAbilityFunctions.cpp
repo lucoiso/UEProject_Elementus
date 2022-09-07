@@ -10,7 +10,7 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSi
 {
 	FGameplayAbilityTargetDataHandle TargetData;
 
-	FGameplayAbilityTargetData_SingleTargetHit* NewData = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
+	FGameplayAbilityTargetData_SingleTargetHit* const NewData = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
 	TargetData.Add(NewData);
 
 	return TargetData;
@@ -23,7 +23,7 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromHi
 
 	for (const FHitResult& HitResult : HitResults)
 	{
-		FGameplayAbilityTargetData_SingleTargetHit* NewData = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
+		FGameplayAbilityTargetData_SingleTargetHit* const NewData = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
 		TargetData.Add(NewData);
 	}
 
@@ -35,7 +35,7 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromAc
 {
 	if (!TargetActors.IsEmpty())
 	{
-		FGameplayAbilityTargetData_ActorArray* NewData = new FGameplayAbilityTargetData_ActorArray();
+		FGameplayAbilityTargetData_ActorArray* const NewData = new FGameplayAbilityTargetData_ActorArray();
 		NewData->TargetActorArray.Append(TargetActors);
 
 		return FGameplayAbilityTargetDataHandle(NewData);
@@ -65,7 +65,7 @@ void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
 			return;
 		}
 
-		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec* AbilitySpec) -> void
+		const auto RemoveAbility_Lambda = [&](const FGameplayAbilitySpec* const& AbilitySpec) -> void
 		{
 			if (AbilitySpec != nullptr)
 			{
@@ -75,13 +75,13 @@ void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
 
 		if (bTryRemoveExistingAbilityWithClass)
 		{
-			const FGameplayAbilitySpec* AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
+			const FGameplayAbilitySpec* const AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
 			RemoveAbility_Lambda(AbilitySpec);
 		}
 
 		if (bTryRemoveExistingAbilityWithInput)
 		{
-			const FGameplayAbilitySpec* AbilitySpec = TargetABSC->FindAbilitySpecFromInputID(InputID);
+			const FGameplayAbilitySpec* const AbilitySpec = TargetABSC->FindAbilitySpecFromInputID(InputID);
 			RemoveAbility_Lambda(AbilitySpec);
 		}
 
@@ -103,7 +103,7 @@ void UPEAbilityFunctions::RemoveAbility(UAbilitySystemComponent* TargetABSC,
 			return;
 		}
 
-		const FGameplayAbilitySpec* AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
+		const FGameplayAbilitySpec* const AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
 
 		if (AbilitySpec == nullptr)
 		{

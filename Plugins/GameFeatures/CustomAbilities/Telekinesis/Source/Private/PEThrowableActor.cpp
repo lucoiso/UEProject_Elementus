@@ -45,7 +45,7 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AA
 	{
 		if (OtherActor->GetClass()->IsChildOf<APECharacter>())
 		{
-			if (APECharacter* Player = Cast<APECharacter>(OtherActor))
+			if (APECharacter* const Player = Cast<APECharacter>(OtherActor))
 			{
 				constexpr float ImpulseMultiplier = 5.f;
 
@@ -74,7 +74,7 @@ void APEThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC
 		return;
 	}
 
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
+	if (UPEAbilitySystemComponent* const TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
 		for (const FGameplayEffectGroupedData& Effect : HitEffects)
 		{

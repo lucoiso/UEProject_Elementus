@@ -41,8 +41,8 @@ void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 {
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
-	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
-	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+	const FGameplayTagContainer* const SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
+	const FGameplayTagContainer* const TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
 	FAggregatorEvaluateParameters EvaluationParameters;
 	EvaluationParameters.SourceTags = SourceTags;
@@ -66,7 +66,7 @@ void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 	                                                           DefenseRate);
 	DefenseRate = FMath::Max<float>(DefenseRate, 0.0f);
 
-	const auto CalculateDamage = [BaseDamage, AttackRate, DefenseRate]() -> float
+	const auto CalculateDamage = [&BaseDamage, &AttackRate, &DefenseRate]() -> float
 	{
 		float DamageDone = BaseDamage + AttackRate / DefenseRate * FMath::FRandRange(1.f, BaseDamage);
 

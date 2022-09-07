@@ -58,11 +58,11 @@ void APEPlayerState::DeathStateChanged_Callback(const FGameplayTag CallbackTag, 
 	// If death tag != 0, the player is dead
 	if (NewCount != 0)
 	{
-		if (APEPlayerController* Controller_Temp = GetPEPlayerController();
+		if (APEPlayerController* const Controller_Temp = GetPEPlayerController();
 			ensureAlwaysMsgf(IsValid(Controller_Temp), TEXT("%s have a invalid Controller"), *GetName()))
 		{
 			// If this controller have a valid character, perform death
-			if (APECharacter* Player_Temp = Controller_Temp->GetPawn<APECharacter>();
+			if (APECharacter* const Player_Temp = Controller_Temp->GetPawn<APECharacter>();
 				ensureAlwaysMsgf(IsValid(Player_Temp), TEXT("%s have a invalid Player"), *GetName()))
 			{
 				Player_Temp->PerformDeath();

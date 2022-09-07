@@ -19,7 +19,7 @@ UPESpawnProjectile_Task* UPESpawnProjectile_Task::SpawnProjectile(UGameplayAbili
 																  const TArray<FGameplayEffectGroupedData>
 																  EffectDataArray)
 {
-	UPESpawnProjectile_Task* MyObj = NewAbilityTask<UPESpawnProjectile_Task>(OwningAbility, TaskInstanceName);
+	UPESpawnProjectile_Task* const MyObj = NewAbilityTask<UPESpawnProjectile_Task>(OwningAbility, TaskInstanceName);
 	MyObj->ProjectileClass = ClassToSpawn;
 	MyObj->ProjectileTransform = SpawnTransform;
 	MyObj->ProjectileFireDirection = DirectionToFire;

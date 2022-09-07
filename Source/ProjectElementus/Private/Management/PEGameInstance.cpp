@@ -23,7 +23,7 @@ void UPEGameInstance::ShutdownVoiceChatFramework()
 	{
 		DisconnectVoiceChatFramework();
 
-		if (FOnlineSubsystemEOS* OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
+		if (FOnlineSubsystemEOS* const OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
 		{
 			if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
 			{
@@ -128,12 +128,12 @@ void UPEGameInstance::OnVoiceChatDisconnected(const FVoiceChatResult& Result)
 
 void UPEGameInstance::LoginToVoiceChatFramework(const int32 LocalUserNum)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface();
 			IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn)
 		{
-			if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
+			if (FEOSVoiceChatUser* const VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 			{
 				OnVoiceChatLoginCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatLogin);
 
@@ -148,9 +148,9 @@ void UPEGameInstance::LoginToVoiceChatFramework(const int32 LocalUserNum)
 
 void UPEGameInstance::LogoutFromVoiceChatFramework(const int32 LocalUserNum)
 {
-	if (FOnlineSubsystemEOS* OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
+	if (FOnlineSubsystemEOS* const OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
 	{
-		if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
+		if (FEOSVoiceChatUser* const VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 		{
 			OnVoiceChatLogoutCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatLogout);
 			VoiceChatUserPtr->Logout(OnVoiceChatLogoutCompleteDelegate);
@@ -212,7 +212,7 @@ void UPEGameInstance::ConnectVoiceChatToSessionChannel(const int32 LocalUserNum,
 		   TEXT("%s - Local User Num: %d; Channel Name: %s"),
 		   *FString(__func__), LocalUserNum, *ChannelName);
 
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
+	if (FEOSVoiceChatUser* const VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 	{
 		OnVoiceChatChannelJoinCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatChannelJoined);
 
@@ -231,7 +231,7 @@ void UPEGameInstance::LeaveVoiceChatSessionChannel(const int32 LocalUserNum, con
 	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum,
 	       *ChannelName);
 
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
+	if (FEOSVoiceChatUser* const VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 	{
 		OnVoiceChatChannelLeaveCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatChannelLeft);
 		VoiceChatUserPtr->LeaveChannel(ChannelName, OnVoiceChatChannelLeaveCompleteDelegate);
@@ -284,7 +284,7 @@ bool UPEGameInstance::FindEOSSessions(const int32 LocalUserNum, const bool bIsLA
 
 bool UPEGameInstance::CancelFindEOSSessions()
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -314,7 +314,7 @@ void UPEGameInstance::ServerTravelToLevel(const FName LevelName) const
 
 void UPEGameInstance::ClientTravelToSessionLevel(const int32 LocalUserNum) const
 {
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), LocalUserNum);
+	if (APlayerController* const PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), LocalUserNum);
 		!EOSCurrentSessionInfo.IsEmpty())
 	{
 		PlayerController->ClientTravel(EOSCurrentSessionInfo, TRAVEL_Absolute);
@@ -334,7 +334,7 @@ TArray<FSessionDataHandler> UPEGameInstance::GetSessionsDataHandles() const
 
 bool UPEGameInstance::EOS_CreateSession(const uint8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -349,7 +349,7 @@ bool UPEGameInstance::EOS_CreateSession(const uint8 HostingPlayerNum, const FOnl
 
 bool UPEGameInstance::EOS_FindSessions(const uint8 SearchingPlayerNum, const bool bIsLANQuery, const uint8 MaxResults)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -372,7 +372,7 @@ bool UPEGameInstance::EOS_FindSessions(const uint8 SearchingPlayerNum, const boo
 
 bool UPEGameInstance::EOS_JoinSession(const uint8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -387,7 +387,7 @@ bool UPEGameInstance::EOS_JoinSession(const uint8 LocalUserNum, const FOnlineSes
 
 bool UPEGameInstance::EOS_DestroySession()
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -406,7 +406,7 @@ void UPEGameInstance::OnSessionCreated(const FName SessionName, const bool bResu
 		   TEXT("%s - Session: %s; Result: %d"),
 		   *FString(__func__), *SessionName.ToString(), bResult);
 
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -422,7 +422,7 @@ void UPEGameInstance::OnSessionCreated(const FName SessionName, const bool bResu
 
 void UPEGameInstance::OnSessionsFound(const bool bResult)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -461,7 +461,7 @@ void UPEGameInstance::OnCancelFindSessions(const bool bResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s - Result: %d"), *FString(__func__), bResult);
 
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -483,7 +483,7 @@ void UPEGameInstance::OnSessionJoined(const FName SessionName, const EOnJoinSess
 		   TEXT("%s - Session: %s; Result: %d"),
 		   *FString(__func__), *SessionName.ToString(), Result);
 
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -506,7 +506,7 @@ void UPEGameInstance::OnSessionDestroyed(const FName SessionName, const bool bRe
 		   TEXT("%s - Session: %s; Result: %d"),
 		   *FString(__func__), *SessionName.ToString(), bResult);
 
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -554,7 +554,7 @@ bool UPEGameInstance::EOSLogout(const int32 LocalUserNum)
 
 bool UPEGameInstance::EOS_Login(const uint8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface();
 			IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::NotLoggedIn)
@@ -570,7 +570,7 @@ bool UPEGameInstance::EOS_Login(const uint8 LocalUserNum, const FOnlineAccountCr
 
 bool UPEGameInstance::EOS_Logout(const uint8 LocalUserNum)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface();
 			IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn)
@@ -589,7 +589,7 @@ void UPEGameInstance::OnLoginComplete(const int32 LocalUserNum,
                                       const FUniqueNetId& UserId,
                                       const FString& Error)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
@@ -612,7 +612,7 @@ void UPEGameInstance::OnLoginComplete(const int32 LocalUserNum,
 
 void UPEGameInstance::OnLogoutComplete(const int32 LocalUserNum, const bool bWasSuccessful)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{

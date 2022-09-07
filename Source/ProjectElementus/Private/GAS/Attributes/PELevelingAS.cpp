@@ -39,7 +39,7 @@ void UPELevelingAS::PostAttributeChange(const FGameplayAttribute& Attribute, con
 		&& NewValue >= GetRequiredExperience()
 		&& !LevelingBonusData.IsNull())
 	{
-		UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponentChecked();
+		UAbilitySystemComponent* const AbilityComp = GetOwningAbilitySystemComponentChecked();
 
 		// This block will verify if the leveling bonus table exists and modify
 		// the attributes accordingly the current (new) level

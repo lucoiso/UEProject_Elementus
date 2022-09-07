@@ -67,7 +67,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 			if (!GlobalDeathEffect.IsNull())
 			{
-				const UGameplayEffect* InDeathEffect = GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>();
+				const UGameplayEffect* const InDeathEffect = GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>();
 				const FGameplayEffectContextHandle InEffectContext = GetOwningAbilitySystemComponent()->MakeEffectContext();
 				
 				GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(InDeathEffect, 1.f, InEffectContext);

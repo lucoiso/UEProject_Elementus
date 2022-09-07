@@ -206,7 +206,7 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 
 	// Remove extra tags that were given by this ability
-	if (UAbilitySystemComponent* Comp = ActorInfo->AbilitySystemComponent.Get())
+	if (UAbilitySystemComponent* const Comp = ActorInfo->AbilitySystemComponent.Get())
 	{
 		Comp->RemoveLooseGameplayTags(AbilityExtraTags);
 	}
@@ -460,7 +460,7 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 		// Check if TargetActorClass is child of AGameplayAbilityTargetActor_Trace and add values to class params
 		if (TargetActorClass.Get()->IsChildOf<AGameplayAbilityTargetActor_Trace>())
 		{
-			AGameplayAbilityTargetActor_Trace* TraceObj = Cast<AGameplayAbilityTargetActor_Trace>(TargetActor);
+			AGameplayAbilityTargetActor_Trace* const TraceObj = Cast<AGameplayAbilityTargetActor_Trace>(TargetActor);
 
 			TraceObj->MaxRange = TargetParameters.Range;
 			TraceObj->bTraceAffectsAimPitch = TargetParameters.bTraceAffectsAimPitch;
@@ -486,7 +486,7 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 	if (AbilityTask_WaitTargetData->IsActive()
 		&& TargetingConfirmation != EGameplayTargetingConfirmation::Instant)
 	{
-		UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
+		UAbilitySystemComponent* const Comp = GetAbilitySystemComponentFromActorInfo_Checked();
 
 		Comp->AddLooseGameplayTag(GlobalTag_AimingState);
 		Comp->AddLooseGameplayTag(GlobalTag_WaitingConfirmationState);
@@ -499,7 +499,7 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(
 void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 {
 	// Add extra tag to the ability system component to tell that we are waiting for confirm input
-	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
+	UAbilitySystemComponent* const Comp = GetAbilitySystemComponentFromActorInfo_Checked();
 	if (!AbilityExtraTags.HasTag(GlobalTag_WaitingConfirmationState))
 	{
 		Comp->AddLooseGameplayTag(GlobalTag_WaitingConfirmationState);
@@ -524,7 +524,7 @@ void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 void UPEGameplayAbility::ActivateWaitCancelInputTask()
 {
 	// Add extra tag to the ability system component to tell that we are waiting for cancel input
-	UAbilitySystemComponent* Comp = GetAbilitySystemComponentFromActorInfo_Checked();
+	UAbilitySystemComponent* const Comp = GetAbilitySystemComponentFromActorInfo_Checked();
 	if (!AbilityExtraTags.HasTag(GlobalTag_WaitingCancelationState))
 	{
 		Comp->AddLooseGameplayTag(GlobalTag_WaitingCancelationState);

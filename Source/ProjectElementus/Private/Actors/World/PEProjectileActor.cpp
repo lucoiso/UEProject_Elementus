@@ -55,11 +55,11 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 
 	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacter>())
 	{
-		if (APECharacter* Character = Cast<APECharacter>(OtherActor))
+		if (APECharacter* const Character = Cast<APECharacter>(OtherActor))
 		{
 			Character->LaunchCharacter(ImpulseVelocity, true, true);
 
-			if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(Character->GetAbilitySystemComponent());
+			if (UPEAbilitySystemComponent* const TargetGASC = Cast<UPEAbilitySystemComponent>(Character->GetAbilitySystemComponent());
 				ensureAlwaysMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 			{
 				ApplyProjectileEffect(TargetGASC);
@@ -81,7 +81,7 @@ void APEProjectileActor::ApplyProjectileEffect(UAbilitySystemComponent* TargetAB
 		return;
 	}
 
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
+	if (UPEAbilitySystemComponent* const TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
 		for (const FGameplayEffectGroupedData& Effect : ProjectileEffects)
 		{

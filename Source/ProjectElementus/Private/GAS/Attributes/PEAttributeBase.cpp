@@ -9,7 +9,7 @@ void UPEAttributeBase::AdjustAttributeForMaxChange(const FGameplayAttributeData&
                                                    const float NewMaxValue,
                                                    const FGameplayAttribute& AffectedAttributeProperty) const
 {
-	if (UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent())
+	if (UAbilitySystemComponent* const AbilityComp = GetOwningAbilitySystemComponent())
 	{
 		if (const float CurrentMaxValue = MaxAttribute.GetCurrentValue();
 			!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)

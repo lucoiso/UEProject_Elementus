@@ -92,7 +92,7 @@ void APECharacter::PossessedBy(AController* InController)
 	if (InController->IsPlayerController())
 	{
 		// Initialize the ability system component that is stored by Player State
-		if (APEPlayerState* State = GetPlayerStateChecked<APEPlayerState>())
+		if (APEPlayerState* const State = GetPlayerStateChecked<APEPlayerState>())
 		{
 			InitializeAbilitySystemComponent(State->GetAbilitySystemComponent(), State);
 		}
@@ -111,7 +111,7 @@ void APECharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	if (APEPlayerState* State = GetPlayerState<APEPlayerState>())
+	if (APEPlayerState* const State = GetPlayerState<APEPlayerState>())
 	{
 		// Initialize the ability system component that is stored by Player State
 		InitializeAbilitySystemComponent(State->GetAbilitySystemComponent(), State);
@@ -192,7 +192,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 	if (const UElementusItemData* const ItemData =
 		UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
 	{
-		if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
+		if (UPEEquipment* const EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
 			FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
 			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
@@ -243,7 +243,7 @@ void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 	if (const UElementusItemData* const ItemData =
 		UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
 	{
-		if (UPEEquipment* EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
+		if (UPEEquipment* const EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
 			FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
 			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
@@ -288,9 +288,9 @@ void APECharacter::BeginPlay()
 	// Check if this character have a valid Skeletal Mesh and paint it
 	if (IsValid(GetMesh()))
 	{
-		const auto DynamicColor_Lambda = [&](const uint8 Index, const FLinearColor Color) -> void
+		const auto DynamicColor_Lambda = [&](const uint8& Index, const FLinearColor& Color) -> void
 		{
-			if (UMaterialInstanceDynamic* DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
+			if (UMaterialInstanceDynamic* const DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
 			{
 				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
 			}

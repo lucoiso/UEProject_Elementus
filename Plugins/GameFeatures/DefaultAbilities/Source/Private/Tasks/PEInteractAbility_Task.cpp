@@ -23,7 +23,7 @@ UPEInteractAbility_Task* UPEInteractAbility_Task::InteractionTask(UGameplayAbili
 																  const float InteractionRange,
 																  const bool bUseCustomDepth)
 {
-	UPEInteractAbility_Task* MyObj = NewAbilityTask<UPEInteractAbility_Task>(OwningAbility, TaskInstanceName);
+	UPEInteractAbility_Task* const MyObj = NewAbilityTask<UPEInteractAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->Range = InteractionRange;
 	MyObj->bUseCustomDepth = bUseCustomDepth;
 

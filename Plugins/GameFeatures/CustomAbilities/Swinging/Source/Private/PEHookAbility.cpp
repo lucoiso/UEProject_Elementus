@@ -76,8 +76,8 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	}
 
 	// Get the first target only since this is a single target ability
-	const FGameplayAbilityTargetData* TargetData = TargetDataHandle.Get(0);
-	const FHitResult* TargetHit = TargetData->GetHitResult();
+	const FGameplayAbilityTargetData* const TargetData = TargetDataHandle.Get(0);
+	const FHitResult* const TargetHit = TargetData->GetHitResult();
 
 	// If there's no actor at the target data, end the ability: Invalid Target
 	if (!IsValid(TargetHit->GetActor()))
@@ -131,7 +131,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 	// If the confirm input is pressed, will add a impulse to ability owner
 	// and to the target/grabbed actor, if simulates physics
 
-	if (APECharacter* Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
+	if (APECharacter* const Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
 	{
 		UGameplayStatics::SpawnSoundAttached(ImpulseSound, Player->GetMesh());
 
@@ -144,7 +144,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 		{
 			TaskHandle->GetHitResult().GetComponent()->AddImpulse(-1.f * ImpulseVector);
 		}
-		else if (APECharacter* TargetPlayer = Cast<APECharacter>(TaskHandle->GetHitResult().GetActor()))
+		else if (APECharacter* const TargetPlayer = Cast<APECharacter>(TaskHandle->GetHitResult().GetActor()))
 		{
 			TargetPlayer->LaunchCharacter(-1.f * ImpulseVector, false, true);
 		}

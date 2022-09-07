@@ -20,7 +20,7 @@ UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMove
 																					 const float ThrowIntensity,
 																					 const TWeakObjectPtr<AActor> Target)
 {
-	UPETelekinesisAbility_Task* MyObj = NewAbilityTask<UPETelekinesisAbility_Task>(OwningAbility, TaskInstanceName);
+	UPETelekinesisAbility_Task* const MyObj = NewAbilityTask<UPETelekinesisAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->TelekinesisTarget = Target;
 	MyObj->Intensity = ThrowIntensity;
 
@@ -104,7 +104,7 @@ void UPETelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 	if (PhysicsHandle.IsValid())
 	{
-		UPrimitiveComponent* GrabbedComponent = PhysicsHandle->GetGrabbedComponent();
+		UPrimitiveComponent* const GrabbedComponent = PhysicsHandle->GetGrabbedComponent();
 		PhysicsHandle->ReleaseComponent();
 
 		if (IsValid(GrabbedComponent))
@@ -125,7 +125,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 {
 	bIsFinished = true;
 
-	if (UPrimitiveComponent* GrabbedPrimitive_Temp = PhysicsHandle->GetGrabbedComponent())
+	if (UPrimitiveComponent* const GrabbedPrimitive_Temp = PhysicsHandle->GetGrabbedComponent())
 	{
 		PhysicsHandle->ReleaseComponent();
 
@@ -153,7 +153,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 
 		GrabbedPrimitive_Temp->SetAllPhysicsLinearVelocity(Velocity);
 
-		if (APEThrowableActor* Throwable = Cast<APEThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor()))
+		if (APEThrowableActor* const Throwable = Cast<APEThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor()))
 		{
 			Throwable->ThrowSetup(Ability->GetAvatarActorFromActorInfo());
 		}

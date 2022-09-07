@@ -31,7 +31,7 @@ APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializ
 
 void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC)
 {
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
+	if (UPEAbilitySystemComponent* const TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
 		TargetGASC->HasAllMatchingGameplayTags(ConsumableData->RequirementsTags)
 		|| ConsumableData->RequirementsTags.IsEmpty())
 	{

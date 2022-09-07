@@ -18,7 +18,7 @@ void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 
 	EquipmentOwner->GetAbilitySystemComponent()->AddLooseGameplayTag(GlobalTag_WeaponEquipped);
 
-	USkeletalMeshComponent* InMesh = NewObject<USkeletalMeshComponent>(EquipmentOwner);
+	USkeletalMeshComponent* const InMesh = NewObject<USkeletalMeshComponent>(EquipmentOwner);
 	InMesh->SetSkeletalMesh(WeaponMesh.LoadSynchronous());
 	InMesh->ComponentTags.Add(*FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
 

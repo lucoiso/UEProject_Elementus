@@ -67,7 +67,7 @@ void APEExplosiveActor::PerformExplosion()
 
 			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacter>())
 			{
-				if (APECharacter* Player = Cast<APECharacter>(Hit.GetActor()))
+				if (APECharacter* const Player = Cast<APECharacter>(Hit.GetActor()))
 				{
 					Player->LaunchCharacter(Velocity, true, true);
 
@@ -100,7 +100,7 @@ void APEExplosiveActor::PerformExplosion()
 
 void APEExplosiveActor::ApplyExplosibleEffect(UAbilitySystemComponent* TargetABSC)
 {
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
+	if (UPEAbilitySystemComponent* const TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
 		for (const FGameplayEffectGroupedData& Effect : ExplosionEffects)
 		{

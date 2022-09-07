@@ -16,7 +16,7 @@ FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 
 FEOSVoiceChatUser* UPEEOSLibrary::GetEOSVoiceChatUser(const uint8 LocalUserNum)
 {
-	if (FOnlineSubsystemEOS* OnlineSubsystemEOS = GetOnlineSubsystemEOS())
+	if (FOnlineSubsystemEOS* const OnlineSubsystemEOS = GetOnlineSubsystemEOS())
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
 		{
@@ -34,7 +34,7 @@ void UPEEOSLibrary::MuteEOSSessionVoiceChatUser(const int32 LocalUserNum, const 
 {
 	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Mute: %d"), *FString(__func__), LocalUserNum, bMute);
 
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
+	if (FEOSVoiceChatUser* const VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
 	{
 		VoiceChatUserPtr->SetAudioInputDeviceMuted(bMute);
 	}
@@ -62,7 +62,7 @@ FName UPEEOSLibrary::GetEOSSessionName()
 
 bool UPEEOSLibrary::IsUserLoggedInEOS(const int32 LocalUserNum)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
@@ -75,11 +75,11 @@ bool UPEEOSLibrary::IsUserLoggedInEOS(const int32 LocalUserNum)
 
 bool UPEEOSLibrary::IsHostingEOSSession()
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
-			if (const FNamedOnlineSession* CheckSession = SessionInterface->GetNamedSession(NAME_GameSession))
+			if (const FNamedOnlineSession* const CheckSession = SessionInterface->GetNamedSession(NAME_GameSession))
 			{
 				return CheckSession->bHosting;
 			}
@@ -91,7 +91,7 @@ bool UPEEOSLibrary::IsHostingEOSSession()
 
 bool UPEEOSLibrary::IsUserInAEOSSession()
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -140,7 +140,7 @@ FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 Nu
 
 void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString& PresenceText, const bool bOnline)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
@@ -162,7 +162,7 @@ void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum,
                                         const FName StatName,
                                         const float Percentage)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{

@@ -71,8 +71,8 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 	}
 
 	// Get the first target only since this is a single target ability
-	const FGameplayAbilityTargetData* TargetData = TargetDataHandle.Get(0);
-	const FHitResult* TargetHit = TargetData->GetHitResult();
+	const FGameplayAbilityTargetData* const TargetData = TargetDataHandle.Get(0);
+	const FHitResult* const TargetHit = TargetData->GetHitResult();
 
 	// If there's no actor at the target data, end the ability: Invalid Target
 	if (!IsValid(TargetHit->GetActor()))

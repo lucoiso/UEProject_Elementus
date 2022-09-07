@@ -20,7 +20,7 @@ void UPECrouchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	APECharacter* Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get());
+	APECharacter* const Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get());
 
 	// Only characters can activate this ability
 	if (!IsValid(Player))

@@ -37,7 +37,7 @@ void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute,
 		{
 			if (const APECharacter* const Character = State->GetPawn<APECharacter>())
 			{
-				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement();
+				if (UCharacterMovementComponent* const MovComp = Character->GetCharacterMovement();
 					ensureAlwaysMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
 				{
 					//Check if the attribute is equal to speed or jump rate and multiply the value by the rate

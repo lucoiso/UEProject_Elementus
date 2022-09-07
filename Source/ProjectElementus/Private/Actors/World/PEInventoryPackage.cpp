@@ -59,12 +59,12 @@ void APEInventoryPackage::DoInteractionBehavior_Implementation(APECharacter* Cha
 		return;
 	}
 
-	if (APlayerController* TargetController = CharacterInteracting->GetController<APlayerController>())
+	if (APlayerController* const TargetController = CharacterInteracting->GetController<APlayerController>())
 	{
-		UClass* WidgetClass = TradeWidgetClass.LoadSynchronous();
-		if (UUserWidget* TradeWidget = CreateWidget(TargetController, WidgetClass))
+		UClass* const WidgetClass = TradeWidgetClass.LoadSynchronous();
+		if (UUserWidget* const TradeWidget = CreateWidget(TargetController, WidgetClass))
 		{
-			if (const FObjectProperty* PackageRef = FindFProperty<FObjectProperty>(WidgetClass, TEXT("PackageRef")))
+			if (const FObjectProperty* const PackageRef = FindFProperty<FObjectProperty>(WidgetClass, TEXT("PackageRef")))
 			{
 				PackageRef->SetPropertyValue_InContainer(TradeWidget, this);
 			}

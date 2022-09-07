@@ -14,17 +14,17 @@ void UPECustomSettings::ApplyNonResolutionSettings()
 {
 	Super::ApplyNonResolutionSettings();
 
-	if (IConsoleVariable* AntiAliasingCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.AntiAliasingMethod")))
+	if (IConsoleVariable* const AntiAliasingCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.AntiAliasingMethod")))
 	{
 		AntiAliasingCVar->Set(AntiAliasingMode, ECVF_SetByConsole);
 	}
 
-	if (IConsoleVariable* FSREnabledCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.FidelityFX.FSR.Enabled")))
+	if (IConsoleVariable* const FSREnabledCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.FidelityFX.FSR.Enabled")))
 	{
 		FSREnabledCVar->Set(bFSREnabled, ECVF_SetByConsole);
 	}
 
-	if (IConsoleVariable* ScreenPercentageCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.ScreenPercentage"));
+	if (IConsoleVariable* const ScreenPercentageCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.ScreenPercentage"));
 		ScreenPercentageCVar && bFSREnabled)
 	{
 		switch (FSRMode)
@@ -50,25 +50,25 @@ void UPECustomSettings::ApplyNonResolutionSettings()
 		}
 	}
 
-	if (IConsoleVariable* TemporalUpsamplingCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.TemporalAA.Upsampling"));
+	if (IConsoleVariable* const TemporalUpsamplingCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.TemporalAA.Upsampling"));
 		TemporalUpsamplingCVar && AntiAliasingMode == 2)
 	{
 		TemporalUpsamplingCVar->Set(bEnableTemporalUpscaling, ECVF_SetByConsole);
 	}
 
-	if (IConsoleVariable* DynamicGICvar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.DynamicGlobalIlluminationMethod")))
+	if (IConsoleVariable* const DynamicGICvar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.DynamicGlobalIlluminationMethod")))
 	{
 		// 0 = None | 1 = Lumen
 		DynamicGICvar->Set(bEnableLumen, ECVF_SetByConsole);
 	}
 
-	if (IConsoleVariable* DynamicGRCvar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.ReflectionMethod")))
+	if (IConsoleVariable* const DynamicGRCvar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.ReflectionMethod")))
 	{
 		// 1 = Lumen | 2 = Screen Space
 		DynamicGRCvar->Set(bEnableLumen ? 1 : 2, ECVF_SetByConsole);
 	}
 
-	if (IConsoleVariable* VirtualShadowCvar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Shadow.Virtual.Enable")))
+	if (IConsoleVariable* const VirtualShadowCvar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Shadow.Virtual.Enable")))
 	{
 		// Enable Virtual Shadow Map if Lumen is enabled
 		VirtualShadowCvar->Set(bEnableLumen, ECVF_SetByConsole);
