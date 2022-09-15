@@ -14,7 +14,7 @@ UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer&
 	bIsFinished = false;
 }
 
-UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const float ThrowIntensity, const TWeakObjectPtr<AActor> Target)
+UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const float ThrowIntensity, AActor* Target)
 {
 	UPETelekinesisAbility_Task* const MyObj = NewAbilityTask<UPETelekinesisAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->TelekinesisTarget = Target;

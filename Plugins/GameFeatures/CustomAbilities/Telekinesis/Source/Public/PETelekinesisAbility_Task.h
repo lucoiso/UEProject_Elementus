@@ -24,7 +24,7 @@ public:
 	FTelekinesisManagement OnGrabbing;
 
 	/* Create a reference to manage this ability task */
-	static UPETelekinesisAbility_Task* PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const float ThrowIntensity, const TWeakObjectPtr<AActor> Target);
+	static UPETelekinesisAbility_Task* PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const float ThrowIntensity, AActor* Target);
 
 	virtual void Activate() override;
 
