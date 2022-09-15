@@ -25,14 +25,8 @@ public:
 	explicit UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer);
 
 	/* Create a reference to manage this ability task */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
-		meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "true"))
-	static UPESpawnProjectile_Task* SpawnProjectile(UGameplayAbility* OwningAbility,
-	                                                const FName TaskInstanceName,
-	                                                TSubclassOf<APEProjectileActor> ClassToSpawn,
-	                                                const FTransform SpawnTransform,
-	                                                const FVector DirectionToFire,
-	                                                const TArray<FGameplayEffectGroupedData> EffectDataArray);
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "true"))
+	static UPESpawnProjectile_Task* SpawnProjectile(UGameplayAbility* OwningAbility, const FName TaskInstanceName, TSubclassOf<APEProjectileActor> ClassToSpawn, const FTransform SpawnTransform, const FVector DirectionToFire, const TArray<FGameplayEffectGroupedData> EffectDataArray);
 
 	virtual void Activate() override;
 

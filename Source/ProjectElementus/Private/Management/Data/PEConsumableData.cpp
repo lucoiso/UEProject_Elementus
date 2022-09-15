@@ -4,7 +4,6 @@
 
 #include "Management/Data/PEConsumableData.h"
 
-UPEConsumableData::UPEConsumableData(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEConsumableData::UPEConsumableData(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }

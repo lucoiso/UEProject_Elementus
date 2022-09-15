@@ -10,12 +10,7 @@
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
 
-APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer),
-	  ExplosionRadius(150.f),
-	  ExplosionMagnitude(1000.f),
-	  bDestroyAfterExplosion(true),
-	  bDebug(false)
+APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ExplosionRadius(150.f), ExplosionMagnitude(1000.f), bDestroyAfterExplosion(true), bDebug(false)
 {
 	bReplicates = false;
 	PrimaryActorTick.bCanEverTick = false;
@@ -45,13 +40,7 @@ void APEExplosiveActor::PerformExplosion()
 		QueryParams.TraceTag = TraceTag;
 	}
 
-	GetWorld()->SweepMultiByObjectType(HitOut,
-	                                   GetActorLocation(),
-	                                   GetActorLocation(),
-	                                   FQuat(FRotator(0.f)),
-	                                   FCollisionObjectQueryParams::AllDynamicObjects,
-	                                   FCollisionShape::MakeSphere(ExplosionRadius),
-	                                   QueryParams);
+	GetWorld()->SweepMultiByObjectType(HitOut, GetActorLocation(), GetActorLocation(), FQuat(FRotator(0.f)), FCollisionObjectQueryParams::AllDynamicObjects, FCollisionShape::MakeSphere(ExplosionRadius), QueryParams);
 
 	for (UNiagaraSystem* const& NiagaraSystem : ExplosionVFXs)
 	{
@@ -62,8 +51,7 @@ void APEExplosiveActor::PerformExplosion()
 	{
 		if (IsValid(Hit.GetActor()))
 		{
-			const FVector Velocity =
-				ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+			const FVector Velocity = ExplosionMagnitude * (Hit.GetActor()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
 			if (Hit.GetActor()->GetClass()->IsChildOf<APECharacter>())
 			{
@@ -71,9 +59,7 @@ void APEExplosiveActor::PerformExplosion()
 				{
 					Player->LaunchCharacter(Velocity, true, true);
 
-					if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()),
-					                     TEXT("%s have a invalid Ability System Component"),
-					                     *Player->GetName()))
+					if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 					{
 						ApplyExplosibleEffect(Player->GetAbilitySystemComponent());
 					}

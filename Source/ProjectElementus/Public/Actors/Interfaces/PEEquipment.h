@@ -21,7 +21,7 @@ class UPEEquipment : public UObject
 public:
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> EquipmentEffects;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	FGameplayTagContainer EquipmentSlotTags;
 

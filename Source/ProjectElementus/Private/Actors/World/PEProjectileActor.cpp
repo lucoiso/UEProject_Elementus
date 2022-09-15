@@ -8,8 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
-APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bReplicates = true;
 	bAlwaysRelevant = true;
@@ -45,11 +44,7 @@ void APEProjectileActor::FireInDirection(const FVector Direction) const
 	ProjectileMovement->Velocity = ProjectileMovement->InitialSpeed * Direction;
 }
 
-void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp,
-                                                        AActor* OtherActor,
-                                                        UPrimitiveComponent* OtherComp,
-                                                        FVector NormalImpulse,
-                                                        const FHitResult& Hit)
+void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
 

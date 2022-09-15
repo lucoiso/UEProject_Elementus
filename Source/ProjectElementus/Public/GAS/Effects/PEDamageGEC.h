@@ -19,6 +19,5 @@ class PROJECTELEMENTUS_API UPEDamageGEC final : public UGameplayEffectExecutionC
 public:
 	explicit UPEDamageGEC(const FObjectInitializer& ObjectInitializer);
 
-	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-	                                    OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };

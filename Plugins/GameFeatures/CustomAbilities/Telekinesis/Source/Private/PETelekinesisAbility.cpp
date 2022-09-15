@@ -9,9 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Management/Data/PEGlobalTags.h"
 
-UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer),
-	  ThrowIntensity(2750.f)
+UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ThrowIntensity(2750.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
 
@@ -27,10 +25,7 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 	}
 }
 
-void UPETelekinesisAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                            const FGameplayAbilityActorInfo* ActorInfo,
-                                            const FGameplayAbilityActivationInfo ActivationInfo,
-                                            const FGameplayEventData* TriggerEventData)
+void UPETelekinesisAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -40,14 +35,10 @@ void UPETelekinesisAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("head");
 
 	// Targeting: Start task	
-	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-	                           APELineTargeting::StaticClass(),
-	                           TargetingParams);
+	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, APELineTargeting::StaticClass(), TargetingParams);
 }
 
-void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
-                                         const FGameplayAbilityActorInfo* ActorInfo,
-                                         const FGameplayAbilityActivationInfo ActivationInfo)
+void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 
@@ -59,8 +50,7 @@ void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle
 	CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 }
 
-void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
-	const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	// If target is invalid, end the ability
 	if (!TargetDataHandle.IsValid(0))
@@ -84,10 +74,7 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 
 	// Create the telekinesis movement task:
 	// This task will perform the physical grabbing movement on target
-	AbilityTask = UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this,
-																		   TEXT("TelekinesisTask"),
-																		   ThrowIntensity,
-																		   TargetHit->GetActor());
+	AbilityTask = UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this, TEXT("TelekinesisTask"), ThrowIntensity, TargetHit->GetActor());
 
 	// When the grabbing task returns a result, will call GrabbingComplete function
 	AbilityTask->OnGrabbing.BindDynamic(this, &UPETelekinesisAbility::GrabbingComplete);

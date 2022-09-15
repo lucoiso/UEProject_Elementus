@@ -4,8 +4,7 @@
 
 #include "Management/PECustomSettings.h"
 
-UPECustomSettings::UPECustomSettings(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPECustomSettings::UPECustomSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	UPECustomSettings::SetToDefaults();
 }
@@ -29,24 +28,23 @@ void UPECustomSettings::ApplyNonResolutionSettings()
 	{
 		switch (FSRMode)
 		{
-			case 0: // Performance
-				ScreenPercentageCVar->Set(50, ECVF_SetByConsole);
-				break;
-				
-			case 1: // Balanced
-				ScreenPercentageCVar->Set(59, ECVF_SetByConsole);
-				break;
-				
-			case 2: // Quality
-				ScreenPercentageCVar->Set(67, ECVF_SetByConsole);
-				break;
-				
-			case 3: // Ultra Quality
-				ScreenPercentageCVar->Set(77, ECVF_SetByConsole);
-				break;
-				
-			default:
-				break;
+		case 0: // Performance
+			ScreenPercentageCVar->Set(50, ECVF_SetByConsole);
+			break;
+
+		case 1: // Balanced
+			ScreenPercentageCVar->Set(59, ECVF_SetByConsole);
+			break;
+
+		case 2: // Quality
+			ScreenPercentageCVar->Set(67, ECVF_SetByConsole);
+			break;
+
+		case 3: // Ultra Quality
+			ScreenPercentageCVar->Set(77, ECVF_SetByConsole);
+			break;
+
+		default: break;
 		}
 	}
 

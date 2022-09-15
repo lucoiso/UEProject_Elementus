@@ -7,18 +7,13 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 
-UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;
 	bIsFinished = false;
 }
 
-UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility,
-															  const FName TaskInstanceName,
-															  const FHitResult HitResult,
-															  const float HookIntensity,
-															  const float HookMaxIntensity)
+UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const FHitResult HitResult, const float HookIntensity, const float HookMaxIntensity)
 {
 	UPEHookAbility_Task* const MyObj = NewAbilityTask<UPEHookAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->Intensity = HookIntensity;
@@ -99,10 +94,7 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 		// UGeometryCollectionComponent is a special case, it is movable but
 		// we can't get individual geometry bones via targeting (HitDataHandle.BoneName is returning None)
 		// To avoid wrong location, we will use the final location of the hook instead of the hit location
-		CurrentHookLocation =
-			bIsTargetMovable && !HitDataHandle.GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>()
-			? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName)
-			: HitDataHandle.Location;
+		CurrentHookLocation = bIsTargetMovable && !HitDataHandle.GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>() ? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName) : HitDataHandle.Location;
 
 		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation();
 			Difference.Size() >= 100.f)

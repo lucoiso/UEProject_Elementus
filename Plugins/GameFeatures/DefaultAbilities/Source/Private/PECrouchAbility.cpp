@@ -5,18 +5,14 @@
 #include "PECrouchAbility.h"
 #include "Actors/Character/PECharacter.h"
 
-UPECrouchAbility::UPECrouchAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPECrouchAbility::UPECrouchAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
 
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Crouch"));
 }
 
-void UPECrouchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                       const FGameplayAbilityActorInfo* ActorInfo,
-                                       const FGameplayAbilityActivationInfo ActivationInfo,
-                                       const FGameplayEventData* TriggerEventData)
+void UPECrouchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -29,9 +25,7 @@ void UPECrouchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
-	Player->CanCrouch() && !Player->bIsCrouched
-		? Player->Crouch()
-		: Player->UnCrouch();
+	Player->CanCrouch() && !Player->bIsCrouched ? Player->Crouch() : Player->UnCrouch();
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }

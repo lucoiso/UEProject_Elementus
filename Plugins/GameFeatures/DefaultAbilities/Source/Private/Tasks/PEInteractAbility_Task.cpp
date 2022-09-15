@@ -11,19 +11,15 @@
 #include "GAS/Targeting/PELineTargeting.h"
 #include "Management/Data/PEGlobalTags.h"
 
-UPEInteractAbility_Task::UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEInteractAbility_Task::UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = true;
 	bIsFinished = false;
 }
 
-UPEInteractAbility_Task* UPEInteractAbility_Task::InteractionTask(UGameplayAbility* OwningAbility,
-																  const FName& TaskInstanceName,
-																  const float InteractionRange,
-																  const bool bUseCustomDepth)
+UPEInteractAbility_Task* UPEInteractAbility_Task::InteractionTask(UGameplayAbility* OwningAbility, const FName& TaskInstanceName, const float InteractionRange, const bool bUseCustomDepth)
 {
-	UPEInteractAbility_Task* const MyObj = NewAbilityTask<UPEInteractAbility_Task>(OwningAbility, TaskInstanceName);
+	UPEInteractAbility_Task* const MyObj = NewAbilityTask < UPEInteractAbility_Task > (OwningAbility, TaskInstanceName);
 	MyObj->Range = InteractionRange;
 	MyObj->bUseCustomDepth = bUseCustomDepth;
 
@@ -40,17 +36,11 @@ void UPEInteractAbility_Task::Activate()
 
 	if (ensureAlwaysMsgf(InteractionOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 	{
-		UAbilityTask_WaitGameplayTagAdded* WaitGameplayTagAdd =
-			UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability,
-				FGameplayTag::RequestGameplayTag(
-					TEXT("State.CannotInteract")));
+		UAbilityTask_WaitGameplayTagAdded* WaitGameplayTagAdd = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
 
 		WaitGameplayTagAdd->Added.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
 
-		UAbilityTask_WaitGameplayTagRemoved* WaitGameplayTagRemove =
-			UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(Ability,
-				FGameplayTag::RequestGameplayTag(
-					TEXT("State.CannotInteract")));
+		UAbilityTask_WaitGameplayTagRemoved* WaitGameplayTagRemove = UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
 
 		WaitGameplayTagRemove->Removed.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
 
@@ -66,8 +56,7 @@ void UPEInteractAbility_Task::Activate()
 
 bool UPEInteractAbility_Task::GetIsInteractAllowed() const
 {
-	return AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CanInteract) &&
-		!AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CannotInteract);
+	return AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CanInteract) && !AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CannotInteract);
 }
 
 AActor* UPEInteractAbility_Task::GetInteractable() const
@@ -103,13 +92,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 	const FGameplayTargetDataFilterHandle DataFilterHandle;
 
-	APELineTargeting::LineTraceWithFilter(HitResult,
-		GetWorld(),
-		DataFilterHandle,
-		StartLocation,
-		EndLocation,
-		TEXT("Target"),
-		QueryParams);
+	APELineTargeting::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation, EndLocation, TEXT("Target"), QueryParams);
 
 	if (IsValid(HitResult.GetActor()) && HitResult.GetActor()->Implements<UPEInteractable>())
 	{
@@ -118,10 +101,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 			LastInteractableActor_Ref = HitResult.GetActor();
 			LastInteractablePrimitive_Ref = HitResult.GetComponent();
 
-			IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(),
-				true,
-				InteractionOwner.Get(),
-				HitResult);
+			IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), true, InteractionOwner.Get(), HitResult);
 
 			if (bUseCustomDepth)
 			{
@@ -140,10 +120,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 		if (LastInteractableActor_Ref.IsValid())
 		{
-			IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(),
-				false,
-				InteractionOwner.Get(),
-				HitResult);
+			IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), false, InteractionOwner.Get(), HitResult);
 			LastInteractableActor_Ref.Reset();
 
 			if (LastInteractablePrimitive_Ref.IsValid())
@@ -167,10 +144,7 @@ void UPEInteractAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 	if (LastInteractableActor_Ref.IsValid())
 	{
-		IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(),
-			false,
-			InteractionOwner.Get(),
-			HitResult);
+		IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), false, InteractionOwner.Get(), HitResult);
 		LastInteractableActor_Ref.Reset();
 
 		if (LastInteractablePrimitive_Ref.IsValid())

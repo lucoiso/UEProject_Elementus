@@ -10,10 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Management/Data/PEGlobalTags.h"
 
-UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer),
-	  HookIntensity(3000.f),
-	  MaxHookIntensity(0.f)
+UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), HookIntensity(3000.f), MaxHookIntensity(0.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
@@ -32,10 +29,7 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer)
 	}
 }
 
-void UPEHookAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                     const FGameplayAbilityActorInfo* ActorInfo,
-                                     const FGameplayAbilityActivationInfo ActivationInfo,
-                                     const FGameplayEventData* TriggerEventData)
+void UPEHookAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	bIgnoreCooldown = true;
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -45,9 +39,7 @@ void UPEHookAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
 }
 
-void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle,
-                                   const FGameplayAbilityActorInfo* ActorInfo,
-                                   const FGameplayAbilityActivationInfo ActivationInfo)
+void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
@@ -61,9 +53,7 @@ void UPEHookAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventDat
 	FTargetActorSpawnParams TargetingParams;
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
 
-	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-	                           APELineTargeting::StaticClass(),
-	                           TargetingParams);
+	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, APELineTargeting::StaticClass(), TargetingParams);
 }
 
 void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -87,11 +77,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	}
 
 	// Create and initialize the hook movement task: This task will perform the physical hook movement
-	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this,
-	                                                      TEXT("HookTask"),
-	                                                      *TargetHit,
-	                                                      HookIntensity,
-	                                                      MaxHookIntensity);
+	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this, TEXT("HookTask"), *TargetHit, HookIntensity, MaxHookIntensity);
 	TaskHandle->ReadyForActivation();
 
 	FGameplayCueParameters Params;
@@ -103,19 +89,14 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params);
 
 	// If the target is a character, will finish this ability after AbilityActiveTime seconds
-	if (TargetHit->GetActor()->GetClass()->IsChildOf<APECharacter>()
-		&& TargetHit->GetActor() != GetAvatarActorFromActorInfo()
-		|| TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
+	if (TargetHit->GetActor()->GetClass()->IsChildOf<APECharacter>() && TargetHit->GetActor() != GetAvatarActorFromActorInfo() || TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
 	{
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindLambda([&]() -> void
 		{
 			if (IsValid(this) && IsActive())
 			{
-				EndAbility(GetCurrentAbilitySpecHandle(),
-				           GetCurrentActorInfo(),
-				           GetCurrentActivationInfo(),
-				           true, false);
+				EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
 			}
 		});
 
@@ -135,8 +116,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 	{
 		UGameplayStatics::SpawnSoundAttached(ImpulseSound, Player->GetMesh());
 
-		const FVector ImpulseVector =
-			(TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() * HookIntensity;
+		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() * HookIntensity;
 
 		Player->LaunchCharacter(ImpulseVector, false, true);
 

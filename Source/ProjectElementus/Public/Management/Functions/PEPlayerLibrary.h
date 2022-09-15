@@ -33,11 +33,7 @@ class PROJECTELEMENTUS_API UPEPlayerLibrary final : public UBlueprintFunctionLib
 public:
 	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static FPlayerInputBindingHandle BindDynamicInput(APlayerController* Controller,
-	                                                  UInputAction* Action,
-	                                                  UObject* Object,
-	                                                  const FName UFunctionName,
-	                                                  const ETriggerEvent TriggerEvent);
+	static FPlayerInputBindingHandle BindDynamicInput(APlayerController* Controller, UInputAction* Action, UObject* Object, const FName UFunctionName, const ETriggerEvent TriggerEvent);
 
 	/*  */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
@@ -53,7 +49,5 @@ public:
 
 	/*  */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	static bool CheckIfPlayerContainsDynamicInput(APlayerController* Controller,
-	                                              TArray<FPlayerInputBindingHandle> BindingArray,
-	                                              FPlayerInputBindingHandle& BindingHandle);
+	static bool CheckIfPlayerContainsDynamicInput(APlayerController* Controller, TArray<FPlayerInputBindingHandle> BindingArray, FPlayerInputBindingHandle& BindingHandle);
 };

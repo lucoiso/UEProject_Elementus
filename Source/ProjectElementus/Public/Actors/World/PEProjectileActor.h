@@ -45,8 +45,7 @@ public:
 
 protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions")
-	void OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	                     FVector NormalImpulse, const FHitResult& Hit);
+	void OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 private:
 	void ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC);

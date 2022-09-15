@@ -29,23 +29,18 @@ public:
 		return FPrimaryAssetId(TEXT("PE_ConsumableData"), *("Consumable_" + FString::FromInt(ConsumableId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Data"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Data"))
 	int32 ConsumableId;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "SoftData"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "SoftData"))
 	TSoftObjectPtr<UStaticMesh> ObjectMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "SoftData"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "SoftData"))
 	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Gameplay"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Gameplay"))
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Gameplay"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Gameplay"))
 	FGameplayTagContainer RequirementsTags;
 };

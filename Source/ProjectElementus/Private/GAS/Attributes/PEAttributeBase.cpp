@@ -4,10 +4,7 @@
 
 #include "GAS/Attributes/PEAttributeBase.h"
 
-void UPEAttributeBase::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
-                                                   const FGameplayAttributeData& MaxAttribute,
-                                                   const float NewMaxValue,
-                                                   const FGameplayAttribute& AffectedAttributeProperty) const
+void UPEAttributeBase::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, const float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const
 {
 	if (UAbilitySystemComponent* const AbilityComp = GetOwningAbilitySystemComponent())
 	{
@@ -15,10 +12,8 @@ void UPEAttributeBase::AdjustAttributeForMaxChange(const FGameplayAttributeData&
 			!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
 		{
 			const float CurrentValue = AffectedAttribute.GetCurrentValue();
-			
-			const float NewDelta = CurrentMaxValue > 0.f
-				                       ? CurrentValue * NewMaxValue / CurrentMaxValue - CurrentValue
-				                       : NewMaxValue;
+
+			const float NewDelta = CurrentMaxValue > 0.f ? CurrentValue * NewMaxValue / CurrentMaxValue - CurrentValue : NewMaxValue;
 
 			AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
 		}

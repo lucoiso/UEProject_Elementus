@@ -11,6 +11,6 @@ UPEAim_Task::UPEAim_Task(const FObjectInitializer& ObjectInitializer) : Super(Ob
 UPEAim_Task* UPEAim_Task::Aim(UGameplayAbility* OwningAbility, const FName TaskInstanceName)
 {
 	UPEAim_Task* const MyObj = NewAbilityTask<UPEAim_Task>(OwningAbility, TaskInstanceName);
-	
+
 	return MyObj;
 }

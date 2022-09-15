@@ -8,17 +8,13 @@
 #include "Actors/Character/PECharacter.h"
 #include "GAS/Targeting/PELineTargeting.h"
 
-UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;
 	bIsFinished = false;
 }
 
-UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-																					 const FName TaskInstanceName,
-																					 const float ThrowIntensity,
-																					 const TWeakObjectPtr<AActor> Target)
+UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const float ThrowIntensity, const TWeakObjectPtr<AActor> Target)
 {
 	UPETelekinesisAbility_Task* const MyObj = NewAbilityTask<UPETelekinesisAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->TelekinesisTarget = Target;
@@ -37,16 +33,12 @@ void UPETelekinesisAbility_Task::Activate()
 
 	if (ensureAlwaysMsgf(TelekinesisOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 	{
-		PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(),
-			UPhysicsHandleComponent::StaticClass(),
-			TEXT("TelekinesisPhysicsHandle"));
+		PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(), TEXT("TelekinesisPhysicsHandle"));
 
 		if (PhysicsHandle.IsValid())
 		{
 			PhysicsHandle->RegisterComponent();
-			PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()),
-				NAME_None,
-				TelekinesisTarget->GetActorLocation());
+			PhysicsHandle->GrabComponentAtLocation(Cast<UPrimitiveComponent>(TelekinesisTarget->GetRootComponent()), NAME_None, TelekinesisTarget->GetActorLocation());
 
 			if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 			{
@@ -139,13 +131,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		FHitResult HitResult;
 		FGameplayTargetDataFilterHandle DataFilterHandle;
 
-		APELineTargeting::LineTraceWithFilter(HitResult,
-			GetWorld(),
-			DataFilterHandle,
-			StartLocation,
-			EndLocation,
-			TEXT("Target"),
-			QueryParams);
+		APELineTargeting::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation, EndLocation, TEXT("Target"), QueryParams);
 
 		const FVector Temp_EndLoc = HitResult.bBlockingHit ? HitResult.ImpactPoint : EndLocation;
 		const FVector Direction = (Temp_EndLoc - GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();

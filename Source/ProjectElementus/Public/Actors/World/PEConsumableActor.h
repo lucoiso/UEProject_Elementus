@@ -22,8 +22,7 @@ class PROJECTELEMENTUS_API APEConsumableActor : public AActor, public IPEInterac
 public:
 	explicit APEConsumableActor(const FObjectInitializer& ObjectInitializer);
 
-	virtual void
-	DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult) override;
+	virtual void DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	bool bDestroyAfterConsumption;

@@ -88,7 +88,7 @@ public:
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TMap<FGameplayTag, FElementusItemInfo> EquipmentMap;
 
@@ -103,7 +103,7 @@ protected:
 
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
-	
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
@@ -139,8 +139,7 @@ private:
 	virtual void Landed(const FHitResult& Hit) override;
 
 #if WITH_EDITORONLY_DATA
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Debug",
-		meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Debug", meta = (AllowPrivateAccess = "true"))
 	bool bPrintAbilityFailure = false;
 #endif
 };

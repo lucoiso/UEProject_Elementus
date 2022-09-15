@@ -33,12 +33,7 @@ public:
 	/* Give a new Ability to the Player -
 	 * bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static void GiveAbility(UAbilitySystemComponent* TargetABSC,
-	                        TSubclassOf<UGameplayAbility> Ability,
-	                        const FName InputId,
-	                        const UEnum* EnumerationClass,
-	                        const bool bTryRemoveExistingAbilityWithInput,
-	                        const bool bTryRemoveExistingAbilityWithClass);
+	static void GiveAbility(UAbilitySystemComponent* TargetABSC, TSubclassOf<UGameplayAbility> Ability, const FName InputId, const UEnum* EnumerationClass, const bool bTryRemoveExistingAbilityWithInput, const bool bTryRemoveExistingAbilityWithClass);
 
 	/* Will remove the ability associated to the InputAction */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")

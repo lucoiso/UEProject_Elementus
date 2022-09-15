@@ -5,14 +5,12 @@
 #include "Actors/Character/PEHUD.h"
 #include "Blueprint/UserWidget.h"
 
-APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget>
-		UserHUD_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/WB_HUD"));
+	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUD_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/WB_HUD"));
 	if constexpr (&UserHUD_ClassRef.Class != nullptr)
 	{
 		HUDClass = UserHUD_ClassRef.Class;

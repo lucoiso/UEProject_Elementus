@@ -65,9 +65,7 @@ public:
 	void InitializeRespawn(const float InSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo,
-	                  UElementusInventoryComponent* OtherComponent,
-	                  const bool bIsFromPlayer = false);
+	void ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass);
@@ -79,13 +77,9 @@ protected:
 
 private:
 	UFUNCTION(Server, Reliable)
-	void Server_ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo,
-	                         		  UElementusInventoryComponent* OtherComponent,
-	                         		  const bool bIsFromPlayer);
+	void Server_ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer);
 
-	void ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo,
-	                           UElementusInventoryComponent* OtherComponent,
-	                           const bool bIsFromPlayer) const;
+	void ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer) const;
 
 	UFUNCTION(Server, Reliable)
 	void Server_ProcessGEApplication_Internal(TSubclassOf<UGameplayEffect> EffectClass);

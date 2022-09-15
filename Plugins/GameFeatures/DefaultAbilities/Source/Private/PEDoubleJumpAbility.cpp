@@ -8,8 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Management/Data/PEGlobalTags.h"
 
-UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
 
@@ -25,10 +24,7 @@ UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectIniti
 	}
 }
 
-void UPEDoubleJumpAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                           const FGameplayAbilityActorInfo* ActorInfo,
-                                           const FGameplayAbilityActivationInfo ActivationInfo,
-                                           const FGameplayEventData* TriggerEventData)
+void UPEDoubleJumpAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -53,23 +49,15 @@ void UPEDoubleJumpAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 		FGameplayCueParameters Params;
 		Params.Location = VFXLocation;
-		ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Default.DoubleJump"),
-		                     Params,
-		                     ActorInfo->AbilitySystemComponent.Get());
+		ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Default.DoubleJump"), Params, ActorInfo->AbilitySystemComponent.Get());
 
-		UGameplayStatics::SpawnSoundAtLocation(ActorInfo->AvatarActor.Get(),
-		                                       ImpulseSound,
-		                                       VFXLocation,
-		                                       FRotator::ZeroRotator,
-		                                       0.3f);
+		UGameplayStatics::SpawnSoundAtLocation(ActorInfo->AvatarActor.Get(), ImpulseSound, VFXLocation, FRotator::ZeroRotator, 0.3f);
 
 		Player->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
 	}
 }
 
-void UPEDoubleJumpAbility::InputReleased(const FGameplayAbilitySpecHandle Handle,
-                                         const FGameplayAbilityActorInfo* ActorInfo,
-                                         const FGameplayAbilityActivationInfo ActivationInfo)
+void UPEDoubleJumpAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 

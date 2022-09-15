@@ -4,8 +4,7 @@
 
 #include "GAS/System/PEAbilitySystemComponent.h"
 
-UPEAbilitySystemComponent::UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEAbilitySystemComponent::UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	SetIsReplicated(true);
 	ReplicationMode = EGameplayEffectReplicationMode::Minimal;
@@ -31,8 +30,7 @@ void UPEAbilitySystemComponent::ApplyEffectGroupedDataToSelf(FGameplayEffectGrou
 	}
 }
 
-void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData,
-                                                               UAbilitySystemComponent* TargetABSC)
+void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC)
 {
 	if (!IsOwnerActorAuthoritative())
 	{
@@ -52,9 +50,7 @@ void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGr
 	}
 }
 
-void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromSelf(FGameplayEffectGroupedData GroupedData,
-                                                                UAbilitySystemComponent* InstigatorABSC,
-                                                                const int32 StacksToRemove)
+void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromSelf(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, const int32 StacksToRemove)
 {
 	if (IsValid(GroupedData.EffectClass))
 	{
@@ -63,9 +59,7 @@ void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromSelf(FGameplayEffectG
 		{
 			bool bMatches = false;
 
-			if (IsValid(CurEffect.Spec.Def)
-				&& GroupedData.EffectClass == CurEffect.Spec.Def->GetClass()
-				&& InstigatorABSC == CurEffect.Spec.GetEffectContext().GetInstigatorAbilitySystemComponent())
+			if (IsValid(CurEffect.Spec.Def) && GroupedData.EffectClass == CurEffect.Spec.Def->GetClass() && InstigatorABSC == CurEffect.Spec.GetEffectContext().GetInstigatorAbilitySystemComponent())
 			{
 				for (const TPair<FGameplayTag, float>& Iterator : GroupedData.SetByCallerStackedData)
 				{
@@ -86,10 +80,7 @@ void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromSelf(FGameplayEffectG
 	}
 }
 
-void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromTarget(FGameplayEffectGroupedData GroupedData,
-                                                                  UAbilitySystemComponent* InstigatorABSC,
-                                                                  UAbilitySystemComponent* TargetABSC,
-                                                                  const int32 StacksToRemove)
+void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove)
 {
 	if (IsValid(GroupedData.EffectClass))
 	{
@@ -98,9 +89,7 @@ void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromTarget(FGameplayEffec
 		{
 			bool bMatches = false;
 
-			if (IsValid(CurEffect.Spec.Def)
-				&& GroupedData.EffectClass == CurEffect.Spec.Def->GetClass()
-				&& InstigatorABSC == CurEffect.Spec.GetEffectContext().GetInstigatorAbilitySystemComponent())
+			if (IsValid(CurEffect.Spec.Def) && GroupedData.EffectClass == CurEffect.Spec.Def->GetClass() && InstigatorABSC == CurEffect.Spec.GetEffectContext().GetInstigatorAbilitySystemComponent())
 			{
 				for (const TPair<FGameplayTag, float>& Iterator : GroupedData.SetByCallerStackedData)
 				{

@@ -26,21 +26,18 @@ constexpr float BaseLookUpRate = 45.f;
 DEFINE_LOG_CATEGORY(LogController_Base);
 DEFINE_LOG_CATEGORY(LogController_Axis);
 
-APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	static const ConstructorHelpers::FObjectFinder<UEnum>
-		InputIDEnum_ObjRef(TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
+	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
 	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
 	{
 		InputEnumHandle = InputIDEnum_ObjRef.Object;
 	}
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget>
-		InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
+	static const ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
 	if constexpr (&InventoryWidget_ClassRef.Class != nullptr)
 	{
 		InventoryWidgetClass = InventoryWidget_ClassRef.Class;
@@ -85,8 +82,7 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 	{
 		if (const APEPlayerState* const State = GetPlayerState<APEPlayerState>())
 		{
-			if (UPEAbilitySystemComponent* AbilitySystemComp_Ref =
-				CastChecked<UPEAbilitySystemComponent>(State->GetAbilitySystemComponent()))
+			if (UPEAbilitySystemComponent* AbilitySystemComp_Ref = CastChecked<UPEAbilitySystemComponent>(State->GetAbilitySystemComponent()))
 			{
 				AbilitySystemComp_Ref->RemoveActiveEffectsWithTags(FGameplayTagContainer(GlobalTag_DeadState));
 			}
@@ -123,9 +119,7 @@ void APEPlayerController::Server_ProcessGEApplication_Internal_Implementation(co
 }
 
 #pragma region Elementus Inventory Trade
-void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo,
-                                       UElementusInventoryComponent* OtherComponent,
-                                       const bool bIsFromPlayer)
+void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer)
 {
 	if (HasAuthority())
 	{
@@ -137,20 +131,15 @@ void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo>& TradeIn
 	}
 }
 
-void APEPlayerController::Server_ProcessTrade_Internal_Implementation(const TArray<FElementusItemInfo>& TradeInfo,
-                                                             		  UElementusInventoryComponent* OtherComponent,
-                                                             		  const bool bIsFromPlayer)
+void APEPlayerController::Server_ProcessTrade_Internal_Implementation(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer)
 {
 	ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
 }
 
-void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo,
-                                                UElementusInventoryComponent* OtherComponent,
-                                                const bool bIsFromPlayer) const
+void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer) const
 {
 	if (const APECharacter* const ControllerOwner = GetPawn<APECharacter>();
-		ensureAlwaysMsgf(ControllerOwner->InventoryComponent,
-		                 TEXT("%s owner have a invalid InventoryComponent"), *GetName()))
+		ensureAlwaysMsgf(ControllerOwner->InventoryComponent, TEXT("%s owner have a invalid InventoryComponent"), *GetName()))
 	{
 		if (bIsFromPlayer && OtherComponent == nullptr)
 		{
@@ -158,13 +147,8 @@ void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>
 		}
 		else
 		{
-			bIsFromPlayer
-				? UElementusInventoryFunctions::TradeElementusItem(TradeInfo,
-				                                                   ControllerOwner->InventoryComponent,
-				                                                   OtherComponent)
-				: UElementusInventoryFunctions::TradeElementusItem(TradeInfo,
-				                                                   OtherComponent,
-				                                                   ControllerOwner->InventoryComponent);
+			bIsFromPlayer ? UElementusInventoryFunctions::TradeElementusItem(TradeInfo, ControllerOwner->InventoryComponent, OtherComponent)
+						  : UElementusInventoryFunctions::TradeElementusItem(TradeInfo, OtherComponent, ControllerOwner->InventoryComponent);
 		}
 	}
 }
@@ -172,20 +156,12 @@ void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>
 
 #pragma region IAbilityInputBinding
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
-void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(UInputAction* Action,
-	const int32 InputID)
+void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(UInputAction* Action, const int32 InputID)
 {
 	if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 		ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
-		const FAbilityInputData AbilityBinding
-		{
-			EnhancedInputComponent->BindAction(Action, ETriggerEvent::Started, this,
-			                                   &APEPlayerController::OnAbilityInputPressed, Action).GetHandle(),
-			EnhancedInputComponent->BindAction(Action, ETriggerEvent::Completed, this,
-			                                   &APEPlayerController::OnAbilityInputReleased, Action).GetHandle(),
-			static_cast<uint32>(InputID)
-		};
+		const FAbilityInputData AbilityBinding{EnhancedInputComponent->BindAction(Action, ETriggerEvent::Started, this, &APEPlayerController::OnAbilityInputPressed, Action).GetHandle(), EnhancedInputComponent->BindAction(Action, ETriggerEvent::Completed, this, &APEPlayerController::OnAbilityInputReleased, Action).GetHandle(), static_cast<uint32>(InputID)};
 
 		AbilityActionBindings.Add(Action, AbilityBinding);
 	}
@@ -217,8 +193,7 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* Action) const
 
 	// Check if controller owner is valid and owns a ability system component
 	if (const APECharacter* const ControllerOwner = GetPawn<APECharacter>();
-		ensureAlwaysMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		                 TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
+		ensureAlwaysMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()), TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		// Send the input pressed event to the ability system component with the found input ID
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputPressed(InputID);
@@ -253,8 +228,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 
 	// Check if controller owner is valid and owns a ability system component
 	if (const APECharacter* const ControllerOwner = GetPawn<APECharacter>();
-		ensureAlwaysMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()),
-		                 TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
+		ensureAlwaysMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()), TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		// Send the input released event to the ability system component with the found input ID
 		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
@@ -263,8 +237,7 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* Action) const
 
 void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) const
 {
-	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
+	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"), *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	// [EOS] Call the static function responsible for activating/deactivating the voice chat
 	UPEEOSLibrary::MuteEOSSessionVoiceChatUser(NetPlayerIndex, !Value.Get<bool>());
@@ -272,8 +245,7 @@ void APEPlayerController::SetVoiceChatEnabled(const FInputActionValue& Value) co
 
 void APEPlayerController::OpenInventory(const FInputActionValue& Value)
 {
-	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
+	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"), *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	Client_OpenInventory();
 }
@@ -287,8 +259,7 @@ void APEPlayerController::ChangeCameraAxis(const FInputActionValue& Value)
 		return;
 	}
 
-	CONTROLLER_AXIS_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
+	CONTROLLER_AXIS_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"), *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	AddYawInput(-1.f * Value[1] * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 	AddPitchInput(Value[0] * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
@@ -302,8 +273,7 @@ void APEPlayerController::Move(const FInputActionValue& Value) const
 		return;
 	}
 
-	CONTROLLER_AXIS_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
+	CONTROLLER_AXIS_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"), *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
 	{
@@ -315,8 +285,7 @@ void APEPlayerController::Move(const FInputActionValue& Value) const
 		GetPawnOrSpectator()->AddMovementInput(DirectionX, Value[1]);
 		GetPawnOrSpectator()->AddMovementInput(DirectionY, Value[0]);
 
-		UE_VLOG_LOCATION(GetPawn(), LogController_Axis, Log, GetPawn()->GetActorLocation(), 25.f, FColor::Green,
-		                 TEXT("%s"), *GetPawn()->GetName());
+		UE_VLOG_LOCATION(GetPawn(), LogController_Axis, Log, GetPawn()->GetActorLocation(), 25.f, FColor::Green, TEXT("%s"), *GetPawn()->GetName());
 	}
 }
 
@@ -328,14 +297,11 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 		return;
 	}
 
-	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"),
-	                     *FString(__func__), *Value.ToString(), Value.GetMagnitude());
+	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"), *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
 	if (APECharacter* const ControllerOwner = GetPawn<APECharacter>())
 	{
-		Value.Get<bool>()
-			? ControllerOwner->Jump()
-			: ControllerOwner->StopJumping();
+		Value.Get<bool>() ? ControllerOwner->Jump() : ControllerOwner->StopJumping();
 	}
 }
 #pragma endregion Default Movement Functions

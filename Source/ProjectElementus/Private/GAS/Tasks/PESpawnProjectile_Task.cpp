@@ -5,19 +5,12 @@
 #include "GAS/Tasks/PESpawnProjectile_Task.h"
 #include "Actors/World/PEProjectileActor.h"
 
-UPESpawnProjectile_Task::UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPESpawnProjectile_Task::UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;
 }
 
-UPESpawnProjectile_Task* UPESpawnProjectile_Task::SpawnProjectile(UGameplayAbility* OwningAbility,
-																  const FName TaskInstanceName,
-																  const TSubclassOf<APEProjectileActor> ClassToSpawn,
-																  const FTransform SpawnTransform,
-																  const FVector DirectionToFire,
-																  const TArray<FGameplayEffectGroupedData>
-																  EffectDataArray)
+UPESpawnProjectile_Task* UPESpawnProjectile_Task::SpawnProjectile(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const TSubclassOf<APEProjectileActor> ClassToSpawn, const FTransform SpawnTransform, const FVector DirectionToFire, const TArray<FGameplayEffectGroupedData> EffectDataArray)
 {
 	UPESpawnProjectile_Task* const MyObj = NewAbilityTask<UPESpawnProjectile_Task>(OwningAbility, TaskInstanceName);
 	MyObj->ProjectileClass = ClassToSpawn;
@@ -38,11 +31,7 @@ void UPESpawnProjectile_Task::Activate()
 	{
 		if (ProjectileClass != nullptr)
 		{
-			APEProjectileActor* SpawnedProjectile =
-				GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform,
-					Ability->GetAvatarActorFromActorInfo(),
-					Ability->GetActorInfo().PlayerController->GetPawn(),
-					ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			APEProjectileActor* SpawnedProjectile = GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform, Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 			SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
 			SpawnedProjectile->FinishSpawning(ProjectileTransform);

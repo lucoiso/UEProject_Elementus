@@ -4,8 +4,7 @@
 
 #include "GAS/Targeting/PELineTargeting.h"
 
-APELineTargeting::APELineTargeting(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APELineTargeting::APELineTargeting(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	TraceProfile = FCollisionProfileName(TEXT("Target"));
 }

@@ -7,8 +7,7 @@
 #include "Actors/Character/PECharacter.h"
 #include "Management/Data/PEGlobalTags.h"
 
-UPEWeapon::UPEWeapon(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEWeapon::UPEWeapon(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }
 
@@ -24,9 +23,7 @@ void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 
 	EquipmentOwner->AddOwnedComponent(InMesh);
 
-	InMesh->AttachToComponent(EquipmentOwner->GetMesh(),
-	                          FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-	                          SocketToAttach);
+	InMesh->AttachToComponent(EquipmentOwner->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketToAttach);
 
 	EquipmentOwner->FinishAndRegisterComponent(InMesh);
 
@@ -39,10 +36,7 @@ void UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 
 	check(!WeaponMesh.IsNull());
 
-	const TArray<UActorComponent*> CompArr =
-		EquipmentOwner->GetComponentsByTag(USkeletalMeshComponent::StaticClass(),
-		                                   *FString::Printf(TEXT("ElementusEquipment_%s"),
-		                                   *WeaponMesh->GetName()));
+	const TArray<UActorComponent*> CompArr = EquipmentOwner->GetComponentsByTag(USkeletalMeshComponent::StaticClass(), *FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
 
 	for (UActorComponent* const& Iterator : CompArr)
 	{

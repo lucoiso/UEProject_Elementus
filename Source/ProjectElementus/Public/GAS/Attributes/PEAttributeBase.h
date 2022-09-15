@@ -30,8 +30,5 @@ class PROJECTELEMENTUS_API UPEAttributeBase : public UAttributeSet
 
 protected:
 	/* A helper function to clamp attribute values */
-	virtual void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
-	                                         const FGameplayAttributeData& MaxAttribute,
-	                                         float NewMaxValue,
-	                                         const FGameplayAttribute& AffectedAttributeProperty) const;
+	virtual void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const;
 };

@@ -20,10 +20,7 @@ UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializ
 	bReplicateInputDirectly = true;
 }
 
-void UPEInteractAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                         const FGameplayAbilityActorInfo* ActorInfo,
-                                         const FGameplayAbilityActivationInfo ActivationInfo,
-                                         const FGameplayEventData* TriggerEventData)
+void UPEInteractAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -31,20 +28,15 @@ void UPEInteractAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	TaskHandle->ReadyForActivation();
 }
 
-void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
-                                      const FGameplayAbilityActorInfo* ActorInfo,
-                                      const FGameplayAbilityActivationInfo ActivationInfo)
+void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 
 	if (TaskHandle.IsValid() && TaskHandle->GetIsInteractAllowed())
 	{
-		if (IsValid(TaskHandle->GetInteractable()) &&
-			IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
+		if (IsValid(TaskHandle->GetInteractable()) && IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
 		{
-			IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(),
-			                                               Cast<APECharacter>(ActorInfo->AvatarActor.Get()),
-			                                               TaskHandle->GetInteractableHitResult());
+			IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(), Cast<APECharacter>(ActorInfo->AvatarActor.Get()), TaskHandle->GetInteractableHitResult());
 		}
 	}
 }

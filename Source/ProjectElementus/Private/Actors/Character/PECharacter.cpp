@@ -20,8 +20,7 @@
 #include "Net/UnrealNetwork.h"
 
 
-APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -36,15 +35,13 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
-	static const ConstructorHelpers::FObjectFinder<USkeletalMesh>
-		SkeletalMesh_ObjRef(TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny_Simple"));
+	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny_Simple"));
 	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh_ObjRef.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UAnimInstance>
-		Animation_ClassRef(TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
+	static const ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
 	if constexpr (&Animation_ClassRef.Class != nullptr)
 	{
 		GetMesh()->SetAnimInstanceClass(Animation_ClassRef.Class);
@@ -172,8 +169,7 @@ void APECharacter::InitializeAbilitySystemComponent(UAbilitySystemComponent* InA
 	AbilitySystemComponent = CastChecked<UPEAbilitySystemComponent>(InABSC);
 	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, this);
 
-	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this,
-																			 UGameFrameworkComponentManager::NAME_GameActorReady);
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this, UGameFrameworkComponentManager::NAME_GameActorReady);
 }
 
 // ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
@@ -188,22 +184,21 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 	{
 		return;
 	}
-	
-	if (const UElementusItemData* const ItemData =
-		UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
+
+	if (const UElementusItemData* const ItemData = UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
 	{
 		if (UPEEquipment* const EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
 			FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
 			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
-			
+
 			if (int32 FoundIndex;
 				InventoryComponent->FindFirstItemIndexWithTags(EquipmentSlotTags, FoundIndex))
 			{
 				// Already equipped
 				UnnequipItem(InventoryComponent->GetItemReferenceAt(FoundIndex));
 				return;
-			}	
+			}
 
 			if (int32 FoundIndex;
 				InventoryComponent->FindFirstItemIndexWithInfo(InItem, FoundIndex))
@@ -221,7 +216,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 				EquipedItem->ProcessEquipmentApplication(this);
 				InventoryComponent->OnInventoryUpdate.Broadcast();
 			}
-		}		
+		}
 
 		UElementusInventoryFunctions::UnloadElementusItem(InItem.ItemId);
 	}
@@ -240,8 +235,7 @@ void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 		return;
 	}
 
-	if (const UElementusItemData* const ItemData =
-		UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
+	if (const UElementusItemData* const ItemData = UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
 	{
 		if (UPEEquipment* const EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
@@ -251,13 +245,13 @@ void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 			for (const FGameplayTag& Iterator : EquipmentSlotTags)
 			{
 				EquipmentMap.Remove(Iterator);
-			}	
+			}
 			InItem.Tags.RemoveTags(EquipmentSlotTags);
-			
+
 			EquipedItem->ProcessEquipmentRemoval(this);
 			InventoryComponent->OnInventoryUpdate.Broadcast();
 		}
-		
+
 		UElementusInventoryFunctions::UnloadElementusItem(InItem.ItemId);
 	}
 }
@@ -297,9 +291,7 @@ void APECharacter::BeginPlay()
 		};
 
 		// Bot: Red | Player: Blue
-		const FLinearColor DestColor = IsBotControlled()
-										? FLinearColor::Red
-										: FLinearColor::Blue;
+		const FLinearColor DestColor = IsBotControlled() ? FLinearColor::Red : FLinearColor::Blue;
 
 		DynamicColor_Lambda(0, DestColor);
 		DynamicColor_Lambda(1, DestColor);
@@ -309,7 +301,7 @@ void APECharacter::BeginPlay()
 void APECharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
 	DOREPLIFETIME(APECharacter, InventoryComponent);
 }
 
@@ -357,16 +349,9 @@ void APECharacter::Multicast_DeathSetup_Implementation()
 
 void APECharacter::Server_SpawnInventoryPackage_Implementation()
 {
-	AElementusInventoryPackage* SpawnedPackage =
-		GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(),
-		                                                    GetTransform(),
-		                                                    nullptr,
-		                                                    nullptr,
-		                                                    ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	AElementusInventoryPackage* SpawnedPackage = GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(), GetTransform(), nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemsArray(),
-	                                                 InventoryComponent,
-	                                                 SpawnedPackage->PackageInventory);
+	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemsArray(), InventoryComponent, SpawnedPackage->PackageInventory);
 
 	SpawnedPackage->SetDestroyOnEmpty(true);
 	SpawnedPackage->FinishSpawning(GetTransform());
@@ -382,16 +367,12 @@ void APECharacter::Landed(const FHitResult& Hit)
 		return;
 	}
 
-	const FGameplayTagContainer DoubleJumpTagContainer
-	{
-		FGameplayTag::RequestGameplayTag("GameplayAbility.Default.DoubleJump")
-	};
+	const FGameplayTagContainer DoubleJumpTagContainer{FGameplayTag::RequestGameplayTag("GameplayAbility.Default.DoubleJump")};
 
 	AbilitySystemComponent->CancelAbilities(&DoubleJumpTagContainer);
 }
 
-void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
-                                                const FGameplayTagContainer& TagContainer)
+void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& TagContainer)
 {
 	ABILITY_VLOG(Ability, Warning, TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
 
@@ -406,13 +387,11 @@ void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
 #if WITH_EDITOR
 	if (bPrintAbilityFailure)
 	{
-		ABILITY_VLOG(Ability, Warning,
-		             TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
+		ABILITY_VLOG(Ability, Warning, TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
 
 		AbilitySystemComponent->PrintDebug();
 
-		ABILITY_VLOG(Ability, Warning,
-		             TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
+		ABILITY_VLOG(Ability, Warning, TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
 	}
 #endif
 }

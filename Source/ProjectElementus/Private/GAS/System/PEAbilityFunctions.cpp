@@ -5,8 +5,7 @@
 #include "GAS/System/PEAbilityFunctions.h"
 #include "AbilitySystemComponent.h"
 
-FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSingleHitResult(
-	const FHitResult HitResult)
+FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSingleHitResult(const FHitResult HitResult)
 {
 	FGameplayAbilityTargetDataHandle TargetData;
 
@@ -16,8 +15,7 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSi
 	return TargetData;
 }
 
-FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromHitResultArray(
-	const TArray<FHitResult> HitResults)
+FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromHitResultArray(const TArray<FHitResult> HitResults)
 {
 	FGameplayAbilityTargetDataHandle TargetData;
 
@@ -30,8 +28,7 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromHi
 	return TargetData;
 }
 
-FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromActorArray(
-	const TArray<AActor*> TargetActors)
+FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors)
 {
 	if (!TargetActors.IsEmpty())
 	{
@@ -44,14 +41,9 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromAc
 	return FGameplayAbilityTargetDataHandle();
 }
 
-void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
-                                      const TSubclassOf<UGameplayAbility> Ability,
-                                      const FName InputId, const UEnum* EnumerationClass,
-                                      const bool bTryRemoveExistingAbilityWithInput = true,
-                                      const bool bTryRemoveExistingAbilityWithClass = true)
+void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability, const FName InputId, const UEnum* EnumerationClass, const bool bTryRemoveExistingAbilityWithInput = true, const bool bTryRemoveExistingAbilityWithClass = true)
 {
-	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"),
-	                     *TargetABSC->GetAvatarActor()->GetName()))
+	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"), *TargetABSC->GetAvatarActor()->GetName()))
 	{
 		if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
 		{
@@ -91,12 +83,9 @@ void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC,
 	}
 }
 
-void UPEAbilityFunctions::RemoveAbility(UAbilitySystemComponent* TargetABSC,
-                                        const TSubclassOf<UGameplayAbility> Ability)
+void UPEAbilityFunctions::RemoveAbility(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability)
 {
-	if (ensureAlwaysMsgf(IsValid(TargetABSC),
-	                     TEXT("%s have a invalid Ability System Component"),
-	                     *TargetABSC->GetAvatarActor()->GetName()))
+	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"), *TargetABSC->GetAvatarActor()->GetName()))
 	{
 		if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
 		{

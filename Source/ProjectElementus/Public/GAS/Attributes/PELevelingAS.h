@@ -34,8 +34,7 @@ public:
 	FGameplayAttributeData CurrentExperience;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, CurrentExperience)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties",
-		ReplicatedUsing = OnRep_RequiredExperience)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_RequiredExperience)
 	FGameplayAttributeData RequiredExperience;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, RequiredExperience)
 
