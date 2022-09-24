@@ -19,8 +19,6 @@
 #include "Management/Data/PEGlobalTags.h"
 #include "Net/UnrealNetwork.h"
 
-static const FName InventoryComponentName(TEXT("InventoryComponent"));
-
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEInventoryComponent>(InventoryComponentName))
 {
 	PrimaryActorTick.bCanEverTick = false;

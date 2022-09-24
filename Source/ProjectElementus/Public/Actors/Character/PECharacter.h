@@ -35,6 +35,8 @@ class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbili
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 protected:
+	const FName InventoryComponentName = "InventoryComponent";
+	
 	virtual void PossessedBy(AController* InController) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void OnRep_Controller() override;
