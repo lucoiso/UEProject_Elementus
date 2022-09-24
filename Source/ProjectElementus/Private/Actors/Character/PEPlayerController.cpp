@@ -9,8 +9,6 @@
 #include "InputAction.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "ElementusInventoryComponent.h"
-#include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/PlayerState.h"
@@ -18,6 +16,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Management/PEGameInstance.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/PEInventoryComponent.h"
+#include "ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 
 constexpr float BaseTurnRate = 45.f;
@@ -138,6 +138,11 @@ void APEPlayerController::Server_ProcessTrade_Internal_Implementation(const TArr
 
 void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer) const
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	if (const APECharacter* const ControllerOwner = GetPawn<APECharacter>();
 		ensureAlwaysMsgf(ControllerOwner->InventoryComponent, TEXT("%s owner have a invalid InventoryComponent"), *GetName()))
 	{

@@ -10,17 +10,18 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemLog.h"
-#include "ElementusInventoryComponent.h"
-#include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/Interfaces/PEEquipment.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
+#include "Components/PEInventoryComponent.h"
+#include "ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Net/UnrealNetwork.h"
 
+static const FName InventoryComponentName(TEXT("InventoryComponent"));
 
-APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEInventoryComponent>(InventoryComponentName))
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -76,7 +77,7 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	FollowCamera->bUsePawnControlRotation = true;
 	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
 
-	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(TEXT("InventoryComponent"));
+	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(InventoryComponentName);
 	InventoryComponent->SetIsReplicated(true);
 }
 
@@ -189,9 +190,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 	{
 		if (UPEEquipment* const EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
-			FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
-			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
-
+			const FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
 			if (int32 FoundIndex;
 				InventoryComponent->FindFirstItemIndexWithTags(EquipmentSlotTags, FoundIndex))
 			{
@@ -205,10 +204,7 @@ void APECharacter::EquipItem(const FElementusItemInfo& InItem)
 			{
 				for (const FGameplayTag& Iterator : EquipmentSlotTags)
 				{
-					if (Iterator != GlobalTag_GenericEquipped)
-					{
-						EquipmentMap.Add(Iterator, InItem);
-					}
+					EquipmentMap.Add(Iterator, InItem);
 				}
 
 				InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.AppendTags(EquipmentSlotTags);
@@ -239,9 +235,7 @@ void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
 	{
 		if (UPEEquipment* const EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
 		{
-			FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
-			EquipmentSlotTags.AddTag(GlobalTag_GenericEquipped);
-
+			const FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
 			for (const FGameplayTag& Iterator : EquipmentSlotTags)
 			{
 				EquipmentMap.Remove(Iterator);
@@ -349,7 +343,7 @@ void APECharacter::Multicast_DeathSetup_Implementation()
 
 void APECharacter::Server_SpawnInventoryPackage_Implementation()
 {
-	AElementusInventoryPackage* SpawnedPackage = GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(), GetTransform(), nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	AElementusInventoryPackage* const SpawnedPackage = GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(), GetTransform(), nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemsArray(), InventoryComponent, SpawnedPackage->PackageInventory);
 
@@ -376,16 +370,20 @@ void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
 {
 	ABILITY_VLOG(Ability, Warning, TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
 
-	for (const FGameplayTag& TagIterator : TagContainer)
+	if (!TagContainer.IsEmpty())
 	{
-		if (TagIterator.IsValid())
+		ABILITY_VLOG(Ability, Warning, TEXT("Reasons:"));
+		for (const FGameplayTag& TagIterator : TagContainer)
 		{
-			ABILITY_VLOG(Ability, Warning, TEXT("Tag: %s"), *TagIterator.ToString());
+			if (TagIterator.IsValid())
+			{
+				ABILITY_VLOG(Ability, Warning, TEXT("Tag: %s"), *TagIterator.ToString());
+			}
 		}
 	}
 
 #if WITH_EDITOR
-	if (bPrintAbilityFailure)
+	if (bDebugAbilities)
 	{
 		ABILITY_VLOG(Ability, Warning, TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
 

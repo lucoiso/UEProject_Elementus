@@ -16,7 +16,7 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Mana);
 	ActivationOwnedTags.AddTag(GlobalTag_CannotInteract);
 
-	ActivationBlockedTags.AddTag(GlobalTag_WeaponEquipped);
+	ActivationBlockedTags.AddTag(GlobalTag_WeaponSlot_Base);
 
 	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Telekinesis/Sounds/MS_Impulse"));
 	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)

@@ -36,11 +36,11 @@ void UPEInteractAbility_Task::Activate()
 
 	if (ensureAlwaysMsgf(InteractionOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 	{
-		UAbilityTask_WaitGameplayTagAdded* WaitGameplayTagAdd = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
+		UAbilityTask_WaitGameplayTagAdded* const WaitGameplayTagAdd = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
 
 		WaitGameplayTagAdd->Added.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
 
-		UAbilityTask_WaitGameplayTagRemoved* WaitGameplayTagRemove = UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
+		UAbilityTask_WaitGameplayTagRemoved* const WaitGameplayTagRemove = UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
 
 		WaitGameplayTagRemove->Removed.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
 

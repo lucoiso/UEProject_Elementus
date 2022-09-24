@@ -15,7 +15,7 @@ void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 {
 	check(!WeaponMesh.IsNull());
 
-	EquipmentOwner->GetAbilitySystemComponent()->AddLooseGameplayTag(GlobalTag_WeaponEquipped);
+	EquipmentOwner->GetAbilitySystemComponent()->AddLooseGameplayTag(GlobalTag_WeaponSlot_Base);
 
 	USkeletalMeshComponent* const InMesh = NewObject<USkeletalMeshComponent>(EquipmentOwner);
 	InMesh->SetSkeletalMesh(WeaponMesh.LoadSynchronous());
@@ -32,7 +32,7 @@ void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 
 void UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 {
-	EquipmentOwner->GetAbilitySystemComponent()->RemoveLooseGameplayTag(GlobalTag_WeaponEquipped);
+	EquipmentOwner->GetAbilitySystemComponent()->RemoveLooseGameplayTag(GlobalTag_WeaponSlot_Base);
 
 	check(!WeaponMesh.IsNull());
 

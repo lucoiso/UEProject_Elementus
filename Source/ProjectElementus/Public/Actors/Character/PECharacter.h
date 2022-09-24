@@ -20,7 +20,6 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class UElementusInventoryComponent;
-struct FGameplayTag;
 /**
  *
  */
@@ -140,6 +139,6 @@ private:
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Debug", meta = (AllowPrivateAccess = "true"))
-	bool bPrintAbilityFailure = false;
+	bool bDebugAbilities = true;
 #endif
 };

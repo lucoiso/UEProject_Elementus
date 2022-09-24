@@ -7,8 +7,12 @@
 #include "GameplayTagContainer.h"
 
 #pragma region Equipment
-static const FGameplayTag GlobalTag_GenericEquipped = FGameplayTag::RequestGameplayTag("EquipSlot.Generic.Equipped");
-static const FGameplayTag GlobalTag_WeaponEquipped = FGameplayTag::RequestGameplayTag("State.Weapon.Equipped");
+static const FGameplayTag GlobalTag_EquipSlot_Base = FGameplayTag::RequestGameplayTag("EquipSlot");
+
+static const FGameplayTag GlobalTag_WeaponSlot_Base = FGameplayTag::RequestGameplayTag("EquipSlot.Weapon");
+static const FGameplayTag GlobalTag_WeaponSlot_Both = FGameplayTag::RequestGameplayTag("EquipSlot.Weapon.Both");
+static const FGameplayTag GlobalTag_WeaponSlot_Left = FGameplayTag::RequestGameplayTag("EquipSlot.Weapon.Left");
+static const FGameplayTag GlobalTag_WeaponSlot_Right = FGameplayTag::RequestGameplayTag("EquipSlot.Weapon.Right");
 #pragma endregion Equipment
 
 #pragma region Effect

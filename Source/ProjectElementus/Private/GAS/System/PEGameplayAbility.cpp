@@ -88,12 +88,12 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle, co
 	// Auto cancel can only be called on instantiated abilities. Non-Instantiated abilities can't handle tasks
 	if (IsInstantiated())
 	{
-		UAbilityTask_WaitGameplayTagAdded* WaitDeadTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, GlobalTag_DeadState);
+		UAbilityTask_WaitGameplayTagAdded* const WaitDeadTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, GlobalTag_DeadState);
 
 		WaitDeadTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitDeadTagAddedTask->ReadyForActivation();
 
-		UAbilityTask_WaitGameplayTagAdded* WaitStunTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, GlobalTag_StunState);
+		UAbilityTask_WaitGameplayTagAdded* const WaitStunTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, GlobalTag_StunState);
 
 		WaitStunTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitStunTagAddedTask->ReadyForActivation();
