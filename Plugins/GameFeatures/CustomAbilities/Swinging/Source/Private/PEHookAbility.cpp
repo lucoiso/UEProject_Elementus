@@ -16,8 +16,10 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Su
 
 	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Stamina);
 	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Mana);
+	ActivationOwnedTags.AddTag(GlobalTag_AimingBlockedState);
 
 	ActivationBlockedTags.AddTag(GlobalTag_WeaponSlot_Base);
+	ActivationBlockedTags.AddTag(GlobalTag_AimingState);
 
 	bWaitCancel = false;
 	bIgnoreCooldown = true;

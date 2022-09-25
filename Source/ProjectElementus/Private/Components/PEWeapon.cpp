@@ -2,7 +2,7 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Actors/World/PEWeapon.h"
+#include "Components/PEWeapon.h"
 #include "AbilitySystemComponent.h"
 #include "Actors/Character/PECharacter.h"
 #include "Management/Data/PEGlobalTags.h"

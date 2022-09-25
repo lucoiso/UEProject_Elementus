@@ -19,7 +19,9 @@
 #include "Management/Data/PEGlobalTags.h"
 #include "Net/UnrealNetwork.h"
 
-APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEInventoryComponent>(InventoryComponentName))
+static const FVector PECameraDefaultPosition(50.f, 50.f, 50.f);
+
+APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEInventoryComponent>(PEInventoryComponentName))
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -73,9 +75,9 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = true;
-	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
+	FollowCamera->SetRelativeLocation(PECameraDefaultPosition);
 
-	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(InventoryComponentName);
+	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(PEInventoryComponentName);
 	InventoryComponent->SetIsReplicated(true);
 }
 
@@ -140,6 +142,11 @@ float APECharacter::GetDefaultCrouchSpeed() const
 float APECharacter::GetDefaultJumpVelocity() const
 {
 	return DefaultJumpVelocity;
+}
+
+/* static */ FVector APECharacter::GetCameraDefaultPosition()
+{
+	return PECameraDefaultPosition;
 }
 
 FVector APECharacter::GetCameraForwardVector() const

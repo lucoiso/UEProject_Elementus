@@ -25,6 +25,7 @@ static const FGameplayTag GlobalTag_CannotInteract = FGameplayTag::RequestGamepl
 static const FGameplayTag GlobalTag_DeadState = FGameplayTag::RequestGameplayTag("State.Dead");
 static const FGameplayTag GlobalTag_StunState = FGameplayTag::RequestGameplayTag("State.Stunned");
 static const FGameplayTag GlobalTag_AimingState = FGameplayTag::RequestGameplayTag("State.Aiming");
+static const FGameplayTag GlobalTag_AimingBlockedState = FGameplayTag::RequestGameplayTag("State.Aiming.Blocked");
 static const FGameplayTag GlobalTag_WaitingConfirmationState = FGameplayTag::RequestGameplayTag("State.WaitingConfirm");
 static const FGameplayTag GlobalTag_WaitingCancelationState = FGameplayTag::RequestGameplayTag("State.WaitingCancel");
 #pragma endregion State

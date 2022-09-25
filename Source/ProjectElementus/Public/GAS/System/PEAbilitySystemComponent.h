@@ -33,7 +33,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void RemoveEffectGroupedDataFromTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove = 1);
-
+	
 	template <typename T>
 	const T* GetCustomAttributeSet() const
 	{

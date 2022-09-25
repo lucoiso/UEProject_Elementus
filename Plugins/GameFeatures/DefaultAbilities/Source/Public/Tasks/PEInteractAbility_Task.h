@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
-#include "Actors/Character/PECharacter.h"
 #include "PEInteractAbility_Task.generated.h"
 
 /**
@@ -42,7 +41,7 @@ private:
 	float Range;
 	bool bUseCustomDepth;
 
-	TWeakObjectPtr<APECharacter> InteractionOwner;
+	TWeakObjectPtr<class APECharacter> InteractionOwner;
 	TWeakObjectPtr<AActor> LastInteractableActor_Ref;
 	TWeakObjectPtr<UPrimitiveComponent> LastInteractablePrimitive_Ref;
 

@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Tasks/PEInteractAbility_Task.h"
-
+#include "Actors/Character/PECharacter.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTargetDataFilter.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"

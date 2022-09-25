@@ -41,15 +41,38 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromAc
 	return FGameplayAbilityTargetDataHandle();
 }
 
-void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability, const FName InputId, const UEnum* EnumerationClass, const bool bTryRemoveExistingAbilityWithInput = true, const bool bTryRemoveExistingAbilityWithClass = true)
+void UPEAbilityFunctions::GiveAbilityWithoutBinding(UAbilitySystemComponent* TargetABSC, TSubclassOf<UGameplayAbility> Ability, const bool bTryRemoveExistingAbilityWithClass)
 {
+	if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
+	{
+		return;
+	}
+	
 	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"), *TargetABSC->GetAvatarActor()->GetName()))
 	{
-		if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
+		if (bTryRemoveExistingAbilityWithClass)
 		{
-			return;
+			const FGameplayAbilitySpec* const AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
+			if (AbilitySpec != nullptr)
+			{
+				RemoveAbility(TargetABSC, AbilitySpec->Ability->GetClass());
+			}
 		}
 
+		const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, INDEX_NONE, TargetABSC->GetAvatarActor());
+		TargetABSC->GiveAbility(Spec);
+	}
+}
+
+void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability, const FName InputId, const UEnum* EnumerationClass, const bool bTryRemoveExistingAbilityWithInput = true, const bool bTryRemoveExistingAbilityWithClass = true)
+{
+	if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
+	{
+		return;
+	}
+	
+	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"), *TargetABSC->GetAvatarActor()->GetName()))
+	{
 		// If can't find the input value, will cancel the ability addition
 		const uint32 InputID = EnumerationClass->GetValueByName(InputId, EGetByNameFlags::CheckAuthoredName);
 		if (InputID == INDEX_NONE)
@@ -85,13 +108,13 @@ void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC, const
 
 void UPEAbilityFunctions::RemoveAbility(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability)
 {
+	if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
+	{
+		return;
+	}
+	
 	if (ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s have a invalid Ability System Component"), *TargetABSC->GetAvatarActor()->GetName()))
 	{
-		if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
-		{
-			return;
-		}
-
 		const FGameplayAbilitySpec* const AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
 
 		if (AbilitySpec == nullptr)
@@ -99,6 +122,7 @@ void UPEAbilityFunctions::RemoveAbility(UAbilitySystemComponent* TargetABSC, con
 			return;
 		}
 
+		TargetABSC->SetRemoveAbilityOnEnd(AbilitySpec->Handle);
 		TargetABSC->ClearAbility(AbilitySpec->Handle);
 	}
 }

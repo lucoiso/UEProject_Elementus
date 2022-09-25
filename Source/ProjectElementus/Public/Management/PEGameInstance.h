@@ -148,7 +148,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ClientTravelToSessionLevel(const int32 LocalUserNum) const;
 
-	/*  */
+	/* Get the data of existing sessions */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	TArray<FSessionDataHandler> GetSessionsDataHandles() const;
 

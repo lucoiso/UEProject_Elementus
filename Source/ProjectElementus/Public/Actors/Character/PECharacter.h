@@ -11,6 +11,8 @@
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
+static const FName PEInventoryComponentName("InventoryComponent");
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
 
 class UPEEquipment;
@@ -34,9 +36,7 @@ class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbili
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-protected:
-	const FName InventoryComponentName = "InventoryComponent";
-	
+protected:	
 	virtual void PossessedBy(AController* InController) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void OnRep_Controller() override;
@@ -58,6 +58,9 @@ public:
 	{
 		return FollowCamera;
 	}
+
+	/** Returns FollowCamera default/initial relative location **/
+	static FVector GetCameraDefaultPosition();
 
 	/** Returns FollowCamera Forward Vector **/
 	FVector GetCameraForwardVector() const;

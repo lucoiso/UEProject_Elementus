@@ -31,23 +31,23 @@ class PROJECTELEMENTUS_API UPEPlayerLibrary final : public UBlueprintFunctionLib
 	GENERATED_BODY()
 
 public:
-	/*  */
+	/* Dynamicaly bind a new enhanced input to the player */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static FPlayerInputBindingHandle BindDynamicInput(APlayerController* Controller, UInputAction* Action, UObject* Object, const FName UFunctionName, const ETriggerEvent TriggerEvent);
 
-	/*  */
+	/* Dynamicaly remove a enhanced input binding from player */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static void RemoveDynamicInput(const FPlayerInputBindingHandle BindingHandle);
 
-	/*  */
+	/* Dynamicaly bind a new enhanced input mapping context to the player */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static void AddDynamicMapping(APlayerController* Controller, UInputMappingContext* InputMapping, const int32 Priority);
 
-	/*  */
+	/* Dynamicaly remove a enhanced input mapping context from the player */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	static void RemoveDynamicMapping(APlayerController* Controller, UInputMappingContext* InputMapping);
 
-	/*  */
+	/* Check if the player contains the specified bindings and return the handle */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static bool CheckIfPlayerContainsDynamicInput(APlayerController* Controller, TArray<FPlayerInputBindingHandle> BindingArray, FPlayerInputBindingHandle& BindingHandle);
 };
