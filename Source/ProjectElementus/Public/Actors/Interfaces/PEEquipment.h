@@ -10,6 +10,7 @@
 #include "PEEquipment.generated.h"
 
 class APECharacter;
+
 /**
  *
  */
@@ -26,8 +27,8 @@ public:
 	FGameplayTagContainer EquipmentSlotTags;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	virtual void ProcessEquipmentApplication(APECharacter* EquipmentOwner);
+	virtual bool ProcessEquipmentApplication(APECharacter* EquipmentOwner);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	virtual void ProcessEquipmentRemoval(APECharacter* EquipmentOwner);
+	virtual bool ProcessEquipmentRemoval(APECharacter* EquipmentOwner);
 };

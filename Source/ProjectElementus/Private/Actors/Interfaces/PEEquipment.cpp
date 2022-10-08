@@ -6,24 +6,52 @@
 #include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 
-void UPEEquipment::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
+bool UPEEquipment::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 {
+	if (!IsValid(EquipmentOwner))
+	{
+		return false;
+	}
+
+	if (!EquipmentOwner->HasAuthority())
+	{
+		return false;
+	}
+
 	if (UPEAbilitySystemComponent* const TargetABSC = Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
 	{
 		for (const FGameplayEffectGroupedData& Effect : EquipmentEffects)
 		{
 			TargetABSC->ApplyEffectGroupedDataToSelf(Effect);
 		}
+		
+		return true;
 	}
+
+	return false;
 }
 
-void UPEEquipment::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
+bool UPEEquipment::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 {
+	if (!IsValid(EquipmentOwner))
+	{
+		return false;
+	}
+
+	if (!EquipmentOwner->HasAuthority())
+	{
+		return false;
+	}
+	
 	if (UPEAbilitySystemComponent* const TargetABSC = Cast<UPEAbilitySystemComponent>(EquipmentOwner->GetAbilitySystemComponent()))
 	{
 		for (const FGameplayEffectGroupedData& Effect : EquipmentEffects)
 		{
 			TargetABSC->RemoveEffectGroupedDataFromSelf(Effect, EquipmentOwner->GetAbilitySystemComponent(), 1);
 		}
+
+		return true;
 	}
+
+	return false;
 }

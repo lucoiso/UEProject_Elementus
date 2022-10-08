@@ -20,4 +20,14 @@ public:
 	explicit UPEInventoryComponent(const FObjectInitializer& ObjectInitializer);
 	
 	virtual bool CanGiveItem(const FElementusItemInfo InItemInfo) const override;
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	virtual bool EquipItem(const FElementusItemInfo& InItem);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	virtual bool UnnequipItem(FElementusItemInfo& InItem);
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	TMap<FGameplayTag, FElementusItemInfo> EquipmentMap;
 };

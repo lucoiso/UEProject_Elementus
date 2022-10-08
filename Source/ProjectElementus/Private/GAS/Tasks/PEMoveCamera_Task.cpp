@@ -2,19 +2,19 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "GAS/Tasks/PEAim_Task.h"
+#include "GAS/Tasks/PEMoveCamera_Task.h"
 #include "Actors/Character/PECharacter.h"
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 
-UPEAim_Task::UPEAim_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UPEMoveCamera_Task::UPEMoveCamera_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;
 }
 
-UPEAim_Task* UPEAim_Task::Aim(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const FVector CameraRelativeTargetPosition, const float CameraLerpTime, const bool bAdjustTimeToCurrentLocation)
+UPEMoveCamera_Task* UPEMoveCamera_Task::MoveCamera(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const FVector CameraRelativeTargetPosition, const float CameraLerpTime, const bool bAdjustTimeToCurrentLocation)
 {
-	UPEAim_Task* const MyObj = NewAbilityTask<UPEAim_Task>(OwningAbility, TaskInstanceName);	
+	UPEMoveCamera_Task* const MyObj = NewAbilityTask<UPEMoveCamera_Task>(OwningAbility, TaskInstanceName);	
 	MyObj->CameraTargetPosition = CameraRelativeTargetPosition;
 	MyObj->CameraLerpTime = CameraLerpTime;
 	MyObj->bAdjustTimeToCurrentLocation = bAdjustTimeToCurrentLocation;
@@ -22,7 +22,7 @@ UPEAim_Task* UPEAim_Task::Aim(UGameplayAbility* OwningAbility, const FName TaskI
 	return MyObj;
 }
 
-void UPEAim_Task::Activate()
+void UPEMoveCamera_Task::Activate()
 {
 	Super::Activate();
 
@@ -73,7 +73,7 @@ void UPEAim_Task::Activate()
 	}
 }
 
-void UPEAim_Task::RevertCameraPosition()
+void UPEMoveCamera_Task::RevertCameraPosition()
 {
 	if (!TaskTimeline.IsValid())
 	{
@@ -86,7 +86,7 @@ void UPEAim_Task::RevertCameraPosition()
 	TaskTimeline->Reverse();
 }
 
-void UPEAim_Task::OnDestroy(const bool AbilityIsEnding)
+void UPEMoveCamera_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	UE_LOG(LogGameplayTasks, Display, TEXT("Task %s ended"), *GetName());
 
@@ -98,7 +98,7 @@ void UPEAim_Task::OnDestroy(const bool AbilityIsEnding)
 	Super::OnDestroy(AbilityIsEnding);
 }
 
-void UPEAim_Task::TimelineProgress(const float InValue)
+void UPEMoveCamera_Task::TimelineProgress(const float InValue)
 {
 	CurrentValue = InValue;
 	
@@ -117,7 +117,7 @@ void UPEAim_Task::TimelineProgress(const float InValue)
 	TargetCamera->SetRelativeLocation(FMath::Lerp(CameraInitialPosition, CameraTargetPosition, InValue));
 }
 
-void UPEAim_Task::TimelineFinished()
+void UPEMoveCamera_Task::TimelineFinished()
 {
 	if (CurrentValue == 0.f)
 	{
@@ -125,6 +125,6 @@ void UPEAim_Task::TimelineFinished()
 	}
 	else if (CurrentValue == CameraLerpTime)
 	{
-		OnCompleted.Broadcast();		
+		OnMoveCompleted.Broadcast();		
 	}	
 }

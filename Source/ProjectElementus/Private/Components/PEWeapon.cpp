@@ -11,32 +11,66 @@ UPEWeapon::UPEWeapon(const FObjectInitializer& ObjectInitializer) : Super(Object
 {
 }
 
-void UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
+bool UPEWeapon::ProcessEquipmentApplication(APECharacter* EquipmentOwner)
 {
 	check(!WeaponMesh.IsNull());
+
+	if (!IsValid(EquipmentOwner))
+	{
+		return false;
+	}
+
+	if (!EquipmentOwner->HasAuthority())
+	{
+		return false;
+	}
 
 	EquipmentOwner->GetAbilitySystemComponent()->AddLooseGameplayTag(GlobalTag_WeaponSlot_Base);
 
 	USkeletalMeshComponent* const InMesh = NewObject<USkeletalMeshComponent>(EquipmentOwner);
+
+	if (!IsValid(InMesh))
+	{
+		return false;
+	}
+
 	InMesh->SetSkeletalMesh(WeaponMesh.LoadSynchronous());
 	InMesh->ComponentTags.Add(*FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
 
 	EquipmentOwner->AddOwnedComponent(InMesh);
 
-	InMesh->AttachToComponent(EquipmentOwner->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketToAttach);
+	if (!InMesh->AttachToComponent(EquipmentOwner->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketToAttach))
+	{
+		return false;
+	}
 
 	EquipmentOwner->FinishAndRegisterComponent(InMesh);
 
-	Super::ProcessEquipmentApplication(EquipmentOwner);
+	return Super::ProcessEquipmentApplication(EquipmentOwner);
 }
 
-void UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
+bool UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 {
+	check(!WeaponMesh.IsNull());
+	
+	if (!IsValid(EquipmentOwner))
+	{
+		return false;
+	}
+
+	if (!EquipmentOwner->HasAuthority())
+	{
+		return false;
+	}
+	
 	EquipmentOwner->GetAbilitySystemComponent()->RemoveLooseGameplayTag(GlobalTag_WeaponSlot_Base);
 
-	check(!WeaponMesh.IsNull());
-
 	const TArray<UActorComponent*> CompArr = EquipmentOwner->GetComponentsByTag(USkeletalMeshComponent::StaticClass(), *FString::Printf(TEXT("ElementusEquipment_%s"), *WeaponMesh->GetName()));
+	
+	if (CompArr.IsEmpty())
+	{
+		return false;
+	}
 
 	for (UActorComponent* const& Iterator : CompArr)
 	{
@@ -45,5 +79,5 @@ void UPEWeapon::ProcessEquipmentRemoval(APECharacter* EquipmentOwner)
 		Iterator->DestroyComponent();
 	}
 
-	Super::ProcessEquipmentRemoval(EquipmentOwner);
+	return Super::ProcessEquipmentRemoval(EquipmentOwner);
 }

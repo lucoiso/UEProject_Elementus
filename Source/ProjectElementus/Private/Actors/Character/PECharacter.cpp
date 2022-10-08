@@ -11,11 +11,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemLog.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "Actors/Interfaces/PEEquipment.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
-#include "Components/PEInventoryComponent.h"
 #include "ElementusInventoryFunctions.h"
+#include "Components/PEInventoryComponent.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Net/UnrealNetwork.h"
 
@@ -178,81 +177,9 @@ void APECharacter::InitializeAbilitySystemComponent(UAbilitySystemComponent* InA
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this, UGameFrameworkComponentManager::NAME_GameActorReady);
 }
 
-// ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
-void APECharacter::EquipItem(const FElementusItemInfo& InItem)
+UPEInventoryComponent* APECharacter::GetInventoryComponent() const
 {
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (!InventoryComponent->ContainsItem(InItem))
-	{
-		return;
-	}
-
-	if (const UElementusItemData* const ItemData = UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
-	{
-		if (UPEEquipment* const EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
-		{
-			const FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
-			if (int32 FoundIndex;
-				InventoryComponent->FindFirstItemIndexWithTags(EquipmentSlotTags, FoundIndex))
-			{
-				// Already equipped
-				UnnequipItem(InventoryComponent->GetItemReferenceAt(FoundIndex));
-				return;
-			}
-
-			if (int32 FoundIndex;
-				InventoryComponent->FindFirstItemIndexWithInfo(InItem, FoundIndex))
-			{
-				for (const FGameplayTag& Iterator : EquipmentSlotTags)
-				{
-					EquipmentMap.Add(Iterator, InItem);
-				}
-
-				InventoryComponent->GetItemReferenceAt(FoundIndex).Tags.AppendTags(EquipmentSlotTags);
-
-				EquipedItem->ProcessEquipmentApplication(this);
-				InventoryComponent->OnInventoryUpdate.Broadcast();
-			}
-		}
-
-		UElementusInventoryFunctions::UnloadElementusItem(InItem.ItemId);
-	}
-}
-
-// ReSharper disable once CppUE4BlueprintCallableFunctionMayBeConst
-void APECharacter::UnnequipItem(FElementusItemInfo& InItem)
-{
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (!InventoryComponent->ContainsItem(InItem))
-	{
-		return;
-	}
-
-	if (const UElementusItemData* const ItemData = UElementusInventoryFunctions::GetSingleItemDataById(InItem.ItemId, {"SoftData"}, false))
-	{
-		if (UPEEquipment* const EquipedItem = Cast<UPEEquipment>(ItemData->ItemClass.LoadSynchronous()->GetDefaultObject()))
-		{
-			const FGameplayTagContainer EquipmentSlotTags = EquipedItem->EquipmentSlotTags;
-			for (const FGameplayTag& Iterator : EquipmentSlotTags)
-			{
-				EquipmentMap.Remove(Iterator);
-			}
-			InItem.Tags.RemoveTags(EquipmentSlotTags);
-
-			EquipedItem->ProcessEquipmentRemoval(this);
-			InventoryComponent->OnInventoryUpdate.Broadcast();
-		}
-
-		UElementusInventoryFunctions::UnloadElementusItem(InItem.ItemId);
-	}
+	return Cast<UPEInventoryComponent>(InventoryComponent);
 }
 
 void APECharacter::PreInitializeComponents()

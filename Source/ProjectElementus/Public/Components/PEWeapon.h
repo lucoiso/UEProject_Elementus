@@ -31,6 +31,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	FName SocketToAttach = NAME_None;
 
-	virtual void ProcessEquipmentApplication(APECharacter* EquipmentOwner) override;
-	virtual void ProcessEquipmentRemoval(APECharacter* EquipmentOwner) override;
+	virtual bool ProcessEquipmentApplication(APECharacter* EquipmentOwner) override;
+	virtual bool ProcessEquipmentRemoval(APECharacter* EquipmentOwner) override;
 };

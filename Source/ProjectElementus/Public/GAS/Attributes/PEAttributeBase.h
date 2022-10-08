@@ -4,7 +4,6 @@
 
 #pragma once
 
-// ReSharper disable once CppUnusedIncludeDirective
 #include "AbilitySystemComponent.h"
 
 #include "CoreMinimal.h"

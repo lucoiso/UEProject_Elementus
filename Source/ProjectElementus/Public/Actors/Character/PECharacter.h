@@ -22,6 +22,8 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class UElementusInventoryComponent;
+class UPEInventoryComponent;
+
 /**
  *
  */
@@ -89,20 +91,14 @@ public:
 
 	/* Initialize the specified Ability System Component with the given owner actor in this character (AvatarActor) */
 	void InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor);
-
-	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
-	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
-	TMap<FGameplayTag, FElementusItemInfo> EquipmentMap;
-
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void EquipItem(const FElementusItemInfo& InItem);
-
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void UnnequipItem(FElementusItemInfo& InItem);
+	
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UPEInventoryComponent* GetInventoryComponent() const;
 
 protected:
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties", meta = (Getter = "GetInventoryComponent"))
+	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
+
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
 	virtual void PreInitializeComponents() override;

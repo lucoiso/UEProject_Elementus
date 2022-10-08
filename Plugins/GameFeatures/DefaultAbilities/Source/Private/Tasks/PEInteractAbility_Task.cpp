@@ -37,11 +37,9 @@ void UPEInteractAbility_Task::Activate()
 	if (ensureAlwaysMsgf(InteractionOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
 	{
 		UAbilityTask_WaitGameplayTagAdded* const WaitGameplayTagAdd = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
-
 		WaitGameplayTagAdd->Added.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
 
 		UAbilityTask_WaitGameplayTagRemoved* const WaitGameplayTagRemove = UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
-
 		WaitGameplayTagRemove->Removed.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
 
 		WaitGameplayTagAdd->ReadyForActivation();
@@ -84,6 +82,8 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 	Super::TickTask(DeltaTime);
 
+	HitResult.Reset(0.f, false);
+
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(Ability->GetAvatarActorFromActorInfo());
 
@@ -94,24 +94,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 	APELineTargeting::LineTraceWithFilter(HitResult, GetWorld(), DataFilterHandle, StartLocation, EndLocation, TEXT("Target"), QueryParams);
 
-	if (IsValid(HitResult.GetActor()) && HitResult.GetActor()->Implements<UPEInteractable>())
-	{
-		if (LastInteractableActor_Ref.Get() != HitResult.GetActor())
-		{
-			LastInteractableActor_Ref = HitResult.GetActor();
-			LastInteractablePrimitive_Ref = HitResult.GetComponent();
-
-			IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), true, InteractionOwner.Get(), HitResult);
-
-			if (bUseCustomDepth)
-			{
-				LastInteractablePrimitive_Ref->SetRenderCustomDepth(true);
-			}
-
-			AbilitySystemComponent->AddLooseGameplayTag(GlobalTag_CanInteract);
-		}
-	}
-	else
+	if (!HitResult.bBlockingHit || !IsValid(HitResult.GetActor()) || !HitResult.GetActor()->Implements<UPEInteractable>())
 	{
 		if (AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CanInteract))
 		{
@@ -133,6 +116,23 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 				LastInteractablePrimitive_Ref.Reset();
 			}
 		}
+		
+		return;
+	}
+
+	if (LastInteractableActor_Ref.Get() != HitResult.GetActor())
+	{
+		LastInteractableActor_Ref = HitResult.GetActor();
+		LastInteractablePrimitive_Ref = HitResult.GetComponent();
+
+		IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), true, InteractionOwner.Get(), HitResult);
+
+		if (bUseCustomDepth)
+		{
+			LastInteractablePrimitive_Ref->SetRenderCustomDepth(true);
+		}
+
+		AbilitySystemComponent->AddLooseGameplayTag(GlobalTag_CanInteract);
 	}
 }
 

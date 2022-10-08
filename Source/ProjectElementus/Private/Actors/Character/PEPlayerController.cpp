@@ -144,16 +144,20 @@ void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>
 	}
 
 	if (const APECharacter* const ControllerOwner = GetPawn<APECharacter>();
-		ensureAlwaysMsgf(ControllerOwner->InventoryComponent, TEXT("%s owner have a invalid InventoryComponent"), *GetName()))
+		ensureAlwaysMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid character."), *GetName()))
 	{
-		if (bIsFromPlayer && OtherComponent == nullptr)
+		if (UPEInventoryComponent* const OwningInventory = ControllerOwner->GetInventoryComponent();
+			ensureAlwaysMsgf(IsValid(OwningInventory), TEXT("%s owner have a invalid InventoryComponent"), *GetName()))
 		{
-			ControllerOwner->InventoryComponent->UpdateElementusItems(TradeInfo, EElementusInventoryUpdateOperation::Remove);
-		}
-		else
-		{
-			bIsFromPlayer ? UElementusInventoryFunctions::TradeElementusItem(TradeInfo, ControllerOwner->InventoryComponent, OtherComponent)
-						  : UElementusInventoryFunctions::TradeElementusItem(TradeInfo, OtherComponent, ControllerOwner->InventoryComponent);
+			if (bIsFromPlayer && OtherComponent == nullptr)
+			{
+				OwningInventory->UpdateElementusItems(TradeInfo, EElementusInventoryUpdateOperation::Remove);
+			}
+			else
+			{
+				bIsFromPlayer ? UElementusInventoryFunctions::TradeElementusItem(TradeInfo, OwningInventory, OtherComponent)
+					: UElementusInventoryFunctions::TradeElementusItem(TradeInfo, OtherComponent, OwningInventory);
+			}
 		}
 	}
 }
