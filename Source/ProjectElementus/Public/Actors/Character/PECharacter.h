@@ -140,6 +140,6 @@ private:
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Debug", meta = (AllowPrivateAccess = "true"))
-	bool bDebugAbilities = true;
+	bool bDebugAbilities = false;
 #endif
 };

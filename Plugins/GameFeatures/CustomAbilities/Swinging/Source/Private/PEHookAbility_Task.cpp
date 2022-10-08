@@ -31,7 +31,7 @@ void UPEHookAbility_Task::Activate()
 
 	HookOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
 
-	if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+	if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
 	{
 		CurrentHookLocation = HitDataHandle.Location;
 
@@ -123,7 +123,7 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 
 void UPEHookAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
-	UE_LOG(LogGameplayTasks, Display, TEXT("Task %s ended"), *GetName());
+	UE_LOG(LogGameplayTasks, Display, TEXT("%s - Task %s ended"), *FString(__func__), *GetName());
 
 	bIsFinished = true;
 

@@ -19,6 +19,7 @@
 #include "Components/PEInventoryComponent.h"
 #include "ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
+#include "Management/Functions/PEPlayerLibrary.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -170,7 +171,12 @@ void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation
 	if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 		ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *GetName()))
 	{
-		const FAbilityInputData AbilityBinding{EnhancedInputComponent->BindAction(Action, ETriggerEvent::Started, this, &APEPlayerController::OnAbilityInputPressed, Action).GetHandle(), EnhancedInputComponent->BindAction(Action, ETriggerEvent::Completed, this, &APEPlayerController::OnAbilityInputReleased, Action).GetHandle(), static_cast<uint32>(InputID)};
+		const FAbilityInputData AbilityBinding
+		{
+			EnhancedInputComponent->BindAction(Action, ETriggerEvent::Started, this, &APEPlayerController::OnAbilityInputPressed, Action).GetHandle(), 
+			EnhancedInputComponent->BindAction(Action, ETriggerEvent::Completed, this, &APEPlayerController::OnAbilityInputReleased, Action).GetHandle(), 
+			static_cast<uint32>(InputID)
+		};
 
 		AbilityActionBindings.Add(Action, AbilityBinding);
 	}
@@ -284,9 +290,9 @@ void APEPlayerController::Move(const FInputActionValue& Value) const
 
 	CONTROLLER_AXIS_VLOG(this, Display, TEXT("%s called with Input Action Value %s (magnitude %f)"), *FString(__func__), *Value.ToString(), Value.GetMagnitude());
 
-	if (Value.GetMagnitude() != 0.0f && !IsMoveInputIgnored())
+	if (Value.GetMagnitude() != 0.f && !IsMoveInputIgnored())
 	{
-		const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
+		const FRotator YawRotation(0.f, GetControlRotation().Yaw, 0.f);
 
 		const FVector DirectionX = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		const FVector DirectionY = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);

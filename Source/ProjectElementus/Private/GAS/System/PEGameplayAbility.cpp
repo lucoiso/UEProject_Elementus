@@ -39,7 +39,12 @@ void UPEGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInf
 	// If the ability failed to activate on granting, will notify the ability system component
 	if (bAutoActivateOnGrant && !ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle))
 	{
-		const TArray<FGameplayTag>& FailureTags = {FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.OnGive"), FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.TryActivate")};
+		const TArray<FGameplayTag> FailureTags = 
+		{
+			FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.OnGive"), 
+			FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.TryActivate")
+		};
+		
 		const FGameplayTagContainer FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
 		ActorInfo->AbilitySystemComponent->NotifyAbilityFailed(Spec.Handle, this, FailureContainer);
 	}
@@ -58,16 +63,18 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle, co
 	Super::PreActivate(Handle, ActorInfo, ActivationInfo, OnGameplayAbilityEndedDelegate, TriggerEventData);
 
 	// Cancel the ability if can't commit cost or cooldown. Also cancel if has not auth or is not predicted
-	if (const bool bCanCommit = CommitCheck(Handle, ActorInfo, ActivationInfo);
-		!bCanCommit || !HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+	const bool bCanCommitAbility = CommitCheck(Handle, ActorInfo, ActivationInfo);
+	const bool bFailsWithAuthority = GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalOnly || HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo);
+	
+	if (!bCanCommitAbility || !bFailsWithAuthority)
 	{
 		TArray FailureTags{FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.PreActivate"),};
 
-		if (!bCanCommit)
+		if (!bCanCommitAbility)
 		{
 			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.CommitCheck"));
 		}
-		if (!HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+		if (!bFailsWithAuthority)
 		{
 			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.HasAuthorityOrPredictionKey"));
 		}

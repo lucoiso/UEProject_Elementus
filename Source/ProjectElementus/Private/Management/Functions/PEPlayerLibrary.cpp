@@ -3,6 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/Functions/PEPlayerLibrary.h"
+#include "Actors/Character/PECharacter.h"
 #include "EnhancedInputSubsystems.h"
 
 FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* Controller, UInputAction* Action, UObject* Object, const FName UFunctionName, const ETriggerEvent TriggerEvent)
@@ -89,4 +90,30 @@ bool UPEPlayerLibrary::CheckIfPlayerContainsDynamicInput(APlayerController* Cont
 	}
 
 	return false;
+}
+
+FVector UPEPlayerLibrary::GetSocketLocationInChildMeshes(const USkeletalMeshComponent* ParentMesh, const FName SocketName)
+{
+	if (SocketName.IsNone())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s - Invalid socket name"), *FString(__func__));
+		return FVector::Zero();
+	}
+	
+	const TArray<TObjectPtr<USceneComponent>>& AttachChildrenArr = ParentMesh->GetAttachChildren();
+	if (AttachChildrenArr.IsEmpty())
+	{
+		return FVector::Zero();
+	}
+
+	for (const TObjectPtr<USceneComponent>& Iterator : AttachChildrenArr)
+	{
+		if (const USkeletalMeshComponent* const Mesh = Cast<USkeletalMeshComponent>(Iterator);
+			Mesh->DoesSocketExist(SocketName))
+		{
+			return Mesh->GetSocketLocation(SocketName);
+		}
+	}
+
+	return FVector::Zero();
 }

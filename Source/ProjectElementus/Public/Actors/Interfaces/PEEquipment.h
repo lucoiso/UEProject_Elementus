@@ -26,9 +26,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	FGameplayTagContainer EquipmentSlotTags;
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	virtual bool ProcessEquipmentApplication(APECharacter* EquipmentOwner);
+	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties", meta = (TitleProperty = "{InputID} -> {Ability Class}"))
+	TMap<FName, TSubclassOf<UGameplayAbility>> EquipmentAbilities;
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	virtual bool ProcessEquipmentRemoval(APECharacter* EquipmentOwner);
+	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
+	TSoftObjectPtr<USkeletalMesh> EquipmentMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
+	FName SocketToAttach = NAME_None;
 };

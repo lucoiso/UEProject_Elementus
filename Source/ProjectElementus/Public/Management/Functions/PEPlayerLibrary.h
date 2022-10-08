@@ -50,4 +50,7 @@ public:
 	/* Check if the player contains the specified bindings and return the handle */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static bool CheckIfPlayerContainsDynamicInput(APlayerController* Controller, TArray<FPlayerInputBindingHandle> BindingArray, FPlayerInputBindingHandle& BindingHandle);
+
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	static FVector GetSocketLocationInChildMeshes(const USkeletalMeshComponent* ParentMesh, const FName SocketName);
 };

@@ -52,14 +52,13 @@ void UPEAbilityFunctions::GiveAbilityWithoutBinding(UAbilitySystemComponent* Tar
 	{
 		if (bTryRemoveExistingAbilityWithClass)
 		{
-			const FGameplayAbilitySpec* const AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability);
-			if (AbilitySpec != nullptr)
+			if (const FGameplayAbilitySpec* const AbilitySpec = TargetABSC->FindAbilitySpecFromClass(Ability))
 			{
 				RemoveAbility(TargetABSC, AbilitySpec->Ability->GetClass());
 			}
 		}
 
-		const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, INDEX_NONE, TargetABSC->GetAvatarActor());
+		const FGameplayAbilitySpec Spec = FGameplayAbilitySpec(*Ability, 1, INDEX_NONE, TargetABSC->GetAvatarActor());
 		TargetABSC->GiveAbility(Spec);
 	}
 }
@@ -100,7 +99,7 @@ void UPEAbilityFunctions::GiveAbility(UAbilitySystemComponent* TargetABSC, const
 			RemoveAbility_Lambda(AbilitySpec);
 		}
 
-		const FGameplayAbilitySpec& Spec = FGameplayAbilitySpec(*Ability, 1, InputID, TargetABSC->GetAvatarActor());
+		const FGameplayAbilitySpec Spec = FGameplayAbilitySpec(*Ability, 1, InputID, TargetABSC->GetAvatarActor());
 
 		TargetABSC->GiveAbility(Spec);
 	}

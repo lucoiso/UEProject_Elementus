@@ -29,25 +29,23 @@ void UPESpawnProjectile_Task::Activate()
 
 	if (Ability->GetActorInfo().IsNetAuthority())
 	{
-		if (ProjectileClass != nullptr)
+		EndTask();
+	}
+
+	if (ensureAlwaysMsgf(ProjectileClass != nullptr, TEXT("%s - Task %s failed to activate because projectile class is null"), *FString(__func__), *GetName()))
+	{
+		APEProjectileActor* SpawnedProjectile = GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform, Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
+		SpawnedProjectile->FinishSpawning(ProjectileTransform);
+
+		if (IsValid(SpawnedProjectile))
 		{
-			APEProjectileActor* SpawnedProjectile = GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform, Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			SpawnedProjectile->FireInDirection(ProjectileFireDirection);
 
-			SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
-			SpawnedProjectile->FinishSpawning(ProjectileTransform);
-
-			if (IsValid(SpawnedProjectile))
+			if (ShouldBroadcastAbilityTaskDelegates())
 			{
-				SpawnedProjectile->FireInDirection(ProjectileFireDirection);
-
-				if (ShouldBroadcastAbilityTaskDelegates())
-				{
-					OnProjectileSpawn.Broadcast(SpawnedProjectile);
-				}
-			}
-			else if (ShouldBroadcastAbilityTaskDelegates())
-			{
-				OnSpawnFailed.Broadcast(nullptr);
+				OnProjectileSpawn.Broadcast(SpawnedProjectile);
 			}
 		}
 		else if (ShouldBroadcastAbilityTaskDelegates())
@@ -55,7 +53,11 @@ void UPESpawnProjectile_Task::Activate()
 			OnSpawnFailed.Broadcast(nullptr);
 		}
 	}
+	else if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		OnSpawnFailed.Broadcast(nullptr);
+	}	
 
-	UE_LOG(LogGameplayTasks, Display, TEXT("Task %s ended"), *GetName());
+	UE_LOG(LogGameplayTasks, Display, TEXT("%s - Task %s ended"), *FString(__func__), *GetName());
 	EndTask();
 }

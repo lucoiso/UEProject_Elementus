@@ -34,7 +34,7 @@ void UPEInteractAbility_Task::Activate()
 
 	InteractionOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
 
-	if (ensureAlwaysMsgf(InteractionOwner.IsValid(), TEXT("%s have a invalid Owner"), *GetName()))
+	if (ensureAlwaysMsgf(InteractionOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
 	{
 		UAbilityTask_WaitGameplayTagAdded* const WaitGameplayTagAdd = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
 		WaitGameplayTagAdd->Added.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
@@ -138,7 +138,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 void UPEInteractAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
-	UE_LOG(LogGameplayTasks, Display, TEXT("Task %s ended"), *GetName());
+	UE_LOG(LogGameplayTasks, Display, TEXT("%s - Task %s ended"), *FString(__func__), *GetName());
 
 	bIsFinished = true;
 

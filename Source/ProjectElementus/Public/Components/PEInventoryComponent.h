@@ -8,6 +8,10 @@
 #include "ElementusInventoryComponent.h"
 #include "PEInventoryComponent.generated.h"
 
+class UPEEquipment;
+class APECharacter;
+class UPEAbilitySystemComponent;
+
 /**
  *
  */
@@ -30,4 +34,28 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TMap<FGameplayTag, FElementusItemInfo> EquipmentMap;
+
+private:
+	TWeakObjectPtr<UEnum> InputEnumHandle;
+
+	void ProcessEquipmentAddition_Internal(APECharacter* OwningCharacter, UPEEquipment* Equipment);
+	void ProcessEquipmentRemoval_Internal(APECharacter* OwningCharacter, UPEEquipment* Equipment);
+
+	UFUNCTION(Server, Reliable)
+	void AddEquipmentGASData_Server(UPEAbilitySystemComponent* TargetABSC, UPEEquipment* Equipment);
+	
+	UFUNCTION(Server, Reliable)
+	void RemoveEquipmentGASData_Server(UPEAbilitySystemComponent* TargetABSC, UPEEquipment* Equipment);
+	
+	UFUNCTION(Server, Reliable)
+	void ProcessEquipmentAttachment_Server(USkeletalMeshComponent* TargetMesh, UPEEquipment* Equipment);
+
+	UFUNCTION(Server, Reliable)
+	void ProcessEquipmentDettachment_Server(UPEEquipment* Equipment);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ProcessEquipmentAttachment_Multicast(USkeletalMeshComponent* TargetMesh, UPEEquipment* Equipment);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void ProcessEquipmentDettachment_Multicast(UPEEquipment* Equipment);
 };
