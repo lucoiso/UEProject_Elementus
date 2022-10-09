@@ -22,7 +22,7 @@ class PROJECTELEMENTUS_API UPEGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
-	explicit UPEGameplayAbility(const FObjectInitializer& ObjectInitializer);
+	explicit UPEGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* This will determine the line trace distance to perform */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Project Elementus | Properties")

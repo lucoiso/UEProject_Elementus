@@ -18,7 +18,7 @@ class PROJECTELEMENTUS_API APEInventoryPackage : public AElementusInventoryPacka
 	GENERATED_BODY()
 
 public:
-	explicit APEInventoryPackage(const FObjectInitializer& ObjectInitializer);
+	explicit APEInventoryPackage(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
 	TObjectPtr<UStaticMeshComponent> PackageMesh;

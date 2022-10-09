@@ -17,7 +17,7 @@ class PROJECTELEMENTUS_API UPECustomStatusAS final : public UPEAttributeBase
 	GENERATED_BODY()
 
 public:
-	explicit UPECustomStatusAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPECustomStatusAS(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;

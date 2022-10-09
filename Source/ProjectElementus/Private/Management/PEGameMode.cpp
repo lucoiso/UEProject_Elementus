@@ -9,7 +9,7 @@
 
 APEGameMode::APEGameMode(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), bCanRespawn(true)
 {
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBP_ClassRef(TEXT("/Game/Main/Blueprints/Actors/Pawns/BP_Character_01"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBP_ClassRef(TEXT("/Game/Main/Blueprints/Actors/Pawns/BP_Character"));
 	if constexpr (&PlayerPawnBP_ClassRef.Class != nullptr)
 	{
 		DefaultPawnClass = PlayerPawnBP_ClassRef.Class;

@@ -28,7 +28,7 @@ void UPEMoveCamera_Task::Activate()
 
 	check(Ability);
 
-	TaskTimeline = NewObject<UTimelineComponent>(Ability->GetAvatarActorFromActorInfo(), UTimelineComponent::StaticClass(), TEXT("MoveCameraTimeline"));
+	TaskTimeline = NewObject<UTimelineComponent>(GetAvatarActor(), UTimelineComponent::StaticClass(), TEXT("MoveCameraTimeline"));
 	if (!TaskTimeline.IsValid())
 	{
 		UE_LOG(LogGameplayTasks, Error, TEXT("%s - Task %s ended on activation due to invalid timeline"), *FString(__func__), *GetName());

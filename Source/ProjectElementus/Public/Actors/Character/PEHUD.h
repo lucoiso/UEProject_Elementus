@@ -17,7 +17,7 @@ class PROJECTELEMENTUS_API APEHUD final : public AHUD
 	GENERATED_BODY()
 
 public:
-	explicit APEHUD(const FObjectInitializer& ObjectInitializer);
+	explicit APEHUD(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void BeginPlay() override;
 

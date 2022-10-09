@@ -32,7 +32,7 @@ void UPEInteractAbility_Task::Activate()
 
 	check(Ability);
 
-	InteractionOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
+	InteractionOwner = Cast<APECharacter>(GetAvatarActor());
 
 	if (ensureAlwaysMsgf(InteractionOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
 	{

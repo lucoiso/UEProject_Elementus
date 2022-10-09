@@ -17,7 +17,7 @@ class PROJECTELEMENTUS_API UPECustomSettings final : public UGameUserSettings
 	GENERATED_BODY()
 
 public:
-	explicit UPECustomSettings(const FObjectInitializer& ObjectInitializer);
+	explicit UPECustomSettings(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	// Start of UGameUserSettings
 	virtual void ApplyNonResolutionSettings() override;

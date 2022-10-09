@@ -29,7 +29,7 @@ void UPETelekinesisAbility_Task::Activate()
 
 	check(Ability);
 
-	TelekinesisOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
+	TelekinesisOwner = Cast<APECharacter>(GetAvatarActor());
 
 	if (ensureAlwaysMsgf(TelekinesisOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
 	{

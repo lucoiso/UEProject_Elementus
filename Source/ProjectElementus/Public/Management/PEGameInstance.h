@@ -5,10 +5,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EOSVoiceChatUser.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Management/Functions/PEEOSLibrary.h"
 #include "Engine/GameInstance.h"
-#include "EOSVoiceChat.h"
 #include "PEGameInstance.generated.h"
 
 /**

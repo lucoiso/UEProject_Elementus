@@ -38,29 +38,31 @@ void APEThrowableActor::ThrowSetup(AActor* Caller)
 
 void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp, const FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (IsValid(OtherActor) && OtherActor != CallerActor.Get())
+	if (!IsValid(OtherActor) || OtherActor == CallerActor.Get())
 	{
-		if (OtherActor->GetClass()->IsChildOf<APECharacter>())
+		return;
+	}
+
+	if (OtherActor->GetClass()->IsChildOf<APECharacter>())
+	{
+		if (APECharacter* const Player = Cast<APECharacter>(OtherActor))
 		{
-			if (APECharacter* const Player = Cast<APECharacter>(OtherActor))
+			constexpr float ImpulseMultiplier = 5.f;
+
+			Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
+
+			if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
 			{
-				constexpr float ImpulseMultiplier = 5.f;
-
-				Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
-
-				if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
-				{
-					ApplyThrowableEffect(Player->GetAbilitySystemComponent());
-				}
+				ApplyThrowableEffect(Player->GetAbilitySystemComponent());
 			}
 		}
-		else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics())
-		{
-			OtherComp->AddImpulseAtLocation(NormalImpulse.GetSafeNormal(), Hit.ImpactPoint, Hit.BoneName);
-		}
-
-		GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
 	}
+	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics() && OtherComp->Mobility == EComponentMobility::Movable)
+	{		
+		OtherComp->AddImpulseAtLocation(NormalImpulse.GetSafeNormal(), Hit.ImpactPoint, Hit.BoneName);
+	}
+
+	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
 }
 
 void APEThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)

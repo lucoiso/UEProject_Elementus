@@ -19,7 +19,7 @@ class UPETelekinesisAbility_Task final : public UAbilityTask
 	GENERATED_BODY()
 
 public:
-	explicit UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FTelekinesisManagement OnGrabbing;
 

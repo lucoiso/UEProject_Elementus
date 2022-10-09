@@ -21,7 +21,7 @@ class PROJECTELEMENTUS_API APEProjectileActor : public AActor
 	GENERATED_BODY()
 
 public:
-	explicit APEProjectileActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEProjectileActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")

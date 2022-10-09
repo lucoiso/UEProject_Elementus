@@ -11,8 +11,6 @@
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
-static const FName PEInventoryComponentName("InventoryComponent");
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
 
 class UPEEquipment;
@@ -21,7 +19,6 @@ class UGameplayAbility;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
-class UElementusInventoryComponent;
 class UPEInventoryComponent;
 
 /**
@@ -47,7 +44,7 @@ private:
 	TWeakObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
 
 public:
-	explicit APECharacter(const FObjectInitializer& ObjectInitializer);
+	explicit APECharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/** Returns CameraBoom sub object **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const
@@ -61,6 +58,8 @@ public:
 		return FollowCamera;
 	}
 
+	static FVector PECameraDefaultPosition;
+	
 	/** Returns FollowCamera default/initial relative location **/
 	static FVector GetCameraDefaultPosition();
 
@@ -92,13 +91,15 @@ public:
 	/* Initialize the specified Ability System Component with the given owner actor in this character (AvatarActor) */
 	void InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor);
 	
+	static FName PEInventoryComponentName;
+
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	UPEInventoryComponent* GetInventoryComponent() const;
 
 protected:
-	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties", meta = (Getter = "GetInventoryComponent"))
-	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
-
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Project Elementus | Properties", meta = (Getter = "GetInventoryComponent"))
+	TObjectPtr<UPEInventoryComponent> InventoryComponent;
+	
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
 	virtual void PreInitializeComponents() override;

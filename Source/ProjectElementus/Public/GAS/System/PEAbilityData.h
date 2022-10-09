@@ -37,7 +37,7 @@ class PROJECTELEMENTUS_API UPEAbilityData final : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	explicit UPEAbilityData(const FObjectInitializer& ObjectInitializer);
+	explicit UPEAbilityData(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{

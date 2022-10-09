@@ -33,7 +33,7 @@ class PROJECTELEMENTUS_API APEPlayerState final : public APlayerState, public IA
 	GENERATED_BODY()
 
 public:
-	explicit APEPlayerState(const FObjectInitializer& ObjectInitializer);
+	explicit APEPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	void DeathStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;

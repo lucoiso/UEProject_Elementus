@@ -17,5 +17,5 @@ class PROJECTELEMENTUS_API APEGroundTargeting : public AGameplayAbilityTargetAct
 	GENERATED_BODY()
 
 public:
-	explicit APEGroundTargeting(const FObjectInitializer& ObjectInitializer);
+	explicit APEGroundTargeting(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };

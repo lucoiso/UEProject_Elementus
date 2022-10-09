@@ -18,7 +18,7 @@ class UPETelekinesisAbility final : public UPEGameplayAbility
 	GENERATED_BODY()
 
 public:
-	explicit UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer);
+	explicit UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* Float value that represents the force that will be applied to the grabbed object when throwed */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")

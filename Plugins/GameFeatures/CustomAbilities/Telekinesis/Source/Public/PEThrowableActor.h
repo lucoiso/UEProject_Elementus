@@ -20,7 +20,7 @@ class APEThrowableActor final : public AStaticMeshActor
 	GENERATED_BODY()
 
 public:
-	explicit APEThrowableActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEThrowableActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	void ThrowSetup(AActor* Caller);
 

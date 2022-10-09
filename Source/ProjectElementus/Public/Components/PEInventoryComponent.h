@@ -15,13 +15,13 @@ class UPEAbilitySystemComponent;
 /**
  *
  */
-UCLASS(Blueprintable, ClassGroup = (Custom), Category = "Project Elementus | Classes", meta = (BlueprintSpawnableComponent))
+UCLASS(Blueprintable, ClassGroup = (Custom), Category = "Project Elementus | Classes", EditInlineNew, meta = (BlueprintSpawnableComponent))
 class PROJECTELEMENTUS_API UPEInventoryComponent : public UElementusInventoryComponent
 {
 	GENERATED_BODY()
 
 public:
-	explicit UPEInventoryComponent(const FObjectInitializer& ObjectInitializer);
+	explicit UPEInventoryComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
 	virtual bool CanGiveItem(const FElementusItemInfo InItemInfo) const override;
 

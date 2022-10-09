@@ -19,7 +19,7 @@ class UPEHookAbility_Task final : public UAbilityTask
 	GENERATED_BODY()
 
 public:
-	explicit UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FHookManagement OnHooking;
 

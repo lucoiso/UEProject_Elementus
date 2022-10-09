@@ -61,7 +61,7 @@ void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* Hit
 			}
 		}
 	}
-	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics())
+	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics() && OtherComp->Mobility == EComponentMobility::Movable)
 	{
 		OtherComp->AddImpulseAtLocation(ImpulseVelocity, Hit.ImpactPoint, Hit.BoneName);
 	}

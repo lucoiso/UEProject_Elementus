@@ -17,7 +17,7 @@ class PROJECTELEMENTUS_API UPELevelingAS final : public UPEAttributeBase
 	GENERATED_BODY()
 
 public:
-	explicit UPELevelingAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPELevelingAS(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	TSoftObjectPtr<UDataTable> LevelingBonusData;

@@ -42,7 +42,7 @@ class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController,
 	GENERATED_BODY()
 
 public:
-	explicit APEPlayerController(const FObjectInitializer& ObjectInitializer);
+	explicit APEPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 #pragma region IAbilityInputBinding
 	/* This function came from IAbilityInputBinding interface,
@@ -53,7 +53,7 @@ public:
 	/* This function came from IAbilityInputBinding interface,
 	 * provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
-	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const override;
+	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) override;
 #pragma endregion IAbilityInputBinding
 
 	/* Setup the spectating state on both client and server */
@@ -95,20 +95,25 @@ private:
 	TSoftClassPtr<UUserWidget> InventoryWidgetClass;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
-	UFUNCTION()
+	UFUNCTION(Category = "Project Elementus | Input Binding")
+	void OnAbilityInputPressed(UInputAction* SourceAction);
+
+	UFUNCTION(Category = "Project Elementus | Input Binding")
+	void OnAbilityInputReleased(UInputAction* SourceAction);
+
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void ChangeCameraAxis(const FInputActionValue& Value);
-	UFUNCTION()
+
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void Move(const FInputActionValue& Value) const;
-	UFUNCTION()
+
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void Jump(const FInputActionValue& Value) const;
 
-	void OnAbilityInputPressed(UInputAction* Action) const;
-	void OnAbilityInputReleased(UInputAction* Action) const;
-
-	UFUNCTION()
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void SetVoiceChatEnabled(const FInputActionValue& Value) const;
 
-	UFUNCTION()
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void OpenInventory(const FInputActionValue& Value);
 
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Project Elementus | Functions")

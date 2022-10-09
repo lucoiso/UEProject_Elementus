@@ -27,14 +27,15 @@ void UPESpawnProjectile_Task::Activate()
 
 	check(Ability);
 
-	if (Ability->GetActorInfo().IsNetAuthority())
+	// Only the server can spawn actors!
+	if (!Ability->GetActorInfo().IsNetAuthority())
 	{
 		EndTask();
 	}
 
 	if (ensureAlwaysMsgf(ProjectileClass != nullptr, TEXT("%s - Task %s failed to activate because projectile class is null"), *FString(__func__), *GetName()))
 	{
-		APEProjectileActor* SpawnedProjectile = GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform, Ability->GetAvatarActorFromActorInfo(), Ability->GetActorInfo().PlayerController->GetPawn(), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		APEProjectileActor* const SpawnedProjectile = GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform, GetOwnerActor(), nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
 		SpawnedProjectile->FinishSpawning(ProjectileTransform);
