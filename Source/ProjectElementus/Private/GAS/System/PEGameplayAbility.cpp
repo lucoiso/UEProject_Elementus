@@ -122,7 +122,7 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle, co
 	if (bEndAbilityAfterActiveTime)
 	{
 		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([&]() -> void
+		TimerDelegate.BindLambda([=]() -> void
 		{
 			if (IsValid(this) && IsActive())
 			{
@@ -143,6 +143,12 @@ void UPEGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const bool bReplicateEndAbility, const bool bWasCancelled)
 {
+	if (!IsEndAbilityValid(Handle, ActorInfo))
+	{
+		ABILITY_VLOG(this, Error, TEXT("Invalid ending for ability %s"), *GetName());
+		return;
+	}
+
 	if (!ActorInfo && IsInstantiated())
 	{
 		ActorInfo = GetCurrentActorInfo();
@@ -152,24 +158,6 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	// Remove active time based cost effects
-	if (IsValid(GetCostGameplayEffect()) && GetCostGameplayEffect()->DurationPolicy == EGameplayEffectDurationType::Infinite)
-	{
-		ActorInfo->AbilitySystemComponent->RemoveActiveGameplayEffectBySourceEffect(GetCostGameplayEffect()->GetClass(), ActorInfo->AbilitySystemComponent.Get());
-	}
-
-	// Remove active time based buff/debuff effects from self
-	if (AbilityActiveTime <= 0.f)
-	{
-		if (UPEAbilitySystemComponent* TargetABSC = Cast<UPEAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get()))
-		{
-			for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
-			{
-				TargetABSC->RemoveEffectGroupedDataFromSelf(EffectGroup, ActorInfo->AbilitySystemComponent.Get(), 1);
-			}
-		}
-	}
-
 	// If auto cancel by time is active, try to clear the timer and invalidate the handle
 	if (CancelationTimerHandle.IsValid())
 	{
@@ -177,16 +165,38 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 		CancelationTimerHandle.Invalidate();
 	}
 
-	// Remove extra tags that were given by this ability
-	if (UAbilitySystemComponent* const Comp = ActorInfo->AbilitySystemComponent.Get())
+	UAbilitySystemComponent* const OwningComp = ActorInfo->AbilitySystemComponent.Get();
+
+	if (!IsValid(OwningComp))
 	{
-		Comp->RemoveLooseGameplayTags(AbilityExtraTags);
+		return;
 	}
+
+	// Remove active time based cost effects
+	if (IsValid(GetCostGameplayEffect()) && GetCostGameplayEffect()->DurationPolicy == EGameplayEffectDurationType::Infinite)
+	{
+		OwningComp->RemoveActiveGameplayEffectBySourceEffect(GetCostGameplayEffect()->GetClass(), OwningComp);
+	}
+
+	// Remove active time based buff/debuff effects from self
+	if (AbilityActiveTime <= 0.f)
+	{
+		if (UPEAbilitySystemComponent* const TargetABSC = Cast<UPEAbilitySystemComponent>(OwningComp))
+		{
+			for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
+			{
+				TargetABSC->RemoveEffectGroupedDataFromSelf(EffectGroup, TargetABSC, 1);
+			}
+		}
+	}
+
+	// Remove extra tags that were given by this ability
+	OwningComp->RemoveLooseGameplayTags(AbilityExtraTags);
 
 	// If the 'Ignore Cooldown' failed, force remove the cooldown tag
 	if (bIgnoreCooldown && GetCooldownTimeRemaining() != 0.f)
 	{
-		RemoveCooldownEffect(ActorInfo->AbilitySystemComponent.Get());
+		RemoveCooldownEffect(OwningComp);
 	}
 }
 

@@ -27,6 +27,9 @@ class PROJECTELEMENTUS_API UPEAttributeBase : public UAttributeSet
 {
 	GENERATED_BODY()
 
+public:
+	explicit UPEAttributeBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
 protected:
 	/* A helper function to clamp attribute values */
 	virtual void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const;

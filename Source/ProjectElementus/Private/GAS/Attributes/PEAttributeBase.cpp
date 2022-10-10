@@ -4,6 +4,11 @@
 
 #include "GAS/Attributes/PEAttributeBase.h"
 
+UPEAttributeBase::UPEAttributeBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	
+}
+
 void UPEAttributeBase::AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, const float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const
 {
 	if (UAbilitySystemComponent* const AbilityComp = GetOwningAbilitySystemComponent())

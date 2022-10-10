@@ -43,6 +43,8 @@ class UPEGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	explicit UPEGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	/* Initialize the voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeVoiceChatFramework();

@@ -20,6 +20,8 @@ class UPEEquipment : public UObject
 	GENERATED_BODY()
 
 public:
+	explicit UPEEquipment(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> EquipmentEffects;
 
