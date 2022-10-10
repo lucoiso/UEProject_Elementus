@@ -45,6 +45,9 @@ private:
 
 public:
 	explicit APECharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
+	static FName PEInventoryComponentName;
+	static FVector PECameraDefaultPosition;
 
 	/** Returns CameraBoom sub object **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const
@@ -57,9 +60,7 @@ public:
 	{
 		return FollowCamera;
 	}
-
-	static FVector PECameraDefaultPosition;
-	
+		
 	/** Returns FollowCamera default/initial relative location **/
 	static FVector GetCameraDefaultPosition();
 
@@ -91,8 +92,6 @@ public:
 	/* Initialize the specified Ability System Component with the given owner actor in this character (AvatarActor) */
 	void InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor);
 	
-	static FName PEInventoryComponentName;
-
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	UPEInventoryComponent* GetInventoryComponent() const;
 

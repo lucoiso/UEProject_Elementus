@@ -5,6 +5,8 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
 #include "Camera/CameraComponent.h"
+#include "Components/PEMovementComponent.h"
+#include "Components/PEInventoryComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -14,14 +16,13 @@
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
 #include "ElementusInventoryFunctions.h"
-#include "Components/PEInventoryComponent.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Net/UnrealNetwork.h"
 
 FName APECharacter::PEInventoryComponentName(TEXT("InventoryComponent"));
 FVector APECharacter::PECameraDefaultPosition(FVector(50.f, 50.f, 50.f));
 
-APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEMovementComponent>(CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -189,6 +190,14 @@ void APECharacter::PreInitializeComponents()
 	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
 
 	Super::PreInitializeComponents();
+
+	// UE5.1 Preview 1 has a bug related to the player hitting other objects
+	// When the character touch other static objects, the log will be filled with annoying warnings
+	// Because we can't add impulse to static objects ._.
+	if (IConsoleVariable* const GeometryImpulse = IConsoleManager::Get().FindConsoleVariable(TEXT("p.CVarGeometryCollectionImpulseWorkAround")))
+	{
+		GeometryImpulse->Set(false, ECVF_SetByCommandline);
+	}
 }
 
 void APECharacter::BeginPlay()
