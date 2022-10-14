@@ -18,7 +18,7 @@ class PROJECTELEMENTUS_API UPEEnemyData final : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	explicit UPEEnemyData(const FObjectInitializer& ObjectInitializer);
+	explicit UPEEnemyData(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{

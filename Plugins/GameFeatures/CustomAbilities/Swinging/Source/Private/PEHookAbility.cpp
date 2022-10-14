@@ -94,7 +94,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	if (TargetHit->GetActor()->GetClass()->IsChildOf<APECharacter>() && TargetHit->GetActor() != GetAvatarActorFromActorInfo() || TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
 	{
 		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([&]() -> void
+		TimerDelegate.BindLambda([=]() -> void
 		{
 			if (IsValid(this) && IsActive())
 			{

@@ -22,7 +22,7 @@ class PROJECTELEMENTUS_API UPEConsumableData final : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	explicit UPEConsumableData(const FObjectInitializer& ObjectInitializer);
+	explicit UPEConsumableData(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{

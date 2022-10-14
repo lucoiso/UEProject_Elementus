@@ -11,8 +11,6 @@
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
-static const FName PEInventoryComponentName("InventoryComponent");
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
 
 class UPEEquipment;
@@ -21,7 +19,6 @@ class UGameplayAbility;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
-class UElementusInventoryComponent;
 class UPEInventoryComponent;
 
 /**
@@ -47,7 +44,10 @@ private:
 	TWeakObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
 
 public:
-	explicit APECharacter(const FObjectInitializer& ObjectInitializer);
+	explicit APECharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
+	static FName PEInventoryComponentName;
+	static FVector PECameraDefaultPosition;
 
 	/** Returns CameraBoom sub object **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const
@@ -60,7 +60,7 @@ public:
 	{
 		return FollowCamera;
 	}
-
+		
 	/** Returns FollowCamera default/initial relative location **/
 	static FVector GetCameraDefaultPosition();
 
@@ -96,9 +96,9 @@ public:
 	UPEInventoryComponent* GetInventoryComponent() const;
 
 protected:
-	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties", meta = (Getter = "GetInventoryComponent"))
-	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
-
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Project Elementus | Properties", meta = (Getter = "GetInventoryComponent"))
+	TObjectPtr<UPEInventoryComponent> InventoryComponent;
+	
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
 	virtual void PreInitializeComponents() override;

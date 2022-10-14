@@ -18,7 +18,7 @@ class PROJECTELEMENTUS_API UPEAbilitySystemComponent final : public UAbilitySyst
 	GENERATED_BODY()
 
 public:
-	explicit UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer);
+	explicit UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* Apply a grouped GE data to self Ability System Component */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")

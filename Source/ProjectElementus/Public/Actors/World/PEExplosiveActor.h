@@ -21,7 +21,7 @@ class PROJECTELEMENTUS_API APEExplosiveActor : public AActor
 	GENERATED_BODY()
 
 public:
-	explicit APEExplosiveActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEExplosiveActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void PerformExplosion();

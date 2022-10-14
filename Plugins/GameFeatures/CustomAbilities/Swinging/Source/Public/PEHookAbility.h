@@ -18,7 +18,7 @@ class UPEHookAbility final : public UPEGameplayAbility
 	GENERATED_BODY()
 
 public:
-	explicit UPEHookAbility(const FObjectInitializer& ObjectInitializer);
+	explicit UPEHookAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* Floating value that represents the force that will be applied on hook movement and impulse intensity */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")

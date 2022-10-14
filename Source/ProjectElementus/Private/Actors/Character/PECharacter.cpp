@@ -5,6 +5,8 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
 #include "Camera/CameraComponent.h"
+#include "Components/PEMovementComponent.h"
+#include "Components/PEInventoryComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -14,13 +16,13 @@
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
 #include "ElementusInventoryFunctions.h"
-#include "Components/PEInventoryComponent.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Net/UnrealNetwork.h"
 
-static const FVector PECameraDefaultPosition(50.f, 50.f, 50.f);
+FName APECharacter::PEInventoryComponentName(TEXT("InventoryComponent"));
+FVector APECharacter::PECameraDefaultPosition(FVector(50.f, 50.f, 50.f));
 
-APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEInventoryComponent>(PEInventoryComponentName))
+APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEMovementComponent>(CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -28,6 +30,7 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	AIControllerClass = APEAIController::StaticClass();
 
 	bAlwaysRelevant = true;
+	NetCullDistanceSquared = 900000000.0f;
 
 	GetCapsuleComponent()->InitCapsuleSize(35.f, 90.0f);
 
@@ -76,7 +79,7 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	FollowCamera->bUsePawnControlRotation = true;
 	FollowCamera->SetRelativeLocation(PECameraDefaultPosition);
 
-	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(PEInventoryComponentName);
+	InventoryComponent = CreateDefaultSubobject<UPEInventoryComponent>(APECharacter::PEInventoryComponentName);
 	InventoryComponent->SetIsReplicated(true);
 }
 
@@ -145,7 +148,7 @@ float APECharacter::GetDefaultJumpVelocity() const
 
 /* static */ FVector APECharacter::GetCameraDefaultPosition()
 {
-	return PECameraDefaultPosition;
+	return APECharacter::PECameraDefaultPosition;
 }
 
 FVector APECharacter::GetCameraForwardVector() const
@@ -164,6 +167,11 @@ float APECharacter::GetCameraTargetArmLength() const
 }
 #pragma endregion Default Getters
 
+UPEInventoryComponent* APECharacter::GetInventoryComponent() const
+{
+	return InventoryComponent.Get();
+}
+
 UAbilitySystemComponent* APECharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent.Get();
@@ -177,16 +185,19 @@ void APECharacter::InitializeAbilitySystemComponent(UAbilitySystemComponent* InA
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this, UGameFrameworkComponentManager::NAME_GameActorReady);
 }
 
-UPEInventoryComponent* APECharacter::GetInventoryComponent() const
-{
-	return Cast<UPEInventoryComponent>(InventoryComponent);
-}
-
 void APECharacter::PreInitializeComponents()
 {
 	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
 
 	Super::PreInitializeComponents();
+
+	// UE5.1 Preview 1 has a bug related to the player hitting other objects
+	// When the character touch other static objects, the log will be filled with annoying warnings
+	// Because we can't add impulse to static objects ._.
+	if (IConsoleVariable* const GeometryImpulse = IConsoleManager::Get().FindConsoleVariable(TEXT("p.CVarGeometryCollectionImpulseWorkAround")))
+	{
+		GeometryImpulse->Set(false, ECVF_SetByCommandline);
+	}
 }
 
 void APECharacter::BeginPlay()

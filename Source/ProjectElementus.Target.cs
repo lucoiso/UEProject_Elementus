@@ -8,6 +8,6 @@ public class ProjectElementusTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("ProjectElementus");
+        ExtraModuleNames.Add("ProjectElementus");
 	}
 }

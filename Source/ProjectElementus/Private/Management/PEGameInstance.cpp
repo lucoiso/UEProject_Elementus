@@ -8,6 +8,11 @@
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Kismet/GameplayStatics.h"
 
+UPEGameInstance::UPEGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+
+}
+
 void UPEGameInstance::InitializeVoiceChatFramework()
 {
 	if (!FEOSVoiceChat::Get()->IsInitialized())

@@ -22,7 +22,7 @@ class PROJECTELEMENTUS_API UPESpawnProjectile_Task final : public UAbilityTask
 	GENERATED_BODY()
 
 public:
-	explicit UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* Create a reference to manage this ability task */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "true"))

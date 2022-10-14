@@ -29,7 +29,7 @@ void UPEHookAbility_Task::Activate()
 
 	check(Ability);
 
-	HookOwner = Cast<APECharacter>(Ability->GetAvatarActorFromActorInfo());
+	HookOwner = Cast<APECharacter>(GetAvatarActor());
 
 	if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
 	{

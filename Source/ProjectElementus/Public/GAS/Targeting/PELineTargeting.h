@@ -17,5 +17,5 @@ class PROJECTELEMENTUS_API APELineTargeting : public AGameplayAbilityTargetActor
 	GENERATED_BODY()
 
 public:
-	explicit APELineTargeting(const FObjectInitializer& ObjectInitializer);
+	explicit APELineTargeting(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };

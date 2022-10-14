@@ -17,7 +17,7 @@ class PROJECTELEMENTUS_API UPEBasicStatusAS final : public UPEAttributeBase
 	GENERATED_BODY()
 
 public:
-	explicit UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	TSoftClassPtr<UGameplayEffect> GlobalDeathEffect;

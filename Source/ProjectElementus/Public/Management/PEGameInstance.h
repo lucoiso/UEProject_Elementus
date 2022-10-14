@@ -5,10 +5,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EOSVoiceChatUser.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Management/Functions/PEEOSLibrary.h"
 #include "Engine/GameInstance.h"
-#include "EOSVoiceChat.h"
 #include "PEGameInstance.generated.h"
 
 /**
@@ -43,6 +43,8 @@ class UPEGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	explicit UPEGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	/* Initialize the voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeVoiceChatFramework();
