@@ -25,7 +25,7 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Su
 	bIgnoreCooldown = true;
 
 	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Swinging/Sounds/MS_Impulse"));
-	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
+	if (ImpulseSound_ObjRef.Succeeded())
 	{
 		ImpulseSound = ImpulseSound_ObjRef.Object;
 	}

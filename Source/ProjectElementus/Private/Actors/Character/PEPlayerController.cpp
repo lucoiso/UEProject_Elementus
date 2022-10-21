@@ -33,13 +33,13 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
-	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
+	if (InputIDEnum_ObjRef.Succeeded())
 	{
 		InputEnumHandle = InputIDEnum_ObjRef.Object;
 	}
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
-	if constexpr (&InventoryWidget_ClassRef.Class != nullptr)
+	static ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
+	if (InventoryWidget_ClassRef.Succeeded())
 	{
 		InventoryWidgetClass = InventoryWidget_ClassRef.Class;
 	}

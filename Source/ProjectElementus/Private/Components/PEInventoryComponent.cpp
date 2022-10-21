@@ -16,7 +16,7 @@ UPEInventoryComponent::UPEInventoryComponent(const FObjectInitializer& ObjectIni
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 
 	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
-	if constexpr (&InputIDEnum_ObjRef.Object != nullptr)
+	if (InputIDEnum_ObjRef.Succeeded())
 	{
 		InputEnumHandle = InputIDEnum_ObjRef.Object;
 	}

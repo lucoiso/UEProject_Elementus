@@ -145,7 +145,6 @@ void UPEGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	if (!IsEndAbilityValid(Handle, ActorInfo))
 	{
-		ABILITY_VLOG(this, Error, TEXT("Invalid ending for ability %s"), *GetName());
 		return;
 	}
 
@@ -235,10 +234,11 @@ void UPEGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag,
 		ABILITY_VLOG(this, Display, TEXT("Activating %s ability associated Gameplay Cues with Tag %s."), *GetName(), *GameplayCueTag.ToString());
 
 		Parameters.AbilityLevel = GetAbilityLevel();
-		SourceAbilitySystem->GetOwnedGameplayTags(Parameters.AggregatedSourceTags);
 		Parameters.Instigator = SourceAbilitySystem->GetAvatarActor();
 		Parameters.EffectContext = SourceAbilitySystem->MakeEffectContext();
 		Parameters.SourceObject = SourceAbilitySystem;
+		
+		SourceAbilitySystem->GetOwnedGameplayTags(Parameters.AggregatedSourceTags);
 
 		SourceAbilitySystem->AddGameplayCue(GameplayCueTag, Parameters);
 		TrackedGameplayCues.Add(GameplayCueTag);

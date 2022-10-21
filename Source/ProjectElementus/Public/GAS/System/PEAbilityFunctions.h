@@ -29,17 +29,21 @@ public:
 	/* Create a FGameplayAbilityTargetDataHandle with the specified Target Actors */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
-	
+
+	/* Check if the ABSC contains a ability with the given class */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	static bool HasAbilityWithClass(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> AbilityClass);
+
 	/* Give a new ability without binding a input */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static void GiveAbilityWithoutBinding(UAbilitySystemComponent* TargetABSC, TSubclassOf<UGameplayAbility> Ability, const bool bTryRemoveExistingAbilityWithClass);
+	static void GiveAbilityWithoutBinding(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability, const bool bTryRemoveExistingAbilityWithClass);
 
 	/* Give a new Ability to the Player -
 	 * bAutoAdjustInput will ignore InputId and select Skill_1, Skill_2 or Skill_3 based on current owned abilities */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static void GiveAbility(UAbilitySystemComponent* TargetABSC, TSubclassOf<UGameplayAbility> Ability, const FName InputId, const UEnum* EnumerationClass, const bool bTryRemoveExistingAbilityWithInput, const bool bTryRemoveExistingAbilityWithClass);
+	static void GiveAbility(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability, const FName InputId, const UEnum* EnumerationClass, const bool bTryRemoveExistingAbilityWithInput, const bool bTryRemoveExistingAbilityWithClass);
 
 	/* Will remove the ability associated to the InputAction */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	static void RemoveAbility(UAbilitySystemComponent* TargetABSC, TSubclassOf<UGameplayAbility> Ability);
+	static void RemoveAbility(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability);
 };

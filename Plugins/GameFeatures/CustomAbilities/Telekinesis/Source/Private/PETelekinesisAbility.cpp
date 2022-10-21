@@ -19,7 +19,7 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 	ActivationBlockedTags.AddTag(GlobalTag_WeaponSlot_Base);
 
 	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Telekinesis/Sounds/MS_Impulse"));
-	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
+	if (ImpulseSound_ObjRef.Succeeded())
 	{
 		ImpulseSound = ImpulseSound_ObjRef.Object;
 	}

@@ -39,13 +39,13 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
 	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(TEXT("/Game/Main/Character/Meshes/SKM_Manny"));
-	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
+	if (SkeletalMesh_ObjRef.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh_ObjRef.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
-	if constexpr (&Animation_ClassRef.Class != nullptr)
+	static ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
+	if (Animation_ClassRef.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(Animation_ClassRef.Class);
 	}
@@ -212,8 +212,8 @@ void APECharacter::BeginPlay()
 	{
 		AbilitySystemComponent->AbilityActivatedCallbacks.AddUFunction(this, TEXT("AbilityActivated"));
 		AbilitySystemComponent->AbilityCommittedCallbacks.AddUFunction(this, TEXT("AbilityCommited"));
-		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, TEXT("AbilityEnded"));
 		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, TEXT("AbilityFailed"));
+		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, TEXT("AbilityEnded"));
 	}
 
 	// Check if this character have a valid Skeletal Mesh and paint it

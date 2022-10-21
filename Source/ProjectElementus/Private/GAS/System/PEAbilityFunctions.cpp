@@ -41,7 +41,17 @@ FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromAc
 	return FGameplayAbilityTargetDataHandle();
 }
 
-void UPEAbilityFunctions::GiveAbilityWithoutBinding(UAbilitySystemComponent* TargetABSC, TSubclassOf<UGameplayAbility> Ability, const bool bTryRemoveExistingAbilityWithClass)
+bool UPEAbilityFunctions::HasAbilityWithClass(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	if (!IsValid(TargetABSC))
+	{
+		return false;
+	}
+
+	return TargetABSC->FindAbilitySpecFromClass(AbilityClass) != nullptr;
+}
+
+void UPEAbilityFunctions::GiveAbilityWithoutBinding(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> Ability, const bool bTryRemoveExistingAbilityWithClass)
 {
 	if (!TargetABSC->IsOwnerActorAuthoritative() || !IsValid(Ability))
 	{
