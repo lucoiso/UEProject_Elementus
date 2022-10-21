@@ -38,7 +38,7 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
-	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny_Simple"));
+	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(TEXT("/Game/Main/Character/Meshes/SKM_Manny"));
 	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh_ObjRef.Object);
