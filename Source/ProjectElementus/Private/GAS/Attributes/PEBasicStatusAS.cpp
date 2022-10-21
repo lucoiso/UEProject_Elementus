@@ -12,13 +12,13 @@
 UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), Health(500.f), MaxHealth(500.f), Stamina(250.f), MaxStamina(250.f), Mana(100.f), MaxMana(100.f)
 {
 	static const ConstructorHelpers::FObjectFinder<UDataTable> MainAttributesMetaData_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_BasicStatusAS"));
-	if constexpr (&MainAttributesMetaData_ObjRef.Object != nullptr)
+	if (MainAttributesMetaData_ObjRef.Succeeded())
 	{
 		UAttributeSet::InitFromMetaDataTable(MainAttributesMetaData_ObjRef.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffect_ClassRef(TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
-	if constexpr (&DeathGameplayEffect_ClassRef.Class != nullptr)
+	static ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffect_ClassRef(TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
+	if (DeathGameplayEffect_ClassRef.Succeeded())
 	{
 		GlobalDeathEffect = DeathGameplayEffect_ClassRef.Class;
 	}

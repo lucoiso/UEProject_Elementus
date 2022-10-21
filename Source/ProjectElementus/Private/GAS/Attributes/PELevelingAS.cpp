@@ -13,13 +13,13 @@
 UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), CurrentLevel(0.f), CurrentExperience(0.f), RequiredExperience(1.f)
 {
 	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingAttributesMetaData_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_LevelingAS"));
-	if constexpr (&LevelingAttributesMetaData_ObjRef.Object != nullptr)
+	if (LevelingAttributesMetaData_ObjRef.Succeeded())
 	{
 		UAttributeSet::InitFromMetaDataTable(LevelingAttributesMetaData_ObjRef.Object);
 	}
 
 	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingBonus_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_LevelingBonus"));
-	if constexpr (&LevelingBonus_ObjRef.Object != nullptr)
+	if (LevelingBonus_ObjRef.Succeeded())
 	{
 		LevelingBonusData = LevelingBonus_ObjRef.Object;
 	}

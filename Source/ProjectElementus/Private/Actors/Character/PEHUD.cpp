@@ -10,8 +10,8 @@ APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitia
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget> UserHUD_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/WB_HUD"));
-	if constexpr (&UserHUD_ClassRef.Class != nullptr)
+	static ConstructorHelpers::FClassFinder<UUserWidget> UserHUD_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/WB_HUD"));
+	if (UserHUD_ClassRef.Succeeded())
 	{
 		HUDClass = UserHUD_ClassRef.Class;
 	}

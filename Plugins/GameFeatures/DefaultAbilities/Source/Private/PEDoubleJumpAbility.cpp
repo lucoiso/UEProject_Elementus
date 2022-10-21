@@ -18,7 +18,7 @@ UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectIniti
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Dash"));
 
 	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/DefaultAbilities/Sounds/MS_DoubleJump"));
-	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
+	if (ImpulseSound_ObjRef.Succeeded())
 	{
 		ImpulseSound = ImpulseSound_ObjRef.Object;
 	}

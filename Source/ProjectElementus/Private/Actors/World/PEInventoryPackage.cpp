@@ -22,13 +22,13 @@ APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitial
 	PackageMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	static const ConstructorHelpers::FObjectFinder<UStaticMesh> PackageMesh_Obj(TEXT("/Game/Main/Meshes/LevelPrototyping/SM_ChamferCube"));
-	if constexpr (&PackageMesh_Obj.Object != nullptr)
+	if (PackageMesh_Obj.Succeeded())
 	{
 		PackageMesh->SetStaticMesh(PackageMesh_Obj.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Trade_w_Package"));
-	if constexpr (&TradeWidget_ClassRef.Class != nullptr)
+	static ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Trade_w_Package"));
+	if (TradeWidget_ClassRef.Succeeded())
 	{
 		TradeWidgetClass = TradeWidget_ClassRef.Class;
 	}
