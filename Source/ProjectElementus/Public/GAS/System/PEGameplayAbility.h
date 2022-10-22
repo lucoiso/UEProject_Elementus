@@ -116,10 +116,9 @@ protected:
 	
 	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	
-private:
+	/* Apply Set by Caller data map to the given Gameplay Effect Spec */
 	void ApplySetByCallerParamsToEffectSpec(const TMap<FGameplayTag, float>& SetByCallerData, const TSharedPtr<FGameplayEffectSpec>& EffectSpec) const;
 
-protected:
 	/*
 	* These 'Activate Task' and 'Callback' functions are intended to act as helper functions
 	* They will call the defaults tasks from original GAS source

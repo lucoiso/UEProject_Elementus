@@ -190,14 +190,6 @@ void APECharacter::PreInitializeComponents()
 	UGameFrameworkComponentManager::AddGameFrameworkComponentReceiver(this);
 
 	Super::PreInitializeComponents();
-
-	// UE5.1 Preview 1 has a bug related to the player hitting other objects
-	// When the character touch other static objects, the log will be filled with annoying warnings
-	// Because we can't add impulse to static objects ._.
-	if (IConsoleVariable* const GeometryImpulse = IConsoleManager::Get().FindConsoleVariable(TEXT("p.CVarGeometryCollectionImpulseWorkAround")))
-	{
-		GeometryImpulse->Set(false, ECVF_SetByCommandline);
-	}
 }
 
 void APECharacter::BeginPlay()
