@@ -6,6 +6,22 @@
 
 #include "GameplayTagContainer.h"
 
+#pragma region Generic
+static const FGameplayTag GlobalTag_GenericCooldown = FGameplayTag::RequestGameplayTag("GameplayEffect.Cooldown");
+#pragma endregion Generic
+
+#pragma region SetByCaller
+static const FGameplayTag GlobalTag_SetByCallerDuration = FGameplayTag::RequestGameplayTag("SetByCaller.Duration");
+static const FGameplayTag GlobalTag_SetByCallerHealth = FGameplayTag::RequestGameplayTag("SetByCaller.Health");
+static const FGameplayTag GlobalTag_SetByCallerStamina = FGameplayTag::RequestGameplayTag("SetByCaller.Stamina");
+static const FGameplayTag GlobalTag_SetByCallerMana = FGameplayTag::RequestGameplayTag("SetByCaller.Mana");
+static const FGameplayTag GlobalTag_SetByCallerFloat1 = FGameplayTag::RequestGameplayTag("SetByCaller.Float1");
+static const FGameplayTag GlobalTag_SetByCallerFloat2 = FGameplayTag::RequestGameplayTag("SetByCaller.Float2");
+static const FGameplayTag GlobalTag_SetByCallerFloat3 = FGameplayTag::RequestGameplayTag("SetByCaller.Float3");
+static const FGameplayTag GlobalTag_SetByCallerFloat4 = FGameplayTag::RequestGameplayTag("SetByCaller.Float4");
+static const FGameplayTag GlobalTag_SetByCallerFloat5 = FGameplayTag::RequestGameplayTag("SetByCaller.Float5");
+#pragma endregion SetByCaller
+
 #pragma region Equipment
 static const FGameplayTag GlobalTag_EquipSlot_Base = FGameplayTag::RequestGameplayTag("EquipSlot");
 

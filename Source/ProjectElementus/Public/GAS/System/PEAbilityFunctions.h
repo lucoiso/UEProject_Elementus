@@ -31,7 +31,7 @@ public:
 	static FGameplayAbilityTargetDataHandle MakeTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
 
 	/* Check if the ABSC contains a ability with the given class */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	static bool HasAbilityWithClass(UAbilitySystemComponent* TargetABSC, const TSubclassOf<UGameplayAbility> AbilityClass);
 
 	/* Give a new ability without binding a input */

@@ -3,9 +3,13 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/System/PEGameplayAbility.h"
-#include "AbilitySystemGlobals.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
+#include "GAS/Effects/PECooldownEffect.h"
+#include "GAS/Effects/PECostEffect.h"
 #include "GAS/Tasks/PESpawnProjectile_Task.h"
+#include "Actors/Character/PECharacter.h"
+#include "Actors/World/PEProjectileActor.h"
+#include "Management/Data/PEGlobalTags.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitConfirmCancel.h"
@@ -15,10 +19,8 @@
 #include "Abilities/Tasks/AbilityTask_SpawnActor.h"
 #include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
-#include "Actors/Character/PECharacter.h"
-#include "Actors/World/PEProjectileActor.h"
 #include "GameplayEffect.h"
-#include "Management/Data/PEGlobalTags.h"
+#include "AbilitySystemGlobals.h"
 
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AbilityMaxRange(0), bIgnoreCost(false), bIgnoreCooldown(false), bWaitCancel(true), AbilityActiveTime(0), bEndAbilityAfterActiveTime(false)
 {
@@ -28,6 +30,17 @@ UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializ
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	bIsCancelable = true;
+
+	CostGameplayEffectClass = UPECostEffect::StaticClass();
+	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerDuration, 0.f));
+	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerHealth, 0.f));
+	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerStamina, 0.f));
+	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerMana, 0.f));
+		
+	CooldownGameplayEffectClass = UPECooldownEffect::StaticClass();
+	AbilityCooldownSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerDuration, 0.f));
+
+	SetByCallerCooldownTags.AddTag(GlobalTag_GenericCooldown);
 }
 
 void UPEGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -222,6 +235,132 @@ void UPEGameplayAbility::CommitExecute(const FGameplayAbilitySpecHandle Handle, 
 	}
 }
 
+void UPEGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
+{
+	if (AbilityCooldownSetByCallerData.IsEmpty() || !CooldownGameplayEffectClass)
+	{
+		Super::ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+	}
+	else if (const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, CooldownGameplayEffectClass, GetAbilityLevel(Handle, ActorInfo));
+		SpecHandle.IsValid())
+	{
+		FGameplayTagContainer CooldownTags_Copy = *GetCooldownTags();
+		CooldownTags_Copy.RemoveTag(GlobalTag_GenericCooldown);	
+
+		SpecHandle.Data->DynamicGrantedTags.AppendTags(CooldownTags_Copy);
+		
+		ApplySetByCallerParamsToEffectSpec(AbilityCooldownSetByCallerData, SpecHandle.Data);
+		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+	}
+}
+
+bool UPEGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags) const
+{
+	if (AbilityCooldownSetByCallerData.IsEmpty() || !CooldownGameplayEffectClass)
+	{
+		return Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
+	}
+
+	FGameplayTagContainer CooldownTags_Copy = *GetCooldownTags();
+	CooldownTags_Copy.RemoveTag(GlobalTag_GenericCooldown);
+	if (CooldownTags_Copy.IsEmpty())
+	{
+		return true;
+	}
+
+	if (const UAbilitySystemComponent* const AbilitySystemComponent = ActorInfo->AbilitySystemComponent.Get())
+	{
+		return !AbilitySystemComponent->HasAnyMatchingGameplayTags(CooldownTags_Copy);
+	}
+
+	return true;
+}
+
+const FGameplayTagContainer* UPEGameplayAbility::GetCooldownTags() const
+{
+	if (AbilityCooldownSetByCallerData.IsEmpty() || SetByCallerCooldownTags.IsEmpty())
+	{
+		return Super::GetCooldownTags();
+	}
+
+	return &SetByCallerCooldownTags;
+}
+
+void UPEGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
+{
+	if (AbilityCostSetByCallerData.IsEmpty() || !CostGameplayEffectClass)
+	{
+		Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
+	}
+	else if (const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, CostGameplayEffectClass, GetAbilityLevel(Handle, ActorInfo));
+		SpecHandle.IsValid())
+	{
+		ApplySetByCallerParamsToEffectSpec(AbilityCostSetByCallerData, SpecHandle.Data);
+		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+	}
+}
+
+bool UPEGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags) const
+{
+	if (AbilityCostSetByCallerData.IsEmpty() || !CostGameplayEffectClass)
+	{
+		return Super::CheckCost(Handle, ActorInfo, OptionalRelevantTags);
+	}
+	
+	else if (const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, FGameplayAbilityActivationInfo(), CostGameplayEffectClass, GetAbilityLevel(Handle, ActorInfo));
+		SpecHandle.IsValid())
+	{
+		ApplySetByCallerParamsToEffectSpec(AbilityCostSetByCallerData, SpecHandle.Data);
+
+		UAbilitySystemComponent* const TargetABSC = ActorInfo->AbilitySystemComponent.Get();
+		if (!IsValid(TargetABSC))
+		{
+			return false;
+		}
+
+		SpecHandle.Data->CalculateModifierMagnitudes();
+		for (int32 ModIdx = 0; ModIdx < SpecHandle.Data->Modifiers.Num(); ++ModIdx)
+		{
+			const FGameplayModifierInfo& ModDef = SpecHandle.Data->Def->Modifiers[ModIdx];
+			const FModifierSpec& ModSpec = SpecHandle.Data->Modifiers[ModIdx];
+
+			if (ModDef.ModifierOp == EGameplayModOp::Additive)
+			{
+				if (!ModDef.Attribute.IsValid())
+				{
+					continue;
+				}
+
+				const UAttributeSet* const Set = TargetABSC->GetAttributeSet(ModDef.Attribute.GetAttributeSetClass());
+				if (!IsValid(Set))
+				{
+					return false;
+				}
+
+				const float CurrentValue = ModDef.Attribute.GetNumericValueChecked(Set);
+				const float CostValue = ModSpec.GetEvaluatedMagnitude();
+
+				if (CurrentValue + CostValue < 0.f)
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+	
+	return false;
+}
+
+void UPEGameplayAbility::ApplySetByCallerParamsToEffectSpec(const TMap<FGameplayTag, float>& SetByCallerData, const TSharedPtr<FGameplayEffectSpec>& EffectSpec) const
+{
+	for (const TPair<FGameplayTag, float>& StackedData : SetByCallerData)
+	{
+		EffectSpec.Get()->SetSetByCallerMagnitude(StackedData.Key, StackedData.Value);
+	}
+}
+
 void UPEGameplayAbility::ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters, UAbilitySystemComponent* SourceAbilitySystem)
 {
 	if (SourceAbilitySystem == nullptr)
@@ -261,16 +400,11 @@ void UPEGameplayAbility::ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHan
 	ABILITY_VLOG(this, Display, TEXT("Applying %s ability effects to owner."), *GetName());
 
 	for (const FGameplayEffectGroupedData& EffectGroup : SelfAbilityEffects)
-	{
-		const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
-
-		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
+	{		
+		if (const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass, GetAbilityLevel(Handle, ActorInfo));
+			SpecHandle.IsValid())
 		{
-			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key, StackedData.Value);
-		}
-
-		if (SpecHandle.IsValid())
-		{
+			ApplySetByCallerParamsToEffectSpec(EffectGroup.SetByCallerStackedData, SpecHandle.Data);
 			ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 		}
 	}
@@ -309,15 +443,10 @@ void UPEGameplayAbility::ApplyAbilityEffectsToTarget(const FGameplayAbilityTarge
 
 	for (const FGameplayEffectGroupedData& EffectGroup : TargetAbilityEffects)
 	{
-		const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass);
-
-		for (const TPair<FGameplayTag, float>& StackedData : EffectGroup.SetByCallerStackedData)
+		if (const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(Handle, ActorInfo, ActivationInfo, EffectGroup.EffectClass, GetAbilityLevel(Handle, ActorInfo));
+			SpecHandle.IsValid())
 		{
-			SpecHandle.Data.Get()->SetSetByCallerMagnitude(StackedData.Key, StackedData.Value);
-		}
-
-		if (SpecHandle.IsValid())
-		{
+			ApplySetByCallerParamsToEffectSpec(EffectGroup.SetByCallerStackedData, SpecHandle.Data);
 			ApplyGameplayEffectSpecToTarget(Handle, ActorInfo, ActivationInfo, SpecHandle, TargetDataHandle);
 		}
 	}

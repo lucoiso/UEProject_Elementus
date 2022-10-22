@@ -14,6 +14,9 @@ APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializ
 	bAlwaysRelevant = true;
 	AActor::SetReplicateMovement(true);
 
+	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Component"));
 	CollisionComponent->InitSphereRadius(12.5f);
 	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));

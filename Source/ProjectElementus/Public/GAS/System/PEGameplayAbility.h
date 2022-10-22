@@ -40,6 +40,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bWaitCancel;
 
+	/* Set by Caller parameters that will be applied to Ability Cost - For Duration: 0.0 for instantaneous effects; -1.0 for infinite duration. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	TMap<FGameplayTag, float> AbilityCostSetByCallerData;
+
+	/* Set by Caller parameters that will be applied to Ability Cooldown */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	TMap<FGameplayTag, float> AbilityCooldownSetByCallerData;
+
+	/* Tags used to check cooldown with SetByCaller data */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	FGameplayTagContainer SetByCallerCooldownTags;
+
 protected:
 	/* Mix with bEndAbilityAfterActiveTime to end ability with a pre-determined time */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
@@ -94,6 +106,20 @@ protected:
 
 	virtual void CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override final;
 
+	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	
+	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+
+	virtual const FGameplayTagContainer* GetCooldownTags() const override;
+
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	
+private:
+	void ApplySetByCallerParamsToEffectSpec(const TMap<FGameplayTag, float>& SetByCallerData, const TSharedPtr<FGameplayEffectSpec>& EffectSpec) const;
+
+protected:
 	/*
 	* These 'Activate Task' and 'Callback' functions are intended to act as helper functions
 	* They will call the defaults tasks from original GAS source
