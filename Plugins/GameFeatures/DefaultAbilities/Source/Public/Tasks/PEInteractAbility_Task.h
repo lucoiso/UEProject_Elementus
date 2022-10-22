@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
-#include "Actors/Character/PECharacter.h"
 #include "PEInteractAbility_Task.generated.h"
 
 /**
@@ -18,11 +17,10 @@ class DEFAULTABILITIES_API UPEInteractAbility_Task final : public UAbilityTask
 	GENERATED_BODY()
 
 public:
-	explicit UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* Create a reference to manage this ability task */
-	static UPEInteractAbility_Task* InteractionTask(UGameplayAbility* OwningAbility, const FName& TaskInstanceName,
-	                                                const float InteractionRange, const bool bUseCustomDepth = false);
+	static UPEInteractAbility_Task* InteractionTask(UGameplayAbility* OwningAbility, const FName& TaskInstanceName, const float InteractionRange, const bool bUseCustomDepth = false);
 
 	virtual void Activate() override;
 
@@ -43,7 +41,7 @@ private:
 	float Range;
 	bool bUseCustomDepth;
 
-	TWeakObjectPtr<APECharacter> InteractionOwner;
+	TWeakObjectPtr<class APECharacter> InteractionOwner;
 	TWeakObjectPtr<AActor> LastInteractableActor_Ref;
 	TWeakObjectPtr<UPrimitiveComponent> LastInteractablePrimitive_Ref;
 

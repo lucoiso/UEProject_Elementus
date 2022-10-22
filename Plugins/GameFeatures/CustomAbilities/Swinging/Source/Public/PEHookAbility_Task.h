@@ -19,16 +19,12 @@ class UPEHookAbility_Task final : public UAbilityTask
 	GENERATED_BODY()
 
 public:
-	explicit UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FHookManagement OnHooking;
 
 	/* Create a reference to manage this ability task */
-	static UPEHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility,
-	                                                const FName& TaskInstanceName,
-	                                                const FHitResult HitResult,
-	                                                const float HookIntensity,
-	                                                const float HookMaxIntensity = -1.f);
+	static UPEHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const FHitResult HitResult, const float HookIntensity, const float HookMaxIntensity = -1.f);
 
 	virtual void Activate() override;
 

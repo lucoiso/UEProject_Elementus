@@ -8,12 +8,14 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
-APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bReplicates = true;
 	bAlwaysRelevant = true;
 	AActor::SetReplicateMovement(true);
+
+	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Component"));
 	CollisionComponent->InitSphereRadius(12.5f);
@@ -45,27 +47,24 @@ void APEProjectileActor::FireInDirection(const FVector Direction) const
 	ProjectileMovement->Velocity = ProjectileMovement->InitialSpeed * Direction;
 }
 
-void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor,
-                                                        UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-                                                        const FHitResult& Hit)
+void APEProjectileActor::OnProjectileHit_Implementation(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	const FVector ImpulseVelocity = ProjectileMovement->Velocity * (ImpulseMultiplier / 10.f);
 
 	if (IsValid(OtherActor) && OtherActor->GetClass()->IsChildOf<APECharacter>())
 	{
-		if (APECharacter* Character = Cast<APECharacter>(OtherActor))
+		if (APECharacter* const Character = Cast<APECharacter>(OtherActor))
 		{
 			Character->LaunchCharacter(ImpulseVelocity, true, true);
 
-			if (UPEAbilitySystemComponent* TargetGASC =
-					Cast<UPEAbilitySystemComponent>(Character->GetAbilitySystemComponent());
+			if (UPEAbilitySystemComponent* const TargetGASC = Cast<UPEAbilitySystemComponent>(Character->GetAbilitySystemComponent());
 				ensureAlwaysMsgf(IsValid(TargetGASC), TEXT("%s have a invalid target"), *GetName()))
 			{
 				ApplyProjectileEffect(TargetGASC);
 			}
 		}
 	}
-	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics())
+	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics() && OtherComp->Mobility == EComponentMobility::Movable)
 	{
 		OtherComp->AddImpulseAtLocation(ImpulseVelocity, Hit.ImpactPoint, Hit.BoneName);
 	}
@@ -80,7 +79,7 @@ void APEProjectileActor::ApplyProjectileEffect(UAbilitySystemComponent* TargetAB
 		return;
 	}
 
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
+	if (UPEAbilitySystemComponent* const TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC))
 	{
 		for (const FGameplayEffectGroupedData& Effect : ProjectileEffects)
 		{

@@ -3,11 +3,15 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/PEGameInstance.h"
-#include "Interfaces/OnlineIdentityInterface.h"
 #include "EOSVoiceChatUser.h"
-#include "Kismet/GameplayStatics.h"
 #include "JsonObjectConverter.h"
+#include "Interfaces/OnlineIdentityInterface.h"
+#include "Kismet/GameplayStatics.h"
 
+UPEGameInstance::UPEGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+
+}
 
 void UPEGameInstance::InitializeVoiceChatFramework()
 {
@@ -24,12 +28,11 @@ void UPEGameInstance::ShutdownVoiceChatFramework()
 	{
 		DisconnectVoiceChatFramework();
 
-		if (FOnlineSubsystemEOS* OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
+		if (FOnlineSubsystemEOS* const OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
 		{
 			if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
 			{
-				for (int Iterator = 0; Iterator < UGameplayStatics::GetNumLocalPlayerControllers(GetWorld()); ++
-				     Iterator)
+				for (int32 Iterator = 0; Iterator < UGameplayStatics::GetNumLocalPlayerControllers(GetWorld()); ++Iterator)
 				{
 					if (const FUniqueNetIdPtr NetId = IdentityInterface->GetUniquePlayerId(Iterator))
 					{
@@ -72,8 +75,7 @@ void UPEGameInstance::OnVoiceChatInitialized(const FVoiceChatResult& Result)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__),
-		       Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
+		UE_LOG(LogTemp, Log, TEXT("%s - Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__), Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
 	}
 
 	OnVoiceChatInitializeCompleteDelegate.Unbind();
@@ -87,8 +89,7 @@ void UPEGameInstance::OnVoiceChatUninitialized(const FVoiceChatResult& Result)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__),
-		       Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
+		UE_LOG(LogTemp, Log, TEXT("%s - Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__), Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
 	}
 
 	OnVoiceChatUninitializeCompleteDelegate.Unbind();
@@ -102,8 +103,7 @@ void UPEGameInstance::OnVoiceChatConnected(const FVoiceChatResult& Result)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__),
-		       Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
+		UE_LOG(LogTemp, Log, TEXT("%s - Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__), Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
 	}
 
 	OnVoiceChatConnectCompleteDelegate.Unbind();
@@ -117,8 +117,7 @@ void UPEGameInstance::OnVoiceChatDisconnected(const FVoiceChatResult& Result)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__),
-		       Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
+		UE_LOG(LogTemp, Log, TEXT("%s - Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__), Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
 	}
 
 	OnVoiceChatDisconnectCompleteDelegate.Unbind();
@@ -126,20 +125,16 @@ void UPEGameInstance::OnVoiceChatDisconnected(const FVoiceChatResult& Result)
 
 void UPEGameInstance::LoginToVoiceChatFramework(const int32 LocalUserNum)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface();
 			IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn)
 		{
-			if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
+			if (FEOSVoiceChatUser* const VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 			{
 				OnVoiceChatLoginCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatLogin);
 
-				VoiceChatUserPtr->Login(
-					IdentityInterface->GetPlatformUserIdFromLocalUserNum(LocalUserNum),
-					IdentityInterface->GetPlayerNickname(LocalUserNum),
-					IdentityInterface->GetAuthToken(LocalUserNum),
-					OnVoiceChatLoginCompleteDelegate);
+				VoiceChatUserPtr->Login(IdentityInterface->GetPlatformUserIdFromLocalUserNum(LocalUserNum), IdentityInterface->GetPlayerNickname(LocalUserNum), IdentityInterface->GetAuthToken(LocalUserNum), OnVoiceChatLoginCompleteDelegate);
 			}
 		}
 	}
@@ -147,9 +142,9 @@ void UPEGameInstance::LoginToVoiceChatFramework(const int32 LocalUserNum)
 
 void UPEGameInstance::LogoutFromVoiceChatFramework(const int32 LocalUserNum)
 {
-	if (FOnlineSubsystemEOS* OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
+	if (FOnlineSubsystemEOS* const OnlineSubsystemEOS = UPEEOSLibrary::GetOnlineSubsystemEOS())
 	{
-		if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
+		if (FEOSVoiceChatUser* const VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 		{
 			OnVoiceChatLogoutCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatLogout);
 			VoiceChatUserPtr->Logout(OnVoiceChatLogoutCompleteDelegate);
@@ -169,15 +164,13 @@ void UPEGameInstance::OnVoiceChatLogin(const FString& PlayerName, const FVoiceCh
 {
 	if (Result.IsSuccess())
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Player Name: %s; Result: %d"),
-		       *FString(__func__), *PlayerName, Result.IsSuccess())
+		UE_LOG(LogTemp, Log, TEXT("%s - Player Name: %s; Result: %d"), *FString(__func__), *PlayerName, Result.IsSuccess())
 
 		ConnectVoiceChatFramework();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Player Name: %s; Result: %d - Error Code: %s; Error Description: %s"),
-		       *FString(__func__), Result.IsSuccess(), *PlayerName, *Result.ErrorCode, *Result.ErrorDesc);
+		UE_LOG(LogTemp, Log, TEXT("%s - Player Name: %s; Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__), Result.IsSuccess(), *PlayerName, *Result.ErrorCode, *Result.ErrorDesc);
 	}
 
 	OnVoiceChatLoginCompleteDelegate.Unbind();
@@ -187,46 +180,36 @@ void UPEGameInstance::OnVoiceChatLogout(const FString& PlayerName, const FVoiceC
 {
 	if (Result.IsSuccess())
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Player Name: %s; Result: %d"),
-		       *FString(__func__), *PlayerName, Result.IsSuccess())
+		UE_LOG(LogTemp, Log, TEXT("%s - Player Name: %s; Result: %d"), *FString(__func__), *PlayerName, Result.IsSuccess())
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Player Name: %s; Result: %d - Error Code: %s; Error Description: %s"),
-		       *FString(__func__), Result.IsSuccess(), *PlayerName, *Result.ErrorCode, *Result.ErrorDesc);
+		UE_LOG(LogTemp, Log, TEXT("%s - Player Name: %s; Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__), Result.IsSuccess(), *PlayerName, *Result.ErrorCode, *Result.ErrorDesc);
 	}
 
 	OnVoiceChatLogoutCompleteDelegate.Unbind();
 }
 
-void UPEGameInstance::ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName,
-                                                       const FEOSVoiceChatChannelCredentials Credentials)
+void UPEGameInstance::ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName, const FEOSVoiceChatChannelCredentials Credentials)
 {
-	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum,
-	       *ChannelName);
+	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum, *ChannelName);
 
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
+	if (FEOSVoiceChatUser* const VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 	{
-		OnVoiceChatChannelJoinCompleteDelegate.
-			BindUObject(this, &UPEGameInstance::OnVoiceChatChannelJoined);
+		OnVoiceChatChannelJoinCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatChannelJoined);
 
 		FString CredentialsJson;
 		FJsonObjectConverter::UStructToJsonObjectString(Credentials, CredentialsJson);
 
-		VoiceChatUserPtr->JoinChannel(
-			ChannelName,
-			CredentialsJson,
-			EVoiceChatChannelType::Echo, // Testing Only
-			OnVoiceChatChannelJoinCompleteDelegate);
+		VoiceChatUserPtr->JoinChannel(ChannelName, CredentialsJson, EVoiceChatChannelType::Echo /* Testing Only */, OnVoiceChatChannelJoinCompleteDelegate);
 	}
 }
 
 void UPEGameInstance::LeaveVoiceChatSessionChannel(const int32 LocalUserNum, const FString& ChannelName)
 {
-	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum,
-	       *ChannelName);
+	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Channel Name: %s"), *FString(__func__), LocalUserNum, *ChannelName);
 
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
+	if (FEOSVoiceChatUser* const VoiceChatUserPtr = UPEEOSLibrary::GetEOSVoiceChatUser(LocalUserNum))
 	{
 		OnVoiceChatChannelLeaveCompleteDelegate.BindUObject(this, &UPEGameInstance::OnVoiceChatChannelLeft);
 		VoiceChatUserPtr->LeaveChannel(ChannelName, OnVoiceChatChannelLeaveCompleteDelegate);
@@ -237,13 +220,11 @@ void UPEGameInstance::OnVoiceChatChannelJoined(const FString& ChannelName, const
 {
 	if (Result.IsSuccess())
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Channel Name: %s; Result: %d"),
-		       *FString(__func__), *ChannelName, Result.IsSuccess())
+		UE_LOG(LogTemp, Log, TEXT("%s - Channel Name: %s; Result: %d"), *FString(__func__), *ChannelName, Result.IsSuccess())
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Channel Name: %s; Result: %d - Error Code: %s; Error Description: %s"),
-		       *FString(__func__), *ChannelName, Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
+		UE_LOG(LogTemp, Log, TEXT("%s - Channel Name: %s; Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__), *ChannelName, Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
 	}
 
 	OnVoiceChatChannelJoinCompleteDelegate.Unbind();
@@ -253,13 +234,11 @@ void UPEGameInstance::OnVoiceChatChannelLeft(const FString& ChannelName, const F
 {
 	if (Result.IsSuccess())
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Channel Name: %s; Result: %d"),
-		       *FString(__func__), *ChannelName, Result.IsSuccess())
+		UE_LOG(LogTemp, Log, TEXT("%s - Channel Name: %s; Result: %d"), *FString(__func__), *ChannelName, Result.IsSuccess())
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s - Channel Name: %s; Result: %d - Error Code: %s; Error Description: %s"),
-		       *FString(__func__), *ChannelName, Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
+		UE_LOG(LogTemp, Log, TEXT("%s - Channel Name: %s; Result: %d - Error Code: %s; Error Description: %s"), *FString(__func__), *ChannelName, Result.IsSuccess(), *Result.ErrorCode, *Result.ErrorDesc);
 	}
 
 	OnVoiceChatChannelLeaveCompleteDelegate.Unbind();
@@ -277,12 +256,11 @@ bool UPEGameInstance::FindEOSSessions(const int32 LocalUserNum, const bool bIsLA
 
 bool UPEGameInstance::CancelFindEOSSessions()
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
-			SessionInterface->OnCancelFindSessionsCompleteDelegates.AddUObject(
-				this, &UPEGameInstance::OnCancelFindSessions);
+			SessionInterface->OnCancelFindSessionsCompleteDelegates.AddUObject(this, &UPEGameInstance::OnCancelFindSessions);
 
 			return SessionInterface->CancelFindSessions();
 		}
@@ -308,7 +286,7 @@ void UPEGameInstance::ServerTravelToLevel(const FName LevelName) const
 
 void UPEGameInstance::ClientTravelToSessionLevel(const int32 LocalUserNum) const
 {
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), LocalUserNum);
+	if (APlayerController* const PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), LocalUserNum);
 		!EOSCurrentSessionInfo.IsEmpty())
 	{
 		PlayerController->ClientTravel(EOSCurrentSessionInfo, TRAVEL_Absolute);
@@ -326,9 +304,9 @@ TArray<FSessionDataHandler> UPEGameInstance::GetSessionsDataHandles() const
 	return SessionDataHandle_Arr;
 }
 
-bool UPEGameInstance::EOS_CreateSession(const int8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings)
+bool UPEGameInstance::EOS_CreateSession(const uint8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -341,17 +319,16 @@ bool UPEGameInstance::EOS_CreateSession(const int8 HostingPlayerNum, const FOnli
 	return false;
 }
 
-bool UPEGameInstance::EOS_FindSessions(const int8 SearchingPlayerNum, const bool bIsLANQuery, const int8 MaxResults)
+bool UPEGameInstance::EOS_FindSessions(const uint8 SearchingPlayerNum, const bool bIsLANQuery, const uint8 MaxResults)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
 			EOSSearchSettings = MakeShareable(new FOnlineSessionSearch());
 			EOSSearchSettings->bIsLanQuery = bIsLANQuery;
 			EOSSearchSettings->MaxSearchResults = MaxResults;
-			EOSSearchSettings->QuerySettings.Set(SEARCH_KEYWORDS,
-			                                     FString("ProjectElementus"), EOnlineComparisonOp::Equals);
+			EOSSearchSettings->QuerySettings.Set(SEARCH_KEYWORDS, FString("ProjectElementus"), EOnlineComparisonOp::Equals);
 			EOSSearchSettings->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
 
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPEGameInstance::OnSessionsFound);
@@ -363,9 +340,9 @@ bool UPEGameInstance::EOS_FindSessions(const int8 SearchingPlayerNum, const bool
 	return false;
 }
 
-bool UPEGameInstance::EOS_JoinSession(const int8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession)
+bool UPEGameInstance::EOS_JoinSession(const uint8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -380,7 +357,7 @@ bool UPEGameInstance::EOS_JoinSession(const int8 LocalUserNum, const FOnlineSess
 
 bool UPEGameInstance::EOS_DestroySession()
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -395,10 +372,9 @@ bool UPEGameInstance::EOS_DestroySession()
 
 void UPEGameInstance::OnSessionCreated(const FName SessionName, const bool bResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s - Session: %s; Result: %d"), *FString(__func__), *SessionName.ToString(),
-	       bResult);
+	UE_LOG(LogTemp, Warning, TEXT("%s - Session: %s; Result: %d"), *FString(__func__), *SessionName.ToString(), bResult);
 
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -414,7 +390,7 @@ void UPEGameInstance::OnSessionCreated(const FName SessionName, const bool bResu
 
 void UPEGameInstance::OnSessionsFound(const bool bResult)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -424,8 +400,7 @@ void UPEGameInstance::OnSessionsFound(const bool bResult)
 
 	if (EOSSearchSettings.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s - Result: %d - Sessions found: %d"), *FString(__func__), bResult,
-		       EOSSearchSettings->SearchResults.Num());
+		UE_LOG(LogTemp, Warning, TEXT("%s - Result: %d - Sessions found: %d"), *FString(__func__), bResult, EOSSearchSettings->SearchResults.Num());
 
 		TArray<FSessionDataHandler> SessionDataHandle_Arr;
 
@@ -433,8 +408,7 @@ void UPEGameInstance::OnSessionsFound(const bool bResult)
 		{
 			const FSessionDataHandler SessionDataHandle{SearchResult};
 
-			UE_LOG(LogTemp, Warning, TEXT("Session Found: %s - %s"), *SearchResult.GetSessionIdStr(),
-			       *SearchResult.Session.OwningUserName);
+			UE_LOG(LogTemp, Warning, TEXT("Session Found: %s - %s"), *SearchResult.GetSessionIdStr(), *SearchResult.Session.OwningUserName);
 
 			SessionDataHandle_Arr.Add(SessionDataHandle);
 		}
@@ -451,7 +425,7 @@ void UPEGameInstance::OnCancelFindSessions(const bool bResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s - Result: %d"), *FString(__func__), bResult);
 
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -471,7 +445,7 @@ void UPEGameInstance::OnSessionJoined(const FName SessionName, const EOnJoinSess
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s - Session: %s; Result: %d"), *FString(__func__), *SessionName.ToString(), Result);
 
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -490,10 +464,9 @@ void UPEGameInstance::OnSessionJoined(const FName SessionName, const EOnJoinSess
 
 void UPEGameInstance::OnSessionDestroyed(const FName SessionName, const bool bResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s - Session: %s; Result: %d"), *FString(__func__), *SessionName.ToString(),
-	       bResult);
+	UE_LOG(LogTemp, Warning, TEXT("%s - Session: %s; Result: %d"), *FString(__func__), *SessionName.ToString(), bResult);
 
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -504,31 +477,26 @@ void UPEGameInstance::OnSessionDestroyed(const FName SessionName, const bool bRe
 	DestroySessionDelegate.Broadcast();
 }
 
-void UPEGameInstance::OnSessionInviteAccepted(const bool bWasSuccessful, const int32 LocalUserNum,
-                                              const FUniqueNetIdPtr UserId,
-                                              const FOnlineSessionSearchResult& InviteResult)
+void UPEGameInstance::OnSessionInviteAccepted(const bool bWasSuccessful, const int32 LocalUserNum, const FUniqueNetIdPtr UserId, const FOnlineSessionSearchResult& InviteResult)
 {
 	if (bWasSuccessful)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("User %s accepted invite to session %s"), *UserId->ToString(),
-		       *InviteResult.GetSessionIdStr());
+		UE_LOG(LogTemp, Warning, TEXT("User %s accepted invite to session %s"), *UserId->ToString(), *InviteResult.GetSessionIdStr());
 
 		EOS_JoinSession(LocalUserNum, InviteResult);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("User %s failed to accept invite to session %s"),
-		       *UserId->ToString(), *InviteResult.GetSessionIdStr());
+		UE_LOG(LogTemp, Warning, TEXT("User %s failed to accept invite to session %s"), *UserId->ToString(), *InviteResult.GetSessionIdStr());
 	}
 }
 
-bool UPEGameInstance::EOSLogin(const int32 LocalUserNum, const FString& Token, const int32 Port,
-                               const bool bUsePortal)
+bool UPEGameInstance::EOSLogin(const int32 LocalUserNum, const FString& Token, const int32 Port, const bool bUsePortal)
 {
-	return EOS_Login(LocalUserNum,
-	                 bUsePortal
-		                 ? FOnlineAccountCredentials("AccountPortal", "", "")
-		                 : FOnlineAccountCredentials("Developer", "localhost:" + FString::FromInt(Port), Token));
+	const FOnlineAccountCredentials Credentials = bUsePortal ? FOnlineAccountCredentials("AccountPortal", FString(), FString())
+															 : FOnlineAccountCredentials("Developer", "localhost:" + FString::FromInt(Port), Token);
+
+	return EOS_Login(LocalUserNum, Credentials);
 }
 
 bool UPEGameInstance::EOSLogout(const int32 LocalUserNum)
@@ -536,9 +504,9 @@ bool UPEGameInstance::EOSLogout(const int32 LocalUserNum)
 	return EOS_Logout(LocalUserNum);
 }
 
-bool UPEGameInstance::EOS_Login(const int8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials)
+bool UPEGameInstance::EOS_Login(const uint8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface();
 			IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::NotLoggedIn)
@@ -552,9 +520,9 @@ bool UPEGameInstance::EOS_Login(const int8 LocalUserNum, const FOnlineAccountCre
 	return false;
 }
 
-bool UPEGameInstance::EOS_Logout(const int8 LocalUserNum)
+bool UPEGameInstance::EOS_Logout(const uint8 LocalUserNum)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface();
 			IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn)
@@ -568,15 +536,13 @@ bool UPEGameInstance::EOS_Logout(const int8 LocalUserNum)
 	return false;
 }
 
-void UPEGameInstance::OnLoginComplete(const int32 LocalUserNum, const bool bWasSuccessful, const FUniqueNetId& UserId,
-                                      const FString& Error)
+void UPEGameInstance::OnLoginComplete(const int32 LocalUserNum, const bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s - LocalUserNum: %d; bWasSuccessful: %d"), *FString(__func__),
-			       LocalUserNum, bWasSuccessful);
+			UE_LOG(LogTemp, Warning, TEXT("%s - LocalUserNum: %d; bWasSuccessful: %d"), *FString(__func__), LocalUserNum, bWasSuccessful);
 
 			IdentityInterface->ClearOnLoginCompleteDelegates(LocalUserNum, this);
 
@@ -593,12 +559,11 @@ void UPEGameInstance::OnLoginComplete(const int32 LocalUserNum, const bool bWasS
 
 void UPEGameInstance::OnLogoutComplete(const int32 LocalUserNum, const bool bWasSuccessful)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s - LocalUserNum: %d; bWasSuccessful: %d"), *FString(__func__),
-			       LocalUserNum, bWasSuccessful);
+			UE_LOG(LogTemp, Warning, TEXT("%s - LocalUserNum: %d; bWasSuccessful: %d"), *FString(__func__), LocalUserNum, bWasSuccessful);
 
 			IdentityInterface->ClearOnLogoutCompleteDelegates(LocalUserNum, this);
 

@@ -8,8 +8,7 @@
 #include "Actors/Character/PECharacter.h"
 #include "Blueprint/UserWidget.h"
 
-APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,16 +21,14 @@ APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitial
 	PackageMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	PackageMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	static const ConstructorHelpers::FObjectFinder<UStaticMesh> PackageMesh_Obj(
-		TEXT("/Game/Main/Meshes/LevelPrototyping/SM_ChamferCube"));
-	if constexpr (&PackageMesh_Obj.Object != nullptr)
+	static const ConstructorHelpers::FObjectFinder<UStaticMesh> PackageMesh_Obj(TEXT("/Game/Main/Meshes/LevelPrototyping/SM_ChamferCube"));
+	if (PackageMesh_Obj.Succeeded())
 	{
 		PackageMesh->SetStaticMesh(PackageMesh_Obj.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget_ClassRef(
-		TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Trade_w_Package"));
-	if constexpr (&TradeWidget_ClassRef.Class != nullptr)
+	static ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Trade_w_Package"));
+	if (TradeWidget_ClassRef.Succeeded())
 	{
 		TradeWidgetClass = TradeWidget_ClassRef.Class;
 	}
@@ -51,24 +48,23 @@ bool APEInventoryPackage::IsInteractEnabled_Implementation() const
 	return true;
 }
 
-void APEInventoryPackage::DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting,
-                                                               const FHitResult& HitResult)
+void APEInventoryPackage::DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult)
 {
 	if (!CharacterInteracting->IsLocallyControlled())
 	{
 		return;
 	}
 
-	if (APlayerController* TargetController = CharacterInteracting->GetController<APlayerController>())
+	if (APlayerController* const TargetController = CharacterInteracting->GetController<APlayerController>())
 	{
-		UClass* WidgetClass = TradeWidgetClass.LoadSynchronous();
-		if (UUserWidget* TradeWidget = CreateWidget(TargetController, WidgetClass))
+		UClass* const WidgetClass = TradeWidgetClass.LoadSynchronous();
+		if (UUserWidget* const TradeWidget = CreateWidget(TargetController, WidgetClass))
 		{
-			if (const FObjectProperty* PackageRef =
-				FindFProperty<FObjectProperty>(WidgetClass, TEXT("PackageRef")))
+			if (const FObjectProperty* const PackageRef = FindFProperty<FObjectProperty>(WidgetClass, TEXT("PackageRef")))
 			{
 				PackageRef->SetPropertyValue_InContainer(TradeWidget, this);
 			}
+
 			TradeWidget->AddToViewport();
 		}
 	}

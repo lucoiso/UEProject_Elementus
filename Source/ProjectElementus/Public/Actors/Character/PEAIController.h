@@ -12,10 +12,10 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEAIController : public AAIController
+class PROJECTELEMENTUS_API APEAIController final : public AAIController
 {
 	GENERATED_BODY()
 
 public:
-	explicit APEAIController(const FObjectInitializer& ObjectInitializer);
+	explicit APEAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };

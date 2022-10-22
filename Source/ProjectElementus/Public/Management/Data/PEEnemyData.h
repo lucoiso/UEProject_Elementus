@@ -18,15 +18,13 @@ class PROJECTELEMENTUS_API UPEEnemyData final : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	explicit UPEEnemyData(const FObjectInitializer& ObjectInitializer);
+	explicit UPEEnemyData(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(TEXT("PE_EnemyData"),
-		                       *("Enemy_" + FString::FromInt(EnemyId)));
+		return FPrimaryAssetId(TEXT("PE_EnemyData"), *("Enemy_" + FString::FromInt(EnemyId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Data"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Data"))
 	int32 EnemyId;
 };

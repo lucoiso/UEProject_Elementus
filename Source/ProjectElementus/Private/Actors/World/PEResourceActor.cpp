@@ -4,8 +4,7 @@
 
 #include "Actors/World/PEResourceActor.h"
 
-APEResourceActor::APEResourceActor(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APEResourceActor::APEResourceActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bReplicates = false;
 	PrimaryActorTick.bCanEverTick = false;

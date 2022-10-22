@@ -19,9 +19,7 @@ struct FGameplayEffectGroupedData
 {
 	GENERATED_USTRUCT_BODY()
 
-	FGameplayEffectGroupedData()
-	{
-	}
+	FGameplayEffectGroupedData() = default;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TSubclassOf<UGameplayEffect> EffectClass;
@@ -39,31 +37,25 @@ class PROJECTELEMENTUS_API UPEAbilityData final : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	explicit UPEAbilityData(const FObjectInitializer& ObjectInitializer);
+	explicit UPEAbilityData(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FORCEINLINE virtual FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId(TEXT("PE_AbilityData"),
-		                       *("Ability_" + FString::FromInt(AbilityId)));
+		return FPrimaryAssetId(TEXT("PE_AbilityData"), *("Ability_" + FString::FromInt(AbilityId)));
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Data"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Data"))
 	int32 AbilityId;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Class"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Class"))
 	TSoftClassPtr<UGameplayAbility> AbilityClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Data"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Data"))
 	FName AbilityName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "Data"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Data"))
 	FText AbilityDescription;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus",
-		meta = (AssetBundles = "UI"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "UI"))
 	TSoftObjectPtr<UTexture2D> AbilityImage;
 };

@@ -5,21 +5,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AttributeSet.h"
-#include "AbilitySystemComponent.h"
-#include "GAS/System/PEAttributeData.h"
+#include "GAS/Attributes/PEAttributeBase.h"
 #include "PELevelingAS.generated.h"
 
 /**
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPELevelingAS final : public UAttributeSet
+class PROJECTELEMENTUS_API UPELevelingAS final : public UPEAttributeBase
 {
 	GENERATED_BODY()
 
 public:
-	explicit UPELevelingAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPELevelingAS(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	TSoftObjectPtr<UDataTable> LevelingBonusData;
@@ -36,8 +34,7 @@ public:
 	FGameplayAttributeData CurrentExperience;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, CurrentExperience)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties",
-		ReplicatedUsing = OnRep_RequiredExperience)
+	UPROPERTY(BlueprintReadOnly, Category = "Project Elementus | Properties", ReplicatedUsing = OnRep_RequiredExperience)
 	FGameplayAttributeData RequiredExperience;
 	ATTRIBUTE_ACCESSORS(UPELevelingAS, RequiredExperience)
 

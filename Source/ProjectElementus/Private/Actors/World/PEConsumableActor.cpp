@@ -10,9 +10,7 @@
 #include "NiagaraComponent.h"
 #include "Actors/Character/PECharacter.h"
 
-APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer),
-	  bDestroyAfterConsumption(true)
+APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), bDestroyAfterConsumption(true)
 {
 	bReplicates = false;
 	PrimaryActorTick.bCanEverTick = false;
@@ -31,9 +29,8 @@ APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializ
 
 void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC)
 {
-	if (UPEAbilitySystemComponent* TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
-		TargetGASC->HasAllMatchingGameplayTags(ConsumableData->RequirementsTags)
-		|| ConsumableData->RequirementsTags.IsEmpty())
+	if (UPEAbilitySystemComponent* const TargetGASC = Cast<UPEAbilitySystemComponent>(TargetABSC);
+		TargetGASC->HasAllMatchingGameplayTags(ConsumableData->RequirementsTags) || ConsumableData->RequirementsTags.IsEmpty())
 	{
 		for (const FGameplayEffectGroupedData& Effect : ConsumableData->ConsumableEffects)
 		{
@@ -47,8 +44,7 @@ void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC)
 	}
 }
 
-void APEConsumableActor::DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting,
-                                                              const FHitResult& HitResult)
+void APEConsumableActor::DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult)
 {
 	// Only call SetReplicates if has authority
 	if (GetLocalRole() != ROLE_Authority)
@@ -56,9 +52,7 @@ void APEConsumableActor::DoInteractionBehavior_Implementation(APECharacter* Char
 		return;
 	}
 
-	if (ensureAlwaysMsgf(IsValid(CharacterInteracting->GetAbilitySystemComponent()),
-	                     TEXT("%s have a invalid Ability System Component"),
-	                     *CharacterInteracting->GetName()))
+	if (ensureAlwaysMsgf(IsValid(CharacterInteracting->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *CharacterInteracting->GetName()))
 	{
 		// Only replicates while a character is consuming
 		SetReplicates(true);
@@ -72,21 +66,19 @@ void APEConsumableActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	if (PropertyChangedEvent.Property != nullptr)
+	if (PropertyChangedEvent.Property == nullptr)
 	{
-		if (PropertyChangedEvent.Property->GetFName() == GET_MEMBER_NAME_CHECKED(APEConsumableActor, ConsumableData))
-		{
-			// Update data with values in the given UDataAsset
-			if (IsValid(ConsumableData))
-			{
-				!ConsumableData->ObjectMesh.IsNull()
-					? ObjectMesh->SetStaticMesh(ConsumableData->ObjectMesh.LoadSynchronous())
-					: ObjectMesh->SetStaticMesh(nullptr);
+		return;
+	}
 
-				!ConsumableData->ObjectVFX.IsNull()
-					? ObjectVFX->SetAsset(ConsumableData->ObjectVFX.LoadSynchronous())
-					: ObjectVFX->SetAsset(nullptr);
-			}
+	if (PropertyChangedEvent.Property->GetFName() == GET_MEMBER_NAME_CHECKED(APEConsumableActor, ConsumableData))
+	{
+		// Update data with values in the given UDataAsset
+		if (IsValid(ConsumableData))
+		{
+			!ConsumableData->ObjectMesh.IsNull() ? ObjectMesh->SetStaticMesh(ConsumableData->ObjectMesh.LoadSynchronous()) : ObjectMesh->SetStaticMesh(nullptr);
+
+			!ConsumableData->ObjectVFX.IsNull() ? ObjectVFX->SetAsset(ConsumableData->ObjectVFX.LoadSynchronous()) : ObjectVFX->SetAsset(nullptr);
 		}
 	}
 }

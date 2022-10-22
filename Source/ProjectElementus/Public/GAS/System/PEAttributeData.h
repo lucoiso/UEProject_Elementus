@@ -16,13 +16,7 @@ struct FPELevelingData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
-	FPELevelingData() :
-		BonusMaxHealth(0.f),
-		BonusMaxMana(0.f),
-		BonusMaxStamina(0.f),
-		BonusAttackRate(0.f),
-		BonusDefenseRate(0.f),
-		RequiredExp(0.f)
+	FPELevelingData() : BonusMaxHealth(0.f), BonusMaxMana(0.f), BonusMaxStamina(0.f), BonusAttackRate(0.f), BonusDefenseRate(0.f), RequiredExp(0.f)
 	{
 	}
 
@@ -42,13 +36,6 @@ struct FPELevelingData : public FTableRowBase
 	float BonusDefenseRate;
 
 	/* Required experience to pass to next level */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Settings",
-		meta = (DisplayName = "Required Xp to Level Up"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Settings", meta = (DisplayName = "Required Xp to Level Up"))
 	float RequiredExp;
 };
-
-#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
-	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)

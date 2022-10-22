@@ -19,15 +19,12 @@ class UPETelekinesisAbility_Task final : public UAbilityTask
 	GENERATED_BODY()
 
 public:
-	explicit UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	FTelekinesisManagement OnGrabbing;
 
 	/* Create a reference to manage this ability task */
-	static UPETelekinesisAbility_Task* PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility,
-	                                                                const FName& TaskInstanceName,
-	                                                                const float ThrowIntensity,
-	                                                                const TWeakObjectPtr<AActor> Target);
+	static UPETelekinesisAbility_Task* PETelekinesisAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const float ThrowIntensity, AActor* Target);
 
 	virtual void Activate() override;
 

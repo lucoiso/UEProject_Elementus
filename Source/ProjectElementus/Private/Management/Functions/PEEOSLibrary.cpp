@@ -3,20 +3,20 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/Functions/PEEOSLibrary.h"
+#include "EOSVoiceChatUser.h"
+#include "Interfaces/OnlineAchievementsInterface.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Interfaces/OnlinePresenceInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "Interfaces/OnlineAchievementsInterface.h"
-#include "EOSVoiceChatUser.h"
 
 FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 {
 	return static_cast<FOnlineSubsystemEOS*>(FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM));
 }
 
-FEOSVoiceChatUser* UPEEOSLibrary::GetEOSVoiceChatUser(const int8 LocalUserNum)
+FEOSVoiceChatUser* UPEEOSLibrary::GetEOSVoiceChatUser(const uint8 LocalUserNum)
 {
-	if (FOnlineSubsystemEOS* OnlineSubsystemEOS = GetOnlineSubsystemEOS())
+	if (FOnlineSubsystemEOS* const OnlineSubsystemEOS = GetOnlineSubsystemEOS())
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
 		{
@@ -34,7 +34,7 @@ void UPEEOSLibrary::MuteEOSSessionVoiceChatUser(const int32 LocalUserNum, const 
 {
 	UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Mute: %d"), *FString(__func__), LocalUserNum, bMute);
 
-	if (FEOSVoiceChatUser* VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
+	if (FEOSVoiceChatUser* const VoiceChatUserPtr = GetEOSVoiceChatUser(LocalUserNum))
 	{
 		VoiceChatUserPtr->SetAudioInputDeviceMuted(bMute);
 	}
@@ -62,7 +62,7 @@ FName UPEEOSLibrary::GetEOSSessionName()
 
 bool UPEEOSLibrary::IsUserLoggedInEOS(const int32 LocalUserNum)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
@@ -75,11 +75,11 @@ bool UPEEOSLibrary::IsUserLoggedInEOS(const int32 LocalUserNum)
 
 bool UPEEOSLibrary::IsHostingEOSSession()
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
-			if (const FNamedOnlineSession* CheckSession = SessionInterface->GetNamedSession(NAME_GameSession))
+			if (const FNamedOnlineSession* const CheckSession = SessionInterface->GetNamedSession(NAME_GameSession))
 			{
 				return CheckSession->bHosting;
 			}
@@ -91,7 +91,7 @@ bool UPEEOSLibrary::IsHostingEOSSession()
 
 bool UPEEOSLibrary::IsUserInAEOSSession()
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
 		{
@@ -102,18 +102,7 @@ bool UPEEOSLibrary::IsUserInAEOSSession()
 	return false;
 }
 
-FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 NumPublicConnections,
-                                                                  const int32 NumPrivateConnections,
-                                                                  const bool bShouldAdvertise,
-                                                                  const bool bAllowJoinInProgress,
-                                                                  const bool bIsLANMatch, const bool bIsDedicated,
-                                                                  const bool bUsesStats, const bool bAllowInvites,
-                                                                  const bool bUsesPresence,
-                                                                  const bool bAllowJoinViaPresence,
-                                                                  const bool bAllowJoinViaPresenceFriendsOnly,
-                                                                  const bool bAntiCheatProtected,
-                                                                  const bool bUseLobbiesIfAvailable,
-                                                                  const bool bUseLobbiesVoiceChatIfAvailable)
+FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 NumPublicConnections, const int32 NumPrivateConnections, const bool bShouldAdvertise, const bool bAllowJoinInProgress, const bool bIsLANMatch, const bool bIsDedicated, const bool bUsesStats, const bool bAllowInvites, const bool bUsesPresence, const bool bAllowJoinViaPresence, const bool bAllowJoinViaPresenceFriendsOnly, const bool bAntiCheatProtected, const bool bUseLobbiesIfAvailable, const bool bUseLobbiesVoiceChatIfAvailable)
 {
 	FOnlineSessionSettings SessionSettings;
 	SessionSettings.NumPublicConnections = NumPublicConnections;
@@ -138,7 +127,7 @@ FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 Nu
 
 void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString& PresenceText, const bool bOnline)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
@@ -155,47 +144,42 @@ void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString& P
 	}
 }
 
-void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchievementMod Modifier, const FName StatName,
-                                        const float Percentage)
+void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchievementMod Modifier, const FName StatName, const float Percentage)
 {
-	if (const IOnlineSubsystem* OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
 			if (const IOnlineAchievementsPtr AchievementsInterface = OnlineSubsystem->GetAchievementsInterface())
 			{
-				UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Modifier: %d; Stat Name: %s; Percentage: %f"),
-				       *FString(__func__), LocalUserNum, Modifier, *StatName.ToString(), Percentage);
+				UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Modifier: %d; Stat Name: %s; Percentage: %f"), *FString(__func__), LocalUserNum, Modifier, *StatName.ToString(), Percentage);
 
 				const FOnlineAchievementsWritePtr NewAchievement = MakeShareable(new FOnlineAchievementsWrite());
 
 				switch (Modifier)
 				{
-				case EAchievementMod::Set:
-					NewAchievement->SetFloatStat(StatName, Percentage);
+				case EAchievementMod::Set: NewAchievement->SetFloatStat(StatName, Percentage);
 					break;
-				case EAchievementMod::Add:
-					NewAchievement->IncrementFloatStat(StatName, Percentage);
+
+				case EAchievementMod::Add: NewAchievement->IncrementFloatStat(StatName, Percentage);
 					break;
-				case EAchievementMod::Subtract:
-					NewAchievement->DecrementFloatStat(StatName, Percentage);
+
+				case EAchievementMod::Subtract: NewAchievement->DecrementFloatStat(StatName, Percentage);
 					break;
+
 				default: break;
 				}
 
 				FOnlineAchievementsWriteRef WriteObject = NewAchievement.ToSharedRef();
 
-				AchievementsInterface->WriteAchievements(
-					*IdentityInterface->GetUniquePlayerId(LocalUserNum).Get(),
-					WriteObject,
-					FOnAchievementsWrittenDelegate::CreateLambda(
-						[](const FUniqueNetId& UserID, const bool bResult)
-						{
-							UE_LOG(LogTemp, Log,
-							       TEXT("WriteEOSAchievement - User ID: %s; Result: %d"),
-							       *UserID.ToString(),
-							       bResult);
-						}));
+				const FUniqueNetIdPtr UserNetId = IdentityInterface->GetUniquePlayerId(LocalUserNum);
+
+				const FOnAchievementsWrittenDelegate AchievementsWriteDelegate = FOnAchievementsWrittenDelegate::CreateLambda([](const FUniqueNetId& UserID, const bool bResult)
+				{
+					UE_LOG(LogTemp, Log, TEXT("WriteEOSAchievement - User ID: %s; Result: %d"), *UserID.ToString(), bResult);
+				});
+
+				AchievementsInterface->WriteAchievements(*UserNetId, WriteObject, AchievementsWriteDelegate);
 			}
 		}
 	}

@@ -10,34 +10,26 @@
 #include "AbilitySystemComponent.h"
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"
 
-UPECustomStatusAS::UPECustomStatusAS(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-	  , AttackRate(1.f)
-	  , DefenseRate(1.f)
-	  , SpeedRate(1.f)
-	  , JumpRate(1.f)
-	  , Gold(0.f)
+UPECustomStatusAS::UPECustomStatusAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AttackRate(1.f), DefenseRate(1.f), SpeedRate(1.f), JumpRate(1.f), Gold(0.f)
 {
-	static const ConstructorHelpers::FObjectFinder<UDataTable> CustomAttributesMetaData_ObjRef(
-		TEXT("/Game/Main/Data/GAS/DT_CustomStatusAS"));
-	if constexpr (&CustomAttributesMetaData_ObjRef.Object != nullptr)
+	static ConstructorHelpers::FObjectFinder<UDataTable> CustomAttributesMetaData_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_CustomStatusAS"));
+	if (CustomAttributesMetaData_ObjRef.Succeeded())
 	{
 		UAttributeSet::InitFromMetaDataTable(CustomAttributesMetaData_ObjRef.Object);
 	}
 }
 
-void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue,
-                                            const float NewValue)
+void UPECustomStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, const float OldValue, const float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
 	if (Attribute == GetSpeedRateAttribute() || Attribute == GetJumpRateAttribute())
 	{
-		if (const APlayerState* State = Cast<APlayerState>(GetOwningActor()))
+		if (const APlayerState* const State = Cast<APlayerState>(GetOwningActor()))
 		{
-			if (const APECharacter* Character = State->GetPawn<APECharacter>())
+			if (const APECharacter* const Character = State->GetPawn<APECharacter>())
 			{
-				if (UCharacterMovementComponent* MovComp = Character->GetCharacterMovement();
+				if (UCharacterMovementComponent* const MovComp = Character->GetCharacterMovement();
 					ensureAlwaysMsgf(IsValid(MovComp), TEXT("%s have a invalid Movement Component"), *GetName()))
 				{
 					//Check if the attribute is equal to speed or jump rate and multiply the value by the rate

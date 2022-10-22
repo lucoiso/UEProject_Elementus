@@ -13,12 +13,12 @@
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPEAbilitySystemComponent : public UAbilitySystemComponent
+class PROJECTELEMENTUS_API UPEAbilitySystemComponent final : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 
 public:
-	explicit UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer);
+	explicit UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* Apply a grouped GE data to self Ability System Component */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
@@ -28,6 +28,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC);
 
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void RemoveEffectGroupedDataFromSelf(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, const int32 StacksToRemove = 1);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void RemoveEffectGroupedDataFromTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove = 1);
+	
 	template <typename T>
 	const T* GetCustomAttributeSet() const
 	{

@@ -6,7 +6,7 @@ using UnrealBuildTool;
 
 public class Swinging : ModuleRules
 {
-	public Swinging(ReadOnlyTargetRules target) : base(target)
+	public Swinging(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		CppStandard = CppStandardVersion.Cpp17;

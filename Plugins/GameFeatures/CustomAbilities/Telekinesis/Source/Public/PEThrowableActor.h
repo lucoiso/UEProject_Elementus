@@ -20,7 +20,7 @@ class APEThrowableActor final : public AStaticMeshActor
 	GENERATED_BODY()
 
 public:
-	explicit APEThrowableActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEThrowableActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	void ThrowSetup(AActor* Caller);
 
@@ -31,8 +31,7 @@ protected:
 
 private:
 	UFUNCTION()
-	void OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	                    FVector NormalImpulse, const FHitResult& Hit);
+	void OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	void ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC);
 	TWeakObjectPtr<AActor> CallerActor;

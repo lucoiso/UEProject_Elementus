@@ -5,21 +5,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AttributeSet.h"
-#include "AbilitySystemComponent.h"
-#include "GAS/System/PEAttributeData.h"
+#include "GAS/Attributes/PEAttributeBase.h"
 #include "PECustomStatusAS.generated.h"
 
 /**
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPECustomStatusAS final : public UAttributeSet
+class PROJECTELEMENTUS_API UPECustomStatusAS final : public UPEAttributeBase
 {
 	GENERATED_BODY()
 
 public:
-	explicit UPECustomStatusAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPECustomStatusAS(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;

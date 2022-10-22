@@ -5,20 +5,14 @@
 #include "GAS/Tasks/PESpawnProjectile_Task.h"
 #include "Actors/World/PEProjectileActor.h"
 
-UPESpawnProjectile_Task::UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPESpawnProjectile_Task::UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;
 }
 
-UPESpawnProjectile_Task* UPESpawnProjectile_Task::SpawnProjectile(UGameplayAbility* OwningAbility,
-                                                                  const TSubclassOf<APEProjectileActor> ClassToSpawn,
-                                                                  const FTransform SpawnTransform,
-                                                                  const FVector DirectionToFire,
-                                                                  const TArray<FGameplayEffectGroupedData>
-                                                                  EffectDataArray)
+UPESpawnProjectile_Task* UPESpawnProjectile_Task::SpawnProjectile(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const TSubclassOf<APEProjectileActor> ClassToSpawn, const FTransform SpawnTransform, const FVector DirectionToFire, const TArray<FGameplayEffectGroupedData> EffectDataArray)
 {
-	UPESpawnProjectile_Task* MyObj = NewAbilityTask<UPESpawnProjectile_Task>(OwningAbility);
+	UPESpawnProjectile_Task* const MyObj = NewAbilityTask<UPESpawnProjectile_Task>(OwningAbility, TaskInstanceName);
 	MyObj->ProjectileClass = ClassToSpawn;
 	MyObj->ProjectileTransform = SpawnTransform;
 	MyObj->ProjectileFireDirection = DirectionToFire;
@@ -31,44 +25,40 @@ void UPESpawnProjectile_Task::Activate()
 {
 	Super::Activate();
 
-	if (ensureAlwaysMsgf(IsValid(Ability), TEXT("%s have a invalid Ability"), *GetName()))
+	check(Ability);
+
+	// Only the server can spawn actors!
+	if (!Ability->GetActorInfo().IsNetAuthority())
 	{
-		if (Ability->GetActorInfo().IsNetAuthority())
-		{
-			if (ProjectileClass != nullptr)
-			{
-				APEProjectileActor* SpawnedProjectile =
-					GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform,
-					                                                   Ability->GetAvatarActorFromActorInfo(),
-					                                                   Ability->GetActorInfo().PlayerController->
-					                                                   GetPawn(),
-					                                                   ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-
-				SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
-
-				SpawnedProjectile->FinishSpawning(ProjectileTransform);
-
-				if (IsValid(SpawnedProjectile))
-				{
-					SpawnedProjectile->FireInDirection(ProjectileFireDirection);
-
-					if (ShouldBroadcastAbilityTaskDelegates())
-					{
-						OnProjectileSpawn.Broadcast(SpawnedProjectile);
-					}
-				}
-				else if (ShouldBroadcastAbilityTaskDelegates())
-				{
-					OnSpawnFailed.Broadcast(nullptr);
-				}
-			}
-			else if (ShouldBroadcastAbilityTaskDelegates())
-			{
-				OnSpawnFailed.Broadcast(nullptr);
-			}
-		}
+		EndTask();
 	}
 
-	UE_LOG(LogGameplayTasks, Display, TEXT("Task %s ended"), *GetName());
+	if (ensureAlwaysMsgf(ProjectileClass != nullptr, TEXT("%s - Task %s failed to activate because projectile class is null"), *FString(__func__), *GetName()))
+	{
+		APEProjectileActor* const SpawnedProjectile = GetWorld()->SpawnActorDeferred<APEProjectileActor>(ProjectileClass, ProjectileTransform, GetOwnerActor(), nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		SpawnedProjectile->ProjectileEffects = ProjectileEffectArr;
+		SpawnedProjectile->FinishSpawning(ProjectileTransform);
+
+		if (IsValid(SpawnedProjectile))
+		{
+			SpawnedProjectile->FireInDirection(ProjectileFireDirection);
+
+			if (ShouldBroadcastAbilityTaskDelegates())
+			{
+				OnProjectileSpawn.Broadcast(SpawnedProjectile);
+			}
+		}
+		else if (ShouldBroadcastAbilityTaskDelegates())
+		{
+			OnSpawnFailed.Broadcast(nullptr);
+		}
+	}
+	else if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		OnSpawnFailed.Broadcast(nullptr);
+	}	
+
+	UE_LOG(LogGameplayTasks, Display, TEXT("%s - Task %s ended"), *FString(__func__), *GetName());
 	EndTask();
 }

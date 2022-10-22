@@ -2,7 +2,7 @@
 
 ![HighresScreenshot00000](https://user-images.githubusercontent.com/77353979/171550569-09dc7c78-c921-4b60-92a1-0a50b9e8ccca.png)
 
-**This project is being built on Unreal Engine 5.0.x.**
+**This project is being built on Unreal Engine 5.1**
 
 ## About
 
@@ -29,3 +29,4 @@ Please give some feedback and feel invited to test the project and help me with 
 ## Links
 * [Documentation](https://github.com/lucoiso/UEProject_Elementus/wiki)
 * [Unreal Engine Forum](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)
+* [Email](mailto:contatolukevboas@gmail.com)  

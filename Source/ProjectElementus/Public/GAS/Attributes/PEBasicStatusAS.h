@@ -5,21 +5,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AttributeSet.h"
-#include "AbilitySystemComponent.h"
-#include "GAS/System/PEAttributeData.h"
+#include "GAS/Attributes/PEAttributeBase.h"
 #include "PEBasicStatusAS.generated.h"
 
 /**
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPEBasicStatusAS final : public UAttributeSet
+class PROJECTELEMENTUS_API UPEBasicStatusAS final : public UPEAttributeBase
 {
 	GENERATED_BODY()
 
 public:
-	explicit UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer);
+	explicit UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	TSoftClassPtr<UGameplayEffect> GlobalDeathEffect;
@@ -28,12 +26,6 @@ private:
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	/* A helper function to clamp attribute values */
-	void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute,
-	                                 const FGameplayAttributeData& MaxAttribute,
-	                                 float NewMaxValue,
-	                                 const FGameplayAttribute& AffectedAttributeProperty) const;
 
 public:
 	/* A non-replicated attribute to handle damage value inside GE Executions */

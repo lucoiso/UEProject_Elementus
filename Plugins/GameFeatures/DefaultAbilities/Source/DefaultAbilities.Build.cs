@@ -6,7 +6,7 @@ using UnrealBuildTool;
 
 public class DefaultAbilities : ModuleRules
 {
-	public DefaultAbilities(ReadOnlyTargetRules target) : base(target)
+	public DefaultAbilities(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		CppStandard = CppStandardVersion.Cpp17;

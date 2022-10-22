@@ -4,10 +4,11 @@ using UnrealBuildTool;
 
 public class ProjectElementusEditorTarget : TargetRules
 {
-	public ProjectElementusEditorTarget(TargetInfo target) : base(target)
+	public ProjectElementusEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("ProjectElementus");
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        ExtraModuleNames.Add("ProjectElementus");
 	}
 }

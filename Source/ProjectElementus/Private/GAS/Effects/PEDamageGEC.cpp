@@ -6,6 +6,7 @@
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
 #include "AbilitySystemComponent.h"
+#include "Management/Data/PEGlobalTags.h"
 
 struct FDamageAttributesStatics
 {
@@ -27,43 +28,37 @@ static const FDamageAttributesStatics& GetAttributesStatics()
 	return Attributes;
 }
 
-UPEDamageGEC::UPEDamageGEC(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEDamageGEC::UPEDamageGEC(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	RelevantAttributesToCapture.Add(GetAttributesStatics().DamageDef);
 	RelevantAttributesToCapture.Add(GetAttributesStatics().AttackRateDef);
 	RelevantAttributesToCapture.Add(GetAttributesStatics().DefenseRateDef);
 }
 
-void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-                                          OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
-	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
-	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+	const FGameplayTagContainer* const SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
+	const FGameplayTagContainer* const TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
 	FAggregatorEvaluateParameters EvaluationParameters;
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
 	float BaseDamage = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().DamageDef, EvaluationParameters,
-	                                                           BaseDamage);
-	BaseDamage += FMath::Max<float>(
-		Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().DamageDef, EvaluationParameters, BaseDamage);
+	BaseDamage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(GlobalTag_Damage, false, -1.0f), 0.0f);
 
 	float AttackRate = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef,
-	                                                           EvaluationParameters, AttackRate);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef, EvaluationParameters, AttackRate);
 	AttackRate = FMath::Max<float>(AttackRate, 0.0f);
 
 	float DefenseRate = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef,
-	                                                           EvaluationParameters, DefenseRate);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef, EvaluationParameters, DefenseRate);
 	DefenseRate = FMath::Max<float>(DefenseRate, 0.0f);
 
-	const auto CalculateDamage = [BaseDamage, AttackRate, DefenseRate]() -> float
+	const auto CalculateDamage = [&BaseDamage, &AttackRate, &DefenseRate]() -> float
 	{
 		float DamageDone = BaseDamage + AttackRate / DefenseRate * FMath::FRandRange(1.f, BaseDamage);
 
@@ -75,7 +70,5 @@ void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 		return DamageDone;
 	};
 
-	OutExecutionOutput.AddOutputModifier(
-		FGameplayModifierEvaluatedData(GetAttributesStatics().DamageProperty, EGameplayModOp::Additive,
-		                               CalculateDamage()));
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(GetAttributesStatics().DamageProperty, EGameplayModOp::Additive, CalculateDamage()));
 }

@@ -5,19 +5,24 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
 #include "Camera/CameraComponent.h"
+#include "Components/PEMovementComponent.h"
+#include "Components/PEInventoryComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemLog.h"
-#include "ElementusInventoryComponent.h"
-#include "ElementusInventoryFunctions.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
+#include "ElementusInventoryFunctions.h"
+#include "Management/Data/PEGlobalTags.h"
+#include "Net/UnrealNetwork.h"
 
-APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+FName APECharacter::PEInventoryComponentName(TEXT("InventoryComponent"));
+FVector APECharacter::PECameraDefaultPosition(FVector(50.f, 50.f, 50.f));
+
+APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEMovementComponent>(CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
@@ -25,6 +30,7 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	AIControllerClass = APEAIController::StaticClass();
 
 	bAlwaysRelevant = true;
+	NetCullDistanceSquared = 900000000.0f;
 
 	GetCapsuleComponent()->InitCapsuleSize(35.f, 90.0f);
 
@@ -32,16 +38,14 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetMobility(EComponentMobility::Movable);
 
-	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(
-		TEXT("/Game/Main/Character/Meshes/Manny_Quinn/SKM_Manny_Simple"));
-	if constexpr (&SkeletalMesh_ObjRef.Object != nullptr)
+	static const ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh_ObjRef(TEXT("/Game/Main/Character/Meshes/SKM_Manny"));
+	if (SkeletalMesh_ObjRef.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(SkeletalMesh_ObjRef.Object);
 	}
 
-	static const ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(
-		TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
-	if constexpr (&Animation_ClassRef.Class != nullptr)
+	static ConstructorHelpers::FClassFinder<UAnimInstance> Animation_ClassRef(TEXT("/Game/Main/Character/Animations/Blueprints/ABP_Manny"));
+	if (Animation_ClassRef.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(Animation_ClassRef.Class);
 	}
@@ -73,9 +77,9 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer)
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = true;
-	FollowCamera->SetRelativeLocation(FVector(50.f, 50.f, 50.f));
+	FollowCamera->SetRelativeLocation(PECameraDefaultPosition);
 
-	InventoryComponent = CreateDefaultSubobject<UElementusInventoryComponent>(TEXT("InventoryComponent"));
+	InventoryComponent = CreateDefaultSubobject<UPEInventoryComponent>(APECharacter::PEInventoryComponentName);
 	InventoryComponent->SetIsReplicated(true);
 }
 
@@ -88,7 +92,7 @@ void APECharacter::PossessedBy(AController* InController)
 	if (InController->IsPlayerController())
 	{
 		// Initialize the ability system component that is stored by Player State
-		if (APEPlayerState* State = GetPlayerStateChecked<APEPlayerState>())
+		if (APEPlayerState* const State = GetPlayerStateChecked<APEPlayerState>())
 		{
 			InitializeAbilitySystemComponent(State->GetAbilitySystemComponent(), State);
 		}
@@ -107,7 +111,7 @@ void APECharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	if (APEPlayerState* State = GetPlayerState<APEPlayerState>())
+	if (APEPlayerState* const State = GetPlayerState<APEPlayerState>())
 	{
 		// Initialize the ability system component that is stored by Player State
 		InitializeAbilitySystemComponent(State->GetAbilitySystemComponent(), State);
@@ -122,8 +126,7 @@ void APECharacter::OnRep_Controller()
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->RefreshAbilityActorInfo();
-		AbilitySystemComponent->RemoveActiveEffectsWithTags(
-			FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("State.Dead"))));
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(FGameplayTagContainer(GlobalTag_DeadState));
 	}
 }
 
@@ -143,6 +146,11 @@ float APECharacter::GetDefaultJumpVelocity() const
 	return DefaultJumpVelocity;
 }
 
+/* static */ FVector APECharacter::GetCameraDefaultPosition()
+{
+	return APECharacter::PECameraDefaultPosition;
+}
+
 FVector APECharacter::GetCameraForwardVector() const
 {
 	return FollowCamera->GetForwardVector();
@@ -159,6 +167,11 @@ float APECharacter::GetCameraTargetArmLength() const
 }
 #pragma endregion Default Getters
 
+UPEInventoryComponent* APECharacter::GetInventoryComponent() const
+{
+	return InventoryComponent.Get();
+}
+
 UAbilitySystemComponent* APECharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent.Get();
@@ -169,8 +182,7 @@ void APECharacter::InitializeAbilitySystemComponent(UAbilitySystemComponent* InA
 	AbilitySystemComponent = CastChecked<UPEAbilitySystemComponent>(InABSC);
 	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, this);
 
-	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(
-		this, UGameFrameworkComponentManager::NAME_GameActorReady);
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this, UGameFrameworkComponentManager::NAME_GameActorReady);
 }
 
 void APECharacter::PreInitializeComponents()
@@ -190,32 +202,36 @@ void APECharacter::BeginPlay()
 
 	if (AbilitySystemComponent.IsValid())
 	{
-		AbilitySystemComponent->AbilityActivatedCallbacks.AddUFunction(this, "AbilityActivated");
-		AbilitySystemComponent->AbilityCommittedCallbacks.AddUFunction(this, "AbilityCommited");
-		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, "AbilityEnded");
-		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, "AbilityFailed");
+		AbilitySystemComponent->AbilityActivatedCallbacks.AddUFunction(this, TEXT("AbilityActivated"));
+		AbilitySystemComponent->AbilityCommittedCallbacks.AddUFunction(this, TEXT("AbilityCommited"));
+		AbilitySystemComponent->AbilityFailedCallbacks.AddUFunction(this, TEXT("AbilityFailed"));
+		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, TEXT("AbilityEnded"));
 	}
 
 	// Check if this character have a valid Skeletal Mesh and paint it
 	if (IsValid(GetMesh()))
 	{
-		const auto DynamicColor_Lambda = [&](const uint8 Index, const FLinearColor Color) -> void
+		const auto DynamicColor_Lambda = [&](const uint8& Index, const FLinearColor& Color) -> void
 		{
-			if (UMaterialInstanceDynamic* DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
+			if (UMaterialInstanceDynamic* const DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
 			{
 				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
 			}
 		};
 
 		// Bot: Red | Player: Blue
-		const FLinearColor DestColor =
-			IsBotControlled()
-				? FLinearColor::Red
-				: FLinearColor::Blue;
+		const FLinearColor DestColor = IsBotControlled() ? FLinearColor::Red : FLinearColor::Blue;
 
 		DynamicColor_Lambda(0, DestColor);
 		DynamicColor_Lambda(1, DestColor);
 	}
+}
+
+void APECharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(APECharacter, InventoryComponent);
 }
 
 void APECharacter::PerformDeath()
@@ -262,16 +278,9 @@ void APECharacter::Multicast_DeathSetup_Implementation()
 
 void APECharacter::Server_SpawnInventoryPackage_Implementation()
 {
-	AElementusInventoryPackage* SpawnedPackage =
-		GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(),
-		                                                    GetTransform(),
-		                                                    nullptr,
-		                                                    nullptr,
-		                                                    ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	AElementusInventoryPackage* const SpawnedPackage = GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(), GetTransform(), nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemStack(),
-	                                                 InventoryComponent,
-	                                                 SpawnedPackage->PackageInventory);
+	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemsArray(), InventoryComponent, SpawnedPackage->PackageInventory);
 
 	SpawnedPackage->SetDestroyOnEmpty(true);
 	SpawnedPackage->FinishSpawning(GetTransform());
@@ -287,38 +296,35 @@ void APECharacter::Landed(const FHitResult& Hit)
 		return;
 	}
 
-	const FGameplayTagContainer DoubleJumpTagContainer
-	{
-		FGameplayTag::RequestGameplayTag(FName("GameplayAbility.Default.DoubleJump"))
-	};
+	const FGameplayTagContainer DoubleJumpTagContainer{FGameplayTag::RequestGameplayTag("GameplayAbility.Default.DoubleJump")};
 
 	AbilitySystemComponent->CancelAbilities(&DoubleJumpTagContainer);
 }
 
-void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability,
-                                                const FGameplayTagContainer& TagContainer)
+void APECharacter::AbilityFailed_Implementation(const UGameplayAbility* Ability, const FGameplayTagContainer& TagContainer)
 {
-	ABILITY_VLOG(Ability, Warning,
-	             TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
+	ABILITY_VLOG(Ability, Warning, TEXT("Ability %s failed to activate. Owner: %s"), *Ability->GetName(), *GetName());
 
-	for (const auto& TagIterator : TagContainer)
+	if (!TagContainer.IsEmpty())
 	{
-		if (TagIterator.IsValid())
+		ABILITY_VLOG(Ability, Warning, TEXT("Reasons:"));
+		for (const FGameplayTag& TagIterator : TagContainer)
 		{
-			ABILITY_VLOG(Ability, Warning, TEXT("Tag: %s"), *TagIterator.ToString());
+			if (TagIterator.IsValid())
+			{
+				ABILITY_VLOG(Ability, Warning, TEXT("Tag: %s"), *TagIterator.ToString());
+			}
 		}
 	}
 
 #if WITH_EDITOR
-	if (bPrintAbilityFailure)
+	if (bDebugAbilities)
 	{
-		ABILITY_VLOG(Ability, Warning,
-		             TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
+		ABILITY_VLOG(Ability, Warning, TEXT("================ START OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
 
 		AbilitySystemComponent->PrintDebug();
 
-		ABILITY_VLOG(Ability, Warning,
-		             TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
+		ABILITY_VLOG(Ability, Warning, TEXT("================ END OF ABILITY SYSTEM COMPONENT DEBUG INFO ================"));
 	}
 #endif
 }

@@ -4,8 +4,7 @@
 
 #include "Actors/Character/PEAIController.h"
 
-APEAIController::APEAIController(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+APEAIController::APEAIController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	// Not implemented yet
 }

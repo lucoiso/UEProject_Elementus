@@ -17,11 +17,8 @@ class UPECrouchAbility final : public UPEGameplayAbility
 	GENERATED_BODY()
 
 public:
-	explicit UPECrouchAbility(const FObjectInitializer& ObjectInitializer);
+	explicit UPECrouchAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	                             const FGameplayAbilityActorInfo* ActorInfo,
-	                             const FGameplayAbilityActivationInfo ActivationInfo,
-	                             const FGameplayEventData* TriggerEventData) override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 };

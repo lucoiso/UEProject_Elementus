@@ -4,8 +4,7 @@
 
 #include "PEWalkAbility.h"
 
-UPEWalkAbility::UPEWalkAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEWalkAbility::UPEWalkAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
 
@@ -13,11 +12,7 @@ UPEWalkAbility::UPEWalkAbility(const FObjectInitializer& ObjectInitializer)
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Sprint"));
 }
 
-void UPEWalkAbility::ActivateAbility
-(const FGameplayAbilitySpecHandle Handle,
- const FGameplayAbilityActorInfo* ActorInfo,
- const FGameplayAbilityActivationInfo ActivationInfo,
- const FGameplayEventData* TriggerEventData)
+void UPEWalkAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -31,8 +26,7 @@ void UPEWalkAbility::ActivateAbility
 	ApplyAbilityEffectsToSelf(Handle, ActorInfo, ActivationInfo);
 }
 
-void UPEWalkAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-                                   const FGameplayAbilityActivationInfo ActivationInfo)
+void UPEWalkAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 

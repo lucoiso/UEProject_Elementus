@@ -37,12 +37,12 @@ struct FPrimaryElementusItemId;
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEPlayerController : public APlayerController, public IAbilityInputBinding
+class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IAbilityInputBinding
 {
 	GENERATED_BODY()
 
 public:
-	explicit APEPlayerController(const FObjectInitializer& ObjectInitializer);
+	explicit APEPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 #pragma region IAbilityInputBinding
 	/* This function came from IAbilityInputBinding interface,
@@ -53,7 +53,7 @@ public:
 	/* This function came from IAbilityInputBinding interface,
 	 * provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
-	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) const override;
+	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) override;
 #pragma endregion IAbilityInputBinding
 
 	/* Setup the spectating state on both client and server */
@@ -65,9 +65,7 @@ public:
 	void InitializeRespawn(const float InSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ProcessTrade(const TArray<FElementusItemInfo> TradeInfo,
-	                  UElementusInventoryComponent* OtherComponent,
-	                  const bool bIsFromPlayer = false);
+	void ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass);
@@ -79,16 +77,12 @@ protected:
 
 private:
 	UFUNCTION(Server, Reliable)
-	void Server_ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo,
-	                         UElementusInventoryComponent* OtherComponent,
-	                         const bool bIsFromPlayer);
+	void Server_ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer);
 
-	void ProcessTrade_Internal(const TArray<FElementusItemInfo> TradeInfo,
-	                           UElementusInventoryComponent* OtherComponent,
-	                           const bool bIsFromPlayer) const;
+	void ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer) const;
 
 	UFUNCTION(Server, Reliable)
-	void Server_ProcessGEApplication(TSubclassOf<UGameplayEffect> EffectClass);
+	void Server_ProcessGEApplication_Internal(TSubclassOf<UGameplayEffect> EffectClass);
 
 	struct FAbilityInputData
 	{
@@ -101,20 +95,25 @@ private:
 	TSoftClassPtr<UUserWidget> InventoryWidgetClass;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
-	UFUNCTION()
+	UFUNCTION(Category = "Project Elementus | Input Binding")
+	void OnAbilityInputPressed(UInputAction* SourceAction);
+
+	UFUNCTION(Category = "Project Elementus | Input Binding")
+	void OnAbilityInputReleased(UInputAction* SourceAction);
+
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void ChangeCameraAxis(const FInputActionValue& Value);
-	UFUNCTION()
+
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void Move(const FInputActionValue& Value) const;
-	UFUNCTION()
+
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void Jump(const FInputActionValue& Value) const;
 
-	void OnAbilityInputPressed(UInputAction* Action) const;
-	void OnAbilityInputReleased(UInputAction* Action) const;
-
-	UFUNCTION()
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void SetVoiceChatEnabled(const FInputActionValue& Value) const;
 
-	UFUNCTION()
+	UFUNCTION(Category = "Project Elementus | Input Binding")
 	void OpenInventory(const FInputActionValue& Value);
 
 	UFUNCTION(Client, Reliable, BlueprintCallable, Category = "Project Elementus | Functions")

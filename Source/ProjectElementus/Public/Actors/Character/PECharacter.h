@@ -6,24 +6,26 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "ElementusInventoryData.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
 
+class UPEEquipment;
 class UPEAbilitySystemComponent;
 class UGameplayAbility;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
-class UElementusInventoryComponent;
-struct FGameplayTag;
+class UPEInventoryComponent;
+
 /**
  *
  */
 UCLASS(config = Game, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APECharacter : public ACharacter, public IAbilitySystemInterface
+class PROJECTELEMENTUS_API APECharacter final : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -33,7 +35,7 @@ class PROJECTELEMENTUS_API APECharacter : public ACharacter, public IAbilitySyst
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-protected:
+protected:	
 	virtual void PossessedBy(AController* InController) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void OnRep_Controller() override;
@@ -42,7 +44,10 @@ private:
 	TWeakObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
 
 public:
-	explicit APECharacter(const FObjectInitializer& ObjectInitializer);
+	explicit APECharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
+	static FName PEInventoryComponentName;
+	static FVector PECameraDefaultPosition;
 
 	/** Returns CameraBoom sub object **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const
@@ -55,6 +60,9 @@ public:
 	{
 		return FollowCamera;
 	}
+		
+	/** Returns FollowCamera default/initial relative location **/
+	static FVector GetCameraDefaultPosition();
 
 	/** Returns FollowCamera Forward Vector **/
 	FVector GetCameraForwardVector() const;
@@ -83,15 +91,20 @@ public:
 
 	/* Initialize the specified Ability System Component with the given owner actor in this character (AvatarActor) */
 	void InitializeAbilitySystemComponent(UAbilitySystemComponent* InABSC, AActor* InOwnerActor);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
-	TObjectPtr<UElementusInventoryComponent> InventoryComponent;
+	
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
+	UPEInventoryComponent* GetInventoryComponent() const;
 
 protected:
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Project Elementus | Properties", meta = (Getter = "GetInventoryComponent"))
+	TObjectPtr<UPEInventoryComponent> InventoryComponent;
+	
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
 	virtual void PreInitializeComponents() override;
 	virtual void BeginPlay() override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
 	/* Init a death state with this character */
@@ -126,8 +139,7 @@ private:
 	virtual void Landed(const FHitResult& Hit) override;
 
 #if WITH_EDITORONLY_DATA
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Debug",
-		meta = (AllowPrivateAccess = "true"))
-	bool bPrintAbilityFailure = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Debug", meta = (AllowPrivateAccess = "true"))
+	bool bDebugAbilities = false;
 #endif
 };

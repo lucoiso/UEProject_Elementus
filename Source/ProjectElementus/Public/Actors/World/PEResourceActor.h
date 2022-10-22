@@ -17,5 +17,5 @@ class PROJECTELEMENTUS_API APEResourceActor : public AActor
 	GENERATED_BODY()
 
 public:
-	explicit APEResourceActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEResourceActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };

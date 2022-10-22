@@ -22,16 +22,11 @@ class PROJECTELEMENTUS_API UPESpawnProjectile_Task final : public UAbilityTask
 	GENERATED_BODY()
 
 public:
-	explicit UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer);
+	explicit UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* Create a reference to manage this ability task */
-	UFUNCTION(BlueprintCallable, meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility",
-		BlueprintInternalUseOnly = "true"), Category = "Project Elementus | Functions")
-	static UPESpawnProjectile_Task* SpawnProjectile(UGameplayAbility* OwningAbility,
-	                                                TSubclassOf<APEProjectileActor> ClassToSpawn,
-	                                                const FTransform SpawnTransform,
-	                                                const FVector DirectionToFire,
-	                                                const TArray<FGameplayEffectGroupedData> EffectDataArray);
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "true"))
+	static UPESpawnProjectile_Task* SpawnProjectile(UGameplayAbility* OwningAbility, const FName TaskInstanceName, TSubclassOf<APEProjectileActor> ClassToSpawn, const FTransform SpawnTransform, const FVector DirectionToFire, const TArray<FGameplayEffectGroupedData> EffectDataArray);
 
 	virtual void Activate() override;
 

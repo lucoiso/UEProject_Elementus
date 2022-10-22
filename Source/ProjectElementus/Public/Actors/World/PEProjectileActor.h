@@ -21,7 +21,7 @@ class PROJECTELEMENTUS_API APEProjectileActor : public AActor
 	GENERATED_BODY()
 
 public:
-	explicit APEProjectileActor(const FObjectInitializer& ObjectInitializer);
+	explicit APEProjectileActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
@@ -45,8 +45,7 @@ public:
 
 protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions")
-	void OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	                     FVector NormalImpulse, const FHitResult& Hit);
+	void OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 private:
 	void ApplyProjectileEffect(UAbilitySystemComponent* TargetABSC);

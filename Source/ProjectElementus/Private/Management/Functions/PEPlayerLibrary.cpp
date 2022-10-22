@@ -3,26 +3,21 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/Functions/PEPlayerLibrary.h"
+#include "Actors/Character/PECharacter.h"
 #include "EnhancedInputSubsystems.h"
 
-FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* Controller, UInputAction* Action,
-                                                             UObject* Object, const FName UFunctionName,
-                                                             const ETriggerEvent TriggerEvent)
+FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* Controller, UInputAction* Action, UObject* Object, const FName UFunctionName, const ETriggerEvent TriggerEvent)
 {
-	if (IsValid(Controller))
+	if (!IsValid(Controller) || !IsValid(Action) || !IsValid(Object))
 	{
-		if (UEnhancedInputComponent* EnhancedInputComponent =
-				Cast<UEnhancedInputComponent>(Controller->InputComponent.Get());
-			ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"),
-			                 *Controller->GetName()))
-		{
-			return FPlayerInputBindingHandle
-			{
-				Controller,
-				static_cast<int32>(EnhancedInputComponent->BindAction(Action, TriggerEvent, Object, UFunctionName).
-				                                           GetHandle())
-			};
-		}
+		UE_LOG(LogTemp, Warning, TEXT("%s - Invalid Controller, Action or Object."), *FString(__func__));
+		return FPlayerInputBindingHandle{};
+	}
+	
+	if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(Controller->InputComponent.Get());
+		ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *Controller->GetName()))
+	{
+		return FPlayerInputBindingHandle{ Controller, static_cast<int32>(EnhancedInputComponent->BindAction(Action, TriggerEvent, Object, UFunctionName).GetHandle()) };
 	}
 
 	return FPlayerInputBindingHandle{};
@@ -30,64 +25,95 @@ FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* 
 
 void UPEPlayerLibrary::RemoveDynamicInput(const FPlayerInputBindingHandle BindingHandle)
 {
-	if (IsValid(BindingHandle.PlayerController))
+	if (!IsValid(BindingHandle.PlayerController))
 	{
-		if (UEnhancedInputComponent* EnhancedInputComponent =
-				Cast<UEnhancedInputComponent>(BindingHandle.PlayerController->InputComponent.Get());
-			ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"),
-			                 *BindingHandle.PlayerController->GetName()))
-		{
-			EnhancedInputComponent->RemoveBindingByHandle(BindingHandle.InputBindingHandle);
-		}
+		UE_LOG(LogTemp, Warning, TEXT("%s - Invalid controller."), *FString(__func__));
+		return;
+	}
+
+	if (UEnhancedInputComponent* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(BindingHandle.PlayerController->InputComponent.Get());
+		ensureAlwaysMsgf(IsValid(EnhancedInputComponent), TEXT("%s have a invalid EnhancedInputComponent"), *BindingHandle.PlayerController->GetName()))
+	{
+		EnhancedInputComponent->RemoveBindingByHandle(BindingHandle.InputBindingHandle);
 	}
 }
 
-void UPEPlayerLibrary::AddDynamicMapping(APlayerController* Controller,
-                                         UInputMappingContext* InputMapping, const int32 Priority)
+void UPEPlayerLibrary::AddDynamicMapping(APlayerController* Controller, UInputMappingContext* InputMapping, const int32 Priority)
 {
-	if (IsValid(Controller))
+	if (!IsValid(Controller) || !InputMapping)
 	{
-		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer())
+		UE_LOG(LogTemp, Warning, TEXT("%s - Invalid controller or input mapping."), *FString(__func__));
+		return;
+	}
+	
+	if (const ULocalPlayer* const LocalPlayer = Controller->GetLocalPlayer())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* const Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
-			if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-				LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-			{
-				Subsystem->AddMappingContext(InputMapping, Priority);
-			}
+			Subsystem->AddMappingContext(InputMapping, Priority);
 		}
 	}
 }
 
 void UPEPlayerLibrary::RemoveDynamicMapping(APlayerController* Controller, UInputMappingContext* InputMapping)
 {
-	if (IsValid(Controller))
+	if (!IsValid(Controller) || !InputMapping)
 	{
-		if (const ULocalPlayer* LocalPlayer = Controller->GetLocalPlayer())
+		UE_LOG(LogTemp, Warning, TEXT("%s - Invalid controller or input mapping."), *FString(__func__));
+		return;
+	}
+	
+	if (const ULocalPlayer* const LocalPlayer = Controller->GetLocalPlayer())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* const Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
-			if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-				LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-			{
-				Subsystem->RemoveMappingContext(InputMapping);
-			}
+			Subsystem->RemoveMappingContext(InputMapping);
 		}
 	}
 }
 
-bool UPEPlayerLibrary::CheckIfPlayerContainsDynamicInput(APlayerController* Controller,
-                                                         TArray<FPlayerInputBindingHandle> BindingArray,
-                                                         FPlayerInputBindingHandle& BindingHandle)
+bool UPEPlayerLibrary::CheckIfPlayerContainsDynamicInput(APlayerController* Controller, TArray<FPlayerInputBindingHandle> BindingArray, FPlayerInputBindingHandle& BindingHandle)
 {
-	if (IsValid(Controller) && !BindingArray.IsEmpty())
+	if (BindingArray.IsEmpty() || !IsValid(Controller))
 	{
-		for (const auto& [PlayerController, InputBindingHandle] : BindingArray)
+		UE_LOG(LogTemp, Warning, TEXT("%s - Invalid controller or empty binding array."), *FString(__func__));
+		return false;
+	}
+	
+	for (const auto& [PlayerController, InputBindingHandle] : BindingArray)
+	{
+		if (PlayerController == Controller)
 		{
-			if (PlayerController == Controller)
-			{
-				BindingHandle = {PlayerController, InputBindingHandle};
-				return true;
-			}
+			BindingHandle = { PlayerController, InputBindingHandle };
+			return true;
 		}
 	}
 
 	return false;
+}
+
+FVector UPEPlayerLibrary::GetSocketLocationInChildMeshes(const USkeletalMeshComponent* ParentMesh, const FName SocketName)
+{
+	if (SocketName.IsNone())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s - Invalid socket name"), *FString(__func__));
+		return FVector::Zero();
+	}
+	
+	const TArray<TObjectPtr<USceneComponent>>& AttachChildrenArr = ParentMesh->GetAttachChildren();
+	if (AttachChildrenArr.IsEmpty())
+	{
+		return FVector::Zero();
+	}
+
+	for (const TObjectPtr<USceneComponent>& Iterator : AttachChildrenArr)
+	{
+		if (const USkeletalMeshComponent* const Mesh = Cast<USkeletalMeshComponent>(Iterator);
+			Mesh->DoesSocketExist(SocketName))
+		{
+			return Mesh->GetSocketLocation(SocketName);
+		}
+	}
+
+	return FVector::Zero();
 }

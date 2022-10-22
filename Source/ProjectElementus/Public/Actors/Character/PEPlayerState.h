@@ -28,12 +28,12 @@ DECLARE_LOG_CATEGORY_EXTERN(LogPlayerState, Display, NoLogging);
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEPlayerState : public APlayerState, public IAbilitySystemInterface
+class PROJECTELEMENTUS_API APEPlayerState final : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-	explicit APEPlayerState(const FObjectInitializer& ObjectInitializer);
+	explicit APEPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	void DeathStateChanged_Callback(const FGameplayTag CallbackTag, int32 NewCount) const;
@@ -43,13 +43,11 @@ protected:
 	virtual void BeginPlay() override;
 
 	/* Player associated Ability System Component */
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties",
-		meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
 
 	/* Returns a casted version of Player Controller using PEPlayerController class */
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Properties",
-		meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
+	UFUNCTION(BlueprintPure, Category = "Project Elementus | Properties", meta = (DisplayName = "Get Casted Player Controller: APEPlayerController"))
 	class APEPlayerController* GetPEPlayerController() const;
 
 public:

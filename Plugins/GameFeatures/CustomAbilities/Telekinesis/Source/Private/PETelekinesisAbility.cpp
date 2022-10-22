@@ -7,29 +7,25 @@
 #include "PEThrowableActor.h"
 #include "GAS/Targeting/PELineTargeting.h"
 #include "Kismet/GameplayStatics.h"
+#include "Management/Data/PEGlobalTags.h"
 
-UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer),
-	  ThrowIntensity(2750)
+UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ThrowIntensity(2750.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
 
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana"));
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("State.CannotInteract"));
+	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Mana);
+	ActivationOwnedTags.AddTag(GlobalTag_CannotInteract);
 
-	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(
-		TEXT("/Telekinesis/Sounds/MS_Impulse"));
-	if constexpr (&ImpulseSound_ObjRef.Object != nullptr)
+	ActivationBlockedTags.AddTag(GlobalTag_WeaponSlot_Base);
+
+	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Telekinesis/Sounds/MS_Impulse"));
+	if (ImpulseSound_ObjRef.Succeeded())
 	{
 		ImpulseSound = ImpulseSound_ObjRef.Object;
 	}
 }
 
-void UPETelekinesisAbility::ActivateAbility
-(const FGameplayAbilitySpecHandle Handle,
- const FGameplayAbilityActorInfo* ActorInfo,
- const FGameplayAbilityActivationInfo ActivationInfo,
- const FGameplayEventData* TriggerEventData)
+void UPETelekinesisAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -39,13 +35,10 @@ void UPETelekinesisAbility::ActivateAbility
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("head");
 
 	// Targeting: Start task	
-	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant,
-	                           APELineTargeting::StaticClass(), TargetingParams);
+	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, APELineTargeting::StaticClass(), TargetingParams);
 }
 
-void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle,
-                                         const FGameplayAbilityActorInfo* ActorInfo,
-                                         const FGameplayAbilityActivationInfo ActivationInfo)
+void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 
@@ -57,8 +50,7 @@ void UPETelekinesisAbility::InputPressed(const FGameplayAbilitySpecHandle Handle
 	CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 }
 
-void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
-	const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	// If target is invalid, end the ability
 	if (!TargetDataHandle.IsValid(0))
@@ -69,8 +61,8 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 	}
 
 	// Get the first target only since this is a single target ability
-	const FGameplayAbilityTargetData* TargetData = TargetDataHandle.Get(0);
-	const FHitResult* TargetHit = TargetData->GetHitResult();
+	const FGameplayAbilityTargetData* const TargetData = TargetDataHandle.Get(0);
+	const FHitResult* const TargetHit = TargetData->GetHitResult();
 
 	// If there's no actor at the target data, end the ability: Invalid Target
 	if (!IsValid(TargetHit->GetActor()))
@@ -82,9 +74,7 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(
 
 	// Create the telekinesis movement task:
 	// This task will perform the physical grabbing movement on target
-	AbilityTask =
-		UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this, FName("TelekinesisTask"),
-		                                                         ThrowIntensity, TargetHit->GetActor());
+	AbilityTask = UPETelekinesisAbility_Task::PETelekinesisAbilityMovement(this, TEXT("TelekinesisTask"), ThrowIntensity, TargetHit->GetActor());
 
 	// When the grabbing task returns a result, will call GrabbingComplete function
 	AbilityTask->OnGrabbing.BindDynamic(this, &UPETelekinesisAbility::GrabbingComplete);

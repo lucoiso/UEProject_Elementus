@@ -5,7 +5,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EOSVoiceChat.h"
+#include "EOSVoiceChatUser.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Management/Functions/PEEOSLibrary.h"
 #include "Engine/GameInstance.h"
@@ -43,6 +43,8 @@ class UPEGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	explicit UPEGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	/* Initialize the voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeVoiceChatFramework();
@@ -91,8 +93,7 @@ protected:
 public:
 	/* Connect the user to a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName,
-	                                      const FEOSVoiceChatChannelCredentials Credentials);
+	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName, const FEOSVoiceChatChannelCredentials Credentials);
 
 	/* Disconnect the user from a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
@@ -107,8 +108,7 @@ protected:
 
 public:
 	/* Create a new EOS Session */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
-		meta = (DisplayName = "Create EOS Session"))
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Create EOS Session"))
 	bool CreateEOSSession(const FSessionSettingsHandler SessionSettings);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
@@ -122,8 +122,7 @@ public:
 	FFindSessionsDelegate FindSessionsDelegate;
 
 	/* Cancel the current in progress Find EOS Sessions task */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
-		meta = (DisplayName = "Cancel Find EOS Sessions"))
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Cancel Find EOS Sessions"))
 	bool CancelFindEOSSessions();
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
@@ -137,8 +136,7 @@ public:
 	FJoinSessionDelegate JoinSessionDelegate;
 
 	/* Destroy the current EOS Session */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions",
-		meta = (DisplayName = "Destroy EOS Session"))
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Destroy EOS Session"))
 	bool DestroyEOSSession();
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
@@ -152,13 +150,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ClientTravelToSessionLevel(const int32 LocalUserNum) const;
 
-	/*  */
+	/* Get the data of existing sessions */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	TArray<FSessionDataHandler> GetSessionsDataHandles() const;
 
-	bool EOS_CreateSession(const int8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings);
-	bool EOS_FindSessions(const int8 SearchingPlayerNum, const bool bIsLANQuery = false, const int8 MaxResults = 100);
-	bool EOS_JoinSession(const int8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession);
+	bool EOS_CreateSession(const uint8 HostingPlayerNum, const FOnlineSessionSettings& NewSessionSettings);
+	bool EOS_FindSessions(const uint8 SearchingPlayerNum, const bool bIsLANQuery = false, const uint8 MaxResults = 100);
+	bool EOS_JoinSession(const uint8 LocalUserNum, const FOnlineSessionSearchResult& DesiredSession);
 	bool EOS_DestroySession();
 
 protected:
@@ -169,8 +167,7 @@ protected:
 	void OnSessionDestroyed(const FName SessionName, const bool bResult);
 
 	FOnSessionUserInviteAcceptedDelegate OnSessionUserInviteAcceptedDelegate;
-	void OnSessionInviteAccepted(const bool bWasSuccessful, const int32 LocalUserNum,
-	                             const FUniqueNetIdPtr UserId, const FOnlineSessionSearchResult& InviteResult);
+	void OnSessionInviteAccepted(const bool bWasSuccessful, const int32 LocalUserNum, const FUniqueNetIdPtr UserId, const FOnlineSessionSearchResult& InviteResult);
 
 private:
 	TSharedPtr<FOnlineSessionSearch> EOSSearchSettings;
@@ -191,11 +188,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FUserLogoutDelegate UserLogoutDelegate;
 
-	bool EOS_Login(const int8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials);
-	bool EOS_Logout(const int8 LocalUserNum);
+	bool EOS_Login(const uint8 LocalUserNum, const FOnlineAccountCredentials& AccountCredentials);
+	bool EOS_Logout(const uint8 LocalUserNum);
 
 protected:
-	void OnLoginComplete(const int32 LocalUserNum, const bool bWasSuccessful, const FUniqueNetId& UserId,
-	                     const FString& Error);
+	void OnLoginComplete(const int32 LocalUserNum, const bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
+
 	void OnLogoutComplete(const int32 LocalUserNum, const bool bWasSuccessful);
 };

@@ -18,17 +18,7 @@ struct PROJECTELEMENTUS_API FTargetActorSpawnParams
 {
 	GENERATED_USTRUCT_BODY()
 
-	FTargetActorSpawnParams() :
-		Range(0.f),
-		Height(0.f),
-		Radius(0.f),
-		StartLocation(FGameplayAbilityTargetingLocationInfo()),
-		ReticleClass(AGameplayAbilityWorldReticle::StaticClass()),
-		ReticleParams(FWorldReticleParameters()),
-		TargetFilter(FGameplayTargetDataFilter()),
-		bDestroyOnConfirmation(false),
-		bTraceAffectsAimPitch(false),
-		bDebug(false)
+	FTargetActorSpawnParams() : Range(0.f), Height(0.f), Radius(0.f), StartLocation(FGameplayAbilityTargetingLocationInfo()), ReticleClass(AGameplayAbilityWorldReticle::StaticClass()), ReticleParams(FWorldReticleParameters()), TargetFilter(FGameplayTargetDataFilter()), bDestroyOnConfirmation(false), bTraceAffectsAimPitch(false), bDebug(false)
 	{
 	}
 

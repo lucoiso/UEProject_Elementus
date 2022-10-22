@@ -4,7 +4,6 @@
 
 #include "GAS/System/PEAbilityData.h"
 
-UPEAbilityData::UPEAbilityData(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UPEAbilityData::UPEAbilityData(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }

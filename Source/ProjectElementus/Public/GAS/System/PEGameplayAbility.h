@@ -22,7 +22,7 @@ class PROJECTELEMENTUS_API UPEGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
-	explicit UPEGameplayAbility(const FObjectInitializer& ObjectInitializer);
+	explicit UPEGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/* This will determine the line trace distance to perform */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Project Elementus | Properties")
@@ -39,6 +39,18 @@ public:
 	/* If true, ability will wait for Cancel Input to cancel this ability */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bWaitCancel;
+
+	/* Set by Caller parameters that will be applied to Ability Cost - For Duration: 0.0 for instantaneous effects; -1.0 for infinite duration. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	TMap<FGameplayTag, float> AbilityCostSetByCallerData;
+
+	/* Set by Caller parameters that will be applied to Ability Cooldown */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	TMap<FGameplayTag, float> AbilityCooldownSetByCallerData;
+
+	/* Tags used to check cooldown with SetByCaller data */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	FGameplayTagContainer SetByCallerCooldownTags;
 
 protected:
 	/* Mix with bEndAbilityAfterActiveTime to end ability with a pre-determined time */
@@ -66,14 +78,11 @@ protected:
 	TObjectPtr<UAnimMontage> AbilityAnimation;
 
 private:
-	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo,
-	                           const FGameplayAbilitySpec& Spec) override final;
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override final;
 
-	virtual void PreActivate(const FGameplayAbilitySpecHandle Handle,
-	                         const FGameplayAbilityActorInfo* ActorInfo,
-	                         const FGameplayAbilityActivationInfo ActivationInfo,
-	                         FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate,
-	                         const FGameplayEventData* TriggerEventData = nullptr) override final;
+	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override final;
+
+	virtual void PreActivate(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData = nullptr) override final;
 
 	/*
 	* This canceling task will only be used to cancel ability when the Cancel Input is pressed
@@ -87,31 +96,28 @@ private:
 	void WaitCancelInput_Callback();
 
 protected:
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	                             const FGameplayAbilityActorInfo* ActorInfo,
-	                             const FGameplayAbilityActivationInfo ActivationInfo,
-	                             const FGameplayEventData* TriggerEventData) override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle,
-	                        const FGameplayAbilityActorInfo* ActorInfo,
-	                        const FGameplayAbilityActivationInfo ActivationInfo,
-	                        bool bReplicateEndAbility,
-	                        bool bWasCancelled) override final;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override final;
 
-	virtual bool CommitAbilityCooldown(const FGameplayAbilitySpecHandle Handle,
-	                                   const FGameplayAbilityActorInfo* ActorInfo,
-	                                   const FGameplayAbilityActivationInfo ActivationInfo,
-	                                   const bool ForceCooldown,
-	                                   OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) override final;
+	virtual bool CommitAbilityCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const bool ForceCooldown, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) override final;
 
-	virtual bool CommitAbilityCost(const FGameplayAbilitySpecHandle Handle,
-	                               const FGameplayAbilityActorInfo* ActorInfo,
-	                               const FGameplayAbilityActivationInfo ActivationInfo,
-	                               OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) override final;
+	virtual bool CommitAbilityCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) override final;
 
-	virtual void CommitExecute(const FGameplayAbilitySpecHandle Handle,
-	                           const FGameplayAbilityActorInfo* ActorInfo,
-	                           const FGameplayAbilityActivationInfo ActivationInfo) override final;
+	virtual void CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override final;
+
+	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	
+	virtual bool CheckCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+
+	virtual const FGameplayTagContainer* GetCooldownTags() const override;
+
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	
+	/* Apply Set by Caller data map to the given Gameplay Effect Spec */
+	void ApplySetByCallerParamsToEffectSpec(const TMap<FGameplayTag, float>& SetByCallerData, const TSharedPtr<FGameplayEffectSpec>& EffectSpec) const;
 
 	/*
 	* These 'Activate Task' and 'Callback' functions are intended to act as helper functions
@@ -134,14 +140,11 @@ protected:
 
 	/* Perform a animation montage and call WaitMontage_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
-	void ActivateWaitMontageTask(const FName MontageSection = NAME_None, const float Rate = 1.f,
-	                             const bool bRandomSection = false, const bool bStopsWhenAbilityEnds = true);
+	void ActivateWaitMontageTask(const FName MontageSection = NAME_None, const float Rate = 1.f, const bool bRandomSection = false, const bool bStopsWhenAbilityEnds = true);
 
 	/* Performs targeting and call WaitTargetData_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
-	void ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation,
-	                                const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass,
-	                                FTargetActorSpawnParams TargetParameters);
+	void ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation, const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass, FTargetActorSpawnParams TargetParameters);
 
 	/* Start a task to wait for a Gameplay Event and call WaitGameplayEvent_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
@@ -149,8 +152,7 @@ protected:
 
 	/* Spawn a actor and call SpawnActor_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
-	void ActivateSpawnActorTask(const FGameplayAbilityTargetDataHandle TargetDataHandle,
-	                            TSubclassOf<AActor> ActorClass);
+	void ActivateSpawnActorTask(const FGameplayAbilityTargetDataHandle TargetDataHandle, TSubclassOf<AActor> ActorClass);
 
 	/* Default callback for ActivateWaitMontageTask function */
 	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
@@ -218,49 +220,31 @@ protected:
 
 	/* Activate a Gameplay Cue with passed parameters */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters,
-	                          UAbilitySystemComponent* SourceAbilitySystem = nullptr);
+	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters, UAbilitySystemComponent* SourceAbilitySystem = nullptr);
 
 	/* Apply SelfAbilityEffects to self */
 	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToSelf", Category = "Project Elementus | Functions")
 	void BP_ApplyAbilityEffectsToSelf();
 
-	void ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHandle Handle,
-	                               const FGameplayAbilityActorInfo* ActorInfo,
-	                               const FGameplayAbilityActivationInfo ActivationInfo);
+	void ApplyAbilityEffectsToSelf(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 	/* Remove SelfAbilityEffects from self */
-	UFUNCTION(BlueprintCallable, DisplayName = "RemoveAbilityEffectsFromSelf",
-		Category = "Project Elementus | Functions")
+	UFUNCTION(BlueprintCallable, DisplayName = "RemoveAbilityEffectsFromSelf", Category = "Project Elementus | Functions")
 	void BP_RemoveAbilityEffectsFromSelf();
 
 	void RemoveAbilityEffectsFromSelf(const FGameplayAbilityActorInfo* ActorInfo);
 
 	/* Apply TargetAbilityEffects to target */
-	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToTarget",
-		Category = "Project Elementus | Functions")
+	UFUNCTION(BlueprintCallable, DisplayName = "ApplyAbilityEffectsToTarget", Category = "Project Elementus | Functions")
 	void BP_ApplyAbilityEffectsToTarget(const FGameplayAbilityTargetDataHandle TargetDataHandle);
 
-	void ApplyAbilityEffectsToTarget(const FGameplayAbilityTargetDataHandle TargetDataHandle,
-	                                 const FGameplayAbilitySpecHandle Handle,
-	                                 const FGameplayAbilityActorInfo* ActorInfo,
-	                                 const FGameplayAbilityActivationInfo ActivationInfo);
+	void ApplyAbilityEffectsToTarget(const FGameplayAbilityTargetDataHandle TargetDataHandle, const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 	/* Spawn and fire a projectile with TargetAbilityEffects effects applied */
-	UFUNCTION(BlueprintCallable, DisplayName = "SpawnProjectileWithTargetEffects",
-		Category = "Project Elementus | Functions")
-	void BP_SpawnProjectileWithTargetEffects(
-		const TSubclassOf<APEProjectileActor> ProjectileClass,
-		const FTransform ProjectileTransform,
-		const FVector ProjectileFireDirection);
+	UFUNCTION(BlueprintCallable, DisplayName = "SpawnProjectileWithTargetEffects", Category = "Project Elementus | Functions")
+	void BP_SpawnProjectileWithTargetEffects(const TSubclassOf<APEProjectileActor> ProjectileClass, const FTransform ProjectileTransform, const FVector ProjectileFireDirection);
 
-	void SpawnProjectileWithTargetEffects(
-		TSubclassOf<APEProjectileActor> ProjectileClass,
-		const FTransform ProjectileTransform,
-		const FVector ProjectileFireDirection,
-		const FGameplayAbilitySpecHandle Handle,
-		const FGameplayAbilityActorInfo* ActorInfo,
-		const FGameplayAbilityActivationInfo ActivationInfo);
+	void SpawnProjectileWithTargetEffects(TSubclassOf<APEProjectileActor> ProjectileClass, const FTransform ProjectileTransform, const FVector ProjectileFireDirection, const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
 
 	/* Default callback for SpawnProjectileWithTargetEffects function */
 	UFUNCTION(BlueprintNativeEvent, Category = "Project Elementus | Functions | Callbacks")
