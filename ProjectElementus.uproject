@@ -36,11 +36,15 @@
 			"Enabled": true
 		},
 		{
+			"Name": "Metasound",
+			"Enabled": true
+		},
+		{
 			"Name": "FSR",
 			"Enabled": true
 		},
 		{
-			"Name": "Metasound",
+			"Name": "EOSSDKHandler",
 			"Enabled": true
 		}
 	],

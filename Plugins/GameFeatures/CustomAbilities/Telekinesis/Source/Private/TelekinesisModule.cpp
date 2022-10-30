@@ -2,6 +2,15 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
+#include "TelekinesisModule.h"
 #include "Modules/ModuleManager.h"
 
-IMPLEMENT_MODULE(FDefaultModuleImpl, Telekinesis);
+void FTelekinesisModule::StartupModule()
+{
+}
+
+void FTelekinesisModule::ShutdownModule()
+{
+}
+
+IMPLEMENT_MODULE(FTelekinesisModule, Telekinesis);
