@@ -46,7 +46,7 @@
 		{
 			"Name": "EOSSDKHandler",
 			"Enabled": true
-		}
+		},
 	],
 	"TargetPlatforms": [
 		"Linux",

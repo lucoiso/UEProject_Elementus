@@ -36,6 +36,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	bool bIgnoreCooldown;
 
+protected:
 	/* If true, ability will wait for Cancel Input to cancel this ability */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bWaitCancel;
@@ -52,7 +53,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	FGameplayTagContainer SetByCallerCooldownTags;
 
-protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	TObjectPtr<USoundBase> AbilitySoundFX;
+	
 	/* Mix with bEndAbilityAfterActiveTime to end ability with a pre-determined time */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float AbilityActiveTime;
@@ -78,12 +81,6 @@ protected:
 	TObjectPtr<UAnimMontage> AbilityAnimation;
 
 private:
-	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override final;
-
-	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override final;
-
-	virtual void PreActivate(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData = nullptr) override final;
-
 	/*
 	* This canceling task will only be used to cancel ability when the Cancel Input is pressed
 	* Declared as private to avoid multiple uses of it
@@ -96,6 +93,12 @@ private:
 	void WaitCancelInput_Callback();
 
 protected:
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override final;
+
+	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override final;
+
+	virtual void PreActivate(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData = nullptr) override final;
+	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override final;
@@ -258,6 +261,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const;
 
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach = NAME_None, const FVector& InLocation = FVector::ZeroVector, const float InVolumeMultiplier = 1.f);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation = FVector::ZeroVector, const float InVolumeMultiplier = 1.f);
+	
 	/* Shared Timer Handle that is actually used with bEndAbilityAfterActiveTime */
 	FTimerHandle CancelationTimerHandle;
 

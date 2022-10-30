@@ -21,6 +21,7 @@
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
 #include "GameplayEffect.h"
 #include "AbilitySystemGlobals.h"
+#include "Kismet/GameplayStatics.h"
 
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AbilityMaxRange(0), bIgnoreCost(false), bIgnoreCooldown(false), bWaitCancel(true), AbilityActiveTime(0), bEndAbilityAfterActiveTime(false)
 {
@@ -476,6 +477,34 @@ void UPEGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAbi
 		ABILITY_VLOG(this, Display, TEXT("Removing %s ability cooldown."), *GetName());
 		SourceAbilitySystem->RemoveActiveGameplayEffectBySourceEffect(CooldownGameplayEffectClass, SourceAbilitySystem);
 	}
+}
+
+void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach, const FVector& InLocation, const float InVolumeMultiplier)
+{
+	if (!IsValid(AbilitySoundFX))
+	{
+		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null metasound object."), *GetName());
+		return;
+	}
+
+	if (!IsValid(InComponent))
+	{
+		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null scene component target."), *GetName());
+		return;
+	}
+
+	UGameplayStatics::SpawnSoundAttached(AbilitySoundFX, InComponent, SocketToAttach, InLocation, EAttachLocation::KeepRelativeOffset, false, InVolumeMultiplier);
+}
+
+void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation, const float InVolumeMultiplier)
+{
+	if (!IsValid(AbilitySoundFX))
+	{
+		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null metasound object."), *GetName());
+		return;
+	}
+	
+	UGameplayStatics::SpawnSoundAtLocation(WorldContext, AbilitySoundFX, InLocation, FRotator::ZeroRotator, InVolumeMultiplier);
 }
 
 void UPEGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, const float Rate, const bool bRandomSection, const bool bStopsWhenAbilityEnds)

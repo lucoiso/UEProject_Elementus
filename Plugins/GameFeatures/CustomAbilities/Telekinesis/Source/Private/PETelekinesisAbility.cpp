@@ -6,7 +6,6 @@
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
 #include "GAS/Targeting/PELineTargeting.h"
-#include "Kismet/GameplayStatics.h"
 #include "Management/Data/PEGlobalTags.h"
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ThrowIntensity(2750.f)
@@ -17,12 +16,6 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_CannotInteract));
 
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_WeaponSlot_Base));
-
-	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Telekinesis/Sounds/MS_Impulse"));
-	if (ImpulseSound_ObjRef.Succeeded())
-	{
-		ImpulseSound = ImpulseSound_ObjRef.Object;
-	}
 }
 
 void UPETelekinesisAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -115,10 +108,14 @@ void UPETelekinesisAbility::WaitConfirmInput_Callback_Implementation()
 
 void UPETelekinesisAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
 {
-	UGameplayStatics::SpawnSoundAttached(ImpulseSound, AbilityTask->GetTelekinesisTarget()->GetRootComponent());
+	if (IsValid(AbilityTask->GetTelekinesisTarget()))
+	{
+		PlayAbilitySoundAttached(AbilityTask->GetTelekinesisTarget()->GetRootComponent());
 
-	// When the AnimNotify is triggered, will launch the grabbed actor
-	// in the direction of the camera and end the ability
-	AbilityTask->ThrowObject();
+		// When the AnimNotify is triggered, will launch the grabbed actor
+		// in the direction of the camera and end the ability
+		AbilityTask->ThrowObject();
+	}
+	
 	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
 }

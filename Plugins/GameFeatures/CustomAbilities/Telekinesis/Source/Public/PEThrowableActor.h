@@ -29,10 +29,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> HitEffects;
 
-private:
 	UFUNCTION()
 	void OnThrowableHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	void ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC);
+
+private:
 	TWeakObjectPtr<AActor> CallerActor;
 };
