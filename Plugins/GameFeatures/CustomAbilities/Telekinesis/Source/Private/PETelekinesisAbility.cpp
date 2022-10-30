@@ -13,10 +13,10 @@ UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectIni
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));
 
-	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Mana);
-	ActivationOwnedTags.AddTag(GlobalTag_CannotInteract);
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_RegenBlock_Mana));
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_CannotInteract));
 
-	ActivationBlockedTags.AddTag(GlobalTag_WeaponSlot_Base);
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_WeaponSlot_Base));
 
 	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Telekinesis/Sounds/MS_Impulse"));
 	if (ImpulseSound_ObjRef.Succeeded())

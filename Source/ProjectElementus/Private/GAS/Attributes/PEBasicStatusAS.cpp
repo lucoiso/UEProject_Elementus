@@ -66,7 +66,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 		// If stamina is 0 or less, cancel abilities that use stamina
 		if (Attribute == GetStaminaAttribute())
 		{
-			const FGameplayTagContainer StaminaCostTagContainer{GlobalTag_CostWhileActive_Stamina};
+			const FGameplayTagContainer StaminaCostTagContainer{ FGameplayTag::RequestGameplayTag(GlobalTag_CostWhileActive_Stamina) };
 
 			GetOwningAbilitySystemComponentChecked()->CancelAbilities(&StaminaCostTagContainer);
 		}
@@ -74,7 +74,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 		// If mana is 0 or less, cancel abilities that use mana
 		if (Attribute == GetManaAttribute())
 		{
-			const FGameplayTagContainer ManaCostTagContainer{GlobalTag_CostWhileActive_Mana};
+			const FGameplayTagContainer ManaCostTagContainer{ FGameplayTag::RequestGameplayTag(GlobalTag_CostWhileActive_Mana) };
 
 			GetOwningAbilitySystemComponentChecked()->CancelAbilities(&ManaCostTagContainer);
 		}

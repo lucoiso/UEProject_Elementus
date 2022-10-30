@@ -11,7 +11,7 @@ UPECostEffect::UPECostEffect(const FObjectInitializer& ObjectInitializer) : Supe
 	DurationPolicy = EGameplayEffectDurationType::Infinite;
 	
 	FSetByCallerFloat SetByCallerDuration;
-	SetByCallerDuration.DataTag = GlobalTag_SetByCallerDuration;
+	SetByCallerDuration.DataTag = FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerDuration);
 	
 	/** From GameplayEffect.h: Duration in seconds. 0.0 for instantaneous effects; -1.0 for infinite duration. */
 	DurationMagnitude = FGameplayEffectModifierMagnitude(SetByCallerDuration);
@@ -19,7 +19,7 @@ UPECostEffect::UPECostEffect(const FObjectInitializer& ObjectInitializer) : Supe
 	Period = 0.333f;
 	
 	FSetByCallerFloat SetByCallerHealth;
-	SetByCallerHealth.DataTag = GlobalTag_SetByCallerHealth;
+	SetByCallerHealth.DataTag = FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerHealth);
 	const FGameplayEffectModifierMagnitude HealthModifierMag(SetByCallerHealth);
 	FGameplayModifierInfo HealthModifier;
 	HealthModifier.Attribute = UPEBasicStatusAS::GetHealthAttribute();
@@ -27,7 +27,7 @@ UPECostEffect::UPECostEffect(const FObjectInitializer& ObjectInitializer) : Supe
 	Modifiers.Add(HealthModifier);
 
 	FSetByCallerFloat SetByCallerStamina;
-	SetByCallerStamina.DataTag = GlobalTag_SetByCallerStamina;
+	SetByCallerStamina.DataTag = FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerStamina);
 	const FGameplayEffectModifierMagnitude StaminaModifierMag(SetByCallerStamina);
 	FGameplayModifierInfo StaminaModifier;
 	StaminaModifier.Attribute = UPEBasicStatusAS::GetStaminaAttribute();
@@ -35,7 +35,7 @@ UPECostEffect::UPECostEffect(const FObjectInitializer& ObjectInitializer) : Supe
 	Modifiers.Add(StaminaModifier);
 
 	FSetByCallerFloat SetByCallerMana;
-	SetByCallerMana.DataTag = GlobalTag_SetByCallerMana;
+	SetByCallerMana.DataTag = FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerMana);
 	const FGameplayEffectModifierMagnitude ManaModifierMag(SetByCallerMana);
 	FGameplayModifierInfo ManaModifier;
 	ManaModifier.Attribute = UPEBasicStatusAS::GetManaAttribute();

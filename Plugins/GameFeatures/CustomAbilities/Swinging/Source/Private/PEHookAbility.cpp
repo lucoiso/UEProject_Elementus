@@ -14,12 +14,12 @@ UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Su
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
-	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Stamina);
-	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Mana);
-	ActivationOwnedTags.AddTag(GlobalTag_AimingBlockedState);
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_RegenBlock_Stamina));
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_RegenBlock_Mana));
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_AimingBlockedState));
 
-	ActivationBlockedTags.AddTag(GlobalTag_WeaponSlot_Base);
-	ActivationBlockedTags.AddTag(GlobalTag_AimingState);
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_WeaponSlot_Base));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_AimingState));
 
 	bWaitCancel = false;
 	bIgnoreCooldown = true;

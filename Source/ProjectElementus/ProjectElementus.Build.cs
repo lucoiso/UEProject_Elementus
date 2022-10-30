@@ -16,7 +16,7 @@ public class ProjectElementus : ModuleRules
 			"Core",
 			"ElementusInventory",
 			"GameplayTags"
-		});
+        });
 
 		PrivateDependencyModuleNames.AddRange(new[]
 		{
