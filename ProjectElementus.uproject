@@ -9,13 +9,7 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine",
-				"GameplayAbilities",
-				"EnhancedInput",
-				"AIModule",
-				"GameFeatures",
-				"ModularFeatures_ExtraActions",
-				"ElementusInventory"
+				"Engine"
 			]
 		}
 	],
@@ -30,19 +24,7 @@
 			]
 		},
 		{
-			"Name": "ControlRig",
-			"Enabled": true
-		},
-		{
-			"Name": "FullBodyIK",
-			"Enabled": true
-		},
-		{
 			"Name": "GameplayAbilities",
-			"Enabled": true
-		},
-		{
-			"Name": "EnhancedInput",
 			"Enabled": true
 		},
 		{
@@ -58,20 +40,7 @@
 			"Enabled": true
 		},
 		{
-			"Name": "ModularFeatures_ExtraActions",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a718e1ae4fa741869b8f7aaea1434a8d"
-		},
-		{
-			"Name": "ModelingToolsEditorMode",
-			"Enabled": true
-		},
-		{
 			"Name": "Metasound",
-			"Enabled": true
-		},
-		{
-			"Name": "Weapons",
 			"Enabled": true
 		}
 	],

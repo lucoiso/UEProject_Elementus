@@ -6,15 +6,26 @@
 	"Description": "Modular Weapons",
 	"Category": "Game Features",
 	"CreatedBy": "Lucas Vilas-Boas",
-	"CreatedByURL": "https://dev.epicgames.com/community/profile/4ePp/lucoiso",
+	"CreatedByURL": "https://github.com/lucoiso",
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"SupportURL": "",
-	"EnabledByDefault": false,
+	"EnabledByDefault": true,
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"ExplicitlyLoaded": true,
-	"BuiltInInitialFeatureState": "Active"
+	"BuiltInInitialFeatureState": "Active",
+	"Plugins": [
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "ModularFeatures_ExtraActions",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a718e1ae4fa741869b8f7aaea1434a8d"
+		}
+	]
 }
