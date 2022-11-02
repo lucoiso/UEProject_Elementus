@@ -1,0 +1,229 @@
+//------------------------------------------------------------------------------
+// FidelityFX Super Resolution UE4 Plugin
+//
+// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//------------------------------------------------------------------------------
+
+// FidelityFX Super Resolution - Robust Contrast Adaptive Sharpening
+
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/ScreenPass.ush"
+
+
+// =====================================================================================
+//
+// SHADER RESOURCES
+//
+// =====================================================================================
+
+// RCAS params
+uint4 Const0;
+
+// UE4 GrainIntensity
+float4 GrainRandomFull; // zw:unused
+float4 GrainScaleBiasJitter; // x:Scale y:Bias z:Jitter
+float2 VPColor_ExtentInverse;
+
+
+// =====================================================================================
+//
+// FIDELITYFX SETUP
+//
+// =====================================================================================
+#define A_HLSL 1
+#define A_GPU  1
+
+#if USE_RCAS_DENOISE 
+#define FSR_RCAS_DENOISE 1
+#endif
+
+#if ENABLE_FP16
+	#define FSR_RCAS_H   1
+	#define FSR_RCAS_HX2 1
+	#define A_HALF       1
+	#include "ffx_a.ush"
+
+	Texture2D<AH4>   InputTexture;
+	RWTexture2D<AH4> OutputTexture;
+	AH4 FsrRcasLoadH(ASW2 p)  {return InputTexture.Load(int3(p, 0));}
+	AH4 FsrRcasLoadHx2(ASW2 p){return InputTexture.Load(int3(p, 0));}
+#else
+	#define FSR_RCAS_F 1
+	#include "ffx_a.ush"
+
+	Texture2D           InputTexture;
+	RWTexture2D<float4> OutputTexture;
+	AF4 FsrRcasLoadF(ASU2 p){return InputTexture.Load(int3(p, 0));}
+#endif
+	
+// should be included after ffx_a.ush, defines FSR_OUTPUTDEVICE
+#include "PostProcessFFX_Common.ush"
+
+
+// Note: Input is expected to be in Gamma2-encoding.
+// LDR: This is already the case.
+// HDR: A ColorConversionCS runs before FSR to provide Gamma2 input to FSR passes
+#if ENABLE_FP16
+	void FsrRcasInputH  (inout AH1 r,inout AH1 g,inout AH1 b){} // RCAS is done in perceptual space (sRGB~Gamma2)
+	void FsrRcasInputHx2(inout AH2 r,inout AH2 g,inout AH2 b){} // Hence, no need to modify r/g/b
+#else
+	void FsrRcasInputF(inout AF1 r, inout AF1 g, inout AF1 b){}
+#endif
+
+
+#include "ffx_fsr1.ush"
+
+
+// =====================================================================================
+// 
+// RCAS IMPLEMENTATION
+// 
+// =====================================================================================
+AF3 RCASPassCommon(AU2 gxy)
+{
+	//
+	// RCAS()
+	//
+	#if ENABLE_FP16 // half precision floating point
+
+		AH3 Gamma2Color = AH3(0, 0, 0);
+		FsrRcasH(Gamma2Color.r, Gamma2Color.g, Gamma2Color.b, gxy, Const0);
+	
+	#else // FP32 - full precision floating point
+
+		AF3 Gamma2Color = AF3(0, 0, 0);
+		FsrRcasF(Gamma2Color.r, Gamma2Color.g, Gamma2Color.b, gxy, Const0);
+
+	#endif // ENABLE_FP16
+
+	AF3 OutColor = AF3(Gamma2Color);
+
+
+	//
+	// Grain()
+	//
+	// if ChromAb is not running, we'll handle Grain here
+	#if USE_GRAIN_INTENSITY
+		AF3 LinearColor = Gamma2ToLinear(AF3(Gamma2Color));
+		ApplyUE4Grain(LinearColor, gxy, VPColor_ExtentInverse);
+	#endif
+	
+	//
+	// Color Conversions
+	//
+	// For the HDR path, a CS converts the FSR input into Gamma2-encoding w/ Rec2020 primaries.
+	// If this is the last pass of the FSR pass chain (ChromAb=off), then convert
+	// back to output device space.
+	#if CONVERT_TO_OUTPUT_DEVICE
+		#if FSR_OUTPUTDEVICE == FSR_scRGB // scRGB ------------------------------------
+			#if USE_GRAIN_INTENSITY
+				OutColor = LinearToScRGB(LinearColor);
+			#else
+				OutColor = Gamma2ToScRGB(Gamma2Color);
+			#endif
+		
+		#elif FSR_OUTPUTDEVICE == FSR_ST2084 // PQ ------------------------------------
+
+			#if USE_GRAIN_INTENSITY
+				OutColor = LinearToST2084(LinearColor * HDR_MAX_NITS);
+			#else
+				AF3 LinearColor = Gamma2ToLinear(Gamma2Color);
+				OutColor = LinearToST2084(LinearColor * HDR_MAX_NITS);
+			#endif
+		
+		#elif FSR_OUTPUTDEVICE == FSR_LINEAR // Linear --------------------------------
+
+			#if USE_GRAIN_INTENSITY
+				// FidelityFX SuperResolution / SRTM: Simple Reversible Tonemapper
+				FsrSrtmInvF(LinearColor); // [0-1] -> [0, FP16_MAX)
+				OutColor = LinearColor;
+			#else
+				AF3 LinearColor = Gamma2ToLinear(Gamma2Color);
+				// FidelityFX SuperResolution / SRTM: Simple Reversible Tonemapper
+				FsrSrtmInvF(LinearColor); // [0-1] -> [0, FP16_MAX)
+				OutColor = LinearColor;
+			#endif
+
+		#endif // FSR_OUTPUTDEVICE == FSR_scRGB
+
+	#else // == 'FSR_OUTPUTDEVICE == FSR_sRGB' ---------------------------------------
+
+		// No HDR conversions, but we still need to convert from 
+		// Linear back to Gamma2 if we've used GrainIntensity()
+		#if USE_GRAIN_INTENSITY
+			OutColor = LinearToGamma2(LinearColor);
+		#endif
+
+	#endif // CONVERT_TO_OUTPUT_DEVICE
+
+	return OutColor;
+}
+
+
+
+// =====================================================================================
+//
+// ENTRY POINTS
+//
+// =====================================================================================
+#if COMPUTE_SHADER
+[numthreads(THREADGROUP_SIZEX, THREADGROUP_SIZEY, THREADGROUP_SIZEZ)]
+void MainCS(uint3 LocalThreadId : SV_GroupThreadID, uint3 WorkGroupId : SV_GroupID, uint3 Dtid : SV_DispatchThreadID)
+{
+	// Do remapping of local xy in workgroup for a more PS-like swizzle pattern.
+	AU2 gxy = ARmp8x8(LocalThreadId.x) + AU2(WorkGroupId.x << 4u, WorkGroupId.y << 4u);	
+	
+#if ENABLE_FP16
+	OutputTexture[gxy] = AH4(RCASPassCommon(gxy), 1);
+
+	gxy.x += 8u;
+	OutputTexture[gxy] = AH4(RCASPassCommon(gxy), 1);
+
+	gxy.y += 8u;
+	OutputTexture[gxy] = AH4(RCASPassCommon(gxy), 1);
+
+	gxy.x -= 8u;
+	OutputTexture[gxy] = AH4(RCASPassCommon(gxy), 1);
+#else
+	OutputTexture[gxy] = AF4(RCASPassCommon(gxy), 1);
+
+	gxy.x += 8u;
+	OutputTexture[gxy] = AF4(RCASPassCommon(gxy), 1);
+
+	gxy.y += 8u;
+	OutputTexture[gxy] = AF4(RCASPassCommon(gxy), 1);
+
+	gxy.x -= 8u;
+	OutputTexture[gxy] = AF4(RCASPassCommon(gxy), 1);
+#endif
+}
+#endif // COMPUTE_SHADER
+
+#if ENABLE_FP16
+void MainPS(noperspective float4 UVAndScreenPos : TEXCOORD0, float4 SvPosition : SV_POSITION, out AH4 OutColor : SV_Target0)
+{
+	AU2 gxy = AU2(SvPosition.xy);
+	OutColor = AH4(RCASPassCommon(gxy), 1);
+}
+#else
+void MainPS(noperspective float4 UVAndScreenPos : TEXCOORD0, float4 SvPosition : SV_POSITION, out float4 OutColor : SV_Target0)
+{
+	AU2 gxy = AU2(SvPosition.xy);
+	OutColor = AF4(RCASPassCommon(gxy), 1);
+}
+#endif
