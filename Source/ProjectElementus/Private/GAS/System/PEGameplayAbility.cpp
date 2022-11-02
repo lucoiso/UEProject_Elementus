@@ -21,26 +21,27 @@
 #include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
 #include "GameplayEffect.h"
 #include "AbilitySystemGlobals.h"
+#include "Kismet/GameplayStatics.h"
 
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AbilityMaxRange(0), bIgnoreCost(false), bIgnoreCooldown(false), bWaitCancel(true), AbilityActiveTime(0), bEndAbilityAfterActiveTime(false)
 {
-	ActivationBlockedTags.AddTag(GlobalTag_DeadState);
-	ActivationBlockedTags.AddTag(GlobalTag_StunState);
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_DeadState));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_StunState));
 
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	bIsCancelable = true;
 
 	CostGameplayEffectClass = UPECostEffect::StaticClass();
-	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerDuration, 0.f));
-	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerHealth, 0.f));
-	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerStamina, 0.f));
-	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerMana, 0.f));
+	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerDuration), 0.f));
+	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerHealth), 0.f));
+	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerStamina), 0.f));
+	AbilityCostSetByCallerData.Add(TPair<FGameplayTag, float>(FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerMana), 0.f));
 		
 	CooldownGameplayEffectClass = UPECooldownEffect::StaticClass();
-	AbilityCooldownSetByCallerData.Add(TPair<FGameplayTag, float>(GlobalTag_SetByCallerDuration, 0.f));
+	AbilityCooldownSetByCallerData.Add(TPair<FGameplayTag, float>(FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerDuration), 0.f));
 
-	SetByCallerCooldownTags.AddTag(GlobalTag_GenericCooldown);
+	SetByCallerCooldownTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_GenericCooldown));
 }
 
 void UPEGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -108,12 +109,12 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle, co
 	// Auto cancel can only be called on instantiated abilities. Non-Instantiated abilities can't handle tasks
 	if (IsInstantiated())
 	{
-		UAbilityTask_WaitGameplayTagAdded* const WaitDeadTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, GlobalTag_DeadState);
+		UAbilityTask_WaitGameplayTagAdded* const WaitDeadTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, FGameplayTag::RequestGameplayTag(GlobalTag_DeadState));
 
 		WaitDeadTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitDeadTagAddedTask->ReadyForActivation();
 
-		UAbilityTask_WaitGameplayTagAdded* const WaitStunTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, GlobalTag_StunState);
+		UAbilityTask_WaitGameplayTagAdded* const WaitStunTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(this, FGameplayTag::RequestGameplayTag(GlobalTag_StunState));
 
 		WaitStunTagAddedTask->Added.AddDynamic(this, &UPEGameplayAbility::K2_EndAbility);
 		WaitStunTagAddedTask->ReadyForActivation();
@@ -245,7 +246,7 @@ void UPEGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, 
 		SpecHandle.IsValid())
 	{
 		FGameplayTagContainer CooldownTags_Copy = *GetCooldownTags();
-		CooldownTags_Copy.RemoveTag(GlobalTag_GenericCooldown);	
+		CooldownTags_Copy.RemoveTag(FGameplayTag::RequestGameplayTag(GlobalTag_GenericCooldown));	
 
 		SpecHandle.Data->DynamicGrantedTags.AppendTags(CooldownTags_Copy);
 		
@@ -262,7 +263,7 @@ bool UPEGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle, 
 	}
 
 	FGameplayTagContainer CooldownTags_Copy = *GetCooldownTags();
-	CooldownTags_Copy.RemoveTag(GlobalTag_GenericCooldown);
+	CooldownTags_Copy.RemoveTag(FGameplayTag::RequestGameplayTag(GlobalTag_GenericCooldown));
 	if (CooldownTags_Copy.IsEmpty())
 	{
 		return true;
@@ -478,6 +479,34 @@ void UPEGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAbi
 	}
 }
 
+void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach, const FVector& InLocation, const float InVolumeMultiplier)
+{
+	if (!IsValid(AbilitySoundFX))
+	{
+		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null metasound object."), *GetName());
+		return;
+	}
+
+	if (!IsValid(InComponent))
+	{
+		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null scene component target."), *GetName());
+		return;
+	}
+
+	UGameplayStatics::SpawnSoundAttached(AbilitySoundFX, InComponent, SocketToAttach, InLocation, EAttachLocation::KeepRelativeOffset, false, InVolumeMultiplier);
+}
+
+void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation, const float InVolumeMultiplier)
+{
+	if (!IsValid(AbilitySoundFX))
+	{
+		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null metasound object."), *GetName());
+		return;
+	}
+	
+	UGameplayStatics::SpawnSoundAtLocation(WorldContext, AbilitySoundFX, InLocation, FRotator::ZeroRotator, InVolumeMultiplier);
+}
+
 void UPEGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, const float Rate, const bool bRandomSection, const bool bStopsWhenAbilityEnds)
 {
 	FName MontageSectionName = MontageSection;
@@ -552,11 +581,11 @@ void UPEGameplayAbility::ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayT
 	{
 		UAbilitySystemComponent* const Comp = GetAbilitySystemComponentFromActorInfo_Checked();
 
-		Comp->AddLooseGameplayTag(GlobalTag_AimingState);
-		Comp->AddLooseGameplayTag(GlobalTag_WaitingConfirmationState);
+		Comp->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_AimingState));
+		Comp->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_WaitingConfirmationState));
 
-		AbilityExtraTags.AddTag(GlobalTag_AimingState);
-		AbilityExtraTags.AddTag(GlobalTag_WaitingConfirmationState);
+		AbilityExtraTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_AimingState));
+		AbilityExtraTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_WaitingConfirmationState));
 	}
 }
 
@@ -564,10 +593,10 @@ void UPEGameplayAbility::ActivateWaitConfirmInputTask()
 {
 	// Add extra tag to the ability system component to tell that we are waiting for confirm input
 	UAbilitySystemComponent* const Comp = GetAbilitySystemComponentFromActorInfo_Checked();
-	if (!AbilityExtraTags.HasTag(GlobalTag_WaitingConfirmationState))
+	if (!AbilityExtraTags.HasTag(FGameplayTag::RequestGameplayTag(GlobalTag_WaitingConfirmationState)))
 	{
-		Comp->AddLooseGameplayTag(GlobalTag_WaitingConfirmationState);
-		AbilityExtraTags.AddTag(GlobalTag_WaitingConfirmationState);
+		Comp->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_WaitingConfirmationState));
+		AbilityExtraTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_WaitingConfirmationState));
 	}
 
 	UAbilityTask_WaitConfirmCancel* const AbilityTask_WaitConfirm = UAbilityTask_WaitConfirmCancel::WaitConfirmCancel(this);
@@ -588,10 +617,10 @@ void UPEGameplayAbility::ActivateWaitCancelInputTask()
 {
 	// Add extra tag to the ability system component to tell that we are waiting for cancel input
 	UAbilitySystemComponent* const Comp = GetAbilitySystemComponentFromActorInfo_Checked();
-	if (!AbilityExtraTags.HasTag(GlobalTag_WaitingCancelationState))
+	if (!AbilityExtraTags.HasTag(FGameplayTag::RequestGameplayTag(GlobalTag_WaitingCancelationState)))
 	{
-		Comp->AddLooseGameplayTag(GlobalTag_WaitingCancelationState);
-		AbilityExtraTags.AddTag(GlobalTag_WaitingCancelationState);
+		Comp->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_WaitingCancelationState));
+		AbilityExtraTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_WaitingCancelationState));
 	}
 
 	UAbilityTask_WaitCancel* const AbilityTask_WaitCancel = UAbilityTask_WaitCancel::WaitCancel(this);

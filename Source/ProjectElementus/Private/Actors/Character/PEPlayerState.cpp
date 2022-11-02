@@ -35,9 +35,9 @@ void APEPlayerState::BeginPlay()
 	// Check if the player state have a valid ABSC and bind functions to wait Death and Stun tags
 	if (ensureAlwaysMsgf(IsValid(AbilitySystemComponent), TEXT("%s have a invalid AbilitySystemComponent"), *GetName()))
 	{
-		AbilitySystemComponent->RegisterGameplayTagEvent(GlobalTag_DeadState, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::DeathStateChanged_Callback);
+		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(GlobalTag_DeadState), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::DeathStateChanged_Callback);
 
-		AbilitySystemComponent->RegisterGameplayTagEvent(GlobalTag_StunState, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::StunStateChanged_Callback);
+		AbilitySystemComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(GlobalTag_StunState), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &APEPlayerState::StunStateChanged_Callback);
 	}
 }
 

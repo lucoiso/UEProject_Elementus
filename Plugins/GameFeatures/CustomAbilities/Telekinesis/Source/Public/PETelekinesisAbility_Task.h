@@ -32,11 +32,12 @@ public:
 
 	AActor* GetTelekinesisTarget() const;
 
-private:
+protected:
 	virtual void TickTask(float DeltaTime) override;
 
 	virtual void OnDestroy(bool AbilityIsEnding) override;
 
+private:
 	bool bIsFinished;
 	float Intensity;
 

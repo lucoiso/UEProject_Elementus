@@ -17,12 +17,9 @@ class UPEDoubleJumpAbility final : public UPEGameplayAbility
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	TObjectPtr<USoundBase> ImpulseSound;
-
 	explicit UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-private:
+protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;

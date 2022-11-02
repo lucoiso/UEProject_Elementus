@@ -25,7 +25,7 @@ UPEInventoryComponent::UPEInventoryComponent(const FObjectInitializer& ObjectIni
 bool UPEInventoryComponent::CanGiveItem(const FElementusItemInfo InItemInfo) const
 {
 	// We cannot give the item if it is currently equiped
-	return Super::CanGiveItem(InItemInfo) && !InItemInfo.Tags.HasTag(GlobalTag_EquipSlot_Base);
+	return Super::CanGiveItem(InItemInfo) && !InItemInfo.Tags.HasTag(FGameplayTag::RequestGameplayTag(GlobalTag_EquipSlot_Base));
 }
 
 bool UPEInventoryComponent::EquipItem(const FElementusItemInfo& InItem)
@@ -157,7 +157,7 @@ void UPEInventoryComponent::ProcessEquipmentAddition_Internal(APECharacter* Owni
 	if (UPEAbilitySystemComponent* const TargetABSC = Cast<UPEAbilitySystemComponent>(OwningCharacter->GetAbilitySystemComponent()))
 	{
 		AddEquipmentGASData_Server(TargetABSC, Equipment);		
-		TargetABSC->AddLooseGameplayTag(GlobalTag_WeaponSlot_Base);
+		TargetABSC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_WeaponSlot_Base));
 	}
 
 	if (GetOwnerRole() == ROLE_Authority)
@@ -175,7 +175,7 @@ void UPEInventoryComponent::ProcessEquipmentRemoval_Internal(APECharacter* Ownin
 	if (UPEAbilitySystemComponent* const TargetABSC = Cast<UPEAbilitySystemComponent>(OwningCharacter->GetAbilitySystemComponent()))
 	{
 		RemoveEquipmentGASData_Server(TargetABSC, Equipment);		
-		TargetABSC->RemoveLooseGameplayTag(GlobalTag_WeaponSlot_Base);
+		TargetABSC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_WeaponSlot_Base));
 	}
 
 	if (GetOwnerRole() == ROLE_Authority)

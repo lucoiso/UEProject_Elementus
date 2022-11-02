@@ -16,7 +16,7 @@ public class ProjectElementus : ModuleRules
 			"Core",
 			"ElementusInventory",
 			"GameplayTags"
-		});
+        });
 
 		PrivateDependencyModuleNames.AddRange(new[]
 		{
@@ -40,6 +40,6 @@ public class ProjectElementus : ModuleRules
 			"EOSVoiceChat",
 			"VoiceChat",
 			"JsonUtilities"
-		});
+        });
 	}
 }

@@ -9,10 +9,8 @@ UPECustomSettings::UPECustomSettings(const FObjectInitializer& ObjectInitializer
 	UPECustomSettings::SetToDefaults();
 }
 
-void UPECustomSettings::ApplyNonResolutionSettings()
+void UPECustomSettings::ApplyPECustomSettings()
 {
-	Super::ApplyNonResolutionSettings();
-
 	if (IConsoleVariable* const AntiAliasingCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.AntiAliasingMethod")))
 	{
 		AntiAliasingCVar->Set(AntiAliasingMode, ECVF_SetByConsole);
@@ -73,6 +71,12 @@ void UPECustomSettings::ApplyNonResolutionSettings()
 	}
 }
 
+void UPECustomSettings::ApplyNonResolutionSettings()
+{
+	Super::ApplyNonResolutionSettings();
+	ApplyPECustomSettings();
+}
+
 void UPECustomSettings::SetToDefaults()
 {
 	AntiAliasingMode = 3;
@@ -82,6 +86,8 @@ void UPECustomSettings::SetToDefaults()
 	bEnableLumen = false;
 
 	Super::SetToDefaults();
+
+	ApplyPECustomSettings();
 }
 
 void UPECustomSettings::SetAntiAliasingMode(const int InMode)
