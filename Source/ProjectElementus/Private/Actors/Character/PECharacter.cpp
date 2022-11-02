@@ -126,7 +126,7 @@ void APECharacter::OnRep_Controller()
 	if (AbilitySystemComponent.IsValid())
 	{
 		AbilitySystemComponent->RefreshAbilityActorInfo();
-		AbilitySystemComponent->RemoveActiveEffectsWithTags(FGameplayTagContainer(GlobalTag_DeadState));
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(GlobalTag_DeadState)));
 	}
 }
 

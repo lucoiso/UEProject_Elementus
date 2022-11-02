@@ -7,50 +7,50 @@
 #include "GameplayTagContainer.h"
 
 #pragma region Generic
-static const FGameplayTag GlobalTag_GenericCooldown = FGameplayTag::RequestGameplayTag("GameplayEffect.Cooldown");
+constexpr auto GlobalTag_GenericCooldown = "GameplayEffect.Cooldown";
 #pragma endregion Generic
 
 #pragma region SetByCaller
-static const FGameplayTag GlobalTag_SetByCallerDuration = FGameplayTag::RequestGameplayTag("SetByCaller.Duration");
-static const FGameplayTag GlobalTag_SetByCallerHealth = FGameplayTag::RequestGameplayTag("SetByCaller.Health");
-static const FGameplayTag GlobalTag_SetByCallerStamina = FGameplayTag::RequestGameplayTag("SetByCaller.Stamina");
-static const FGameplayTag GlobalTag_SetByCallerMana = FGameplayTag::RequestGameplayTag("SetByCaller.Mana");
-static const FGameplayTag GlobalTag_SetByCallerFloat1 = FGameplayTag::RequestGameplayTag("SetByCaller.Float1");
-static const FGameplayTag GlobalTag_SetByCallerFloat2 = FGameplayTag::RequestGameplayTag("SetByCaller.Float2");
-static const FGameplayTag GlobalTag_SetByCallerFloat3 = FGameplayTag::RequestGameplayTag("SetByCaller.Float3");
-static const FGameplayTag GlobalTag_SetByCallerFloat4 = FGameplayTag::RequestGameplayTag("SetByCaller.Float4");
-static const FGameplayTag GlobalTag_SetByCallerFloat5 = FGameplayTag::RequestGameplayTag("SetByCaller.Float5");
+constexpr auto GlobalTag_SetByCallerDuration = "SetByCaller.Duration";
+constexpr auto GlobalTag_SetByCallerHealth = "SetByCaller.Health";
+constexpr auto GlobalTag_SetByCallerStamina = "SetByCaller.Stamina";
+constexpr auto GlobalTag_SetByCallerMana = "SetByCaller.Mana";
+constexpr auto GlobalTag_SetByCallerFloat1 = "SetByCaller.Float1";
+constexpr auto GlobalTag_SetByCallerFloat2 = "SetByCaller.Float2";
+constexpr auto GlobalTag_SetByCallerFloat3 = "SetByCaller.Float3";
+constexpr auto GlobalTag_SetByCallerFloat4 = "SetByCaller.Float4";
+constexpr auto GlobalTag_SetByCallerFloat5 = "SetByCaller.Float5";
 #pragma endregion SetByCaller
 
 #pragma region Equipment
-static const FGameplayTag GlobalTag_EquipSlot_Base = FGameplayTag::RequestGameplayTag("EquipSlot");
+constexpr auto GlobalTag_EquipSlot_Base = "EquipSlot";
 
-static const FGameplayTag GlobalTag_WeaponSlot_Base = FGameplayTag::RequestGameplayTag("EquipSlot.Weapon");
-static const FGameplayTag GlobalTag_WeaponSlot_Both = FGameplayTag::RequestGameplayTag("EquipSlot.Weapon.Both");
-static const FGameplayTag GlobalTag_WeaponSlot_Left = FGameplayTag::RequestGameplayTag("EquipSlot.Weapon.Left");
-static const FGameplayTag GlobalTag_WeaponSlot_Right = FGameplayTag::RequestGameplayTag("EquipSlot.Weapon.Right");
+constexpr auto GlobalTag_WeaponSlot_Base = "EquipSlot.Weapon";
+constexpr auto GlobalTag_WeaponSlot_Both = "EquipSlot.Weapon.Both";
+constexpr auto GlobalTag_WeaponSlot_Left = "EquipSlot.Weapon.Left";
+constexpr auto GlobalTag_WeaponSlot_Right = "EquipSlot.Weapon.Right";
 #pragma endregion Equipment
 
 #pragma region Effect
-static const FGameplayTag GlobalTag_Damage = FGameplayTag::RequestGameplayTag("Data.Damage");
+constexpr auto GlobalTag_Damage = "Data.Damage";
 #pragma endregion Effect
 
 #pragma region State
-static const FGameplayTag GlobalTag_CanInteract = FGameplayTag::RequestGameplayTag("State.CanInteract");
-static const FGameplayTag GlobalTag_CannotInteract = FGameplayTag::RequestGameplayTag("State.CannotInteract");
-static const FGameplayTag GlobalTag_DeadState = FGameplayTag::RequestGameplayTag("State.Dead");
-static const FGameplayTag GlobalTag_StunState = FGameplayTag::RequestGameplayTag("State.Stunned");
-static const FGameplayTag GlobalTag_AimingState = FGameplayTag::RequestGameplayTag("State.Aiming");
-static const FGameplayTag GlobalTag_AimingBlockedState = FGameplayTag::RequestGameplayTag("State.Aiming.Blocked");
-static const FGameplayTag GlobalTag_WaitingConfirmationState = FGameplayTag::RequestGameplayTag("State.WaitingConfirm");
-static const FGameplayTag GlobalTag_WaitingCancelationState = FGameplayTag::RequestGameplayTag("State.WaitingCancel");
+constexpr auto GlobalTag_CanInteract = "State.CanInteract";
+constexpr auto GlobalTag_CannotInteract = "State.CannotInteract";
+constexpr auto GlobalTag_DeadState = "State.Dead";
+constexpr auto GlobalTag_StunState = "State.Stunned";
+constexpr auto GlobalTag_AimingState = "State.Aiming";
+constexpr auto GlobalTag_AimingBlockedState = "State.Aiming.Blocked";
+constexpr auto GlobalTag_WaitingConfirmationState = "State.WaitingConfirm";
+constexpr auto GlobalTag_WaitingCancelationState = "State.WaitingCancel";
 #pragma endregion State
 
 #pragma region Attributes
-static const FGameplayTag GlobalTag_RegenBlock_Health = FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Health");
-static const FGameplayTag GlobalTag_RegenBlock_Mana = FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Mana");
-static const FGameplayTag GlobalTag_RegenBlock_Stamina = FGameplayTag::RequestGameplayTag("GameplayEffect.Debuff.Regeneration.Block.Stamina");
+constexpr auto GlobalTag_RegenBlock_Health = "GameplayEffect.Debuff.Regeneration.Block.Health";
+constexpr auto GlobalTag_RegenBlock_Mana = "GameplayEffect.Debuff.Regeneration.Block.Mana";
+constexpr auto GlobalTag_RegenBlock_Stamina = "GameplayEffect.Debuff.Regeneration.Block.Stamina";
 
-static const FGameplayTag GlobalTag_CostWhileActive_Stamina = FGameplayTag::RequestGameplayTag("GameplayAbility.State.CostWhileActive.Stamina");
-static const FGameplayTag GlobalTag_CostWhileActive_Mana = FGameplayTag::RequestGameplayTag("GameplayAbility.State.CostWhileActive.Mana");
+constexpr auto GlobalTag_CostWhileActive_Stamina = "GameplayAbility.State.CostWhileActive.Stamina";
+constexpr auto GlobalTag_CostWhileActive_Mana = "GameplayAbility.State.CostWhileActive.Mana";
 #pragma endregion Attributes

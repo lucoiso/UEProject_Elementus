@@ -7,28 +7,21 @@
 #include "Actors/Character/PECharacter.h"
 #include "GAS/Targeting/PELineTargeting.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Management/Data/PEGlobalTags.h"
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), HookIntensity(3000.f), MaxHookIntensity(0.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
-	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Stamina);
-	ActivationOwnedTags.AddTag(GlobalTag_RegenBlock_Mana);
-	ActivationOwnedTags.AddTag(GlobalTag_AimingBlockedState);
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_RegenBlock_Stamina));
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_RegenBlock_Mana));
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_AimingBlockedState));
 
-	ActivationBlockedTags.AddTag(GlobalTag_WeaponSlot_Base);
-	ActivationBlockedTags.AddTag(GlobalTag_AimingState);
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_WeaponSlot_Base));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_AimingState));
 
 	bWaitCancel = false;
 	bIgnoreCooldown = true;
-
-	static const ConstructorHelpers::FObjectFinder<USoundBase> ImpulseSound_ObjRef(TEXT("/Swinging/Sounds/MS_Impulse"));
-	if (ImpulseSound_ObjRef.Succeeded())
-	{
-		ImpulseSound = ImpulseSound_ObjRef.Object;
-	}
 }
 
 void UPEHookAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -116,7 +109,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 
 	if (APECharacter* const Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
 	{
-		UGameplayStatics::SpawnSoundAttached(ImpulseSound, Player->GetMesh());
+		PlayAbilitySoundAttached(Player->GetMesh());
 
 		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() * HookIntensity;
 

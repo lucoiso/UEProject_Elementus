@@ -85,7 +85,7 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 		{
 			if (UPEAbilitySystemComponent* AbilitySystemComp_Ref = CastChecked<UPEAbilitySystemComponent>(State->GetAbilitySystemComponent()))
 			{
-				AbilitySystemComp_Ref->RemoveActiveEffectsWithTags(FGameplayTagContainer(GlobalTag_DeadState));
+				AbilitySystemComp_Ref->RemoveActiveEffectsWithTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(GlobalTag_DeadState)));
 			}
 		}
 

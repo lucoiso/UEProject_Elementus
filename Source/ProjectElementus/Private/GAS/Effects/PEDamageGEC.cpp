@@ -48,7 +48,7 @@ void UPEDamageGEC::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 
 	float BaseDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().DamageDef, EvaluationParameters, BaseDamage);
-	BaseDamage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(GlobalTag_Damage, false, -1.0f), 0.0f);
+	BaseDamage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(GlobalTag_Damage), false, -1.0f), 0.0f);
 
 	float AttackRate = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAttributesStatics().AttackRateDef, EvaluationParameters, AttackRate);

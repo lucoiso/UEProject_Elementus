@@ -31,10 +31,11 @@ public:
 	FVector GetLastHookLocation() const;
 	FHitResult GetHitResult() const;
 
-private:
+protected:
 	virtual void TickTask(float DeltaTime) override;
 	virtual void OnDestroy(bool AbilityIsEnding) override;
 
+private:
 	TWeakObjectPtr<class APECharacter> HookOwner;
 	TWeakObjectPtr<APECharacter> HitTarget;
 

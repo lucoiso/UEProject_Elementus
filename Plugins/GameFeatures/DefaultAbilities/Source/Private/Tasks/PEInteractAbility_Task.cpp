@@ -54,7 +54,7 @@ void UPEInteractAbility_Task::Activate()
 
 bool UPEInteractAbility_Task::GetIsInteractAllowed() const
 {
-	return AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CanInteract) && !AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CannotInteract);
+	return AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_CanInteract)) && !AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_CannotInteract));
 }
 
 AActor* UPEInteractAbility_Task::GetInteractable() const
@@ -69,7 +69,7 @@ FHitResult UPEInteractAbility_Task::GetInteractableHitResult() const
 
 void UPEInteractAbility_Task::OnCannotInteractChanged()
 {
-	bTickingTask = !AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CannotInteract);
+	bTickingTask = !AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_CannotInteract));
 }
 
 void UPEInteractAbility_Task::TickTask(const float DeltaTime)
@@ -96,9 +96,9 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 	if (!HitResult.bBlockingHit || !IsValid(HitResult.GetActor()) || !HitResult.GetActor()->Implements<UPEInteractable>())
 	{
-		if (AbilitySystemComponent->HasMatchingGameplayTag(GlobalTag_CanInteract))
+		if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_CanInteract)))
 		{
-			AbilitySystemComponent->RemoveLooseGameplayTag(GlobalTag_CanInteract);
+			AbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_CanInteract));
 		}
 
 		if (LastInteractableActor_Ref.IsValid())
@@ -132,7 +132,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 			LastInteractablePrimitive_Ref->SetRenderCustomDepth(true);
 		}
 
-		AbilitySystemComponent->AddLooseGameplayTag(GlobalTag_CanInteract);
+		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_CanInteract));
 	}
 }
 

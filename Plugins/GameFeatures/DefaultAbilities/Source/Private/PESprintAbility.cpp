@@ -12,7 +12,7 @@ UPESprintAbility::UPESprintAbility(const FObjectInitializer& ObjectInitializer) 
 
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Sprint"));
 
-	ActivationOwnedTags.AddTag(GlobalTag_CanInteract);
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_CanInteract));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Walk"));
 }
 

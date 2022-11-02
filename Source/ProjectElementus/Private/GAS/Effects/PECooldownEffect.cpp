@@ -10,7 +10,7 @@ UPECooldownEffect::UPECooldownEffect(const FObjectInitializer& ObjectInitializer
 	DurationPolicy = EGameplayEffectDurationType::HasDuration;
 
 	FSetByCallerFloat SetByCallerDuration;
-	SetByCallerDuration.DataTag = GlobalTag_SetByCallerDuration;
+	SetByCallerDuration.DataTag = FGameplayTag::RequestGameplayTag(GlobalTag_SetByCallerDuration);
 
 	DurationMagnitude = FGameplayEffectModifierMagnitude(SetByCallerDuration);
 }
