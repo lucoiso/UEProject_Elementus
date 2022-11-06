@@ -20,6 +20,7 @@
 #include "ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Management/Functions/PEPlayerLibrary.h"
+#include "MFEA_Settings.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -32,10 +33,10 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
-	if (InputIDEnum_ObjRef.Succeeded())
+	if (const UMFEA_Settings* MF_Settings = GetDefault<UMFEA_Settings>();
+		!MF_Settings->InputIDEnumeration.IsNull())
 	{
-		InputEnumHandle = InputIDEnum_ObjRef.Object;
+		InputEnumHandle = MF_Settings->InputIDEnumeration.LoadSynchronous();
 	}
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));

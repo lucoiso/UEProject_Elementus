@@ -9,16 +9,17 @@
 #include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "GAS/System/PEAbilityFunctions.h"
+#include "MFEA_Settings.h"
 
 UPEInventoryComponent::UPEInventoryComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 
-	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
-	if (InputIDEnum_ObjRef.Succeeded())
+	if (const UMFEA_Settings* MF_Settings = GetDefault<UMFEA_Settings>();
+		!MF_Settings->InputIDEnumeration.IsNull())
 	{
-		InputEnumHandle = InputIDEnum_ObjRef.Object;
+		InputEnumHandle = MF_Settings->InputIDEnumeration.LoadSynchronous();
 	}
 }
 
