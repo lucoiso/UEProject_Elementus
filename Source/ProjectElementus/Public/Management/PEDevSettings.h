@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(Config = Game, DefaultConfig, Meta = (DisplayName = "Project Elementus Settings"))
+UCLASS(Config = Game, DefaultConfig, Meta = (DisplayName = "Project Elementus"))
 class PROJECTELEMENTUS_API UPEDevSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()

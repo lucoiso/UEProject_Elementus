@@ -60,7 +60,7 @@ bool UPEInventoryComponent::EquipItem(const FElementusItemInfo& InItem)
 				// Already equipped
 				UE_LOG(LogTemp, Display, TEXT("%s - Actor %s has already unequipped item %s"), *FString(__func__), *GetOwner()->GetName(), *InItem.ItemId.ToString());
 				
-				UnnequipItem(GetItemReferenceAt(FoundIndex));
+				UnequipItem(GetItemReferenceAt(FoundIndex));
 				return false;
 			}
 
@@ -100,7 +100,7 @@ bool UPEInventoryComponent::EquipItem(const FElementusItemInfo& InItem)
 	return false;
 }
 
-bool UPEInventoryComponent::UnnequipItem(FElementusItemInfo& InItem)
+bool UPEInventoryComponent::UnequipItem(FElementusItemInfo& InItem)
 {
 	if (!IsValid(GetOwner()))
 	{
