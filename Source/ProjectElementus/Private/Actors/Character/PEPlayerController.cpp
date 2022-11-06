@@ -167,7 +167,7 @@ void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>
 
 #pragma region IAbilityInputBinding
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
-void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(UInputAction* Action, const int32 InputID)
+void APEPlayerController::SetupAbilityBindingByInput_Implementation_Implementation(UInputAction* Action, const int32 InputID)
 {
 	if (!IsValid(Action))
 	{
