@@ -23,6 +23,7 @@ Please give some feedback and feel invited to test the project and help me with 
 * Epic Online Services;
 * Enhanced Input;
 * Networking/Replication/Multiplayer;
+* Inventory System;
 * Custom plugins;
 * Others.
 
