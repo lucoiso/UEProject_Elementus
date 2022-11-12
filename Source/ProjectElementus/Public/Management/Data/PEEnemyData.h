@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "Engine/DataTable.h"
 #include "PEEnemyData.generated.h"
 
 /**

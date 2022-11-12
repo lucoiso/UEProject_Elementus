@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEDoubleJumpAbility.h"
-#include "Actors/Character/PECharacter.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Management/Data/PEGlobalTags.h"
 
@@ -21,7 +21,7 @@ void UPEDoubleJumpAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	APECharacter* const Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get());
+	ACharacter* const Player = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
 
 	// Only characters can activate this ability
 	if (!IsValid(Player))
@@ -55,7 +55,7 @@ void UPEDoubleJumpAbility::InputReleased(const FGameplayAbilitySpecHandle Handle
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
 	// Send the StopJumping event to the player if valid
-	if (APECharacter* const Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get()))
+	if (ACharacter* const Player = Cast<ACharacter>(ActorInfo->AvatarActor.Get()))
 	{
 		Player->StopJumping();
 	}

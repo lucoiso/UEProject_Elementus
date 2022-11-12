@@ -5,6 +5,7 @@
 #include "GAS/Attributes/PELevelingAS.h"
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
+#include "GAS/System/PEAttributeData.h"
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemComponent.h"

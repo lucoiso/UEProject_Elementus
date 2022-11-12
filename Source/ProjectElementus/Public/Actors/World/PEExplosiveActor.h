@@ -5,12 +5,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GAS/System/PEEffectData.h"
 #include "GameFramework/Actor.h"
-#include "GAS/System/PEAbilityData.h"
 #include "PEExplosiveActor.generated.h"
 
 class UNiagaraSystem;
-class UGameplayEffect;
 class UAbilitySystemComponent;
 /**
  *

@@ -3,6 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Tasks/PESpawnProjectile_Task.h"
+#include "GAS/System/PEAbilityData.h"
 #include "Actors/World/PEProjectileActor.h"
 
 UPESpawnProjectile_Task::UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)

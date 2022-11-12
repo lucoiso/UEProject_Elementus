@@ -5,11 +5,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GAS/System/PEEffectData.h"
 #include "UObject/Object.h"
-#include "GAS/System/PEAbilityData.h"
 #include "PEEquipment.generated.h"
 
-class APECharacter;
+class UGameplayAbility;
 
 /**
  *

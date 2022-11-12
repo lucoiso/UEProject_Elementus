@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "GameplayTagContainer.h"
-
 #pragma region Generic
 constexpr auto GlobalTag_GenericCooldown = "GameplayEffect.Cooldown";
 #pragma endregion Generic

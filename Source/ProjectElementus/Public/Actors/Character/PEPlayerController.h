@@ -48,7 +48,7 @@ public:
 	/* This function came from IAbilityInputBinding interface,
 	 * provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
-	virtual void SetupAbilityInputBinding_Implementation(UInputAction* Action, const int32 InputID) override;
+	virtual void SetupAbilityBindingByInput_Implementation(UInputAction* Action, const int32 InputID) override;
 
 	/* This function came from IAbilityInputBinding interface,
 	 * provided by GameFeatures_ExtraActions plugin to manage ability bindings */

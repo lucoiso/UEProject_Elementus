@@ -9,7 +9,8 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine"
+				"Engine",
+				"DeveloperSettings"
 			]
 		}
 	],
@@ -46,7 +47,7 @@
 		{
 			"Name": "EOSSDKHandler",
 			"Enabled": true
-		},
+		}
 	],
 	"TargetPlatforms": [
 		"Linux",

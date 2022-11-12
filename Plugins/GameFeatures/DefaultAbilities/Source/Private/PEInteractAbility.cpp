@@ -5,7 +5,6 @@
 #include "PEInteractAbility.h"
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Interfaces/PEInteractable.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
 #include "Tasks/PEInteractAbility_Task.h"
 
 UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)

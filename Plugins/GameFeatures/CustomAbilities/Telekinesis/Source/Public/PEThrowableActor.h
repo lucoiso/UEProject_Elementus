@@ -5,8 +5,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GAS/System/PEEffectData.h"
 #include "Engine/StaticMeshActor.h"
-#include "GAS/System/PEAbilityData.h"
 #include "PEThrowableActor.generated.h"
 
 class UGameplayEffect;

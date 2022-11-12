@@ -29,7 +29,7 @@ public:
 	virtual bool EquipItem(const FElementusItemInfo& InItem);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	virtual bool UnnequipItem(FElementusItemInfo& InItem);
+	virtual bool UnequipItem(FElementusItemInfo& InItem);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")

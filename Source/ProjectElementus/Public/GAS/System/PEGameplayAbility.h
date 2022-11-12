@@ -5,14 +5,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GAS/System/PEEffectData.h"
 #include "Abilities/GameplayAbility.h"
-#include "GAS/System/PEAbilityData.h"
-#include "GAS/System/PETrace.h"
 #include "PEGameplayAbility.generated.h"
 
 class AGameplayAbilityTargetActor_Trace;
 class AGameplayAbilityTargetActor;
 class APEProjectileActor;
+struct FPETargetActorSpawnParams;
 /**
  *
  */
@@ -147,7 +147,7 @@ protected:
 
 	/* Performs targeting and call WaitTargetData_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")
-	void ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation, const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass, FTargetActorSpawnParams TargetParameters);
+	void ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation, const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass, FPETargetActorSpawnParams TargetParameters);
 
 	/* Start a task to wait for a Gameplay Event and call WaitGameplayEvent_Callback function */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions | Delegates")

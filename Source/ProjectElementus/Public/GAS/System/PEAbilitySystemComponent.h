@@ -6,8 +6,9 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
-#include "GAS/System/PEAbilityData.h"
 #include "PEAbilitySystemComponent.generated.h"
+
+struct FGameplayEffectGroupedData;
 
 /**
  *
@@ -22,17 +23,17 @@ public:
 
 	/* Apply a grouped GE data to self Ability System Component */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ApplyEffectGroupedDataToSelf(FGameplayEffectGroupedData GroupedData);
+	void ApplyEffectGroupedDataToSelf(const FGameplayEffectGroupedData GroupedData);
 
 	/* Apply a grouped GE data to target Ability System Component */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC);
+	void ApplyEffectGroupedDataToTarget(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void RemoveEffectGroupedDataFromSelf(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, const int32 StacksToRemove = 1);
+	void RemoveEffectGroupedDataFromSelf(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, const int32 StacksToRemove = 1);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void RemoveEffectGroupedDataFromTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove = 1);
+	void RemoveEffectGroupedDataFromTarget(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove = 1);
 	
 	template <typename T>
 	const T* GetCustomAttributeSet() const

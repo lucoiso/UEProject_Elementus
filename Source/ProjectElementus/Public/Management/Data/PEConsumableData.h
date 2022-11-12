@@ -6,12 +6,10 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "GAS/System/PEAbilityData.h"
+#include "GAS/System/PEEffectData.h"
 #include "Engine/DataAsset.h"
-#include "Engine/DataTable.h"
 #include "PEConsumableData.generated.h"
 
-class UGameplayEffect;
 class UNiagaraSystem;
 /**
  *

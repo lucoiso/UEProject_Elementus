@@ -4,21 +4,21 @@
 
 #pragma once
 
-#include "Abilities/GameplayAbilityTargetDataFilter.h"
-#include "Abilities/GameplayAbilityWorldReticle.h"
-#include "Abilities/GameplayAbilityTargetTypes.h"
 #include "CoreMinimal.h"
+#include "Abilities/GameplayAbilityWorldReticle.h"
+#include "Abilities/GameplayAbilityTargetDataFilter.h"
+#include "Abilities/GameplayAbilityTargetTypes.h"
 #include "PETrace.generated.h"
 
 /**
  *
  */
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
-struct PROJECTELEMENTUS_API FTargetActorSpawnParams
+struct PROJECTELEMENTUS_API FPETargetActorSpawnParams
 {
 	GENERATED_USTRUCT_BODY()
 
-	FTargetActorSpawnParams() : Range(0.f), Height(0.f), Radius(0.f), StartLocation(FGameplayAbilityTargetingLocationInfo()), ReticleClass(AGameplayAbilityWorldReticle::StaticClass()), ReticleParams(FWorldReticleParameters()), TargetFilter(FGameplayTargetDataFilter()), bDestroyOnConfirmation(false), bTraceAffectsAimPitch(false), bDebug(false)
+	FPETargetActorSpawnParams() : Range(0.f), Height(0.f), Radius(0.f), StartLocation(FGameplayAbilityTargetingLocationInfo()), ReticleClass(AGameplayAbilityWorldReticle::StaticClass()), ReticleParams(FWorldReticleParameters()), TargetFilter(FGameplayTargetDataFilter()), bDestroyOnConfirmation(false), bTraceAffectsAimPitch(false), bDebug(false)
 	{
 	}
 

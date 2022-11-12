@@ -3,6 +3,8 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/System/PEAbilitySystemComponent.h"
+#include "GAS/System/PEAbilityData.h"
+#include "GAS/System/PEEffectData.h"
 
 UPEAbilitySystemComponent::UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -10,7 +12,7 @@ UPEAbilitySystemComponent::UPEAbilitySystemComponent(const FObjectInitializer& O
 	ReplicationMode = EGameplayEffectReplicationMode::Minimal;
 }
 
-void UPEAbilitySystemComponent::ApplyEffectGroupedDataToSelf(FGameplayEffectGroupedData GroupedData)
+void UPEAbilitySystemComponent::ApplyEffectGroupedDataToSelf(const FGameplayEffectGroupedData GroupedData)
 {
 	if (!IsOwnerActorAuthoritative())
 	{
@@ -30,7 +32,7 @@ void UPEAbilitySystemComponent::ApplyEffectGroupedDataToSelf(FGameplayEffectGrou
 	}
 }
 
-void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC)
+void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* TargetABSC)
 {
 	if (!IsOwnerActorAuthoritative())
 	{
@@ -50,7 +52,7 @@ void UPEAbilitySystemComponent::ApplyEffectGroupedDataToTarget(FGameplayEffectGr
 	}
 }
 
-void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromSelf(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, const int32 StacksToRemove)
+void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromSelf(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, const int32 StacksToRemove)
 {
 	if (!IsOwnerActorAuthoritative())
 	{
@@ -87,7 +89,7 @@ void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromSelf(FGameplayEffectG
 	RemoveActiveEffects(Query, StacksToRemove);
 }
 
-void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromTarget(FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove)
+void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromTarget(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove)
 {
 	if (!IsOwnerActorAuthoritative())
 	{

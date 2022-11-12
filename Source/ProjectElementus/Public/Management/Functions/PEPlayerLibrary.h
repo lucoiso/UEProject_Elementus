@@ -5,10 +5,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnhancedInputComponent.h"
-#include "GameFeatureAction_AddInputs.h"
+#include "InputTriggers.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PEPlayerLibrary.generated.h"
+
+class UInputAction;
 
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FPlayerInputBindingHandle

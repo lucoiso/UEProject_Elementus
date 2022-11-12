@@ -5,6 +5,7 @@
 #include "Actors/World/PEProjectileActor.h"
 #include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
+#include "GAS/System/PEAbilityData.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 

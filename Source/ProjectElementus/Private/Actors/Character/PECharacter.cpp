@@ -9,7 +9,6 @@
 #include "Components/PEInventoryComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemLog.h"
 #include "Actors/Character/PEPlayerState.h"

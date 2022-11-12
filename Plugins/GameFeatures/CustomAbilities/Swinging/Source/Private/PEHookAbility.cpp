@@ -4,8 +4,9 @@
 
 #include "PEHookAbility.h"
 #include "PEHookAbility_Task.h"
-#include "Actors/Character/PECharacter.h"
+#include "GameFramework/Character.h"
 #include "GAS/Targeting/PELineTargeting.h"
+#include "GAS/System/PETrace.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Management/Data/PEGlobalTags.h"
 
@@ -45,7 +46,7 @@ void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, cons
 void UPEHookAbility::WaitGameplayEvent_Callback_Implementation(FGameplayEventData Payload)
 {
 	// Will start a targeting task when the animation notify is triggered (will try to start the hook)
-	FTargetActorSpawnParams TargetingParams;
+	FPETargetActorSpawnParams TargetingParams;
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("hand_l");
 
 	ActivateWaitTargetDataTask(EGameplayTargetingConfirmation::Instant, APELineTargeting::StaticClass(), TargetingParams);
@@ -84,7 +85,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params);
 
 	// If the target is a character, will finish this ability after AbilityActiveTime seconds
-	if (TargetHit->GetActor()->GetClass()->IsChildOf<APECharacter>() && TargetHit->GetActor() != GetAvatarActorFromActorInfo() || TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
+	if (TargetHit->GetActor()->GetClass()->IsChildOf<ACharacter>() && TargetHit->GetActor() != GetAvatarActorFromActorInfo() || TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
 	{
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindLambda([=]() -> void
@@ -107,7 +108,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 	// If the confirm input is pressed, will add a impulse to ability owner
 	// and to the target/grabbed actor, if simulates physics
 
-	if (APECharacter* const Player = Cast<APECharacter>(GetAvatarActorFromActorInfo()))
+	if (ACharacter* const Player = Cast<ACharacter>(GetAvatarActorFromActorInfo()))
 	{
 		PlayAbilitySoundAttached(Player->GetMesh());
 
@@ -119,7 +120,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 		{
 			TaskHandle->GetHitResult().GetComponent()->AddImpulse(-1.f * ImpulseVector);
 		}
-		else if (APECharacter* const TargetPlayer = Cast<APECharacter>(TaskHandle->GetHitResult().GetActor()))
+		else if (ACharacter* const TargetPlayer = Cast<ACharacter>(TaskHandle->GetHitResult().GetActor()))
 		{
 			TargetPlayer->LaunchCharacter(-1.f * ImpulseVector, false, true);
 		}

@@ -12,14 +12,12 @@
 #include "Actors/Character/PEPlayerState.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/PlayerState.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "Management/PEGameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/PEInventoryComponent.h"
 #include "ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
-#include "Management/Functions/PEPlayerLibrary.h"
+#include "Management/Functions/PEEOSLibrary.h"
+#include "MFEA_Settings.h"
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -32,10 +30,10 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	static const ConstructorHelpers::FObjectFinder<UEnum> InputIDEnum_ObjRef(TEXT("/Game/Main/Data/GAS/EN_AbilityInputID"));
-	if (InputIDEnum_ObjRef.Succeeded())
+	if (const UMFEA_Settings* MF_Settings = GetDefault<UMFEA_Settings>();
+		!MF_Settings->InputIDEnumeration.IsNull())
 	{
-		InputEnumHandle = InputIDEnum_ObjRef.Object;
+		InputEnumHandle = MF_Settings->InputIDEnumeration.LoadSynchronous();
 	}
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
@@ -83,7 +81,7 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 	{
 		if (const APEPlayerState* const State = GetPlayerState<APEPlayerState>())
 		{
-			if (UPEAbilitySystemComponent* AbilitySystemComp_Ref = CastChecked<UPEAbilitySystemComponent>(State->GetAbilitySystemComponent()))
+			if (UAbilitySystemComponent* const AbilitySystemComp_Ref = State->GetAbilitySystemComponent())
 			{
 				AbilitySystemComp_Ref->RemoveActiveEffectsWithTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(GlobalTag_DeadState)));
 			}
@@ -166,7 +164,7 @@ void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>
 
 #pragma region IAbilityInputBinding
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
-void APEPlayerController::SetupAbilityInputBinding_Implementation_Implementation(UInputAction* Action, const int32 InputID)
+void APEPlayerController::SetupAbilityBindingByInput_Implementation_Implementation(UInputAction* Action, const int32 InputID)
 {
 	if (!IsValid(Action))
 	{
@@ -225,23 +223,23 @@ void APEPlayerController::OnAbilityInputPressed(UInputAction* SourceAction)
 	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Action %s and Input ID Value %u"), *FString(__func__), *SourceAction->GetName(), InputID);
 
 	// Check if controller owner is valid and owns a ability system component
-	if (const APECharacter* const ControllerOwner = GetPawn<APECharacter>();
-		ensureAlwaysMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()), TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
+	if (UAbilitySystemComponent* const TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
+		ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		// Send the input pressed event to the ability system component with the found input ID
-		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputPressed(InputID);
+		TargetABSC->AbilityLocalInputPressed(InputID);
 
 		// Verify if the found input ID is equal to Confirm or Cancel input from the specified Enumeration class
 		if (ensureAlwaysMsgf(InputEnumHandle.IsValid(), TEXT("%s have a invalid InputEnumHandle"), *GetName()))
 		{
 			if (InputID == InputEnumHandle->GetValueByName("Confirm", EGetByNameFlags::CheckAuthoredName))
 			{
-				ControllerOwner->GetAbilitySystemComponent()->LocalInputConfirm();
+				TargetABSC->LocalInputConfirm();
 			}
 
 			else if (InputID == InputEnumHandle->GetValueByName("Cancel", EGetByNameFlags::CheckAuthoredName))
 			{
-				ControllerOwner->GetAbilitySystemComponent()->LocalInputCancel();
+				TargetABSC->LocalInputCancel();
 			}
 		}
 	}
@@ -266,11 +264,11 @@ void APEPlayerController::OnAbilityInputReleased(UInputAction* SourceAction)
 	CONTROLLER_BASE_VLOG(this, Display, TEXT("%s called with Action %s and Input ID Value %u"), *FString(__func__), *SourceAction->GetName(), InputID);
 
 	// Check if controller owner is valid and owns a ability system component
-	if (const APECharacter* const ControllerOwner = GetPawn<APECharacter>();
-		ensureAlwaysMsgf(IsValid(ControllerOwner->GetAbilitySystemComponent()), TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
+	if (UAbilitySystemComponent* const TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn());
+		ensureAlwaysMsgf(IsValid(TargetABSC), TEXT("%s owner have a invalid AbilitySystemComponent"), *GetName()))
 	{
 		// Send the input released event to the ability system component with the found input ID
-		ControllerOwner->GetAbilitySystemComponent()->AbilityLocalInputReleased(InputID);
+		TargetABSC->AbilityLocalInputReleased(InputID);
 	}
 }
 
