@@ -3,14 +3,15 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/PEGameInstance.h"
+#include "Management/Functions/PEEOSLibrary.h"
 #include "EOSVoiceChatUser.h"
 #include "JsonObjectConverter.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "OnlineSubsystemEOS.h"
 
 UPEGameInstance::UPEGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-
 }
 
 void UPEGameInstance::InitializeVoiceChatFramework()

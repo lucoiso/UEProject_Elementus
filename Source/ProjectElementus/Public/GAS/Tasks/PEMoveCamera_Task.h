@@ -6,9 +6,11 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
-#include "Components/TimelineComponent.h"
 #include "PEMoveCamera_Task.generated.h"
 
+class UCameraComponent;
+class UTimelineComponent;
+	
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAimDelegate);
 /**
  * 
@@ -49,8 +51,8 @@ private:
 
 	float CurrentValue = 0.f;
 
-	TWeakObjectPtr<class UCameraComponent> TargetCamera;
-	TWeakObjectPtr<class UTimelineComponent> TaskTimeline;
+	TWeakObjectPtr<UCameraComponent> TargetCamera;
+	TWeakObjectPtr<UTimelineComponent> TaskTimeline;
 
 protected:
 	UFUNCTION()

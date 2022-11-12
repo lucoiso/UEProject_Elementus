@@ -36,8 +36,8 @@ protected:
 	virtual void OnDestroy(bool AbilityIsEnding) override;
 
 private:
-	TWeakObjectPtr<class APECharacter> HookOwner;
-	TWeakObjectPtr<APECharacter> HitTarget;
+	TWeakObjectPtr<class ACharacter> HookOwner;
+	TWeakObjectPtr<ACharacter> HitTarget;
 
 	float Intensity;
 	float MaxIntensity;

@@ -5,28 +5,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "PEAbilityData.generated.h"
 
-class UGameplayEffect;
 class UGameplayAbility;
-
-/**
- *
- */
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
-struct FGameplayEffectGroupedData
-{
-	GENERATED_USTRUCT_BODY()
-
-	FGameplayEffectGroupedData() = default;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
-	TSubclassOf<UGameplayEffect> EffectClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
-	TMap<FGameplayTag, float> SetByCallerStackedData;
-};
 
 /**
  *

@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEHookAbility_Task.h"
-#include "Actors/Character/PECharacter.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 
@@ -29,13 +29,13 @@ void UPEHookAbility_Task::Activate()
 
 	check(Ability);
 
-	HookOwner = Cast<APECharacter>(GetAvatarActor());
+	HookOwner = Cast<ACharacter>(GetAvatarActor());
 
 	if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
 	{
 		CurrentHookLocation = HitDataHandle.Location;
 
-		HitTarget = Cast<APECharacter>(HitDataHandle.GetActor());
+		HitTarget = Cast<ACharacter>(HitDataHandle.GetActor());
 		if (!HitTarget.IsValid())
 		{
 			HitTarget.Reset();

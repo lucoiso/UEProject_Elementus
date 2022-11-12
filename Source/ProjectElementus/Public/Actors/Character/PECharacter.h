@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
-#include "ElementusInventoryData.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
 #include "PECharacter.generated.h"

@@ -4,6 +4,8 @@
 
 #include "GAS/System/PEGameplayAbility.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
+#include "GAS/System/PEAbilityData.h"
+#include "GAS/System/PETrace.h"
 #include "GAS/Effects/PECooldownEffect.h"
 #include "GAS/Effects/PECostEffect.h"
 #include "GAS/Tasks/PESpawnProjectile_Task.h"
@@ -525,7 +527,7 @@ void UPEGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, con
 	AbilityTask_PlayMontageAndWait->ReadyForActivation();
 }
 
-void UPEGameplayAbility::ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation, const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass, FTargetActorSpawnParams TargetParameters)
+void UPEGameplayAbility::ActivateWaitTargetDataTask(const TEnumAsByte<EGameplayTargetingConfirmation::Type> TargetingConfirmation, const TSubclassOf<AGameplayAbilityTargetActor_Trace> TargetActorClass, FPETargetActorSpawnParams TargetParameters)
 {
 	if constexpr (&TargetParameters.StartLocation == nullptr)
 	{

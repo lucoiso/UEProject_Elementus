@@ -5,12 +5,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "Actors/Interfaces/PEInteractable.h"
 #include "GameFramework/Actor.h"
-#include "Management/Data/PEConsumableData.h"
 #include "PEConsumableActor.generated.h"
 
+class UPEConsumableData;
+class UNiagaraComponent;
 /**
  *
  */
@@ -38,7 +38,7 @@ protected:
 	TObjectPtr<UStaticMeshComponent> ObjectMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	TObjectPtr<class UNiagaraComponent> ObjectVFX;
+	TObjectPtr<UNiagaraComponent> ObjectVFX;
 
 private:
 #if WITH_EDITOR

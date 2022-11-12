@@ -6,9 +6,9 @@
 
 #include "CoreMinimal.h"
 #include "GAS/System/PEGameplayAbility.h"
-#include "Tasks/PEInteractAbility_Task.h"
 #include "PEInteractAbility.generated.h"
 
+class UPEInteractAbility_Task;
 /**
  *
  */

@@ -6,8 +6,6 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerController.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Components/GameFrameworkComponentManager.h"
 #include "Management/Data/PEGlobalTags.h"
 
 DEFINE_LOG_CATEGORY(LogPlayerState);

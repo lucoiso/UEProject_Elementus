@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PECrouchAbility.h"
-#include "Actors/Character/PECharacter.h"
+#include "GameFramework/Character.h"
 
 UPECrouchAbility::UPECrouchAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -16,7 +16,7 @@ void UPECrouchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	APECharacter* const Player = Cast<APECharacter>(ActorInfo->AvatarActor.Get());
+	ACharacter* const Player = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
 
 	// Only characters can activate this ability
 	if (!IsValid(Player))

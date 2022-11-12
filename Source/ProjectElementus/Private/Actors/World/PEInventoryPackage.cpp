@@ -3,8 +3,6 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/World/PEInventoryPackage.h"
-
-#include "ElementusInventoryComponent.h"
 #include "Actors/Character/PECharacter.h"
 #include "Blueprint/UserWidget.h"
 
@@ -32,8 +30,6 @@ APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitial
 	{
 		TradeWidgetClass = TradeWidget_ClassRef.Class;
 	}
-
-	PackageInventory->SetIsReplicated(true);
 }
 
 void APEInventoryPackage::Tick(const float DeltaSeconds)

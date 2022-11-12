@@ -7,10 +7,11 @@
 #include "CoreMinimal.h"
 #include "EOSVoiceChatUser.h"
 #include "Interfaces/OnlineSessionInterface.h"
-#include "Management/Functions/PEEOSLibrary.h"
 #include "Engine/GameInstance.h"
 #include "PEGameInstance.generated.h"
 
+class FOnlineAccountCredentials;
+struct FSessionDataHandler;
 /**
  *
  */

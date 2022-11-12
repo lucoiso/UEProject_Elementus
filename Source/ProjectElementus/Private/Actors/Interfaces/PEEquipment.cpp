@@ -5,6 +5,5 @@
 #include "Actors/Interfaces/PEEquipment.h"
 
 UPEEquipment::UPEEquipment(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
-{
-	
+{	
 }

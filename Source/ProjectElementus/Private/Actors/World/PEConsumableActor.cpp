@@ -3,8 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/World/PEConsumableActor.h"
-
-#include "AbilitySystemGlobals.h"
+#include "Management/Data/PEConsumableData.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"

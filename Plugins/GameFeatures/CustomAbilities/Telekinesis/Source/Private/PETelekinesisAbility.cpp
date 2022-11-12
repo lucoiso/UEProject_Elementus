@@ -6,6 +6,7 @@
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
 #include "GAS/Targeting/PELineTargeting.h"
+#include "GAS/System/PETrace.h"
 #include "Management/Data/PEGlobalTags.h"
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ThrowIntensity(2750.f)
@@ -23,7 +24,7 @@ void UPETelekinesisAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	// Targeting: Params	
-	FTargetActorSpawnParams TargetingParams;
+	FPETargetActorSpawnParams TargetingParams;
 	TargetingParams.TargetFilter.RequiredActorClass = APEThrowableActor::StaticClass();
 	TargetingParams.StartLocation = MakeTargetLocationInfoFromOwnerSkeletalMeshComponent("head");
 

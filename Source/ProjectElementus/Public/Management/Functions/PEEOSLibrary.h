@@ -5,10 +5,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Kismet/BlueprintFunctionLibrary.h"
 #include "EOSVoiceChatUser.h"
 #include "OnlineSubsystemEOS.h"
 #include "OnlineSessionSettings.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
 #include "PEEOSLibrary.generated.h"
 
 /**
