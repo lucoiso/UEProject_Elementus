@@ -14,7 +14,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/PEInventoryComponent.h"
-#include "ElementusInventoryFunctions.h"
+#include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Management/Functions/PEEOSLibrary.h"
 #include "MFEA_Settings.h"
@@ -162,7 +162,7 @@ void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>
 }
 #pragma endregion Elementus Inventory Trade
 
-#pragma region IAbilityInputBinding
+#pragma region IMFEA_AbilityInputBinding
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
 void APEPlayerController::SetupAbilityBindingByInput_Implementation_Implementation(UInputAction* Action, const int32 InputID)
 {
@@ -202,7 +202,7 @@ void APEPlayerController::RemoveAbilityInputBinding_Implementation_Implementatio
 		AbilityActionBindings.Remove(Action);
 	}
 }
-#pragma endregion IAbilityInputBinding
+#pragma endregion IMFEA_AbilityInputBinding
 
 void APEPlayerController::OnAbilityInputPressed(UInputAction* SourceAction)
 {
