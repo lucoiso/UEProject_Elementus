@@ -13,9 +13,9 @@
 /**
  *
  */
-DECLARE_LOG_CATEGORY_EXTERN(LogController_Base, Display, Verbose);
+DECLARE_LOG_CATEGORY_EXTERN(LogController_Base, Display, All);
 
-DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
+DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, NoLogging, All);
 
 #define CONTROLLER_BASE_VLOG(Actor, Verbosity, Format, ...) \
 { \
