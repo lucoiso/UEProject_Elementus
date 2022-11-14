@@ -17,7 +17,7 @@ struct FGameplayTag;
 /**
  *
  */
-DECLARE_LOG_CATEGORY_EXTERN(LogPlayerState, Display, NoLogging);
+DECLARE_LOG_CATEGORY_EXTERN(LogPlayerState, NoLogging, All);
 
 #define PLAYERSTATE_VLOG(Actor, Verbosity, Format, ...) \
 { \

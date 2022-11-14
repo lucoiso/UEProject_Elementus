@@ -6,16 +6,16 @@
 
 #include "CoreMinimal.h"
 #include "InputTriggers.h"
-#include "AbilityInputBinding.h"
-#include "ElementusInventoryData.h"
+#include "Interfaces/MFEA_AbilityInputBinding.h"
+#include "Management/ElementusInventoryData.h"
 #include "PEPlayerController.generated.h"
 
 /**
  *
  */
-DECLARE_LOG_CATEGORY_EXTERN(LogController_Base, Display, Verbose);
+DECLARE_LOG_CATEGORY_EXTERN(LogController_Base, Display, All);
 
-DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, Display, NoLogging);
+DECLARE_LOG_CATEGORY_EXTERN(LogController_Axis, NoLogging, All);
 
 #define CONTROLLER_BASE_VLOG(Actor, Verbosity, Format, ...) \
 { \
@@ -37,24 +37,24 @@ struct FPrimaryElementusItemId;
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IAbilityInputBinding
+class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IMFEA_AbilityInputBinding
 {
 	GENERATED_BODY()
 
 public:
 	explicit APEPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-#pragma region IAbilityInputBinding
-	/* This function came from IAbilityInputBinding interface,
+#pragma region IMFEA_AbilityInputBinding
+	/* This function came from IMFEA_AbilityInputBinding interface,
 	 * provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
 	virtual void SetupAbilityBindingByInput_Implementation(UInputAction* Action, const int32 InputID) override;
 
-	/* This function came from IAbilityInputBinding interface,
+	/* This function came from IMFEA_AbilityInputBinding interface,
 	 * provided by GameFeatures_ExtraActions plugin to manage ability bindings */
 	UFUNCTION(Client, Reliable)
 	virtual void RemoveAbilityInputBinding_Implementation(const UInputAction* Action) override;
-#pragma endregion IAbilityInputBinding
+#pragma endregion IMFEA_AbilityInputBinding
 
 	/* Setup the spectating state on both client and server */
 	UFUNCTION(NetMulticast, Unreliable)

@@ -4,7 +4,7 @@
 
 #include "Components/PEInventoryComponent.h"
 #include "Management/Data/PEGlobalTags.h"
-#include "ElementusInventoryFunctions.h"
+#include "Management/ElementusInventoryFunctions.h"
 #include "Actors/Interfaces/PEEquipment.h"
 #include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"

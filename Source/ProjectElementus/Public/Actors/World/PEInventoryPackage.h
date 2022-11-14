@@ -6,7 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "Actors/Interfaces/PEInteractable.h"
-#include "ElementusInventoryPackage.h"
+#include "Actors/ElementusInventoryPackage.h"
 #include "PEInventoryPackage.generated.h"
 
 /**

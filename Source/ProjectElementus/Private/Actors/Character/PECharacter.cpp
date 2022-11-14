@@ -14,7 +14,7 @@
 #include "Actors/Character/PEPlayerState.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "Actors/World/PEInventoryPackage.h"
-#include "ElementusInventoryFunctions.h"
+#include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Net/UnrealNetwork.h"
 
