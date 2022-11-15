@@ -171,7 +171,7 @@ void UPEEOSLibrary::IngestEOSStats(const int32 LocalUserNum, const TMap<FName, i
 
 				const FOnlineStatsUpdateStatsComplete UpdateStatsDelegate = FOnlineStatsUpdateStatsComplete::CreateLambda([UserNetIdRef](const FOnlineError& ResultState)
 				{
-					UE_LOG(LogTemp, Log, TEXT("IngestEOSStat - User ID: %s; Result: %s"), *UserNetIdRef->ToString(), *ResultState.ToLogString());
+					UE_LOG(LogTemp, Log, TEXT("IngestEOSStats - User ID: %s; Result: %s"), *UserNetIdRef->ToString(), *ResultState.ToLogString());
 				});
 				
 				StatsInterface->UpdateStats(UserNetIdRef, { UpdatedStats }, UpdateStatsDelegate);

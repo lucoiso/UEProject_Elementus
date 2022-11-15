@@ -81,7 +81,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Update EOS Presence"))
 	static void UpdateEOSPresence(const int32 LocalUserNum, const FString& PresenceText, const bool bOnline);
 
-	/* Modify an EOS stat */
+	/* Modify all EOS stats in the given map */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Ingest EOS Stats"))
 	static void IngestEOSStats(const int32 LocalUserNum, const TMap<FName, int32> StatsMap);
 };
