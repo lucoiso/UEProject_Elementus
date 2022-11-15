@@ -7,11 +7,7 @@
 		{
 			"Name": "ProjectElementus",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"DeveloperSettings"
-			]
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [

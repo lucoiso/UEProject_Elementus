@@ -24,6 +24,7 @@
 #include "GameplayEffect.h"
 #include "AbilitySystemGlobals.h"
 #include "Kismet/GameplayStatics.h"
+#include "AbilitySystemLog.h"
 
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AbilityMaxRange(0), bIgnoreCost(false), bIgnoreCooldown(false), bWaitCancel(true), AbilityActiveTime(0), bEndAbilityAfterActiveTime(false)
 {
@@ -485,7 +486,7 @@ void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, 
 {
 	if (!IsValid(AbilitySoundFX))
 	{
-		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null metasound object."), *GetName());
+		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null sound object."), *GetName());
 		return;
 	}
 
@@ -502,7 +503,7 @@ void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext,
 {
 	if (!IsValid(AbilitySoundFX))
 	{
-		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null metasound object."), *GetName());
+		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null sound object."), *GetName());
 		return;
 	}
 	
