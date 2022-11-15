@@ -482,9 +482,9 @@ void UPEGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAbi
 	}
 }
 
-void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach, const FVector& InLocation, const float InVolumeMultiplier)
+void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach, const FVector& InLocation)
 {
-	if (!IsValid(AbilitySoundFX))
+	if (!IsValid(AbilitySoundData.AbilitySoundFX))
 	{
 		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null sound object."), *GetName());
 		return;
@@ -496,18 +496,18 @@ void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, 
 		return;
 	}
 
-	UGameplayStatics::SpawnSoundAttached(AbilitySoundFX, InComponent, SocketToAttach, InLocation, EAttachLocation::KeepRelativeOffset, false, InVolumeMultiplier);
+	UGameplayStatics::SpawnSoundAttached(AbilitySoundData.AbilitySoundFX, InComponent, SocketToAttach, InLocation, EAttachLocation::KeepRelativeOffset, false, AbilitySoundData.VolumeMultiplier, AbilitySoundData.PitchMultiplier, AbilitySoundData.StartTime);
 }
 
-void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation, const float InVolumeMultiplier)
+void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation)
 {
-	if (!IsValid(AbilitySoundFX))
+	if (!IsValid(AbilitySoundData.AbilitySoundFX))
 	{
 		ABILITY_VLOG(this, Error, TEXT("Tried to play ability %s sound with a null sound object."), *GetName());
 		return;
 	}
 	
-	UGameplayStatics::SpawnSoundAtLocation(WorldContext, AbilitySoundFX, InLocation, FRotator::ZeroRotator, InVolumeMultiplier);
+	UGameplayStatics::SpawnSoundAtLocation(WorldContext, AbilitySoundData.AbilitySoundFX, InLocation, FRotator::ZeroRotator, AbilitySoundData.VolumeMultiplier, AbilitySoundData.PitchMultiplier, AbilitySoundData.StartTime);
 }
 
 void UPEGameplayAbility::ActivateWaitMontageTask(const FName MontageSection, const float Rate, const bool bRandomSection, const bool bStopsWhenAbilityEnds)

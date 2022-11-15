@@ -4,7 +4,7 @@
 
 #include "Management/Functions/PEEOSLibrary.h"
 #include "EOSVoiceChatUser.h"
-#include "Interfaces/OnlineAchievementsInterface.h"
+#include "Interfaces/OnlineStatsInterface.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Interfaces/OnlinePresenceInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
@@ -144,42 +144,37 @@ void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString& P
 	}
 }
 
-void UPEEOSLibrary::WriteEOSAchievement(const int32 LocalUserNum, const EAchievementMod Modifier, const FName StatName, const float Percentage)
+void UPEEOSLibrary::IngestEOSStats(const int32 LocalUserNum, const TMap<FName, int32> StatsMap)
 {
 	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
 	{
 		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
 		{
-			if (const IOnlineAchievementsPtr AchievementsInterface = OnlineSubsystem->GetAchievementsInterface())
+			if (const IOnlineStatsPtr StatsInterface = OnlineSubsystem->GetStatsInterface())
 			{
-				UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Modifier: %d; Stat Name: %s; Percentage: %f"), *FString(__func__), LocalUserNum, Modifier, *StatName.ToString(), Percentage);
+				const FUniqueNetIdRef UserNetIdRef = IdentityInterface->GetUniquePlayerId(LocalUserNum).ToSharedRef();
+				
+				FOnlineStatsUserUpdatedStats UpdatedStats = FOnlineStatsUserUpdatedStats(UserNetIdRef);		
 
-				const FOnlineAchievementsWritePtr NewAchievement = MakeShareable(new FOnlineAchievementsWrite());
-
-				switch (Modifier)
+				for (const auto& [StatName, StatValue] : StatsMap)
 				{
-				case EAchievementMod::Set: NewAchievement->SetFloatStat(StatName, Percentage);
-					break;
+					if (StatName.IsNone())
+					{
+						continue;
+					}
+					
+					UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Stat Name: %s; Value: %d"), *FString(__func__), LocalUserNum, *StatName.ToString(), StatValue);
 
-				case EAchievementMod::Add: NewAchievement->IncrementFloatStat(StatName, Percentage);
-					break;
-
-				case EAchievementMod::Subtract: NewAchievement->DecrementFloatStat(StatName, Percentage);
-					break;
-
-				default: break;
+					const FOnlineStatUpdate StatUpdate(StatValue, FOnlineStatUpdate::EOnlineStatModificationType::Unknown);
+					UpdatedStats.Stats.Add(StatName.ToString(), StatUpdate);
 				}
 
-				FOnlineAchievementsWriteRef WriteObject = NewAchievement.ToSharedRef();
-
-				const FUniqueNetIdPtr UserNetId = IdentityInterface->GetUniquePlayerId(LocalUserNum);
-
-				const FOnAchievementsWrittenDelegate AchievementsWriteDelegate = FOnAchievementsWrittenDelegate::CreateLambda([](const FUniqueNetId& UserID, const bool bResult)
+				const FOnlineStatsUpdateStatsComplete UpdateStatsDelegate = FOnlineStatsUpdateStatsComplete::CreateLambda([UserNetIdRef](const FOnlineError& ResultState)
 				{
-					UE_LOG(LogTemp, Log, TEXT("WriteEOSAchievement - User ID: %s; Result: %d"), *UserID.ToString(), bResult);
+					UE_LOG(LogTemp, Log, TEXT("IngestEOSStat - User ID: %s; Result: %s"), *UserNetIdRef->ToString(), *ResultState.ToLogString());
 				});
-
-				AchievementsInterface->WriteAchievements(*UserNetId, WriteObject, AchievementsWriteDelegate);
+				
+				StatsInterface->UpdateStats(UserNetIdRef, { UpdatedStats }, UpdateStatsDelegate);
 			}
 		}
 	}

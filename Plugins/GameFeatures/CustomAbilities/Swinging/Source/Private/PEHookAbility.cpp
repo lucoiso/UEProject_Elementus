@@ -107,7 +107,6 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 {
 	// If the confirm input is pressed, will add a impulse to ability owner
 	// and to the target/grabbed actor, if simulates physics
-
 	if (ACharacter* const Player = Cast<ACharacter>(GetAvatarActorFromActorInfo()))
 	{
 		PlayAbilitySoundAttached(Player->GetMesh());

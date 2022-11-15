@@ -13,6 +13,27 @@ class AGameplayAbilityTargetActor_Trace;
 class AGameplayAbilityTargetActor;
 class APEProjectileActor;
 struct FPETargetActorSpawnParams;
+
+USTRUCT(BlueprintType, Category = "Project Elementus | Structures")
+struct FPEAudioData
+{
+	GENERATED_USTRUCT_BODY()
+
+	FPEAudioData() = default;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	TObjectPtr<USoundBase> AbilitySoundFX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	float VolumeMultiplier = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	float PitchMultiplier = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
+	float StartTime = 0.f;
+};
+
 /**
  *
  */
@@ -54,7 +75,7 @@ protected:
 	FGameplayTagContainer SetByCallerCooldownTags;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
-	TObjectPtr<USoundBase> AbilitySoundFX;
+	FPEAudioData AbilitySoundData;
 	
 	/* Mix with bEndAbilityAfterActiveTime to end ability with a pre-determined time */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
@@ -262,10 +283,10 @@ protected:
 	void RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach = NAME_None, const FVector& InLocation = FVector::ZeroVector, const float InVolumeMultiplier = 1.f);
+	void PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach = NAME_None, const FVector& InLocation = FVector::ZeroVector);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation = FVector::ZeroVector, const float InVolumeMultiplier = 1.f);
+	void PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation = FVector::ZeroVector);
 	
 	/* Shared Timer Handle that is actually used with bEndAbilityAfterActiveTime */
 	FTimerHandle CancelationTimerHandle;
