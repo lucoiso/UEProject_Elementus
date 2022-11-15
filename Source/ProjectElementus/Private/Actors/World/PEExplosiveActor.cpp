@@ -9,7 +9,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
 
-APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ExplosionRadius(150.f), ExplosionMagnitude(1000.f), bDestroyAfterExplosion(true), bDebug(false)
+APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ExplosionRadius(150.f), ExplosionMagnitude(1000.f), bDestroyAfterExplosion(true)
 {
 	bReplicates = false;
 	PrimaryActorTick.bCanEverTick = false;
@@ -32,12 +32,11 @@ void APEExplosiveActor::PerformExplosion()
 	QueryParams.AddIgnoredActor(this);
 	QueryParams.MobilityType = EQueryMobilityType::Dynamic;
 
-	if (bDebug)
-	{
-		const FName TraceTag("SphereTraceDebugTag");
-		GetWorld()->DebugDrawTraceTag = TraceTag;
-		QueryParams.TraceTag = TraceTag;
-	}
+#if UE_ENABLE_DEBUG_DRAWING
+	const FName TraceTag("SphereTraceDebugTag");
+	GetWorld()->DebugDrawTraceTag = TraceTag;
+	QueryParams.TraceTag = TraceTag;
+#endif
 
 	GetWorld()->SweepMultiByObjectType(HitOut, GetActorLocation(), GetActorLocation(), FQuat(FRotator(0.f)), FCollisionObjectQueryParams::AllDynamicObjects, FCollisionShape::MakeSphere(ExplosionRadius), QueryParams);
 

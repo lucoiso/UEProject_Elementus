@@ -35,9 +35,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bDestroyAfterExplosion;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
-	bool bDebug;
-
 	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TArray<FGameplayEffectGroupedData> ExplosionEffects;

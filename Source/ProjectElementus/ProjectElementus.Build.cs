@@ -39,7 +39,8 @@ public class ProjectElementus : ModuleRules
 			"OnlineSubsystem",
 			"EOSVoiceChat",
 			"VoiceChat",
-			"JsonUtilities"
+			"JsonUtilities",
+            "DeveloperSettings"
         });
 	}
 }
