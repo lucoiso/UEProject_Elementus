@@ -31,14 +31,6 @@ struct FSessionSettingsHandler
 	FOnlineSessionSettings Settings;
 };
 
-UENUM(BlueprintType, Category = "Project Elementus | Enumerations")
-enum class EAchievementMod : uint8
-{
-	Set,
-	Add,
-	Subtract
-};
-
 UCLASS(Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEEOSLibrary final : public UBlueprintFunctionLibrary
 {
@@ -89,7 +81,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Update EOS Presence"))
 	static void UpdateEOSPresence(const int32 LocalUserNum, const FString& PresenceText, const bool bOnline);
 
-	/* Modify the status of a achievement */
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Write EOS Achievement"))
-	static void WriteEOSAchievement(const int32 LocalUserNum, const EAchievementMod Modifier, const FName StatName, const float Percentage = 1.f);
+	/* Modify an EOS stat */
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Ingest EOS Stats"))
+	static void IngestEOSStats(const int32 LocalUserNum, const TMap<FName, int32> StatsMap);
 };

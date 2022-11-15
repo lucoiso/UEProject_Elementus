@@ -44,7 +44,7 @@ void UPEDoubleJumpAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		Params.Location = VFXLocation;
 		ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Default.DoubleJump"), Params, ActorInfo->AbilitySystemComponent.Get());
 
-		PlayAbilitySoundAtLocation(ActorInfo->AvatarActor.Get(), VFXLocation, 0.3f);
+		PlayAbilitySoundAtLocation(ActorInfo->AvatarActor.Get(), VFXLocation);
 
 		Player->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
 	}
