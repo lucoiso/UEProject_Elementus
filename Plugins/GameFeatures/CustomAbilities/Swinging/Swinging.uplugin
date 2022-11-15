@@ -30,10 +30,6 @@
 			"Enabled": true
 		},
 		{
-			"Name": "Metasound",
-			"Enabled": true
-		},
-		{
 			"Name": "ModularFeatures_ExtraActions",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a718e1ae4fa741869b8f7aaea1434a8d"
