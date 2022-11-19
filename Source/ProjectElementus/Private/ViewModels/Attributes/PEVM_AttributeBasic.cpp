@@ -19,25 +19,17 @@ float UPEVM_AttributeBasic::GetHealthPercent() const
 	return Health / MaxHealth;
 }
 
-#define CHECK_ATTRIBUTE_AND_SET_VALUE(AttributeName) \
-if (AttributeChangeData.Attribute == UPEBasicStatusAS::Get##AttributeName##Attribute()) \
-{ \
-	Set##AttributeName##(AttributeChangeData.NewValue); \
-	return; \
-}
-
 void UPEVM_AttributeBasic::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
 {
-	CHECK_ATTRIBUTE_AND_SET_VALUE(Health);
-	CHECK_ATTRIBUTE_AND_SET_VALUE(MaxHealth);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, Health);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, MaxHealth);
 
-	CHECK_ATTRIBUTE_AND_SET_VALUE(Mana);
-	CHECK_ATTRIBUTE_AND_SET_VALUE(MaxMana);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, Mana);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, MaxMana);
 
-	CHECK_ATTRIBUTE_AND_SET_VALUE(Stamina);
-	CHECK_ATTRIBUTE_AND_SET_VALUE(MaxStamina);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, Stamina);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, MaxStamina);
 }
-#undef CHECK_ATTRIBUTE_AND_SET_VALUE
 
 void UPEVM_AttributeBasic::SetHealth(const float InValue)
 {

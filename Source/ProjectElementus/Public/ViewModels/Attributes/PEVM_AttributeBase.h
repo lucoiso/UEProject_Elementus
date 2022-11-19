@@ -9,6 +9,13 @@
 #include "GameplayEffectTypes.h"
 #include "PEVM_AttributeBase.generated.h"
 
+#define CHECK_ATTRIBUTE_AND_SET_VALUE(AttributeClass, AttributeName) \
+if (AttributeChangeData.Attribute == ##AttributeClass##::Get##AttributeName##Attribute()) \
+{ \
+	Set##AttributeName##(AttributeChangeData.NewValue); \
+	return; \
+}
+
 /**
  * 
  */

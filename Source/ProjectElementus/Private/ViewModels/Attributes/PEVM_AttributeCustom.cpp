@@ -11,6 +11,11 @@ UPEVM_AttributeCustom::UPEVM_AttributeCustom(const FObjectInitializer& ObjectIni
 
 void UPEVM_AttributeCustom::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
 {
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPECustomStatusAS, AttackRate);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPECustomStatusAS, DefenseRate);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPECustomStatusAS, SpeedRate);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPECustomStatusAS, JumpRate);
+	CHECK_ATTRIBUTE_AND_SET_VALUE(UPECustomStatusAS, Gold);
 }
 
 void UPEVM_AttributeCustom::SetAttackRate(const float InValue)
