@@ -5,14 +5,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MVVMViewModelBase.h"
+#include "ViewModels/Attributes/PEVM_AttributeBase.h"
 #include "PEVM_AttributeBasic.generated.h"
 
 /**
  * 
  */
 UCLASS(NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPEVM_AttributeBasic : public UMVVMViewModelBase
+class PROJECTELEMENTUS_API UPEVM_AttributeBasic : public UPEVM_AttributeBase
 {
 	GENERATED_BODY()
 	
@@ -23,7 +23,7 @@ public:
 	float GetHealthPercent() const;
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
-	float CurrentHealth;
+	float Health;
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties", Category = "Project Elementus | Properties")
 	float MaxHealth;
@@ -32,7 +32,7 @@ public:
 	float GetManaPercent() const;
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
-	float CurrentMana;
+	float Mana;
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
 	float MaxMana;
@@ -41,26 +41,28 @@ public:
 	float GetStaminaPercent() const;
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
-	float CurrentStamina;
+	float Stamina;
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
 	float MaxStamina;
 
+	virtual void OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData);
+
 private:
-	void SetCurrentHealth(const float InValue);
-	float GetCurrentHealth() const;
+	void SetHealth(const float InValue);
+	float GetHealth() const;
 
 	void SetMaxHealth(const float InValue);
 	float GetMaxHealth() const;
 
-	void SetCurrentMana(const float InValue);
-	float GetCurrentMana() const;
+	void SetMana(const float InValue);
+	float GetMana() const;
 
 	void SetMaxMana(const float InValue);
 	float GetMaxMana() const;
 
-	void SetCurrentStamina(const float InValue);
-	float GetCurrentStamina() const;
+	void SetStamina(const float InValue);
+	float GetStamina() const;
 
 	void SetMaxStamina(const float InValue);
 	float GetMaxStamina() const;

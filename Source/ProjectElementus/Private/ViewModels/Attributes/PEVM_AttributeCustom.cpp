@@ -3,9 +3,14 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "ViewModels/Attributes/PEVM_AttributeCustom.h"
+#include "GAS/Attributes/PECustomStatusAS.h"
 
 UPEVM_AttributeCustom::UPEVM_AttributeCustom(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AttackRate(-1.f), DefenseRate(-1.f), SpeedRate(-1.f), JumpRate(-1.f), Gold(-1.f)
 {	
+}
+
+void UPEVM_AttributeCustom::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
+{
 }
 
 void UPEVM_AttributeCustom::SetAttackRate(const float InValue)

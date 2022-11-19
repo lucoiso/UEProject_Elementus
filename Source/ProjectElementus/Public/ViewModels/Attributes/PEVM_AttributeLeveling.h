@@ -5,14 +5,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MVVMViewModelBase.h"
+#include "ViewModels/Attributes/PEVM_AttributeBase.h"
 #include "PEVM_AttributeLeveling.generated.h"
 
 /**
  * 
  */
 UCLASS(NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPEVM_AttributeLeveling : public UMVVMViewModelBase
+class PROJECTELEMENTUS_API UPEVM_AttributeLeveling : public UPEVM_AttributeBase
 {
 	GENERATED_BODY()
 	
@@ -30,6 +30,8 @@ public:
 
 	UFUNCTION(BlueprintPure, FieldNotify, Category = "Project Elementus | Functions")
 	float GetExperiencePercent() const;
+	
+	virtual void OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData);
 
 private:
 	void SetCurrentLevel(const float InValue);

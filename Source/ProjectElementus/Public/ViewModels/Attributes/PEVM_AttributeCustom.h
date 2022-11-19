@@ -5,14 +5,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MVVMViewModelBase.h"
+#include "ViewModels/Attributes/PEVM_AttributeBase.h"
 #include "PEVM_AttributeCustom.generated.h"
 
 /**
  * 
  */
 UCLASS(NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPEVM_AttributeCustom : public UMVVMViewModelBase
+class PROJECTELEMENTUS_API UPEVM_AttributeCustom : public UPEVM_AttributeBase
 {
 	GENERATED_BODY()
 	
@@ -33,6 +33,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
 	float Gold;
+
+	virtual void OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData);
 
 private:
 	void SetAttackRate(const float InValue);

@@ -3,6 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "ViewModels/Attributes/PEVM_AttributeLeveling.h"
+#include "GAS/Attributes/PELevelingAS.h"
 
 UPEVM_AttributeLeveling::UPEVM_AttributeLeveling(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), CurrentLevel(-1.f), CurrentExperience(-1.f), RequiredExperience(-1.f)
 {	
@@ -16,6 +17,10 @@ float UPEVM_AttributeLeveling::GetExperiencePercent() const
 	}
 
 	return CurrentExperience / RequiredExperience;
+}
+
+void UPEVM_AttributeLeveling::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
+{
 }
 
 void UPEVM_AttributeLeveling::SetCurrentLevel(const float InValue)

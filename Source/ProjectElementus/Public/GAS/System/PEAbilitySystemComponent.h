@@ -9,6 +9,9 @@
 #include "PEAbilitySystemComponent.generated.h"
 
 struct FGameplayEffectGroupedData;
+class UPEVM_AttributeBasic;
+class UPEVM_AttributeCustom;
+class UPEVM_AttributeLeveling;
 
 /**
  *
@@ -40,4 +43,16 @@ public:
 	{
 		return Cast<T>(GetAttributeSet(T::StaticClass()));
 	}
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
+	TObjectPtr<UPEVM_AttributeBasic> BasicAttributes_VM;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
+	TObjectPtr<UPEVM_AttributeCustom> CustomAttributes_VM;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
+	TObjectPtr<UPEVM_AttributeLeveling> LevelingAttributes_VM;
+
+protected:
+	virtual void InitializeComponent() override;
 };

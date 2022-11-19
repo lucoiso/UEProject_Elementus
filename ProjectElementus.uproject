@@ -7,10 +7,7 @@
 		{
 			"Name": "ProjectElementus",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"ModelViewViewModel"
-			]
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
