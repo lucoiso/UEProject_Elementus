@@ -37,12 +37,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void RemoveEffectGroupedDataFromTarget(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove = 1);
-	
-	template <typename T>
-	const T* GetCustomAttributeSet() const
-	{
-		return Cast<T>(GetAttributeSet(T::StaticClass()));
-	}
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	TObjectPtr<UPEVM_AttributeBasic> BasicAttributes_VM;
@@ -52,7 +46,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
 	TObjectPtr<UPEVM_AttributeLeveling> LevelingAttributes_VM;
-
-protected:
-	virtual void InitializeComponent() override;
+	
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 };

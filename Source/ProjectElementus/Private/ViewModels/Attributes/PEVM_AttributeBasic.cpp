@@ -21,6 +21,8 @@ float UPEVM_AttributeBasic::GetHealthPercent() const
 
 void UPEVM_AttributeBasic::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
 {
+	Super::OnAttributeChange(AttributeChangeData);
+
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, Health);
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, MaxHealth);
 

@@ -21,6 +21,8 @@ float UPEVM_AttributeLeveling::GetExperiencePercent() const
 
 void UPEVM_AttributeLeveling::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
 {
+	Super::OnAttributeChange(AttributeChangeData);
+
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPELevelingAS, CurrentLevel);
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPELevelingAS, CurrentExperience);
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPELevelingAS, RequiredExperience);

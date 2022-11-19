@@ -10,4 +10,5 @@ UPEVM_AttributeBase::UPEVM_AttributeBase(const FObjectInitializer& ObjectInitial
 
 void UPEVM_AttributeBase::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
 {
+	GEngine->AddOnScreenDebugMessage((int32)GetUniqueID(), 5.f, FColor::Yellow, FString::Printf(TEXT("Attribute: %s; Value: %f"), *AttributeChangeData.Attribute.AttributeName, AttributeChangeData.NewValue));
 }

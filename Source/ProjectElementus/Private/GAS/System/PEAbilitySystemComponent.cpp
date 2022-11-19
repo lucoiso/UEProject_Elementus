@@ -137,12 +137,16 @@ void UPEAbilitySystemComponent::RemoveEffectGroupedDataFromTarget(const FGamepla
 }
 
 #define REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(AttributeClass, AttributeName, ViewModelClass, ViewModelObject) \
+	if (GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).IsBoundToObject(ViewModelObject)) \
+	{ \
+		GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).RemoveAll(ViewModelObject); \
+	} \
 	GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).AddUObject(ViewModelObject, &##ViewModelClass##::OnAttributeChange)
 
-void UPEAbilitySystemComponent::InitializeComponent()
+void UPEAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
-	Super::InitializeComponent();
-
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+	
 #pragma region Basic Status
 	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPEBasicStatusAS, Health, UPEVM_AttributeBasic, BasicAttributes_VM);
 	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPEBasicStatusAS, MaxHealth, UPEVM_AttributeBasic, BasicAttributes_VM);
