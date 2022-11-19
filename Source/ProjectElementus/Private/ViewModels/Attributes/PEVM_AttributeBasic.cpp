@@ -22,7 +22,7 @@ float UPEVM_AttributeBasic::GetHealthPercent() const
 #define CHECK_ATTRIBUTE_AND_SET_VALUE(AttributeName) \
 if (AttributeChangeData.Attribute == UPEBasicStatusAS::Get##AttributeName##Attribute()) \
 { \
-	SetHealth(AttributeChangeData.NewValue); \
+	Set##AttributeName##(AttributeChangeData.NewValue); \
 	return; \
 }
 
