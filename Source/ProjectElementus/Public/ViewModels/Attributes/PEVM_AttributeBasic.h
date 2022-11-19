@@ -1,0 +1,67 @@
+// Author: Lucas Vilas-Boas
+// Year: 2022
+// Repo: https://github.com/lucoiso/UEProject_Elementus
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "MVVMViewModelBase.h"
+#include "PEVM_AttributeBasic.generated.h"
+
+/**
+ * 
+ */
+UCLASS(NotPlaceable, Category = "Project Elementus | Classes")
+class PROJECTELEMENTUS_API UPEVM_AttributeBasic : public UMVVMViewModelBase
+{
+	GENERATED_BODY()
+	
+public:
+	explicit UPEVM_AttributeBasic(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	UFUNCTION(BlueprintPure, FieldNotify, Category = "Project Elementus | Functions")
+	float GetHealthPercent() const;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
+	float CurrentHealth;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties", Category = "Project Elementus | Properties")
+	float MaxHealth;
+
+	UFUNCTION(BlueprintPure, FieldNotify, Category = "Project Elementus | Functions")
+	float GetManaPercent() const;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
+	float CurrentMana;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
+	float MaxMana;
+
+	UFUNCTION(BlueprintPure, FieldNotify, Category = "Project Elementus | Functions")
+	float GetStaminaPercent() const;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
+	float CurrentStamina;
+
+	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
+	float MaxStamina;
+
+private:
+	void SetCurrentHealth(const float InValue);
+	float GetCurrentHealth() const;
+
+	void SetMaxHealth(const float InValue);
+	float GetMaxHealth() const;
+
+	void SetCurrentMana(const float InValue);
+	float GetCurrentMana() const;
+
+	void SetMaxMana(const float InValue);
+	float GetMaxMana() const;
+
+	void SetCurrentStamina(const float InValue);
+	float GetCurrentStamina() const;
+
+	void SetMaxStamina(const float InValue);
+	float GetMaxStamina() const;
+};

@@ -7,7 +7,10 @@
 		{
 			"Name": "ProjectElementus",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"ModelViewViewModel"
+			]
 		}
 	],
 	"Plugins": [
@@ -42,6 +45,10 @@
 		},
 		{
 			"Name": "EOSSDKHandler",
+			"Enabled": true
+		},
+		{
+			"Name": "ModelViewViewModel",
 			"Enabled": true
 		}
 	],

@@ -40,7 +40,8 @@ public class ProjectElementus : ModuleRules
 			"EOSVoiceChat",
 			"VoiceChat",
 			"JsonUtilities",
-			"DeveloperSettings"
+			"DeveloperSettings",
+			"ModelViewViewModel"
 		});
 	}
 }
