@@ -23,9 +23,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
 	TObjectPtr<UStaticMeshComponent> PackageMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
-	TSoftClassPtr<UUserWidget> TradeWidgetClass;
-
 protected:
 	virtual void Tick(float DeltaSeconds) override;
 

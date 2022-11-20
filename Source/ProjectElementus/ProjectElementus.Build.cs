@@ -41,7 +41,8 @@ public class ProjectElementus : ModuleRules
 			"VoiceChat",
 			"JsonUtilities",
 			"DeveloperSettings",
-			"ModelViewViewModel"
+			"ModelViewViewModel",
+			"MoviePlayer"
 		});
 	}
 }

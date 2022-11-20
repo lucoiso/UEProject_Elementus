@@ -8,6 +8,7 @@
 #include "InputTriggers.h"
 #include "Interfaces/MFEA_AbilityInputBinding.h"
 #include "Management/ElementusInventoryData.h"
+#include "VisualLogger/VisualLogger.h"
 #include "PEPlayerController.generated.h"
 
 /**
@@ -92,7 +93,6 @@ private:
 	};
 
 	TWeakObjectPtr<UEnum> InputEnumHandle;
-	TSoftClassPtr<UUserWidget> InventoryWidgetClass;
 	TMap<UInputAction*, FAbilityInputData> AbilityActionBindings;
 
 	UFUNCTION(Category = "Project Elementus | Input Binding")

@@ -39,6 +39,8 @@ protected:
 	virtual void OnRep_PlayerState() override;
 	virtual void OnRep_Controller() override;
 
+	virtual void ApplyMovementSettingsOnCharacter();
+
 private:
 	TWeakObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
 
@@ -101,6 +103,7 @@ protected:
 	float DefaultWalkSpeed, DefaultCrouchSpeed, DefaultJumpVelocity;
 
 	virtual void PreInitializeComponents() override;
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

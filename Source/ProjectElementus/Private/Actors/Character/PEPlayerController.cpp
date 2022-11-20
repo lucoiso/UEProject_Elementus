@@ -17,6 +17,7 @@
 #include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Management/Functions/PEEOSLibrary.h"
+#include "Management/PEDevSettings.h"
 #include "MFEA_Settings.h"
 
 constexpr float BaseTurnRate = 45.f;
@@ -34,12 +35,6 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 		!MF_Settings->InputIDEnumeration.IsNull())
 	{
 		InputEnumHandle = MF_Settings->InputIDEnumeration.LoadSynchronous();
-	}
-
-	static ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
-	if (InventoryWidget_ClassRef.Succeeded())
-	{
-		InventoryWidgetClass = InventoryWidget_ClassRef.Class;
 	}
 }
 
@@ -349,5 +344,14 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 
 void APEPlayerController::Client_OpenInventory_Implementation()
 {
-	CreateWidget(this, InventoryWidgetClass.LoadSynchronous(), TEXT("InventoryWidget"))->AddToViewport();
+	const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+	const TSubclassOf<UUserWidget> InventoryUIClass = ProjectSettings->MainInventoryWidget.IsNull() ? nullptr : ProjectSettings->MainInventoryWidget.LoadSynchronous();
+	
+	if (!IsValid(InventoryUIClass))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s - Missing setting: Main Inventory Widget"), *FString(__func__));
+		return;
+	}
+
+	CreateWidget(this, InventoryUIClass, TEXT("InventoryWidget"))->AddToPlayerScreen();
 }

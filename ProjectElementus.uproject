@@ -33,10 +33,6 @@
 			"Enabled": true
 		},
 		{
-			"Name": "Metasound",
-			"Enabled": true
-		},
-		{
 			"Name": "FSR",
 			"Enabled": true
 		},

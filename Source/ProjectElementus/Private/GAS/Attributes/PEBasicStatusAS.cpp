@@ -7,6 +7,7 @@
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemComponent.h"
 #include "Management/Data/PEGlobalTags.h"
+#include "Management/PEDevSettings.h"
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"
 
 UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), Health(500.f), MaxHealth(500.f), Stamina(250.f), MaxStamina(250.f), Mana(100.f), MaxMana(100.f)
@@ -15,12 +16,6 @@ UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer) 
 	if (MainAttributesMetaData_ObjRef.Succeeded())
 	{
 		UAttributeSet::InitFromMetaDataTable(MainAttributesMetaData_ObjRef.Object);
-	}
-
-	static ConstructorHelpers::FClassFinder<UGameplayEffect> DeathGameplayEffect_ClassRef(TEXT("/Game/Main/GAS/Effects/States/GE_Death"));
-	if (DeathGameplayEffect_ClassRef.Succeeded())
-	{
-		GlobalDeathEffect = DeathGameplayEffect_ClassRef.Class;
 	}
 }
 
@@ -54,13 +49,19 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 		{
 			GetOwningAbilitySystemComponentChecked()->CancelAllAbilities();
 
-			if (!GlobalDeathEffect.IsNull())
-			{
-				const UGameplayEffect* const InDeathEffect = GlobalDeathEffect.LoadSynchronous()->GetDefaultObject<UGameplayEffect>();
-				const FGameplayEffectContextHandle InEffectContext = GetOwningAbilitySystemComponent()->MakeEffectContext();
+			const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+			const TSubclassOf<UGameplayEffect> DeathEffectClass = ProjectSettings->GlobalDeathEffect.IsNull() ? nullptr : ProjectSettings->GlobalDeathEffect.LoadSynchronous();
 
-				GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(InDeathEffect, 1.f, InEffectContext);
+			if (!IsValid(DeathEffectClass))
+			{
+				UE_LOG(LogTemp, Error, TEXT("%s - Missing setting: Global Death Effect"), *FString(__func__));
+				return;
 			}
+
+			const UGameplayEffect* const InDeathEffect = DeathEffectClass->GetDefaultObject<UGameplayEffect>();
+			const FGameplayEffectContextHandle InEffectContext = GetOwningAbilitySystemComponent()->MakeEffectContext();
+
+			GetOwningAbilitySystemComponent()->ApplyGameplayEffectToSelf(InDeathEffect, 1.f, InEffectContext);
 		}
 
 		// If stamina is 0 or less, cancel abilities that use stamina

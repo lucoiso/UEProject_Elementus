@@ -482,7 +482,7 @@ void UPEGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAbi
 	}
 }
 
-void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach, const FVector& InLocation)
+void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach, const FVector InLocation)
 {
 	if (!IsValid(AbilitySoundData.AbilitySoundFX))
 	{
@@ -499,7 +499,7 @@ void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, 
 	UGameplayStatics::SpawnSoundAttached(AbilitySoundData.AbilitySoundFX, InComponent, SocketToAttach, InLocation, EAttachLocation::KeepRelativeOffset, false, AbilitySoundData.VolumeMultiplier, AbilitySoundData.PitchMultiplier, AbilitySoundData.StartTime);
 }
 
-void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation)
+void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector InLocation)
 {
 	if (!IsValid(AbilitySoundData.AbilitySoundFX))
 	{

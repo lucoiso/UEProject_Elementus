@@ -19,7 +19,7 @@ if (AttributeChangeData.Attribute == ##AttributeClass##::Get##AttributeName##Att
 /**
  * 
  */
-UCLASS(NotPlaceable, Category = "Project Elementus | Classes")
+UCLASS(Abstract, BlueprintType, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEVM_AttributeBase : public UMVVMViewModelBase
 {
 	GENERATED_BODY()

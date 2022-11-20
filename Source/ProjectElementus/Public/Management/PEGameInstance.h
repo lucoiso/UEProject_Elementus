@@ -24,6 +24,18 @@ struct FEOSVoiceChatChannelCredentials
 	FString ParticipantToken;
 };
 
+/* An exposed to BPs copy of EVoiceChatChannelType from VoiceChat.h */
+UENUM(BlueprintType, Category = "Project Elementus | Enumerations")
+enum class EEOSVoiceChatChannelType : uint8
+{	
+	/** Non positional/2d audio channel */
+	NonPositional,
+	/** Positional/3d audio channel */
+	Positional,
+	/** Echo channel. Will only ever have one player and will echo anything you say */
+	Echo
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCreateSessionDelegate);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFindSessionsDelegate, const TArray<FSessionDataHandler>&, Sessions);
@@ -45,7 +57,14 @@ class UPEGameInstance : public UGameInstance
 
 public:
 	explicit UPEGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	
+
+protected:
+	virtual void Init() override;
+
+	virtual void OnMapLoadingStart(const FString& MapName);
+	virtual void OnMapLoadingComplete(UWorld* InLoadedWorld);
+
+public:	
 	/* Initialize the voice chat framework */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeVoiceChatFramework();
@@ -94,7 +113,7 @@ protected:
 public:
 	/* Connect the user to a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName, const FEOSVoiceChatChannelCredentials Credentials);
+	void ConnectVoiceChatToSessionChannel(const int32 LocalUserNum, const FString& ChannelName, const FEOSVoiceChatChannelCredentials Credentials, const EEOSVoiceChatChannelType ChannelType = EEOSVoiceChatChannelType::NonPositional);
 
 	/* Disconnect the user from a voice chat channel */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")

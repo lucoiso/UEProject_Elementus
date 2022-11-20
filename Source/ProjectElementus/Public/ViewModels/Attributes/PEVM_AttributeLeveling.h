@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(NotPlaceable, Category = "Project Elementus | Classes")
+UCLASS(BlueprintType, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEVM_AttributeLeveling : public UPEVM_AttributeBase
 {
 	GENERATED_BODY()

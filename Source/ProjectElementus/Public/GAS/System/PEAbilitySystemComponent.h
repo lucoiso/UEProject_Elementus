@@ -48,4 +48,11 @@ public:
 	TObjectPtr<UPEVM_AttributeLeveling> LevelingAttributes_VM;
 	
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+
+	virtual void InitializeAttributeViewModel(const UAttributeSet* AttributeClass);
+
+private:
+	void InitializeBasicAttributesViewModel(const class UPEBasicStatusAS* Attribute);
+	void InitializeCustomAttributesViewModel(const class UPECustomStatusAS* Attribute);
+	void InitializeLevelingAttributesViewModel(const class UPELevelingAS* Attribute);
 };
