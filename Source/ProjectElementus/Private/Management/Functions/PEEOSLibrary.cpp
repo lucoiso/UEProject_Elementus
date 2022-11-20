@@ -4,10 +4,6 @@
 
 #include "Management/Functions/PEEOSLibrary.h"
 #include "EOSVoiceChatUser.h"
-#include "Interfaces/OnlineStatsInterface.h"
-#include "Interfaces/OnlineIdentityInterface.h"
-#include "Interfaces/OnlinePresenceInterface.h"
-#include "Interfaces/OnlineSessionInterface.h"
 
 FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 {
@@ -18,12 +14,9 @@ FEOSVoiceChatUser* UPEEOSLibrary::GetEOSVoiceChatUser(const uint8 LocalUserNum)
 {
 	if (FOnlineSubsystemEOS* const OnlineSubsystemEOS = GetOnlineSubsystemEOS())
 	{
-		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystemEOS->GetIdentityInterface())
+		if (const FUniqueNetIdPtr NetId = GetUniqueNetId(LocalUserNum, OnlineSubsystemEOS))
 		{
-			if (const FUniqueNetIdPtr NetId = IdentityInterface->GetUniquePlayerId(LocalUserNum))
-			{
-				return OnlineSubsystemEOS->GetEOSVoiceChatUserInterface(*NetId.Get());
-			}
+			return OnlineSubsystemEOS->GetEOSVoiceChatUserInterface(*NetId.Get());
 		}
 	}
 
@@ -62,12 +55,9 @@ FName UPEEOSLibrary::GetEOSSessionName()
 
 bool UPEEOSLibrary::IsUserLoggedInEOS(const int32 LocalUserNum)
 {
-	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineIdentityPtr IdentityInterface = GetIdentityInterface())
 	{
-		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
-		{
-			return IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn;
-		}
+		return IdentityInterface->GetLoginStatus(LocalUserNum) == ELoginStatus::LoggedIn;
 	}
 
 	return false;
@@ -75,14 +65,11 @@ bool UPEEOSLibrary::IsUserLoggedInEOS(const int32 LocalUserNum)
 
 bool UPEEOSLibrary::IsHostingEOSSession()
 {
-	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSessionPtr SessionInterface = GetSessionInterface())
 	{
-		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
+		if (const FNamedOnlineSession* const CheckSession = SessionInterface->GetNamedSession(NAME_GameSession))
 		{
-			if (const FNamedOnlineSession* const CheckSession = SessionInterface->GetNamedSession(NAME_GameSession))
-			{
-				return CheckSession->bHosting;
-			}
+			return CheckSession->bHosting;
 		}
 	}
 
@@ -91,12 +78,9 @@ bool UPEEOSLibrary::IsHostingEOSSession()
 
 bool UPEEOSLibrary::IsUserInAEOSSession()
 {
-	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	if (const IOnlineSessionPtr SessionInterface = GetSessionInterface())
 	{
-		if (const IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface())
-		{
-			return SessionInterface->GetNamedSession(NAME_GameSession) != nullptr;
-		}
+		return SessionInterface->GetNamedSession(NAME_GameSession) != nullptr;
 	}
 
 	return false;
@@ -127,55 +111,110 @@ FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 Nu
 
 void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString& PresenceText, const bool bOnline)
 {
-	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
-	{
-		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
-		{
-			if (const IOnlinePresencePtr PresenceInterface = OnlineSubsystem->GetPresenceInterface())
-			{
-				FOnlineUserPresenceStatus NewStatus;
-				NewStatus.Properties.Add(DefaultPresenceKey);
-				NewStatus.State = bOnline ? EOnlinePresenceState::Online : EOnlinePresenceState::Offline;
-				NewStatus.StatusStr = PresenceText;
+	IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM);
 
-				PresenceInterface->SetPresence(*IdentityInterface->GetUniquePlayerId(LocalUserNum).Get(), NewStatus);
-			}
+	if (const IOnlineIdentityPtr IdentityInterface = GetIdentityInterface(OnlineSubsystem))
+	{
+		if (const IOnlinePresencePtr PresenceInterface = GetPresenceInterface(OnlineSubsystem))
+		{
+			FOnlineUserPresenceStatus NewStatus;
+			NewStatus.Properties.Add(DefaultPresenceKey);
+			NewStatus.State = bOnline ? EOnlinePresenceState::Online : EOnlinePresenceState::Offline;
+			NewStatus.StatusStr = PresenceText;
+
+			PresenceInterface->SetPresence(*IdentityInterface->GetUniquePlayerId(LocalUserNum).Get(), NewStatus);
 		}
 	}
 }
 
-void UPEEOSLibrary::IngestEOSStats(const int32 LocalUserNum, const TMap<FName, int32> StatsMap)
+void UPEEOSLibrary::IngestEOSStats(const int32 LocalUserNum, const TMap<FName, int32>& StatsMap)
 {
-	if (const IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM))
+	IOnlineSubsystem* const OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM);
+
+	if (const IOnlineStatsPtr StatsInterface = GetStatsInterface(OnlineSubsystem))
 	{
-		if (const IOnlineIdentityPtr IdentityInterface = OnlineSubsystem->GetIdentityInterface())
+		const FUniqueNetIdRef UserNetIdRef = GetUniqueNetId(LocalUserNum, OnlineSubsystem).ToSharedRef();
+
+		FOnlineStatsUserUpdatedStats UpdatedStats = FOnlineStatsUserUpdatedStats(UserNetIdRef);
+
+		for (const auto& [StatName, StatValue] : StatsMap)
 		{
-			if (const IOnlineStatsPtr StatsInterface = OnlineSubsystem->GetStatsInterface())
+			if (StatName.IsNone())
 			{
-				const FUniqueNetIdRef UserNetIdRef = IdentityInterface->GetUniquePlayerId(LocalUserNum).ToSharedRef();
-				
-				FOnlineStatsUserUpdatedStats UpdatedStats = FOnlineStatsUserUpdatedStats(UserNetIdRef);		
-
-				for (const auto& [StatName, StatValue] : StatsMap)
-				{
-					if (StatName.IsNone())
-					{
-						continue;
-					}
-					
-					UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Stat Name: %s; Value: %d"), *FString(__func__), LocalUserNum, *StatName.ToString(), StatValue);
-
-					const FOnlineStatUpdate StatUpdate(StatValue, FOnlineStatUpdate::EOnlineStatModificationType::Unknown);
-					UpdatedStats.Stats.Add(StatName.ToString(), StatUpdate);
-				}
-
-				const FOnlineStatsUpdateStatsComplete UpdateStatsDelegate = FOnlineStatsUpdateStatsComplete::CreateLambda([UserNetIdRef](const FOnlineError& ResultState)
-				{
-					UE_LOG(LogTemp, Log, TEXT("IngestEOSStats - User ID: %s; Result: %s"), *UserNetIdRef->ToString(), *ResultState.ToLogString());
-				});
-				
-				StatsInterface->UpdateStats(UserNetIdRef, { UpdatedStats }, UpdateStatsDelegate);
+				continue;
 			}
+
+			UE_LOG(LogTemp, Log, TEXT("%s - Local User Num: %d; Stat Name: %s; Value: %d"), *FString(__func__), LocalUserNum, *StatName.ToString(), StatValue);
+
+			const FOnlineStatUpdate StatUpdate(StatValue, FOnlineStatUpdate::EOnlineStatModificationType::Unknown);
+			UpdatedStats.Stats.Add(StatName.ToString(), StatUpdate);
 		}
+
+		const FOnlineStatsUpdateStatsComplete UpdateStatsDelegate = FOnlineStatsUpdateStatsComplete::CreateLambda([UserNetIdRef, FuncName = __func__](const FOnlineError& ResultState)
+		{
+			UE_LOG(LogTemp, Log, TEXT("%s - User ID: %s; Result: %s"), *FString(__func__ ), *UserNetIdRef->ToString(), *ResultState.ToLogString());
+		});
+
+		StatsInterface->UpdateStats(UserNetIdRef, { UpdatedStats }, UpdateStatsDelegate);
 	}
+}
+
+bool UPEEOSLibrary::ValidateOnlineSubsystem(IOnlineSubsystem* OnlineSubsystem)
+{
+	if (!OnlineSubsystem)
+	{
+		OnlineSubsystem = FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM);
+	}
+
+	return OnlineSubsystem != nullptr;
+}
+
+const FUniqueNetIdPtr UPEEOSLibrary::GetUniqueNetId(const int32 LocalUserNum, IOnlineSubsystem* OnlineSubsystem)
+{
+	if (const IOnlineIdentityPtr Interface = GetIdentityInterface(OnlineSubsystem))
+	{
+		return Interface->GetUniquePlayerId(LocalUserNum);
+	}
+	
+	return nullptr;
+}
+
+const IOnlineIdentityPtr UPEEOSLibrary::GetIdentityInterface(IOnlineSubsystem* OnlineSubsystem)
+{
+	if (ValidateOnlineSubsystem(OnlineSubsystem))
+	{
+		return OnlineSubsystem->GetIdentityInterface();
+	}
+	
+	return nullptr;
+}
+
+const IOnlineSessionPtr UPEEOSLibrary::GetSessionInterface(IOnlineSubsystem* OnlineSubsystem)
+{
+	if (ValidateOnlineSubsystem(OnlineSubsystem))
+	{
+		return OnlineSubsystem->GetSessionInterface();
+	}
+	
+	return nullptr;
+}
+
+const IOnlinePresencePtr UPEEOSLibrary::GetPresenceInterface(IOnlineSubsystem* OnlineSubsystem)
+{
+	if (ValidateOnlineSubsystem(OnlineSubsystem))
+	{
+		return OnlineSubsystem->GetPresenceInterface();
+	}
+
+	return nullptr;
+}
+
+const IOnlineStatsPtr UPEEOSLibrary::GetStatsInterface(IOnlineSubsystem* OnlineSubsystem)
+{
+	if (ValidateOnlineSubsystem(OnlineSubsystem))
+	{
+		return OnlineSubsystem->GetStatsInterface();
+	}
+
+	return nullptr;
 }

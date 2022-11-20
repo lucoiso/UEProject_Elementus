@@ -5,6 +5,7 @@
 #include "Actors/World/PEInventoryPackage.h"
 #include "Actors/Character/PECharacter.h"
 #include "Blueprint/UserWidget.h"
+#include "Management/PEDevSettings.h"
 
 APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -23,12 +24,6 @@ APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitial
 	if (PackageMesh_Obj.Succeeded())
 	{
 		PackageMesh->SetStaticMesh(PackageMesh_Obj.Object);
-	}
-
-	static ConstructorHelpers::FClassFinder<UUserWidget> TradeWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Trade_w_Package"));
-	if (TradeWidget_ClassRef.Succeeded())
-	{
-		TradeWidgetClass = TradeWidget_ClassRef.Class;
 	}
 }
 
@@ -53,15 +48,17 @@ void APEInventoryPackage::DoInteractionBehavior_Implementation(APECharacter* Cha
 
 	if (APlayerController* const TargetController = CharacterInteracting->GetController<APlayerController>())
 	{
-		UClass* const WidgetClass = TradeWidgetClass.LoadSynchronous();
-		if (UUserWidget* const TradeWidget = CreateWidget(TargetController, WidgetClass))
+		const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+		const TSubclassOf<UUserWidget> TradeUIClass = ProjectSettings->TradeInventoryWidget.IsNull() ? nullptr : ProjectSettings->TradeInventoryWidget.LoadSynchronous();
+
+		if (UUserWidget* const TradeWidget = CreateWidget(TargetController, TradeUIClass))
 		{
-			if (const FObjectProperty* const PackageRef = FindFProperty<FObjectProperty>(WidgetClass, TEXT("PackageRef")))
+			if (const FObjectProperty* const PackageRef = FindFProperty<FObjectProperty>(TradeUIClass, TEXT("PackageRef")))
 			{
 				PackageRef->SetPropertyValue_InContainer(TradeWidget, this);
 			}
 
-			TradeWidget->AddToViewport();
+			TradeWidget->AddToPlayerScreen();
 		}
 	}
 }

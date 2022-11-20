@@ -9,6 +9,9 @@
 #include "PEAbilitySystemComponent.generated.h"
 
 struct FGameplayEffectGroupedData;
+class UPEVM_AttributeBasic;
+class UPEVM_AttributeCustom;
+class UPEVM_AttributeLeveling;
 
 /**
  *
@@ -34,10 +37,22 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void RemoveEffectGroupedDataFromTarget(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove = 1);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
+	TObjectPtr<UPEVM_AttributeBasic> BasicAttributes_VM;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
+	TObjectPtr<UPEVM_AttributeCustom> CustomAttributes_VM;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
+	TObjectPtr<UPEVM_AttributeLeveling> LevelingAttributes_VM;
 	
-	template <typename T>
-	const T* GetCustomAttributeSet() const
-	{
-		return Cast<T>(GetAttributeSet(T::StaticClass()));
-	}
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+
+	virtual void InitializeAttributeViewModel(const UAttributeSet* AttributeClass);
+
+private:
+	void InitializeBasicAttributesViewModel(const class UPEBasicStatusAS* Attribute);
+	void InitializeCustomAttributesViewModel(const class UPECustomStatusAS* Attribute);
+	void InitializeLevelingAttributesViewModel(const class UPELevelingAS* Attribute);
 };

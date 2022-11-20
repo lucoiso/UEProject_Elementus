@@ -242,7 +242,7 @@ protected:
 	{
 	} // Override this function on children classes.
 
-	/* Activate a Gameplay Cue with passed parameters */
+	/* Activate a Gameplay Cue with the given parameters */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters, UAbilitySystemComponent* SourceAbilitySystem = nullptr);
 
@@ -283,10 +283,10 @@ protected:
 	void RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach = NAME_None, const FVector& InLocation = FVector::ZeroVector);
+	void PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach = NAME_None, const FVector InLocation = FVector::ZeroVector);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation = FVector::ZeroVector);
+	void PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector InLocation = FVector::ZeroVector);
 	
 	/* Shared Timer Handle that is actually used with bEndAbilityAfterActiveTime */
 	FTimerHandle CancelationTimerHandle;

@@ -33,15 +33,15 @@
 			"Enabled": true
 		},
 		{
-			"Name": "Metasound",
-			"Enabled": true
-		},
-		{
 			"Name": "FSR",
 			"Enabled": true
 		},
 		{
 			"Name": "EOSSDKHandler",
+			"Enabled": true
+		},
+		{
+			"Name": "ModelViewViewModel",
 			"Enabled": true
 		}
 	],

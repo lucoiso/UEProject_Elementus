@@ -8,6 +8,11 @@
 #include "EOSVoiceChatUser.h"
 #include "OnlineSubsystemEOS.h"
 #include "OnlineSessionSettings.h"
+#include "Interfaces/OnlineStatsInterface.h"
+#include "Interfaces/OnlineIdentityInterface.h"
+#include "Interfaces/OnlinePresenceInterface.h"
+#include "Interfaces/OnlineSessionInterface.h"
+#include "Online/CoreOnlineFwd.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PEEOSLibrary.generated.h"
 
@@ -83,5 +88,14 @@ public:
 
 	/* Modify all EOS stats in the given map */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Ingest EOS Stats"))
-	static void IngestEOSStats(const int32 LocalUserNum, const TMap<FName, int32> StatsMap);
+	static void IngestEOSStats(const int32 LocalUserNum, const TMap<FName, int32>& StatsMap);
+
+	static const FUniqueNetIdPtr GetUniqueNetId(const int32 LocalUserNum, IOnlineSubsystem* OnlineSubsystem = nullptr);
+	static const IOnlineIdentityPtr GetIdentityInterface(IOnlineSubsystem* OnlineSubsystem = nullptr);
+	static const IOnlineSessionPtr GetSessionInterface(IOnlineSubsystem* OnlineSubsystem = nullptr);
+	static const IOnlinePresencePtr GetPresenceInterface(IOnlineSubsystem* OnlineSubsystem = nullptr);
+	static const IOnlineStatsPtr GetStatsInterface(IOnlineSubsystem* OnlineSubsystem = nullptr);
+
+private:
+	static bool ValidateOnlineSubsystem(IOnlineSubsystem* OnlineSubsystem);
 };

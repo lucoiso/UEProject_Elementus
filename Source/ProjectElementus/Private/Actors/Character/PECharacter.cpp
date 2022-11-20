@@ -16,6 +16,7 @@
 #include "Actors/World/PEInventoryPackage.h"
 #include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
+#include "Management/PEDevSettings.h"
 #include "Net/UnrealNetwork.h"
 
 FName APECharacter::PEInventoryComponentName(TEXT("InventoryComponent"));
@@ -57,16 +58,9 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	GetCharacterMovement()->MaxWalkSpeedCrouched = 300.f;
-	GetCharacterMovement()->JumpZVelocity = 500.f;
-	GetCharacterMovement()->AirControl = 0.375f;
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
-	GetCharacterMovement()->GravityScale = 1.25f;
 
-	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
-	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
+	APECharacter::ApplyMovementSettingsOnCharacter();
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -129,6 +123,27 @@ void APECharacter::OnRep_Controller()
 	}
 }
 
+void APECharacter::ApplyMovementSettingsOnCharacter()
+{
+	const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+
+	const float WalkSpeed = 500.f * ProjectSettings->SpeedMultiplier;
+	const float CrouchSpeed = WalkSpeed * 0.6f;
+	const float JumpVelocity = 500.f * ProjectSettings->JumpMultiplier;
+	const float AirControl = 0.375f * ProjectSettings->AirControlMultiplier;
+	const float GravityScale = 1.25f * ProjectSettings->GravityMultiplier;
+
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
+	GetCharacterMovement()->JumpZVelocity = JumpVelocity;
+	GetCharacterMovement()->AirControl = AirControl;
+	GetCharacterMovement()->GravityScale = GravityScale;
+
+	DefaultWalkSpeed = WalkSpeed;
+	DefaultCrouchSpeed = CrouchSpeed;
+	DefaultJumpVelocity = JumpVelocity;
+}
+
 #pragma region Default Getters
 float APECharacter::GetDefaultWalkSpeed() const
 {
@@ -145,7 +160,7 @@ float APECharacter::GetDefaultJumpVelocity() const
 	return DefaultJumpVelocity;
 }
 
-/* static */ FVector APECharacter::GetCameraDefaultPosition()
+FVector APECharacter::GetCameraDefaultPosition()
 {
 	return APECharacter::PECameraDefaultPosition;
 }
@@ -191,6 +206,14 @@ void APECharacter::PreInitializeComponents()
 	Super::PreInitializeComponents();
 }
 
+void APECharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	// Ensure that the settings were applied to this character
+	ApplyMovementSettingsOnCharacter();
+}
+
 void APECharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -217,9 +240,9 @@ void APECharacter::BeginPlay()
 				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
 			}
 		};
-
-		// Bot: Red | Player: Blue
-		const FLinearColor DestColor = IsBotControlled() ? FLinearColor::Red : FLinearColor::Blue;
+		
+		const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+		const FLinearColor DestColor = IsBotControlled() ? ProjectSettings->BotColor : ProjectSettings->PlayerColor;
 
 		DynamicColor_Lambda(0, DestColor);
 		DynamicColor_Lambda(1, DestColor);
