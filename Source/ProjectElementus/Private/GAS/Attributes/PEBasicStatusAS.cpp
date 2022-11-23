@@ -7,7 +7,7 @@
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemComponent.h"
 #include "Management/Data/PEGlobalTags.h"
-#include "Management/PEDevSettings.h"
+#include "Management/PEProjectSettings.h"
 #include "Runtime/Engine/Public/Net/UnrealNetwork.h"
 
 UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), Health(500.f), MaxHealth(500.f), Stamina(250.f), MaxStamina(250.f), Mana(100.f), MaxMana(100.f)
@@ -49,7 +49,7 @@ void UPEBasicStatusAS::PostAttributeChange(const FGameplayAttribute& Attribute, 
 		{
 			GetOwningAbilitySystemComponentChecked()->CancelAllAbilities();
 
-			const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+			const UPEProjectSettings* const ProjectSettings = GetDefault<UPEProjectSettings>();
 			const TSubclassOf<UGameplayEffect> DeathEffectClass = ProjectSettings->GlobalDeathEffect.IsNull() ? nullptr : ProjectSettings->GlobalDeathEffect.LoadSynchronous();
 
 			if (!IsValid(DeathEffectClass))

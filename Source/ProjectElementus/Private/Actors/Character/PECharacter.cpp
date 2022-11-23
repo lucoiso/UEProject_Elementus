@@ -16,7 +16,7 @@
 #include "Actors/World/PEInventoryPackage.h"
 #include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
-#include "Management/PEDevSettings.h"
+#include "Management/PEProjectSettings.h"
 #include "Net/UnrealNetwork.h"
 
 FName APECharacter::PEInventoryComponentName(TEXT("InventoryComponent"));
@@ -58,9 +58,12 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
-
-	APECharacter::ApplyMovementSettingsOnCharacter();
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;	
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = GetCharacterMovement()->MaxWalkSpeed * 0.6f;
+	GetCharacterMovement()->JumpZVelocity = 500.f;
+	GetCharacterMovement()->AirControl = 0.375f;
+	GetCharacterMovement()->GravityScale = 1.25f;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -123,25 +126,38 @@ void APECharacter::OnRep_Controller()
 	}
 }
 
-void APECharacter::ApplyMovementSettingsOnCharacter()
+void APECharacter::ApplyExtraSettings()
 {
-	const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+	const UPEProjectSettings* const ProjectSettings = GetDefault<UPEProjectSettings>();
 
-	const float WalkSpeed = 500.f * ProjectSettings->SpeedMultiplier;
-	const float CrouchSpeed = WalkSpeed * 0.6f;
-	const float JumpVelocity = 500.f * ProjectSettings->JumpMultiplier;
-	const float AirControl = 0.375f * ProjectSettings->AirControlMultiplier;
-	const float GravityScale = 1.25f * ProjectSettings->GravityMultiplier;
+	// Check for movement settings to apply on character movement component
+	GetCharacterMovement()->MaxWalkSpeed *= ProjectSettings->SpeedMultiplier;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = GetCharacterMovement()->MaxWalkSpeed * 0.6f;
+	GetCharacterMovement()->JumpZVelocity *= ProjectSettings->JumpMultiplier;
+	GetCharacterMovement()->AirControl *= ProjectSettings->AirControlMultiplier;
+	GetCharacterMovement()->GravityScale *= ProjectSettings->GravityMultiplier;
 
-	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
-	GetCharacterMovement()->JumpZVelocity = JumpVelocity;
-	GetCharacterMovement()->AirControl = AirControl;
-	GetCharacterMovement()->GravityScale = GravityScale;
+	// Update the cached values that are used by GEs
+	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
+	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
 
-	DefaultWalkSpeed = WalkSpeed;
-	DefaultCrouchSpeed = CrouchSpeed;
-	DefaultJumpVelocity = JumpVelocity;
+	// Check if this character have a valid Skeletal Mesh and paint it
+	if (IsValid(GetMesh()))
+	{
+		const auto DynamicColor_Lambda = [this](const uint8& Index, const FLinearColor& Color) -> void
+		{
+			if (UMaterialInstanceDynamic* const DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
+			{
+				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
+			}
+		};
+
+		const FLinearColor DestColor = IsBotControlled() ? ProjectSettings->BotColor : ProjectSettings->PlayerColor;
+
+		DynamicColor_Lambda(0, DestColor);
+		DynamicColor_Lambda(1, DestColor);
+	}
 }
 
 #pragma region Default Getters
@@ -206,14 +222,6 @@ void APECharacter::PreInitializeComponents()
 	Super::PreInitializeComponents();
 }
 
-void APECharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	// Ensure that the settings were applied to this character
-	ApplyMovementSettingsOnCharacter();
-}
-
 void APECharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -230,23 +238,7 @@ void APECharacter::BeginPlay()
 		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, TEXT("AbilityEnded"));
 	}
 
-	// Check if this character have a valid Skeletal Mesh and paint it
-	if (IsValid(GetMesh()))
-	{
-		const auto DynamicColor_Lambda = [&](const uint8& Index, const FLinearColor& Color) -> void
-		{
-			if (UMaterialInstanceDynamic* const DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
-			{
-				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
-			}
-		};
-		
-		const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
-		const FLinearColor DestColor = IsBotControlled() ? ProjectSettings->BotColor : ProjectSettings->PlayerColor;
-
-		DynamicColor_Lambda(0, DestColor);
-		DynamicColor_Lambda(1, DestColor);
-	}
+	ApplyExtraSettings();
 }
 
 void APECharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

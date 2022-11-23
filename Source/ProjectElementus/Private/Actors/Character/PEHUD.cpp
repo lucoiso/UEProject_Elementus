@@ -4,7 +4,7 @@
 
 #include "Actors/Character/PEHUD.h"
 #include "Blueprint/UserWidget.h"
-#include "Management/PEDevSettings.h"
+#include "Management/PEProjectSettings.h"
 
 APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -19,7 +19,7 @@ void APEHUD::BeginPlay()
 	// Initialize a Blueprint Widget as HUD if Player Controller is valid
 	if (ensureAlwaysMsgf(IsValid(GetOwningPlayerController()), TEXT("%s have a invalid Controller"), *GetName()))
 	{
-		const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+		const UPEProjectSettings* const ProjectSettings = GetDefault<UPEProjectSettings>();
 		const TSubclassOf<UUserWidget> UMGHUDClass = ProjectSettings->HUDClass.IsNull() ? nullptr : ProjectSettings->HUDClass.LoadSynchronous();
 
 		if (!IsValid(UMGHUDClass))

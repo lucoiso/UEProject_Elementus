@@ -6,18 +6,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameUserSettings.h"
-#include "PECustomSettings.generated.h"
+#include "PEGameSettings.generated.h"
 
 /**
  * 
  */
-UCLASS(config=GameUserSettings, configdonotcheckdefaults, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API UPECustomSettings final : public UGameUserSettings
+UCLASS(config=GameUserSettings, configdonotcheckdefaults, Category = "Project Elementus | Classes", Meta = (DisplayName = "PE Game Settings"))
+class PROJECTELEMENTUS_API UPEGameSettings final : public UGameUserSettings
 {
 	GENERATED_BODY()
 
 public:
-	explicit UPECustomSettings(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	explicit UPEGameSettings(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 private:
 	virtual void ApplyPECustomSettings();
@@ -29,7 +29,7 @@ public:
 	// End of UGameUserSettings
 
 	UFUNCTION(BlueprintCallable, Category = Settings)
-	static UPECustomSettings* GetCustomGameUserSettings();
+	static UPEGameSettings* GetCustomGameUserSettings();
 
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void SetAntiAliasingMode(const int InMode);

@@ -6,19 +6,19 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
-#include "PEDevSettings.generated.h"
+#include "PEProjectSettings.generated.h"
 
 /**
  * 
  */
-UCLASS(Config = Game, DefaultConfig, Meta = (DisplayName = "Project Elementus"))
-class PROJECTELEMENTUS_API UPEDevSettings : public UDeveloperSettings
+UCLASS(Config = Engine, DefaultConfig, Meta = (DisplayName = "Project Elementus"))
+class PROJECTELEMENTUS_API UPEProjectSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 
 public:
-	explicit UPEDevSettings(const FObjectInitializer& ObjectInitializer);
-
+	explicit UPEProjectSettings(const FObjectInitializer& ObjectInitializer);
+	
 	/* A Blueprint Widget class to use as HUD */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "UI", Meta = (DisplayName = "HUD UMG Class"))
 	TSoftClassPtr<UUserWidget> HUDClass;
@@ -31,11 +31,11 @@ public:
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "UI", Meta = (DisplayName = "Trade Inventory UMG Class"))
 	TSoftClassPtr<UUserWidget> TradeInventoryWidget;
 
-	/* Color of player's character mesh */
+	/* Color of player character's mesh */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "Character | Appearance")
 	FLinearColor PlayerColor;
 
-	/* Color of bot's character mesh */
+	/* Color of bot character's mesh */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "Character | Appearance")
 	FLinearColor BotColor;
 

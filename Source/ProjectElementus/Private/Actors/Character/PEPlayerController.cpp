@@ -17,7 +17,7 @@
 #include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Management/Functions/PEEOSLibrary.h"
-#include "Management/PEDevSettings.h"
+#include "Management/PEProjectSettings.h"
 #include "MFEA_Settings.h"
 
 constexpr float BaseTurnRate = 45.f;
@@ -344,7 +344,7 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 
 void APEPlayerController::Client_OpenInventory_Implementation()
 {
-	const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+	const UPEProjectSettings* const ProjectSettings = GetDefault<UPEProjectSettings>();
 	const TSubclassOf<UUserWidget> InventoryUIClass = ProjectSettings->MainInventoryWidget.IsNull() ? nullptr : ProjectSettings->MainInventoryWidget.LoadSynchronous();
 	
 	if (!IsValid(InventoryUIClass))

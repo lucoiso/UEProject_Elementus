@@ -2,14 +2,14 @@
 // Year: 2022
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
-#include "Management/PECustomSettings.h"
+#include "Management/PEGameSettings.h"
 
-UPECustomSettings::UPECustomSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UPEGameSettings::UPEGameSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	UPECustomSettings::SetToDefaults();
+	UPEGameSettings::SetToDefaults();
 }
 
-void UPECustomSettings::ApplyPECustomSettings()
+void UPEGameSettings::ApplyPECustomSettings()
 {
 	if (IConsoleVariable* const AntiAliasingCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.AntiAliasingMethod")))
 	{
@@ -71,13 +71,13 @@ void UPECustomSettings::ApplyPECustomSettings()
 	}
 }
 
-void UPECustomSettings::ApplyNonResolutionSettings()
+void UPEGameSettings::ApplyNonResolutionSettings()
 {
 	Super::ApplyNonResolutionSettings();
 	ApplyPECustomSettings();
 }
 
-void UPECustomSettings::SetToDefaults()
+void UPEGameSettings::SetToDefaults()
 {
 	AntiAliasingMode = 3;
 	bFSREnabled = true;
@@ -90,57 +90,57 @@ void UPECustomSettings::SetToDefaults()
 	ApplyPECustomSettings();
 }
 
-void UPECustomSettings::SetAntiAliasingMode(const int InMode)
+void UPEGameSettings::SetAntiAliasingMode(const int InMode)
 {
 	AntiAliasingMode = InMode;
 }
 
-int UPECustomSettings::GetAntiAliasingMode() const
+int UPEGameSettings::GetAntiAliasingMode() const
 {
 	return AntiAliasingMode;
 }
 
-void UPECustomSettings::SetFSREnabled(const bool bEnable)
+void UPEGameSettings::SetFSREnabled(const bool bEnable)
 {
 	bFSREnabled = bEnable;
 }
 
-bool UPECustomSettings::GetFSREnabled() const
+bool UPEGameSettings::GetFSREnabled() const
 {
 	return bFSREnabled;
 }
 
-void UPECustomSettings::SetFSRMode(const int InMode)
+void UPEGameSettings::SetFSRMode(const int InMode)
 {
 	FSRMode = InMode;
 }
 
-int UPECustomSettings::GetFSRMode() const
+int UPEGameSettings::GetFSRMode() const
 {
 	return FSRMode;
 }
 
-void UPECustomSettings::SetTemporalUpscalingEnabled(const bool bEnable)
+void UPEGameSettings::SetTemporalUpscalingEnabled(const bool bEnable)
 {
 	bEnableTemporalUpscaling = bEnable;
 }
 
-bool UPECustomSettings::GetTemporalUpscalingEnabled() const
+bool UPEGameSettings::GetTemporalUpscalingEnabled() const
 {
 	return bEnableTemporalUpscaling;
 }
 
-void UPECustomSettings::SetLumenEnabled(const bool bEnable)
+void UPEGameSettings::SetLumenEnabled(const bool bEnable)
 {
 	bEnableLumen = bEnable;
 }
 
-bool UPECustomSettings::GetLumenEnabled() const
+bool UPEGameSettings::GetLumenEnabled() const
 {
 	return bEnableLumen;
 }
 
-UPECustomSettings* UPECustomSettings::GetCustomGameUserSettings()
+UPEGameSettings* UPEGameSettings::GetCustomGameUserSettings()
 {
-	return Cast<UPECustomSettings>(GetGameUserSettings());
+	return Cast<UPEGameSettings>(GetGameUserSettings());
 }

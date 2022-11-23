@@ -8,6 +8,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PEGeneralLibrary.generated.h"
 
+class UPEProjectSettings;
 /**
  * 
  */

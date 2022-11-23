@@ -5,7 +5,7 @@
 #include "Actors/World/PEInventoryPackage.h"
 #include "Actors/Character/PECharacter.h"
 #include "Blueprint/UserWidget.h"
-#include "Management/PEDevSettings.h"
+#include "Management/PEProjectSettings.h"
 
 APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -48,7 +48,7 @@ void APEInventoryPackage::DoInteractionBehavior_Implementation(APECharacter* Cha
 
 	if (APlayerController* const TargetController = CharacterInteracting->GetController<APlayerController>())
 	{
-		const UPEDevSettings* const ProjectSettings = GetDefault<UPEDevSettings>();
+		const UPEProjectSettings* const ProjectSettings = GetDefault<UPEProjectSettings>();
 		const TSubclassOf<UUserWidget> TradeUIClass = ProjectSettings->TradeInventoryWidget.IsNull() ? nullptr : ProjectSettings->TradeInventoryWidget.LoadSynchronous();
 
 		if (UUserWidget* const TradeWidget = CreateWidget(TargetController, TradeUIClass))
