@@ -3,12 +3,12 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Attributes/PEBasicStatusAS.h"
-#include "GameplayEffectExtension.h"
-#include "GameplayEffectTypes.h"
-#include "AbilitySystemComponent.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Management/PEProjectSettings.h"
-#include "Runtime/Engine/Public/Net/UnrealNetwork.h"
+#include <AbilitySystemComponent.h>
+#include <GameplayEffectTypes.h>
+#include <GameplayEffectExtension.h>
+#include <Runtime/Engine/Public/Net/UnrealNetwork.h>
 
 UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), Health(500.f), MaxHealth(500.f), Stamina(250.f), MaxStamina(250.f), Mana(100.f), MaxMana(100.f)
 {

@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystemComponent.h"
-#include "AttributeSet.h"
+#include <CoreMinimal.h>
+#include <AbilitySystemComponent.h>
+#include <AttributeSet.h>
 #include "PEAttributeBase.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \

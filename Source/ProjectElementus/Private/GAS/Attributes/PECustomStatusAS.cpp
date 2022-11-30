@@ -4,10 +4,10 @@
 
 #include "GAS/Attributes/PECustomStatusAS.h"
 #include "Actors/Character/PECharacter.h"
-#include "GameFramework/PlayerState.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GameplayEffectExtension.h"
-#include "Runtime/Engine/Public/Net/UnrealNetwork.h"
+#include <GameFramework/PlayerState.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <GameplayEffectExtension.h>
+#include <Runtime/Engine/Public/Net/UnrealNetwork.h>
 
 UPECustomStatusAS::UPECustomStatusAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AttackRate(1.f), DefenseRate(1.f), SpeedRate(1.f), JumpRate(1.f), Gold(0.f)
 {

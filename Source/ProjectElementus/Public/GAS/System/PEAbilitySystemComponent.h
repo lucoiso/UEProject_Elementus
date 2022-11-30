@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystemComponent.h"
+#include <CoreMinimal.h>
+#include <AbilitySystemComponent.h>
 #include "PEAbilitySystemComponent.generated.h"
 
 struct FGameplayEffectGroupedData;

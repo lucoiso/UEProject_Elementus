@@ -3,8 +3,8 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/Character/PEHUD.h"
-#include "Blueprint/UserWidget.h"
 #include "Management/PEProjectSettings.h"
+#include <Blueprint/UserWidget.h>
 
 APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

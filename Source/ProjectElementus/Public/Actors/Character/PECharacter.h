@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystemInterface.h"
-#include "GameplayTagContainer.h"
-#include "GameFramework/Character.h"
+#include <CoreMinimal.h>
+#include <AbilitySystemInterface.h>
+#include <GameplayTagContainer.h>
+#include <GameFramework/Character.h>
 #include "PECharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);

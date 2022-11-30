@@ -5,8 +5,8 @@
 #include "PETelekinesisAbility.h"
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
-#include "GAS/Targeting/PELineTargeting.h"
-#include "GAS/System/PETrace.h"
+#include <GAS/Targeting/PELineTargeting.h>
+#include <GAS/System/PETrace.h>
 #include "Management/Data/PEGlobalTags.h"
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ThrowIntensity(2750.f)

@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <UObject/Object.h>
 #include "GAS/System/PEEffectData.h"
-#include "UObject/Object.h"
 #include "PEEquipment.generated.h"
 
 class UGameplayAbility;

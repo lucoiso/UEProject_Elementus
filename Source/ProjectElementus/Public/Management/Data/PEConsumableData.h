@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
+#include <CoreMinimal.h>
+#include <GameplayTagContainer.h>
+#include <Engine/DataAsset.h>
 #include "GAS/System/PEEffectData.h"
-#include "Engine/DataAsset.h"
 #include "PEConsumableData.generated.h"
 
 class UNiagaraSystem;

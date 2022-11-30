@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "InputTriggers.h"
-#include "Kismet/BlueprintFunctionLibrary.h"
+#include <CoreMinimal.h>
+#include <InputTriggers.h>
+#include <Kismet/BlueprintFunctionLibrary.h>
 #include "PEPlayerLibrary.generated.h"
 
 class UInputAction;

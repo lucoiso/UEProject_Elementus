@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/Functions/PEGeneralLibrary.h"
-#include "Kismet/KismetTextLibrary.h"
+#include <Kismet/KismetTextLibrary.h>
 
 #define LOCTEXT_NAMESPACE "ProjectElementus_GeneralLibrary"
 

@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
+#include <CoreMinimal.h>
+#include <Abilities/GameplayAbilityTargetActor_SingleLineTrace.h>
 #include "PELineTargeting.generated.h"
 
 /**

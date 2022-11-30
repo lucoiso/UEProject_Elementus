@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Actor.h>
 #include "GAS/System/PEEffectData.h"
-#include "GameFramework/Actor.h"
 #include "PEProjectileActor.generated.h"
 
 class UAbilitySystemComponent;

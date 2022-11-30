@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/GameUserSettings.h"
+#include <CoreMinimal.h>
+#include <GameFramework/GameUserSettings.h>
 #include "PEGameSettings.generated.h"
 
 /**

@@ -3,11 +3,11 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/World/PEConsumableActor.h"
+#include "Actors/Character/PECharacter.h"
 #include "Management/Data/PEConsumableData.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "NiagaraComponent.h"
-#include "Actors/Character/PECharacter.h"
+#include <Components/StaticMeshComponent.h>
+#include <NiagaraComponent.h>
 
 APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), bDestroyAfterConsumption(true)
 {

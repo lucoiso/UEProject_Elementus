@@ -4,8 +4,8 @@
 
 #include "GAS/Tasks/PEMoveCamera_Task.h"
 #include "Actors/Character/PECharacter.h"
-#include "Components/TimelineComponent.h"
-#include "Camera/CameraComponent.h"
+#include <Components/TimelineComponent.h>
+#include <Camera/CameraComponent.h>
 
 UPEMoveCamera_Task::UPEMoveCamera_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

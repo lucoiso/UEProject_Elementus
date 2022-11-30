@@ -3,9 +3,9 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEHookAbility_Task.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GeometryCollection/GeometryCollectionComponent.h"
+#include <GameFramework/Character.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <GeometryCollection/GeometryCollectionComponent.h>
 
 UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

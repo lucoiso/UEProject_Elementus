@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayEffectExecutionCalculation.h"
+#include <CoreMinimal.h>
+#include <GameplayEffectExecutionCalculation.h>
 #include "PEDamageGEC.generated.h"
 
 /**

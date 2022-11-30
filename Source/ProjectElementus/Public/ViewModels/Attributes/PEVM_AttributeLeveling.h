@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "ViewModels/Attributes/PEVM_AttributeBase.h"
 #include "PEVM_AttributeLeveling.generated.h"
 

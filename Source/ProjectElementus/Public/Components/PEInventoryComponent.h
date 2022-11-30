@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Components/ElementusInventoryComponent.h"
+#include <CoreMinimal.h>
+#include <Components/ElementusInventoryComponent.h>
 #include "PEInventoryComponent.generated.h"
 
 class UPEEquipment;

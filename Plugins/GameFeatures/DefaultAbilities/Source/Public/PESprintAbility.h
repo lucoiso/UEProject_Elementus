@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "GAS/System/PEGameplayAbility.h"
 #include "PESprintAbility.generated.h"
 

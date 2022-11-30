@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <Abilities/Tasks/AbilityTask.h>
 #include "GAS/System/PEEffectData.h"
-#include "Abilities/Tasks/AbilityTask.h"
 #include "PESpawnProjectile_Task.generated.h"
 
 class APEProjectileActor;

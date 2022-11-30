@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <Abilities/GameplayAbility.h>
 #include "GAS/System/PEEffectData.h"
-#include "Abilities/GameplayAbility.h"
 #include "PEGameplayAbility.generated.h"
 
 class AGameplayAbilityTargetActor_Trace;

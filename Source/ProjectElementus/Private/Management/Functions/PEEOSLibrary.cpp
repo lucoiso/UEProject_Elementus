@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/Functions/PEEOSLibrary.h"
-#include "EOSVoiceChatUser.h"
+#include <EOSVoiceChatUser.h>
 
 FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 {

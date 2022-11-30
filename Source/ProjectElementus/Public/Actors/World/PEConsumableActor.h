@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Actor.h>
 #include "Actors/Interfaces/PEInteractable.h"
-#include "GameFramework/Actor.h"
 #include "PEConsumableActor.generated.h"
 
 class UPEConsumableData;

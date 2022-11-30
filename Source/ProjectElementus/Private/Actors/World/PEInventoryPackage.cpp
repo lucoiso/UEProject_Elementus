@@ -4,8 +4,8 @@
 
 #include "Actors/World/PEInventoryPackage.h"
 #include "Actors/Character/PECharacter.h"
-#include "Blueprint/UserWidget.h"
 #include "Management/PEProjectSettings.h"
+#include <Blueprint/UserWidget.h>
 
 APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

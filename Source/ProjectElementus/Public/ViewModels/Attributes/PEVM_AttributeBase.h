@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "MVVMViewModelBase.h"
-#include "GameplayEffectTypes.h"
+#include <CoreMinimal.h>
+#include <MVVMViewModelBase.h>
+#include <GameplayEffectTypes.h>
 #include "PEVM_AttributeBase.generated.h"
 
 #define CHECK_ATTRIBUTE_AND_SET_VALUE(AttributeClass, AttributeName) \

@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "DefaultAbilitiesModule.h"
-#include "Modules/ModuleManager.h"
+#include <Modules/ModuleManager.h>
 
 void FDefaultAbilitiesModule::StartupModule()
 {

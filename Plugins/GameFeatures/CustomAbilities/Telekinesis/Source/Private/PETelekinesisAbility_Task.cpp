@@ -4,9 +4,9 @@
 
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
-#include "PhysicsEngine/PhysicsHandleComponent.h"
-#include "Actors/Character/PECharacter.h"
-#include "GAS/Targeting/PELineTargeting.h"
+#include <GAS/Targeting/PELineTargeting.h>
+#include <Actors/Character/PECharacter.h>
+#include <PhysicsEngine/PhysicsHandleComponent.h>
 
 UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

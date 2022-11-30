@@ -4,21 +4,21 @@
 
 #include "Actors/Character/PEPlayerController.h"
 #include "Actors/Character/PECharacter.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedPlayerInput.h"
-#include "InputAction.h"
-#include "AbilitySystemComponent.h"
-#include "AbilitySystemGlobals.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "GameFramework/GameModeBase.h"
-#include "GameFramework/PlayerState.h"
-#include "Blueprint/UserWidget.h"
 #include "Components/PEInventoryComponent.h"
 #include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Management/Functions/PEEOSLibrary.h"
 #include "Management/PEProjectSettings.h"
 #include "MFEA_Settings.h"
+#include <EnhancedInputComponent.h>
+#include <EnhancedPlayerInput.h>
+#include <InputAction.h>
+#include <AbilitySystemComponent.h>
+#include <AbilitySystemGlobals.h>
+#include <GameFramework/GameModeBase.h>
+#include <GameFramework/PlayerState.h>
+#include <Blueprint/UserWidget.h>
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;

@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Abilities/GameplayAbilityWorldReticle.h"
-#include "Abilities/GameplayAbilityTargetDataFilter.h"
-#include "Abilities/GameplayAbilityTargetTypes.h"
+#include <CoreMinimal.h>
+#include <Abilities/GameplayAbilityWorldReticle.h>
+#include <Abilities/GameplayAbilityTargetDataFilter.h>
+#include <Abilities/GameplayAbilityTargetTypes.h>
 #include "PETrace.generated.h"
 
 /**

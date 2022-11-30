@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <Actors/ElementusInventoryPackage.h>
 #include "Actors/Interfaces/PEInteractable.h"
-#include "Actors/ElementusInventoryPackage.h"
 #include "PEInventoryPackage.generated.h"
 
 /**

@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Engine/AssetManager.h"
+#include <CoreMinimal.h>
+#include <Engine/AssetManager.h>
 #include "PEAssetManager.generated.h"
 
 /**

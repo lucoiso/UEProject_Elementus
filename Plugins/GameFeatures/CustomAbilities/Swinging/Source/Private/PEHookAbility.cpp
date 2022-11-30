@@ -4,11 +4,11 @@
 
 #include "PEHookAbility.h"
 #include "PEHookAbility_Task.h"
-#include "GameFramework/Character.h"
-#include "GAS/Targeting/PELineTargeting.h"
-#include "GAS/System/PETrace.h"
-#include "GeometryCollection/GeometryCollectionComponent.h"
-#include "Management/Data/PEGlobalTags.h"
+#include <GAS/Targeting/PELineTargeting.h>
+#include <GAS/System/PETrace.h>
+#include <Management/Data/PEGlobalTags.h>
+#include <GameFramework/Character.h>
+#include <GeometryCollection/GeometryCollectionComponent.h>
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), HookIntensity(3000.f), MaxHookIntensity(0.f)
 {

@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "TelekinesisModule.h"
-#include "Modules/ModuleManager.h"
+#include <Modules/ModuleManager.h>
 
 void FTelekinesisModule::StartupModule()
 {
