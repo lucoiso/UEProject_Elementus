@@ -6,8 +6,8 @@
 #include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "GAS/System/PEAbilityData.h"
-#include "Components/SphereComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
+#include <Components/SphereComponent.h>
+#include <GameFramework/ProjectileMovementComponent.h>
 
 APEProjectileActor::APEProjectileActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

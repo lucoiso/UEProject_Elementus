@@ -4,20 +4,21 @@
 
 #include "Actors/Character/PEPlayerController.h"
 #include "Actors/Character/PECharacter.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedPlayerInput.h"
-#include "InputAction.h"
-#include "AbilitySystemComponent.h"
-#include "AbilitySystemGlobals.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "GameFramework/GameModeBase.h"
-#include "GameFramework/PlayerState.h"
-#include "Blueprint/UserWidget.h"
 #include "Components/PEInventoryComponent.h"
-#include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Management/Functions/PEEOSLibrary.h"
-#include "MFEA_Settings.h"
+#include "Management/PEProjectSettings.h"
+#include <Management/ElementusInventoryFunctions.h>
+#include <MFEA_Settings.h>
+#include <EnhancedInputComponent.h>
+#include <EnhancedPlayerInput.h>
+#include <InputAction.h>
+#include <AbilitySystemComponent.h>
+#include <AbilitySystemGlobals.h>
+#include <GameFramework/GameModeBase.h>
+#include <GameFramework/PlayerState.h>
+#include <Blueprint/UserWidget.h>
 
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
@@ -34,12 +35,6 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 		!MF_Settings->InputIDEnumeration.IsNull())
 	{
 		InputEnumHandle = MF_Settings->InputIDEnumeration.LoadSynchronous();
-	}
-
-	static ConstructorHelpers::FClassFinder<UUserWidget> InventoryWidget_ClassRef(TEXT("/Game/Main/Blueprints/Widgets/Inventory/WB_Inventory_Example"));
-	if (InventoryWidget_ClassRef.Succeeded())
-	{
-		InventoryWidgetClass = InventoryWidget_ClassRef.Class;
 	}
 }
 
@@ -349,5 +344,14 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 
 void APEPlayerController::Client_OpenInventory_Implementation()
 {
-	CreateWidget(this, InventoryWidgetClass.LoadSynchronous(), TEXT("InventoryWidget"))->AddToViewport();
+	const UPEProjectSettings* const ProjectSettings = GetDefault<UPEProjectSettings>();
+	const TSubclassOf<UUserWidget> InventoryUIClass = ProjectSettings->MainInventoryWidget.IsNull() ? nullptr : ProjectSettings->MainInventoryWidget.LoadSynchronous();
+	
+	if (!IsValid(InventoryUIClass))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s - Missing setting: Main Inventory Widget"), *FString(__func__));
+		return;
+	}
+
+	CreateWidget(this, InventoryUIClass, TEXT("InventoryWidget"))->AddToPlayerScreen();
 }

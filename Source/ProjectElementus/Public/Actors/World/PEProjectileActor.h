@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Actor.h>
 #include "GAS/System/PEEffectData.h"
-#include "GameFramework/Actor.h"
 #include "PEProjectileActor.generated.h"
 
 class UAbilitySystemComponent;
@@ -37,7 +37,7 @@ protected:
 
 public:
 	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
-	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Project Elementus | Properties")
+	UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn = true), Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> ProjectileEffects;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")

@@ -4,22 +4,23 @@
 
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
-#include "Camera/CameraComponent.h"
+#include "Actors/Character/PEPlayerState.h"
+#include "Actors/World/PEInventoryPackage.h"
+#include "GAS/System/PEAbilitySystemComponent.h"
 #include "Components/PEMovementComponent.h"
 #include "Components/PEInventoryComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Components/GameFrameworkComponentManager.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "AbilitySystemLog.h"
-#include "Actors/Character/PEPlayerState.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
-#include "Actors/World/PEInventoryPackage.h"
-#include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
-#include "Net/UnrealNetwork.h"
+#include "Management/PEProjectSettings.h"
+#include <Management/ElementusInventoryFunctions.h>
+#include <Components/CapsuleComponent.h>
+#include <Components/GameFrameworkComponentManager.h>
+#include <Camera/CameraComponent.h>
+#include <GameFramework/SpringArmComponent.h>
+#include <AbilitySystemLog.h>
+#include <Net/UnrealNetwork.h>
 
-FName APECharacter::PEInventoryComponentName(TEXT("InventoryComponent"));
-FVector APECharacter::PECameraDefaultPosition(FVector(50.f, 50.f, 50.f));
+const FName APECharacter::PEInventoryComponentName(TEXT("InventoryComponent"));
+const FVector APECharacter::PECameraDefaultPosition(FVector(50.f, 50.f, 50.f));
 
 APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UPEMovementComponent>(CharacterMovementComponentName))
 {
@@ -57,16 +58,12 @@ APECharacter::APECharacter(const FObjectInitializer& ObjectInitializer) : Super(
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;	
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	GetCharacterMovement()->MaxWalkSpeedCrouched = 300.f;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = GetCharacterMovement()->MaxWalkSpeed * 0.6f;
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.375f;
-	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCharacterMovement()->GravityScale = 1.25f;
-
-	DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
-	DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -129,6 +126,47 @@ void APECharacter::OnRep_Controller()
 	}
 }
 
+void APECharacter::ApplyExtraSettings()
+{
+	const UPEProjectSettings* const ProjectSettings = GetDefault<UPEProjectSettings>();
+	if (!IsValid(ProjectSettings))
+	{
+		return;
+	}
+
+	if (IsValid(GetCharacterMovement()))
+	{
+		// Check for movement settings to apply on character movement component
+		GetCharacterMovement()->MaxWalkSpeed *= ProjectSettings->SpeedMultiplier;
+		GetCharacterMovement()->MaxWalkSpeedCrouched = GetCharacterMovement()->MaxWalkSpeed * 0.6f;
+		GetCharacterMovement()->JumpZVelocity *= ProjectSettings->JumpMultiplier;
+		GetCharacterMovement()->AirControl *= ProjectSettings->AirControlMultiplier;
+		GetCharacterMovement()->GravityScale *= ProjectSettings->GravityMultiplier;
+
+		// Cached values that are used by Gameplay Effects that modify character's movement
+		DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+		DefaultCrouchSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
+		DefaultJumpVelocity = GetCharacterMovement()->JumpZVelocity;
+	}
+
+	// Check if this character have a valid Skeletal Mesh and paint it
+	if (IsValid(GetMesh()))
+	{
+		const auto DynamicColor_Lambda = [this](const uint8& Index, const FLinearColor& Color) -> void
+		{
+			if (UMaterialInstanceDynamic* const DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
+			{
+				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
+			}
+		};
+
+		const FLinearColor DestColor = IsBotControlled() ? ProjectSettings->BotColor : ProjectSettings->PlayerColor;
+
+		DynamicColor_Lambda(0, DestColor);
+		DynamicColor_Lambda(1, DestColor);
+	}
+}
+
 #pragma region Default Getters
 float APECharacter::GetDefaultWalkSpeed() const
 {
@@ -145,7 +183,7 @@ float APECharacter::GetDefaultJumpVelocity() const
 	return DefaultJumpVelocity;
 }
 
-/* static */ FVector APECharacter::GetCameraDefaultPosition()
+FVector APECharacter::GetCameraDefaultPosition()
 {
 	return APECharacter::PECameraDefaultPosition;
 }
@@ -207,23 +245,7 @@ void APECharacter::BeginPlay()
 		AbilitySystemComponent->OnAbilityEnded.AddUFunction(this, TEXT("AbilityEnded"));
 	}
 
-	// Check if this character have a valid Skeletal Mesh and paint it
-	if (IsValid(GetMesh()))
-	{
-		const auto DynamicColor_Lambda = [&](const uint8& Index, const FLinearColor& Color) -> void
-		{
-			if (UMaterialInstanceDynamic* const DynMat = GetMesh()->CreateDynamicMaterialInstance(Index))
-			{
-				DynMat->SetVectorParameterValue(TEXT("Tint"), Color);
-			}
-		};
-
-		// Bot: Red | Player: Blue
-		const FLinearColor DestColor = IsBotControlled() ? FLinearColor::Red : FLinearColor::Blue;
-
-		DynamicColor_Lambda(0, DestColor);
-		DynamicColor_Lambda(1, DestColor);
-	}
+	ApplyExtraSettings();
 }
 
 void APECharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -266,17 +288,26 @@ void APECharacter::Multicast_DeathSetup_Implementation()
 	// Will perform each step above on both server and client
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
 
-	if (IsValid(GetMesh()) && IsValid(GetCharacterMovement()) && IsValid(GetCapsuleComponent()))
+	if (IsValid(GetCharacterMovement()))
 	{
 		GetCharacterMovement()->DisableMovement();
-		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	}
+
+	if (IsValid(GetCapsuleComponent()))
+	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
+	}
+	
+	if (IsValid(GetMesh()))
+	{
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 		GetMesh()->SetAllBodiesBelowSimulatePhysics(NAME_None, true, true);
 	}
 }
 
 void APECharacter::Server_SpawnInventoryPackage_Implementation()
 {
+	// Spawn an inventory package with all character's items
 	AElementusInventoryPackage* const SpawnedPackage = GetWorld()->SpawnActorDeferred<APEInventoryPackage>(APEInventoryPackage::StaticClass(), GetTransform(), nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 	UElementusInventoryFunctions::TradeElementusItem(InventoryComponent->GetItemsArray(), InventoryComponent, SpawnedPackage->PackageInventory);

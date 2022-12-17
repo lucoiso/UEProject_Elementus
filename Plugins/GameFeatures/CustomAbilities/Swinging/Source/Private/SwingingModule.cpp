@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "SwingingModule.h"
-#include "Modules/ModuleManager.h"
+#include <Modules/ModuleManager.h>
 
 void FSwingingModule::StartupModule()
 {

@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Engine/DataAsset.h"
+#include <CoreMinimal.h>
+#include <Engine/DataAsset.h>
 #include "PEEnemyData.generated.h"
 
 /**

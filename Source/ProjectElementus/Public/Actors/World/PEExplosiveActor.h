@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Actor.h>
 #include "GAS/System/PEEffectData.h"
-#include "GameFramework/Actor.h"
 #include "PEExplosiveActor.generated.h"
 
 class UNiagaraSystem;
@@ -36,7 +36,7 @@ protected:
 	bool bDestroyAfterExplosion;
 
 	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> ExplosionEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")

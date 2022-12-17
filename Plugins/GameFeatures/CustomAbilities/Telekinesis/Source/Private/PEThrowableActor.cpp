@@ -3,10 +3,10 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEThrowableActor.h"
-#include "Components/StaticMeshComponent.h"
-#include "GAS/System/PEAbilityData.h"
-#include "Actors/Character/PECharacter.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
+#include <Actors/Character/PECharacter.h>
+#include <GAS/System/PEAbilityData.h>
+#include <GAS/System/PEAbilitySystemComponent.h>
+#include <Components/StaticMeshComponent.h>
 
 APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

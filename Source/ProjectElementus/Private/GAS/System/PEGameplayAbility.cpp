@@ -12,19 +12,19 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/World/PEProjectileActor.h"
 #include "Management/Data/PEGlobalTags.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
-#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Abilities/Tasks/AbilityTask_WaitConfirmCancel.h"
-#include "Abilities/Tasks/AbilityTask_WaitCancel.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
-#include "Abilities/Tasks/AbilityTask_WaitTargetData.h"
-#include "Abilities/Tasks/AbilityTask_SpawnActor.h"
-#include "Abilities/GameplayAbilityTargetActor_SingleLineTrace.h"
-#include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
-#include "GameplayEffect.h"
-#include "AbilitySystemGlobals.h"
-#include "Kismet/GameplayStatics.h"
-#include "AbilitySystemLog.h"
+#include <Abilities/Tasks/AbilityTask_WaitGameplayEvent.h>
+#include <Abilities/Tasks/AbilityTask_PlayMontageAndWait.h>
+#include <Abilities/Tasks/AbilityTask_WaitConfirmCancel.h>
+#include <Abilities/Tasks/AbilityTask_WaitCancel.h>
+#include <Abilities/Tasks/AbilityTask_WaitGameplayTag.h>
+#include <Abilities/Tasks/AbilityTask_WaitTargetData.h>
+#include <Abilities/Tasks/AbilityTask_SpawnActor.h>
+#include <Abilities/GameplayAbilityTargetActor_SingleLineTrace.h>
+#include <Abilities/GameplayAbilityTargetActor_GroundTrace.h>
+#include <GameplayEffect.h>
+#include <AbilitySystemGlobals.h>
+#include <Kismet/GameplayStatics.h>
+#include <AbilitySystemLog.h>
 
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AbilityMaxRange(0), bIgnoreCost(false), bIgnoreCooldown(false), bWaitCancel(true), AbilityActiveTime(0), bEndAbilityAfterActiveTime(false)
 {
@@ -482,7 +482,7 @@ void UPEGameplayAbility::RemoveCooldownEffect(UAbilitySystemComponent* SourceAbi
 	}
 }
 
-void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach, const FVector& InLocation)
+void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach, const FVector InLocation)
 {
 	if (!IsValid(AbilitySoundData.AbilitySoundFX))
 	{
@@ -499,7 +499,7 @@ void UPEGameplayAbility::PlayAbilitySoundAttached(USceneComponent* InComponent, 
 	UGameplayStatics::SpawnSoundAttached(AbilitySoundData.AbilitySoundFX, InComponent, SocketToAttach, InLocation, EAttachLocation::KeepRelativeOffset, false, AbilitySoundData.VolumeMultiplier, AbilitySoundData.PitchMultiplier, AbilitySoundData.StartTime);
 }
 
-void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation)
+void UPEGameplayAbility::PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector InLocation)
 {
 	if (!IsValid(AbilitySoundData.AbilitySoundFX))
 	{

@@ -5,9 +5,9 @@
 #include "PETelekinesisAbility.h"
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
-#include "GAS/Targeting/PELineTargeting.h"
-#include "GAS/System/PETrace.h"
-#include "Management/Data/PEGlobalTags.h"
+#include <GAS/Targeting/PELineTargeting.h>
+#include <GAS/System/PETrace.h>
+#include <Management/Data/PEGlobalTags.h>
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ThrowIntensity(2750.f)
 {
@@ -92,7 +92,7 @@ void UPETelekinesisAbility::GrabbingComplete(const bool ValidTarget)
 	if (ValidTarget)
 	{
 		ActivateWaitConfirmInputTask();
-		ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
+		ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag(GlobalTag_AbilityNotify));
 	}
 	else
 	{

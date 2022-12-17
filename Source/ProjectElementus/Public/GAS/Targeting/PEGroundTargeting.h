@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Abilities/GameplayAbilityTargetActor_GroundTrace.h"
+#include <CoreMinimal.h>
+#include <Abilities/GameplayAbilityTargetActor_GroundTrace.h>
 #include "PEGroundTargeting.generated.h"
 
 /**

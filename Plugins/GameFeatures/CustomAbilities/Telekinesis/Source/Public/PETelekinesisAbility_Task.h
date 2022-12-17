@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Abilities/Tasks/AbilityTask.h"
+#include <CoreMinimal.h>
+#include <Abilities/Tasks/AbilityTask.h>
 #include "PETelekinesisAbility_Task.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FTelekinesisManagement, const bool, ValidTarget);

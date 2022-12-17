@@ -5,8 +5,8 @@
 #include "GAS/Effects/PEDamageGEC.h"
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
-#include "AbilitySystemComponent.h"
 #include "Management/Data/PEGlobalTags.h"
+#include <AbilitySystemComponent.h>
 
 struct FDamageAttributesStatics
 {

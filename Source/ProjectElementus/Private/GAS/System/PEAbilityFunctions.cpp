@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/System/PEAbilityFunctions.h"
-#include "AbilitySystemComponent.h"
+#include <AbilitySystemComponent.h>
 
 FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSingleHitResult(const FHitResult HitResult)
 {

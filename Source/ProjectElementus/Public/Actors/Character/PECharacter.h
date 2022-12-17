@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystemInterface.h"
-#include "GameplayTagContainer.h"
-#include "GameFramework/Character.h"
+#include <CoreMinimal.h>
+#include <AbilitySystemInterface.h>
+#include <GameplayTagContainer.h>
+#include <GameFramework/Character.h>
 #include "PECharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
@@ -39,14 +39,16 @@ protected:
 	virtual void OnRep_PlayerState() override;
 	virtual void OnRep_Controller() override;
 
+	virtual void ApplyExtraSettings();
+
 private:
 	TWeakObjectPtr<UPEAbilitySystemComponent> AbilitySystemComponent;
 
 public:
 	explicit APECharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
-	static FName PEInventoryComponentName;
-	static FVector PECameraDefaultPosition;
+	static const FName PEInventoryComponentName;
+	static const FVector PECameraDefaultPosition;
 
 	/** Returns CameraBoom sub object **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const

@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <Actors/ElementusInventoryPackage.h>
 #include "Actors/Interfaces/PEInteractable.h"
-#include "Actors/ElementusInventoryPackage.h"
 #include "PEInventoryPackage.generated.h"
 
 /**
@@ -22,9 +22,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
 	TObjectPtr<UStaticMeshComponent> PackageMesh;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
-	TSoftClassPtr<UUserWidget> TradeWidgetClass;
 
 protected:
 	virtual void Tick(float DeltaSeconds) override;

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "GAS/Attributes/PEAttributeBase.h"
 #include "PELevelingAS.generated.h"
 

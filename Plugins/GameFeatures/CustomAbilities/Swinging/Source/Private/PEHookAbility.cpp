@@ -4,13 +4,13 @@
 
 #include "PEHookAbility.h"
 #include "PEHookAbility_Task.h"
-#include "GameFramework/Character.h"
-#include "GAS/Targeting/PELineTargeting.h"
-#include "GAS/System/PETrace.h"
-#include "GeometryCollection/GeometryCollectionComponent.h"
-#include "Management/Data/PEGlobalTags.h"
+#include <GAS/Targeting/PELineTargeting.h>
+#include <GAS/System/PETrace.h>
+#include <Management/Data/PEGlobalTags.h>
+#include <GameFramework/Character.h>
+#include <GeometryCollection/GeometryCollectionComponent.h>
 
-UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), HookIntensity(3000.f), MaxHookIntensity(0.f)
+UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), HookIntensity(100.f), ImpulseIntensityMultiplier(30.f), MaxHookForce(200000.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));
 
@@ -32,7 +32,7 @@ void UPEHookAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 
 	// Activate tasks: Animation Montage and Wait for GameplayEvent (Anim Notify)
 	ActivateWaitMontageTask(NAME_None, 1.5f);
-	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag("Data.Notify.Ability"));
+	ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag(GlobalTag_AbilityNotify));
 }
 
 void UPEHookAbility::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
@@ -73,7 +73,7 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	}
 
 	// Create and initialize the hook movement task: This task will perform the physical hook movement
-	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this, TEXT("HookTask"), *TargetHit, HookIntensity, MaxHookIntensity);
+	TaskHandle = UPEHookAbility_Task::HookAbilityMovement(this, TEXT("HookTask"), *TargetHit, HookIntensity, MaxHookForce);
 	TaskHandle->ReadyForActivation();
 
 	FGameplayCueParameters Params;
@@ -111,7 +111,7 @@ void UPEHookAbility::WaitConfirmInput_Callback_Implementation()
 	{
 		PlayAbilitySoundAttached(Player->GetMesh());
 
-		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() * HookIntensity;
+		const FVector ImpulseVector = (TaskHandle->GetLastHookLocation() - Player->GetActorLocation()).GetSafeNormal() * HookIntensity * ImpulseIntensityMultiplier;
 
 		Player->LaunchCharacter(ImpulseVector, false, true);
 

@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <UObject/Object.h>
 #include "GAS/System/PEEffectData.h"
-#include "UObject/Object.h"
 #include "PEEquipment.generated.h"
 
 class UGameplayAbility;
@@ -22,13 +22,13 @@ class UPEEquipment : public UObject
 public:
 	explicit UPEEquipment(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
-	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
+	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> EquipmentEffects;
 
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	FGameplayTagContainer EquipmentSlotTags;
 
-	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties", meta = (TitleProperty = "{InputID} -> {Ability Class}"))
+	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")
 	TMap<FName, TSubclassOf<UGameplayAbility>> EquipmentAbilities;
 
 	UPROPERTY(EditAnywhere, Category = "Project Elementus | Properties")

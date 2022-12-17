@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
+#include <CoreMinimal.h>
+#include <GameplayTagContainer.h>
+#include <Engine/DataAsset.h>
 #include "GAS/System/PEEffectData.h"
-#include "Engine/DataAsset.h"
 #include "PEConsumableData.generated.h"
 
 class UNiagaraSystem;
@@ -36,7 +36,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "SoftData"))
 	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Gameplay"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Gameplay", TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Gameplay"))

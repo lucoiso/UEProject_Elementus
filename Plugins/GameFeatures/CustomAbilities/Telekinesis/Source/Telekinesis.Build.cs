@@ -21,6 +21,6 @@ public class Telekinesis : ModuleRules
 			"GameplayTags",
 			"GameplayTasks",
 			"ProjectElementus"
-        });
+		});
 	}
 }

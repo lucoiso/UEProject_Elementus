@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <Abilities/GameplayAbility.h>
 #include "GAS/System/PEEffectData.h"
-#include "Abilities/GameplayAbility.h"
 #include "PEGameplayAbility.generated.h"
 
 class AGameplayAbilityTargetActor_Trace;
@@ -62,7 +62,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bWaitCancel;
 
-	/* Set by Caller parameters that will be applied to Ability Cost - For Duration: 0.0 for instantaneous effects; -1.0 for infinite duration. */
+	/* Set by Caller parameters that will be applied to Ability Cost. Duration Values: 0.0 for instantaneous effects; -1.0 for infinite duration. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TMap<FGameplayTag, float> AbilityCostSetByCallerData;
 
@@ -90,11 +90,11 @@ protected:
 	bool bAutoActivateOnGrant;
 
 	/* Gameplay Effects that will be applied to self via ApplyAbilityEffectsToSelf function */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> SelfAbilityEffects;
 
 	/* Gameplay Effects that will be applied to target via ApplyAbilityEffectsToTarget function */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> TargetAbilityEffects;
 
 	/* Single Montage to play with ActivateWaitMontageTask function - You can mix this with ActivateWaitGameplayEventTask function */
@@ -242,7 +242,7 @@ protected:
 	{
 	} // Override this function on children classes.
 
-	/* Activate a Gameplay Cue with passed parameters */
+	/* Activate a Gameplay Cue with the given parameters */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void ActivateGameplayCues(const FGameplayTag GameplayCueTag, FGameplayCueParameters Parameters, UAbilitySystemComponent* SourceAbilitySystem = nullptr);
 
@@ -283,10 +283,10 @@ protected:
 	void RemoveCooldownEffect(UAbilitySystemComponent* SourceAbilitySystem) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach = NAME_None, const FVector& InLocation = FVector::ZeroVector);
+	void PlayAbilitySoundAttached(USceneComponent* InComponent, const FName SocketToAttach = NAME_None, const FVector InLocation = FVector::ZeroVector);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector& InLocation = FVector::ZeroVector);
+	void PlayAbilitySoundAtLocation(const UObject* WorldContext, const FVector InLocation = FVector::ZeroVector);
 	
 	/* Shared Timer Handle that is actually used with bEndAbilityAfterActiveTime */
 	FTimerHandle CancelationTimerHandle;

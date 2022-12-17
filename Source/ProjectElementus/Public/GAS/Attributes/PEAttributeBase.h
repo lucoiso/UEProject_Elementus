@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystemComponent.h"
-#include "AttributeSet.h"
+#include <CoreMinimal.h>
+#include <AbilitySystemComponent.h>
+#include <AttributeSet.h>
 #include "PEAttributeBase.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -29,4 +29,12 @@ public:
 protected:
 	/* A helper function to clamp attribute values */
 	virtual void AdjustAttributeForMaxChange(const FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty) const;
+
+	virtual void InitFromMetaDataTable(const UDataTable* DataTable);
+
+	template<typename ComponentTy>
+	ComponentTy* GetCastedAbilitySystemComponent()
+	{
+		return Cast<ComponentTy>(GetOwningAbilitySystemComponent());
+	}
 };

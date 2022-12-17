@@ -3,6 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "GAS/Attributes/PEAttributeBase.h"
+#include "GAS/System/PEAbilitySystemComponent.h"
 
 UPEAttributeBase::UPEAttributeBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {	
@@ -20,5 +21,15 @@ void UPEAttributeBase::AdjustAttributeForMaxChange(const FGameplayAttributeData&
 
 			AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
 		}
+	}
+}
+
+void UPEAttributeBase::InitFromMetaDataTable(const UDataTable* DataTable)
+{
+	Super::InitFromMetaDataTable(DataTable);
+
+	if (UPEAbilitySystemComponent* const AbilityComp = GetCastedAbilitySystemComponent<UPEAbilitySystemComponent>())
+	{
+		AbilityComp->InitializeAttributeViewModel(this);
 	}
 }

@@ -3,8 +3,8 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Management/Functions/PEPlayerLibrary.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include <EnhancedInputSubsystems.h>
+#include <EnhancedInputComponent.h>
 
 FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* Controller, UInputAction* Action, UObject* Object, const FName UFunctionName, const ETriggerEvent TriggerEvent)
 {

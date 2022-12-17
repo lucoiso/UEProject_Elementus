@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
+#include <Kismet/BlueprintFunctionLibrary.h>
 #include "GAS/System/PETrace.h"
-#include "Kismet/BlueprintFunctionLibrary.h"
 #include "PEAbilityFunctions.generated.h"
 
 /**

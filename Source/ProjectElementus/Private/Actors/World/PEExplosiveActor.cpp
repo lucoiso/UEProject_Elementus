@@ -6,8 +6,8 @@
 #include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "GAS/System/PEAbilityData.h"
-#include "NiagaraFunctionLibrary.h"
-#include "NiagaraSystem.h"
+#include <NiagaraFunctionLibrary.h>
+#include <NiagaraSystem.h>
 
 APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ExplosionRadius(150.f), ExplosionMagnitude(1000.f), bDestroyAfterExplosion(true)
 {

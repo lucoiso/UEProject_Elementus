@@ -6,10 +6,10 @@
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
 #include "GAS/System/PEAttributeData.h"
-#include "GameplayEffectExtension.h"
-#include "GameplayEffectTypes.h"
-#include "AbilitySystemComponent.h"
-#include "Runtime/Engine/Public/Net/UnrealNetwork.h"
+#include <AbilitySystemComponent.h>
+#include <GameplayEffectExtension.h>
+#include <GameplayEffectTypes.h>
+#include <Runtime/Engine/Public/Net/UnrealNetwork.h>
 
 UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), CurrentLevel(0.f), CurrentExperience(0.f), RequiredExperience(1.f)
 {
