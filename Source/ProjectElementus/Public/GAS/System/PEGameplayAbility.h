@@ -62,7 +62,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	bool bWaitCancel;
 
-	/* Set by Caller parameters that will be applied to Ability Cost - For Duration: 0.0 for instantaneous effects; -1.0 for infinite duration. */
+	/* Set by Caller parameters that will be applied to Ability Cost. Duration Values: 0.0 for instantaneous effects; -1.0 for infinite duration. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	TMap<FGameplayTag, float> AbilityCostSetByCallerData;
 
@@ -90,11 +90,11 @@ protected:
 	bool bAutoActivateOnGrant;
 
 	/* Gameplay Effects that will be applied to self via ApplyAbilityEffectsToSelf function */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> SelfAbilityEffects;
 
 	/* Gameplay Effects that will be applied to target via ApplyAbilityEffectsToTarget function */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> TargetAbilityEffects;
 
 	/* Single Montage to play with ActivateWaitMontageTask function - You can mix this with ActivateWaitGameplayEventTask function */

@@ -3,13 +3,13 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Components/PEInventoryComponent.h"
-#include "Management/Data/PEGlobalTags.h"
-#include "Management/ElementusInventoryFunctions.h"
 #include "Actors/Interfaces/PEEquipment.h"
 #include "Actors/Character/PECharacter.h"
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "GAS/System/PEAbilityFunctions.h"
-#include "MFEA_Settings.h"
+#include "Management/Data/PEGlobalTags.h"
+#include <Management/ElementusInventoryFunctions.h>
+#include <MFEA_Settings.h>
 
 UPEInventoryComponent::UPEInventoryComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

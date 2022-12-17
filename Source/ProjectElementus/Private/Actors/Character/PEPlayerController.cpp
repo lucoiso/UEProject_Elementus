@@ -6,11 +6,11 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "Components/PEInventoryComponent.h"
-#include "Management/ElementusInventoryFunctions.h"
 #include "Management/Data/PEGlobalTags.h"
 #include "Management/Functions/PEEOSLibrary.h"
 #include "Management/PEProjectSettings.h"
-#include "MFEA_Settings.h"
+#include <Management/ElementusInventoryFunctions.h>
+#include <MFEA_Settings.h>
 #include <EnhancedInputComponent.h>
 #include <EnhancedPlayerInput.h>
 #include <InputAction.h>

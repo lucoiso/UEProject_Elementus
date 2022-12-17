@@ -13,12 +13,12 @@ UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitial
 	bIsFinished = false;
 }
 
-UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const FHitResult HitResult, const float HookIntensity, const float HookMaxIntensity)
+UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const FHitResult HitResult, const float HookIntensity, const float HookMaxForce)
 {
 	UPEHookAbility_Task* const MyObj = NewAbilityTask<UPEHookAbility_Task>(OwningAbility, TaskInstanceName);
 	MyObj->Intensity = HookIntensity;
 	MyObj->HitDataHandle = HitResult;
-	MyObj->MaxIntensity = HookMaxIntensity;
+	MyObj->MaxForce = HookMaxForce;
 
 	return MyObj;
 }
@@ -99,8 +99,8 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation();
 			Difference.Size() >= 100.f)
 		{
-			const FVector BaseForce = Difference * Intensity * DeltaTime;
-			const FVector HookForce = MaxIntensity > 0.f ? BaseForce.GetClampedToMaxSize(MaxIntensity) : BaseForce;
+			const FVector BaseForce = Difference * Intensity;
+			const FVector HookForce = MaxForce > 0.f ? BaseForce.GetClampedToMaxSize(MaxForce) : BaseForce;
 
 			HookOwner->GetCharacterMovement()->AddForce(HookForce);
 

@@ -5,7 +5,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "GAS/System/PEGameplayAbility.h"
+#include <GAS/System/PEGameplayAbility.h>
 #include "PECrouchAbility.generated.h"
 
 /**

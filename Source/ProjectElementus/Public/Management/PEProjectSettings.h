@@ -8,6 +8,8 @@
 #include <Engine/DeveloperSettings.h>
 #include "PEProjectSettings.generated.h"
 
+class UGameplayEffect;
+
 /**
  * 
  */
@@ -57,9 +59,9 @@ public:
 
 	/* Global death effect used by GAS objects */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "GAS | Effects")
-	TSoftClassPtr<class UGameplayEffect> GlobalDeathEffect;
+	TSoftClassPtr<UGameplayEffect> GlobalDeathEffect;
 
 	/* Global stun effect used by GAS objects */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "GAS | Effects")
-	TSoftClassPtr<class UGameplayEffect> GlobalStunEffect;
+	TSoftClassPtr<UGameplayEffect> GlobalStunEffect;
 };

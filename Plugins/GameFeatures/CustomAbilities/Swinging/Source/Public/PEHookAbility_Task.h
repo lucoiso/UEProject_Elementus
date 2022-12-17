@@ -24,7 +24,7 @@ public:
 	FHookManagement OnHooking;
 
 	/* Create a reference to manage this ability task */
-	static UPEHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const FHitResult HitResult, const float HookIntensity, const float HookMaxIntensity = -1.f);
+	static UPEHookAbility_Task* HookAbilityMovement(UGameplayAbility* OwningAbility, const FName TaskInstanceName, const FHitResult HitResult, const float HookIntensity, const float HookMaxForce = -1.f);
 
 	virtual void Activate() override;
 
@@ -40,7 +40,7 @@ private:
 	TWeakObjectPtr<ACharacter> HitTarget;
 
 	float Intensity;
-	float MaxIntensity;
+	float MaxForce;
 	bool bIsFinished;
 	FHitResult HitDataHandle;
 	FVector CurrentHookLocation;

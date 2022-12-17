@@ -24,9 +24,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
 	float HookIntensity;
 
-	/* Max intensity value of the hook movement - Set 0 to disable */
+	/* Floating value that represents the multiplier value that will be applied on hook impulse */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	float ImpulseIntensityMultiplier;
+
+	/* Max force value of the hook movement - Set 0 to disable */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties", meta = (ClampMin = "0", UIMin = "0"))
-	float MaxHookIntensity;
+	float MaxHookForce;
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

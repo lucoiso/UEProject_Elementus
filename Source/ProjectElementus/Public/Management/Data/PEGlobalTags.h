@@ -52,3 +52,7 @@ constexpr auto GlobalTag_RegenBlock_Stamina = "GameplayEffect.Debuff.Regeneratio
 constexpr auto GlobalTag_CostWhileActive_Stamina = "GameplayAbility.State.CostWhileActive.Stamina";
 constexpr auto GlobalTag_CostWhileActive_Mana = "GameplayAbility.State.CostWhileActive.Mana";
 #pragma endregion Attributes
+
+#pragma region AbilityNotify
+constexpr auto GlobalTag_AbilityNotify = "Data.Notify.Ability";
+#pragma endregion AbilityNotify

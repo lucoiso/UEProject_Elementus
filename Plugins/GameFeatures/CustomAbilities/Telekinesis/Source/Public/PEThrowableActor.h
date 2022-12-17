@@ -6,7 +6,7 @@
 
 #include <CoreMinimal.h>
 #include <Engine/StaticMeshActor.h>
-#include "GAS/System/PEEffectData.h"
+#include <GAS/System/PEEffectData.h>
 #include "PEThrowableActor.generated.h"
 
 class UGameplayEffect;
@@ -26,7 +26,7 @@ public:
 
 protected:
 	/* Effects that will be apply to affected characters on Hit */
-	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> HitEffects;
 
 	UFUNCTION()

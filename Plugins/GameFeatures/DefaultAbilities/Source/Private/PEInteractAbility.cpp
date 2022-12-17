@@ -3,9 +3,9 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEInteractAbility.h"
-#include "Actors/Character/PECharacter.h"
-#include "Actors/Interfaces/PEInteractable.h"
 #include "Tasks/PEInteractAbility_Task.h"
+#include <Actors/Character/PECharacter.h>
+#include <Actors/Interfaces/PEInteractable.h>
 
 UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

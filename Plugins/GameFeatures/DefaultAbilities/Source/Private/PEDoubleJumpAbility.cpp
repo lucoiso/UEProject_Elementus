@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEDoubleJumpAbility.h"
-#include "Management/Data/PEGlobalTags.h"
+#include <Management/Data/PEGlobalTags.h>
 #include <GameFramework/Character.h>
 #include <GameFramework/CharacterMovementComponent.h>
 

@@ -5,12 +5,12 @@
 #include "GAS/System/PEAbilitySystemComponent.h"
 #include "GAS/System/PEAbilityData.h"
 #include "GAS/System/PEEffectData.h"
-#include "ViewModels/Attributes/PEVM_AttributeBasic.h"
-#include "ViewModels/Attributes/PEVM_AttributeCustom.h"
-#include "ViewModels/Attributes/PEVM_AttributeLeveling.h"
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
 #include "GAS/Attributes/PELevelingAS.h"
+#include "ViewModels/Attributes/PEVM_AttributeBasic.h"
+#include "ViewModels/Attributes/PEVM_AttributeCustom.h"
+#include "ViewModels/Attributes/PEVM_AttributeLeveling.h"
 
 UPEAbilitySystemComponent::UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

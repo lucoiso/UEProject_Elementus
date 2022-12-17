@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS(config=GameUserSettings, configdonotcheckdefaults, Category = "Project Elementus | Classes", Meta = (DisplayName = "PE Game Settings"))
+UCLASS(Config = GameUserSettings, configdonotcheckdefaults, Category = "Project Elementus | Classes")
 class PROJECTELEMENTUS_API UPEGameSettings final : public UGameUserSettings
 {
 	GENERATED_BODY()

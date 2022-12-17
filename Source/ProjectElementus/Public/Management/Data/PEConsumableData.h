@@ -36,7 +36,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "SoftData"))
 	TSoftObjectPtr<UNiagaraSystem> ObjectVFX;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Gameplay"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Gameplay", TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> ConsumableEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus", meta = (AssetBundles = "Gameplay"))

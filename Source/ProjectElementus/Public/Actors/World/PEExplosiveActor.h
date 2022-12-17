@@ -36,7 +36,7 @@ protected:
 	bool bDestroyAfterExplosion;
 
 	/* Gameplay Effects and SetByCaller parameters that will be applied to target */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties", Meta = (TitleProperty = "{EffectClass}"))
 	TArray<FGameplayEffectGroupedData> ExplosionEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project Elementus | Properties")

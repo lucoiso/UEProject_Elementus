@@ -47,8 +47,8 @@ private:
 public:
 	explicit APECharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
-	static FName PEInventoryComponentName;
-	static FVector PECameraDefaultPosition;
+	static const FName PEInventoryComponentName;
+	static const FVector PECameraDefaultPosition;
 
 	/** Returns CameraBoom sub object **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const
