@@ -14,7 +14,7 @@ class UInputAction;
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FPlayerInputBindingHandle
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TObjectPtr<APlayerController> PlayerController = nullptr;

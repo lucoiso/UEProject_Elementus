@@ -14,7 +14,7 @@
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FPELevelingData : public FTableRowBase
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 
 	FPELevelingData() : BonusMaxHealth(0.f), BonusMaxMana(0.f), BonusMaxStamina(0.f), BonusAttackRate(0.f), BonusDefenseRate(0.f), RequiredExp(0.f)
 	{

@@ -17,7 +17,7 @@ struct FPETargetActorSpawnParams;
 USTRUCT(BlueprintType, Category = "Project Elementus | Structures")
 struct FPEAudioData
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 
 	FPEAudioData() = default;
 

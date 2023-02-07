@@ -5,6 +5,29 @@
 #include "Management/Functions/PEEOSLibrary.h"
 #include <EOSVoiceChatUser.h>
 
+FOnlineSessionSettings FEOSSessionSettings::GetNativeEOSSettings() const
+{
+	FOnlineSessionSettings LocalSessionSettings;
+	LocalSessionSettings.NumPublicConnections = NumPublicConnections;
+	LocalSessionSettings.NumPrivateConnections = NumPrivateConnections;
+	LocalSessionSettings.bShouldAdvertise = bShouldAdvertise;
+	LocalSessionSettings.bAllowJoinInProgress = bAllowJoinInProgress;
+	LocalSessionSettings.bIsLANMatch = bIsLANMatch;
+	LocalSessionSettings.bIsDedicated = bIsDedicated;
+	LocalSessionSettings.bUsesStats = bUsesStats;
+	LocalSessionSettings.bAllowInvites = bAllowInvites;
+	LocalSessionSettings.bUsesPresence = bUsesPresence;
+	LocalSessionSettings.bAllowJoinViaPresence = bAllowJoinViaPresence;
+	LocalSessionSettings.bAllowJoinViaPresenceFriendsOnly = bAllowJoinViaPresenceFriendsOnly;
+	LocalSessionSettings.bAntiCheatProtected = bAntiCheatProtected;
+	LocalSessionSettings.bUseLobbiesIfAvailable = bUseLobbiesIfAvailable;
+	LocalSessionSettings.bUseLobbiesVoiceChatIfAvailable = bUseLobbiesVoiceChatIfAvailable;
+
+	LocalSessionSettings.Set(SEARCH_KEYWORDS, FString("ProjectElementus"), EOnlineDataAdvertisementType::ViaOnlineService);
+
+	return LocalSessionSettings;
+}
+
 FOnlineSubsystemEOS* UPEEOSLibrary::GetOnlineSubsystemEOS()
 {
 	return static_cast<FOnlineSubsystemEOS*>(FOnlineSubsystemEOS::Get(EOS_SUBSYSTEM));
@@ -84,29 +107,6 @@ bool UPEEOSLibrary::IsUserInAEOSSession()
 	}
 
 	return false;
-}
-
-FSessionSettingsHandler UPEEOSLibrary::GenerateEOSSessionSettings(const int32 NumPublicConnections, const int32 NumPrivateConnections, const bool bShouldAdvertise, const bool bAllowJoinInProgress, const bool bIsLANMatch, const bool bIsDedicated, const bool bUsesStats, const bool bAllowInvites, const bool bUsesPresence, const bool bAllowJoinViaPresence, const bool bAllowJoinViaPresenceFriendsOnly, const bool bAntiCheatProtected, const bool bUseLobbiesIfAvailable, const bool bUseLobbiesVoiceChatIfAvailable)
-{
-	FOnlineSessionSettings SessionSettings;
-	SessionSettings.NumPublicConnections = NumPublicConnections;
-	SessionSettings.NumPrivateConnections = NumPrivateConnections;
-	SessionSettings.bShouldAdvertise = bShouldAdvertise;
-	SessionSettings.bAllowJoinInProgress = bAllowJoinInProgress;
-	SessionSettings.bIsLANMatch = bIsLANMatch;
-	SessionSettings.bIsDedicated = bIsDedicated;
-	SessionSettings.bUsesStats = bUsesStats;
-	SessionSettings.bAllowInvites = bAllowInvites;
-	SessionSettings.bUsesPresence = bUsesPresence;
-	SessionSettings.bAllowJoinViaPresence = bAllowJoinViaPresence;
-	SessionSettings.bAllowJoinViaPresenceFriendsOnly = bAllowJoinViaPresenceFriendsOnly;
-	SessionSettings.bAntiCheatProtected = bAntiCheatProtected;
-	SessionSettings.bUseLobbiesIfAvailable = bUseLobbiesIfAvailable;
-	SessionSettings.bUseLobbiesVoiceChatIfAvailable = bUseLobbiesVoiceChatIfAvailable;
-
-	SessionSettings.Set(SEARCH_KEYWORDS, FString("ProjectElementus"), EOnlineDataAdvertisementType::ViaOnlineService);
-
-	return FSessionSettingsHandler{SessionSettings};
 }
 
 void UPEEOSLibrary::UpdateEOSPresence(const int32 LocalUserNum, const FString& PresenceText, const bool bOnline)

@@ -19,21 +19,63 @@
 /**
  * 
  */
+
+USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
+struct FEOSSessionSettings
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	int32 NumPublicConnections;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	int32 NumPrivateConnections;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bShouldAdvertise;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bAllowJoinInProgress;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bIsLANMatch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bIsDedicated;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bUsesStats;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bAllowInvites;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bUsesPresence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bAllowJoinViaPresence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bAllowJoinViaPresenceFriendsOnly;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bAntiCheatProtected;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bUseLobbiesIfAvailable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Project Elementus")
+	bool bUseLobbiesVoiceChatIfAvailable;
+
+	FOnlineSessionSettings GetNativeEOSSettings() const;
+};
+
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FSessionDataHandler
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 
 	FOnlineSessionSearchResult Result;
-};
-
-
-USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
-struct FSessionSettingsHandler
-{
-	GENERATED_USTRUCT_BODY()
-
-	FOnlineSessionSettings Settings;
 };
 
 UCLASS(Category = "Project Elementus | Classes")
@@ -77,10 +119,6 @@ public:
 	/* Check if the user is in a session */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions", meta = (DisplayName = "Is User in a EOS Session"))
 	static bool IsUserInAEOSSession();
-
-	/* Generate a session settings to use to create a new session */
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions", meta = (DisplayName = "Generate EOS Session Settings"))
-	static FSessionSettingsHandler GenerateEOSSessionSettings(const int32 NumPublicConnections = 4, const int32 NumPrivateConnections = 4, const bool bShouldAdvertise = true, const bool bAllowJoinInProgress = true, const bool bIsLANMatch = false, const bool bIsDedicated = false, const bool bUsesStats = true, const bool bAllowInvites = true, const bool bUsesPresence = true, const bool bAllowJoinViaPresence = true, const bool bAllowJoinViaPresenceFriendsOnly = false, const bool bAntiCheatProtected = true, const bool bUseLobbiesIfAvailable = true, const bool bUseLobbiesVoiceChatIfAvailable = true);
 
 	/* Update the user presence in EOS overlay */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Update EOS Presence"))

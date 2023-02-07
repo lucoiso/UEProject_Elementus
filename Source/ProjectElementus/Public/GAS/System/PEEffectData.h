@@ -16,7 +16,7 @@ class UGameplayEffect;
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FGameplayEffectGroupedData
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 
 	FGameplayEffectGroupedData() = default;
 

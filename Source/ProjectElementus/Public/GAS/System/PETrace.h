@@ -16,7 +16,7 @@
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct PROJECTELEMENTUS_API FPETargetActorSpawnParams
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 
 	FPETargetActorSpawnParams() : Range(0.f), Height(0.f), Radius(0.f), StartLocation(FGameplayAbilityTargetingLocationInfo()), ReticleClass(AGameplayAbilityWorldReticle::StaticClass()), ReticleParams(FWorldReticleParameters()), TargetFilter(FGameplayTargetDataFilter()), bDestroyOnConfirmation(false), bTraceAffectsAimPitch(false), bDebug(false)
 	{

@@ -18,7 +18,7 @@ struct FSessionDataHandler;
 USTRUCT(BlueprintType, Category = "Project Elementus | Structs")
 struct FEOSVoiceChatChannelCredentials
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY()
 
 	FString ClientBaseUrl;
 	FString ParticipantToken;
@@ -129,7 +129,7 @@ protected:
 public:
 	/* Create a new EOS Session */
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions", meta = (DisplayName = "Create EOS Session"))
-	bool CreateEOSSession(const FSessionSettingsHandler SessionSettings);
+	bool CreateEOSSession(const FEOSSessionSettings SessionSettings);
 
 	UPROPERTY(BlueprintAssignable, Category = "Project Elementus | Delegates")
 	FCreateSessionDelegate CreateSessionDelegate;
@@ -213,6 +213,5 @@ public:
 
 protected:
 	void OnLoginComplete(const int32 LocalUserNum, const bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error);
-
 	void OnLogoutComplete(const int32 LocalUserNum, const bool bWasSuccessful);
 };

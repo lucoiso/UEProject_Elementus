@@ -267,9 +267,9 @@ void UPEGameInstance::OnVoiceChatChannelLeft(const FString& ChannelName, const F
 	OnVoiceChatChannelLeaveCompleteDelegate.Unbind();
 }
 
-bool UPEGameInstance::CreateEOSSession(const FSessionSettingsHandler SessionSettings)
+bool UPEGameInstance::CreateEOSSession(const FEOSSessionSettings SessionSettings)
 {
-	return EOS_CreateSession(0, SessionSettings.Settings);
+	return EOS_CreateSession(0, SessionSettings.GetNativeEOSSettings());
 }
 
 bool UPEGameInstance::FindEOSSessions(const int32 LocalUserNum, const bool bIsLANQuery, const int32 MaxResults)

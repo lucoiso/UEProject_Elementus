@@ -75,7 +75,7 @@ void UPEGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorI
 
 void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData)
 {
-	ABILITY_VLOG(this, Display, TEXT("Trying pre-activate %s ability."), *GetName());
+	ABILITY_VLOG(this, Display, TEXT("Trying to pre-activate ability %s."), *GetName());
 
 	Super::PreActivate(Handle, ActorInfo, ActivationInfo, OnGameplayAbilityEndedDelegate, TriggerEventData);
 
@@ -98,6 +98,13 @@ void UPEGameplayAbility::PreActivate(const FGameplayAbilitySpecHandle Handle, co
 		if (GetCooldownTimeRemaining() > 0.f)
 		{
 			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.Cooldown"));
+		}
+
+		FGameplayTagContainer CharacterTags;
+		ActorInfo->AbilitySystemComponent->GetOwnedGameplayTags(CharacterTags);
+		if (CharacterTags.HasAny(ActivationBlockedTags))
+		{
+			FailureTags.Add(FGameplayTag::RequestGameplayTag("GameplayAbility.Fail.ActivationBlocked"));
 		}
 
 		const FGameplayTagContainer FailureContainer = FGameplayTagContainer::CreateFromArray(FailureTags);
