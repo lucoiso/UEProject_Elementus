@@ -30,7 +30,7 @@ Please give some feedback and feel invited to test the project and help me with 
 * [Email](mailto:contatolukevboas@gmail.com)  
 
 ## Plugins
-* Modular Features Extra Actions: https://github.com/lucoiso/UEModularFeatures_ExtraActions
-* Elementus Inventory: https://github.com/lucoiso/UEElementusInventory
-* EOS SDK Handler: https://github.com/lucoiso/UEEOSSDKHandler
-* FSR 1.0: https://github.com/lucoiso/UEFSR
+* [Modular Features Extra Actions](https://github.com/lucoiso/UEModularFeatures_ExtraActions)
+* [Elementus Inventory](https://github.com/lucoiso/UEElementusInventory)
+* [EOS SDK Handler](https://github.com/lucoiso/UEEOSSDKHandler)
+* [FSR 1.0](https://github.com/lucoiso/UEFSR)
