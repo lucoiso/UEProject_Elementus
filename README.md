@@ -28,3 +28,9 @@ Please give some feedback and feel invited to test the project and help me with 
 * [Documentation](https://github.com/lucoiso/UEProject_Elementus/wiki)
 * [Unreal Engine Forum](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)
 * [Email](mailto:contatolukevboas@gmail.com)  
+
+## Plugins
+* Modular Features Extra Actions: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+* Elementus Inventory: https://github.com/lucoiso/UEElementusInventory
+* EOS SDK Handler: https://github.com/lucoiso/UEEOSSDKHandler
+* FSR 1.0: https://github.com/lucoiso/UEFSR
