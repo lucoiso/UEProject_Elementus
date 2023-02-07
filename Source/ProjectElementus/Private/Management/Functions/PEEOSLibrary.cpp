@@ -159,7 +159,7 @@ void UPEEOSLibrary::IngestEOSStats(const int32 LocalUserNum, const TMap<FName, i
 	}
 }
 
-bool UPEEOSLibrary::ValidateOnlineSubsystem(IOnlineSubsystem* OnlineSubsystem)
+bool UPEEOSLibrary::ValidateOnlineSubsystem(IOnlineSubsystem*& OnlineSubsystem)
 {
 	if (!OnlineSubsystem)
 	{

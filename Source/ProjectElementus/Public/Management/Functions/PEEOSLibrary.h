@@ -135,5 +135,5 @@ public:
 	static const IOnlineStatsPtr GetStatsInterface(IOnlineSubsystem* OnlineSubsystem = nullptr);
 
 private:
-	static bool ValidateOnlineSubsystem(IOnlineSubsystem* OnlineSubsystem);
+	static bool ValidateOnlineSubsystem(IOnlineSubsystem*& OnlineSubsystem);
 };
