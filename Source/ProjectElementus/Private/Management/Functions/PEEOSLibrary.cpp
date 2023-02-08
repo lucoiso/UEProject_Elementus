@@ -5,6 +5,8 @@
 #include "Management/Functions/PEEOSLibrary.h"
 #include <EOSVoiceChatUser.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEEOSLibrary)
+
 FOnlineSessionSettings FEOSSessionSettings::GetNativeEOSSettings() const
 {
 	FOnlineSessionSettings LocalSessionSettings;

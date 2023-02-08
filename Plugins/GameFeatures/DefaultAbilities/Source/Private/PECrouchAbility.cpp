@@ -5,6 +5,8 @@
 #include "PECrouchAbility.h"
 #include <GameFramework/Character.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PECrouchAbility)
+
 UPECrouchAbility::UPECrouchAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;

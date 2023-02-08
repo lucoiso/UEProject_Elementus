@@ -9,6 +9,8 @@
 #include <GAS/System/PETrace.h>
 #include <Management/Data/PEGlobalTags.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PETelekinesisAbility)
+
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ThrowIntensity(2750.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Telekinesis"));

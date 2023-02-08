@@ -11,6 +11,8 @@
 #include <GameplayEffectTypes.h>
 #include <Runtime/Engine/Public/Net/UnrealNetwork.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PELevelingAS)
+
 UPELevelingAS::UPELevelingAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), CurrentLevel(0.f), CurrentExperience(0.f), RequiredExperience(1.f)
 {
 	static const ConstructorHelpers::FObjectFinder<UDataTable> LevelingAttributesMetaData_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_LevelingAS"));

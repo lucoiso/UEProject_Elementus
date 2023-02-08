@@ -7,6 +7,8 @@
 #include <Actors/Character/PECharacter.h>
 #include <Actors/Interfaces/PEInteractable.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEInteractAbility)
+
 UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Default.Interact"));

@@ -7,6 +7,8 @@
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/Character/PEPlayerController.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEGameMode)
+
 APEGameMode::APEGameMode(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), bCanRespawn(true)
 {
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBP_ClassRef(TEXT("/Game/Main/Blueprints/Actors/Pawns/BP_Character"));

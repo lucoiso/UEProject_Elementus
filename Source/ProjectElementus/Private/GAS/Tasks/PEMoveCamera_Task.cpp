@@ -7,6 +7,8 @@
 #include <Components/TimelineComponent.h>
 #include <Camera/CameraComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEMoveCamera_Task)
+
 UPEMoveCamera_Task::UPEMoveCamera_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;

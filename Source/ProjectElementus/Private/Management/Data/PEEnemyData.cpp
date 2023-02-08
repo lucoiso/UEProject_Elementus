@@ -4,6 +4,8 @@
 
 #include "Management/Data/PEEnemyData.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEEnemyData)
+
 UPEEnemyData::UPEEnemyData(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }

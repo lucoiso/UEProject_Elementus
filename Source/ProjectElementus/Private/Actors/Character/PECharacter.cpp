@@ -19,6 +19,8 @@
 #include <AbilitySystemLog.h>
 #include <Net/UnrealNetwork.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PECharacter)
+
 const FName APECharacter::PEInventoryComponentName(TEXT("InventoryComponent"));
 const FVector APECharacter::PECameraDefaultPosition(FVector(50.f, 50.f, 50.f));
 

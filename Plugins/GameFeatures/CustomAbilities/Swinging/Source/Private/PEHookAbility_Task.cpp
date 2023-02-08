@@ -7,6 +7,8 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include <GeometryCollection/GeometryCollectionComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEHookAbility_Task)
+
 UPEHookAbility_Task::UPEHookAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;

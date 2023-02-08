@@ -5,6 +5,8 @@
 #include "PESprintAbility.h"
 #include <Management/Data/PEGlobalTags.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PESprintAbility)
+
 UPESprintAbility::UPESprintAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;

@@ -4,6 +4,8 @@
 
 #include "Management/PEProjectSettings.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEProjectSettings)
+
 UPEProjectSettings::UPEProjectSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), PlayerColor(FLinearColor::Blue), BotColor(FLinearColor::Red), GravityMultiplier(1.f), SpeedMultiplier(1.f), JumpMultiplier(1.f), AirControlMultiplier(1.f)
 {
 	CategoryName = TEXT("Game");

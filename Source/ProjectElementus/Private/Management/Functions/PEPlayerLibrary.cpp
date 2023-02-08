@@ -6,6 +6,8 @@
 #include <EnhancedInputSubsystems.h>
 #include <EnhancedInputComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEPlayerLibrary)
+
 FPlayerInputBindingHandle UPEPlayerLibrary::BindDynamicInput(APlayerController* Controller, UInputAction* Action, UObject* Object, const FName UFunctionName, const ETriggerEvent TriggerEvent)
 {
 	if (!IsValid(Controller) || !IsValid(Action) || !IsValid(Object))

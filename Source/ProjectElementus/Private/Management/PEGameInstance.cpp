@@ -8,6 +8,8 @@
 #include <Kismet/GameplayStatics.h>
 #include <MoviePlayer.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEGameInstance)
+
 UPEGameInstance::UPEGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }

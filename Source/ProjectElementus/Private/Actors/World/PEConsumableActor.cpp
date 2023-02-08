@@ -9,6 +9,8 @@
 #include <Components/StaticMeshComponent.h>
 #include <NiagaraComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEConsumableActor)
+
 APEConsumableActor::APEConsumableActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), bDestroyAfterConsumption(true)
 {
 	bReplicates = false;

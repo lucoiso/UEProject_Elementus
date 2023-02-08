@@ -5,6 +5,8 @@
 #include "ViewModels/Attributes/PEVM_AttributeCustom.h"
 #include "GAS/Attributes/PECustomStatusAS.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEVM_AttributeCustom)
+
 UPEVM_AttributeCustom::UPEVM_AttributeCustom(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AttackRate(-1.f), DefenseRate(-1.f), SpeedRate(-1.f), JumpRate(-1.f), Gold(-1.f)
 {	
 }

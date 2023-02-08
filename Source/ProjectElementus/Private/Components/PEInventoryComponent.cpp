@@ -11,6 +11,8 @@
 #include <Management/ElementusInventoryFunctions.h>
 #include <MFEA_Settings.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEInventoryComponent)
+
 UPEInventoryComponent::UPEInventoryComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryComponentTick.bCanEverTick = false;

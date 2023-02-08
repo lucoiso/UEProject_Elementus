@@ -5,6 +5,8 @@
 #include "ViewModels/Attributes/PEVM_AttributeLeveling.h"
 #include "GAS/Attributes/PELevelingAS.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEVM_AttributeLeveling)
+
 UPEVM_AttributeLeveling::UPEVM_AttributeLeveling(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), CurrentLevel(-1.f), CurrentExperience(-1.f), RequiredExperience(-1.f)
 {	
 }
