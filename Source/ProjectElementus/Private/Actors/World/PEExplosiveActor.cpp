@@ -9,6 +9,8 @@
 #include <NiagaraFunctionLibrary.h>
 #include <NiagaraSystem.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEExplosiveActor)
+
 APEExplosiveActor::APEExplosiveActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ExplosionRadius(150.f), ExplosionMagnitude(1000.f), bDestroyAfterExplosion(true)
 {
 	bReplicates = false;

@@ -8,6 +8,8 @@
 #include <GAS/System/PEAbilitySystemComponent.h>
 #include <Components/StaticMeshComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEThrowableActor)
+
 APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bNetStartup = false;

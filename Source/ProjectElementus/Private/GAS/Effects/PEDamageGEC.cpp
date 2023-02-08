@@ -8,6 +8,8 @@
 #include "Management/Data/PEGlobalTags.h"
 #include <AbilitySystemComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEDamageGEC)
+
 struct FDamageAttributesStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);

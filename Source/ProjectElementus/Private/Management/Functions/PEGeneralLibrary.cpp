@@ -5,6 +5,8 @@
 #include "Management/Functions/PEGeneralLibrary.h"
 #include <Kismet/KismetTextLibrary.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEGeneralLibrary)
+
 #define LOCTEXT_NAMESPACE "ProjectElementus_GeneralLibrary"
 
 FText UPEGeneralLibrary::Conv_DoubleToText_CurrentMax(double CurrentValue, double MaxValue, TEnumAsByte<ERoundingMode> RoundingMode, bool bAlwaysSign, bool bUseGrouping, int32 MinimumIntegralDigits, int32 MaximumIntegralDigits, int32 MinimumFractionalDigits, int32 MaximumFractionalDigits)

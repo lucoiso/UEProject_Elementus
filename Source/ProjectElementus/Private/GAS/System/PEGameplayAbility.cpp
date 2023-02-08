@@ -26,6 +26,8 @@
 #include <Kismet/GameplayStatics.h>
 #include <AbilitySystemLog.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEGameplayAbility)
+
 UPEGameplayAbility::UPEGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AbilityMaxRange(0), bIgnoreCost(false), bIgnoreCooldown(false), bWaitCancel(true), AbilityActiveTime(0), bEndAbilityAfterActiveTime(false)
 {
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(GlobalTag_DeadState));

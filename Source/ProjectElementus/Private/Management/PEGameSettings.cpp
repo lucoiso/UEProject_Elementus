@@ -4,6 +4,8 @@
 
 #include "Management/PEGameSettings.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEGameSettings)
+
 UPEGameSettings::UPEGameSettings(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	UPEGameSettings::SetToDefaults();

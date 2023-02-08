@@ -6,6 +6,8 @@
 #include "GAS/System/PEAbilityData.h"
 #include "Actors/World/PEProjectileActor.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PESpawnProjectile_Task)
+
 UPESpawnProjectile_Task::UPESpawnProjectile_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;

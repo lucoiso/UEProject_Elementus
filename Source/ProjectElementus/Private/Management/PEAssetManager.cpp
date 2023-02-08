@@ -5,6 +5,8 @@
 #include "Management/PEAssetManager.h"
 #include <AbilitySystemGlobals.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEAssetManager)
+
 void UPEAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();

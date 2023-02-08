@@ -12,6 +12,8 @@
 #include "ViewModels/Attributes/PEVM_AttributeCustom.h"
 #include "ViewModels/Attributes/PEVM_AttributeLeveling.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEAbilitySystemComponent)
+
 UPEAbilitySystemComponent::UPEAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	SetIsReplicated(true);

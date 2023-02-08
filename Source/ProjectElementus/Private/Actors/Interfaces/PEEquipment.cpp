@@ -4,6 +4,8 @@
 
 #include "Actors/Interfaces/PEEquipment.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEEquipment)
+
 UPEEquipment::UPEEquipment(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {	
 }

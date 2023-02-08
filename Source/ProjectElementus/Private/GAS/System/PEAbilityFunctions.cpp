@@ -5,6 +5,8 @@
 #include "GAS/System/PEAbilityFunctions.h"
 #include <AbilitySystemComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEAbilityFunctions)
+
 FGameplayAbilityTargetDataHandle UPEAbilityFunctions::MakeTargetDataHandleFromSingleHitResult(const FHitResult HitResult)
 {
 	FGameplayAbilityTargetDataHandle TargetData;

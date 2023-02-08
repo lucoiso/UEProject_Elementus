@@ -4,6 +4,8 @@
 
 #include "PEWalkAbility.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEWalkAbility)
+
 UPEWalkAbility::UPEWalkAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;

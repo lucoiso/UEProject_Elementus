@@ -8,6 +8,8 @@
 #include <Actors/Character/PECharacter.h>
 #include <PhysicsEngine/PhysicsHandleComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PETelekinesisAbility_Task)
+
 UPETelekinesisAbility_Task::UPETelekinesisAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = false;

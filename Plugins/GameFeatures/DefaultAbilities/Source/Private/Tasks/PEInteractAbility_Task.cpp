@@ -11,6 +11,8 @@
 #include <Abilities/Tasks/AbilityTask_WaitGameplayTag.h>
 #include <AbilitySystemComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEInteractAbility_Task)
+
 UPEInteractAbility_Task::UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bTickingTask = true;

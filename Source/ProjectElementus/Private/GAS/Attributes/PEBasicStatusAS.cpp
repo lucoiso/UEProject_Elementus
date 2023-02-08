@@ -10,6 +10,8 @@
 #include <GameplayEffectExtension.h>
 #include <Runtime/Engine/Public/Net/UnrealNetwork.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEBasicStatusAS)
+
 UPEBasicStatusAS::UPEBasicStatusAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), Health(500.f), MaxHealth(500.f), Stamina(250.f), MaxStamina(250.f), Mana(100.f), MaxMana(100.f)
 {
 	static const ConstructorHelpers::FObjectFinder<UDataTable> MainAttributesMetaData_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_BasicStatusAS"));

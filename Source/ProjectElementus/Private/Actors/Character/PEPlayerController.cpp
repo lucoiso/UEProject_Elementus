@@ -20,6 +20,8 @@
 #include <GameFramework/PlayerState.h>
 #include <Blueprint/UserWidget.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEPlayerController)
+
 constexpr float BaseTurnRate = 45.f;
 constexpr float BaseLookUpRate = 45.f;
 

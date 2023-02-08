@@ -4,6 +4,8 @@
 
 #include "ViewModels/Attributes/PEVM_AttributeBase.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEVM_AttributeBase)
+
 UPEVM_AttributeBase::UPEVM_AttributeBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }

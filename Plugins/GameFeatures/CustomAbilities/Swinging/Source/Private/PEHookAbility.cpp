@@ -10,6 +10,8 @@
 #include <GameFramework/Character.h>
 #include <GeometryCollection/GeometryCollectionComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEHookAbility)
+
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), HookIntensity(100.f), ImpulseIntensityMultiplier(30.f), MaxHookForce(200000.f)
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.Swinging"));

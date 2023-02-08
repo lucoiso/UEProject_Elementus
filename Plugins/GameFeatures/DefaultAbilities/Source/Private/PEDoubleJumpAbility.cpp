@@ -7,6 +7,8 @@
 #include <GameFramework/Character.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEDoubleJumpAbility)
+
 UPEDoubleJumpAbility::UPEDoubleJumpAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;

@@ -9,6 +9,8 @@
 #include <GameplayEffectExtension.h>
 #include <Runtime/Engine/Public/Net/UnrealNetwork.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PECustomStatusAS)
+
 UPECustomStatusAS::UPECustomStatusAS(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), AttackRate(1.f), DefenseRate(1.f), SpeedRate(1.f), JumpRate(1.f), Gold(0.f)
 {
 	static ConstructorHelpers::FObjectFinder<UDataTable> CustomAttributesMetaData_ObjRef(TEXT("/Game/Main/Data/GAS/AttributeMetaDatas/DT_CustomStatusAS"));

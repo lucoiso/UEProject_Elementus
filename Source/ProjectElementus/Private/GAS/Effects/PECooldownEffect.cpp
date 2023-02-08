@@ -5,6 +5,8 @@
 #include "GAS/Effects/PECooldownEffect.h"
 #include "Management/Data/PEGlobalTags.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PECooldownEffect)
+
 UPECooldownEffect::UPECooldownEffect(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	DurationPolicy = EGameplayEffectDurationType::HasDuration;

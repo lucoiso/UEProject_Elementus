@@ -6,6 +6,8 @@
 #include "GAS/Attributes/PEBasicStatusAS.h"
 #include "Management/Data/PEGlobalTags.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PECostEffect)
+
 UPECostEffect::UPECostEffect(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	DurationPolicy = EGameplayEffectDurationType::Infinite;

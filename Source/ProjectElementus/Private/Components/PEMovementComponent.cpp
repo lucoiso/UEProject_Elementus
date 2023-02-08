@@ -4,6 +4,8 @@
 
 #include "Components/PEMovementComponent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEMovementComponent)
+
 UPEMovementComponent::UPEMovementComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryComponentTick.bCanEverTick = true;

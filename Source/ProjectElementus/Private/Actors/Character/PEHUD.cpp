@@ -6,6 +6,8 @@
 #include "Management/PEProjectSettings.h"
 #include <Blueprint/UserWidget.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEHUD)
+
 APEHUD::APEHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;

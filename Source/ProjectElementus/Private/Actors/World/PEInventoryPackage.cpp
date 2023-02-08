@@ -7,6 +7,8 @@
 #include "Management/PEProjectSettings.h"
 #include <Blueprint/UserWidget.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEInventoryPackage)
+
 APEInventoryPackage::APEInventoryPackage(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bReplicates = true;
