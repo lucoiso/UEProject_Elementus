@@ -23,6 +23,7 @@ public class ProjectElementus : ModuleRules
 			"Engine",
 			"CoreUObject",
 			"CoreOnline",
+			"NetCore",
 			"InputCore",
 			"EnhancedInput",
 			"ModularGameplay",

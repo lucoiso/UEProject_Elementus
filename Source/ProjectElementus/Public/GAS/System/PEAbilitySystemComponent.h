@@ -48,6 +48,8 @@ public:
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	virtual void InitializeAttributeViewModel(const UAttributeSet* AttributeClass);
 
+	virtual void ResetAbilitySystemComponent();
+
 protected:
 	virtual void OnViewModelAttributeChange(const FOnAttributeChangeData& AttributeChangeData);
 

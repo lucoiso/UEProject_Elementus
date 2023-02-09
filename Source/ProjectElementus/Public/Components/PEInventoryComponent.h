@@ -26,17 +26,25 @@ public:
 	virtual bool CanGiveItem(const FElementusItemInfo InItemInfo) const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	virtual bool EquipItem(const FElementusItemInfo& InItem);
+	void EquipItem(const FElementusItemInfo& InItem);
 
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	virtual bool UnequipItem(FElementusItemInfo& InItem);
+	void UnequipItem(FElementusItemInfo& InItem);
+
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void UnnequipAll(UAbilitySystemComponent* OwnerABSC = nullptr);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Project Elementus | Properties")
 	TMap<FGameplayTag, FElementusItemInfo> EquipmentMap;
 
+	UPEEquipment* LoadEquipamentAsset(const FPrimaryElementusItemId& ItemId);
+
 private:
 	TWeakObjectPtr<UEnum> InputEnumHandle;
+
+	bool TryEquipItem_Internal(const FElementusItemInfo& InItem);
+	bool TryUnequipItem_Internal(FElementusItemInfo& InItem);
 
 	void ProcessEquipmentAddition_Internal(APECharacter* OwningCharacter, UPEEquipment* Equipment);
 	void ProcessEquipmentRemoval_Internal(APECharacter* OwningCharacter, UPEEquipment* Equipment);

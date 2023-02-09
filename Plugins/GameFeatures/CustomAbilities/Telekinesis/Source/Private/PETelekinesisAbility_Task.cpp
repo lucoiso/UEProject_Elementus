@@ -28,7 +28,6 @@ UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMove
 void UPETelekinesisAbility_Task::Activate()
 {
 	Super::Activate();
-
 	check(Ability);
 
 	TelekinesisOwner = Cast<APECharacter>(GetAvatarActor());

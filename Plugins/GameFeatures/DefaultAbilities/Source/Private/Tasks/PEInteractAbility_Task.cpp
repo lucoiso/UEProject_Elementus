@@ -31,7 +31,6 @@ UPEInteractAbility_Task* UPEInteractAbility_Task::InteractionTask(UGameplayAbili
 void UPEInteractAbility_Task::Activate()
 {
 	Super::Activate();
-
 	check(Ability);
 
 	InteractionOwner = Cast<APECharacter>(GetAvatarActor());

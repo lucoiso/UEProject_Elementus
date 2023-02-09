@@ -129,13 +129,16 @@ public:
 
 private:
 	UFUNCTION(Server, Reliable)
-	void Server_PerformDeath();
+	void Server_DestroyCharacter();
 
-	UFUNCTION(Server, Reliable)
-	void Server_SpawnInventoryPackage();
+	UFUNCTION(Client, Reliable)
+	void Client_DeathSetup();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_DeathSetup();
+
+	UFUNCTION(Server, Reliable)
+	void Server_SpawnInventoryPackage();
 
 	virtual void Landed(const FHitResult& Hit) override;
 

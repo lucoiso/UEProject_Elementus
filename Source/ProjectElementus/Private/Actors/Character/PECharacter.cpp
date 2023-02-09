@@ -254,24 +254,31 @@ void APECharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(APECharacter, InventoryComponent);
+	FDoRepLifetimeParams SharedParams;
+	SharedParams.bIsPushBased = true;
+
+	DOREPLIFETIME_WITH_PARAMS_FAST(APECharacter, InventoryComponent, SharedParams);
 }
 
 void APECharacter::PerformDeath()
 {
 	OnCharacterDeath.Broadcast();
 
-	Server_SpawnInventoryPackage();
+	AbilitySystemComponent->ResetAbilitySystemComponent();
+
+	Client_DeathSetup();
 	Multicast_DeathSetup();
+
+	Server_SpawnInventoryPackage();
 
 	bAlwaysRelevant = false;
 
 	FTimerDelegate TimerDelegate;
-	TimerDelegate.BindLambda([&]
+	TimerDelegate.BindLambda([this]
 	{
 		if (IsValid(this))
 		{
-			Server_PerformDeath();
+			Server_DestroyCharacter();
 		}
 	});
 
@@ -279,7 +286,13 @@ void APECharacter::PerformDeath()
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 15.0f, false);
 }
 
-void APECharacter::Server_PerformDeath_Implementation()
+void APECharacter::Client_DeathSetup_Implementation()
+{
+	// Unnequip all items on death
+	InventoryComponent->UnnequipAll(AbilitySystemComponent.Get());
+}
+
+void APECharacter::Server_DestroyCharacter_Implementation()
 {
 	// Destroy the character only on server (Will replicate to clients)
 	Destroy();

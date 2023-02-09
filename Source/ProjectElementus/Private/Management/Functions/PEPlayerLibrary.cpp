@@ -110,8 +110,7 @@ FVector UPEPlayerLibrary::GetSocketLocationInChildMeshes(const USkeletalMeshComp
 
 	for (const TObjectPtr<USceneComponent>& Iterator : AttachChildrenArr)
 	{
-		if (const USkeletalMeshComponent* const Mesh = Cast<USkeletalMeshComponent>(Iterator);
-			Mesh->DoesSocketExist(SocketName))
+		if (const USkeletalMeshComponent* const Mesh = Cast<USkeletalMeshComponent>(Iterator); IsValid(Mesh) && Mesh->DoesSocketExist(SocketName))
 		{
 			return Mesh->GetSocketLocation(SocketName);
 		}

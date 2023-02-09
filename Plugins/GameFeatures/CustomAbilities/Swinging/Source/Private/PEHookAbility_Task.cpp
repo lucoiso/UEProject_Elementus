@@ -28,7 +28,6 @@ UPEHookAbility_Task* UPEHookAbility_Task::HookAbilityMovement(UGameplayAbility* 
 void UPEHookAbility_Task::Activate()
 {
 	Super::Activate();
-
 	check(Ability);
 
 	HookOwner = Cast<ACharacter>(GetAvatarActor());

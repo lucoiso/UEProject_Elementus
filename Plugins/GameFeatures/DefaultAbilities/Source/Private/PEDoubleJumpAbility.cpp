@@ -23,24 +23,24 @@ void UPEDoubleJumpAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	ACharacter* const Player = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
+	ACharacter* const OwningCharacter = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
 
 	// Only characters can activate this ability
-	if (!IsValid(Player))
+	if (!IsValid(OwningCharacter))
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
 
 	// Check if the player is in air and launch him (second jump) or just do a normal jump (first jump)
-	if (!Player->GetCharacterMovement()->IsFalling())
+	if (!OwningCharacter->GetCharacterMovement()->IsFalling())
 	{
-		Player->Jump();
+		OwningCharacter->Jump();
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
 	else
 	{
-		const FVector VFXLocation = Player->GetMesh()->GetSocketLocation("Pelvis_Socket");
+		const FVector VFXLocation = OwningCharacter->GetMesh()->GetSocketLocation("Pelvis_Socket");
 
 		FGameplayCueParameters Params;
 		Params.Location = VFXLocation;
@@ -48,7 +48,7 @@ void UPEDoubleJumpAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 		PlayAbilitySoundAtLocation(ActorInfo->AvatarActor.Get(), VFXLocation);
 
-		Player->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
+		OwningCharacter->LaunchCharacter(FVector(0.f, 0.f, AbilityMaxRange), false, true);
 	}
 }
 
@@ -57,8 +57,8 @@ void UPEDoubleJumpAbility::InputReleased(const FGameplayAbilitySpecHandle Handle
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
 	// Send the StopJumping event to the player if valid
-	if (ACharacter* const Player = Cast<ACharacter>(ActorInfo->AvatarActor.Get()))
+	if (ACharacter* const OwningCharacter = Cast<ACharacter>(ActorInfo->AvatarActor.Get()))
 	{
-		Player->StopJumping();
+		OwningCharacter->StopJumping();
 	}
 }

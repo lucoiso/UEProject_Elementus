@@ -11,6 +11,7 @@
 #include "ViewModels/Attributes/PEVM_AttributeBasic.h"
 #include "ViewModels/Attributes/PEVM_AttributeCustom.h"
 #include "ViewModels/Attributes/PEVM_AttributeLeveling.h"
+#include "Management/Data/PEGlobalTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PEAbilitySystemComponent)
 
@@ -159,6 +160,39 @@ void UPEAbilitySystemComponent::InitializeAttributeViewModel(const UAttributeSet
 	{
 		InitializeLevelingAttributesViewModel(Cast<UPELevelingAS>(AttributeSet));
 	}
+}
+
+void UPEAbilitySystemComponent::ResetAbilitySystemComponent()
+{
+	if (!IsOwnerActorAuthoritative())
+	{
+		return;
+	}
+
+	CancelAllAbilities();
+	ClearAllAbilities();
+	RemoveAllReplicatedInstancedAbilities();
+
+	FGameplayEffectQuery Query;
+	FGameplayTagQuery TagQuery;
+
+	const TArray<FGameplayTag> NoTagsArr = {
+		FGameplayTag::RequestGameplayTag(GlobalTag_DeadState),
+		FGameplayTag::RequestGameplayTag(GlobalTag_StunState)
+	};
+
+	TagQuery.MakeQuery_MatchNoTags(FGameplayTagContainer::CreateFromArray(NoTagsArr));
+	Query.EffectTagQuery = TagQuery;
+
+	for (const FActiveGameplayEffectHandle& ActiveSpecHandle : GetActiveEffects(Query))
+	{
+		RemoveActiveGameplayEffect(ActiveSpecHandle);
+	}
+
+	RemoveAllSpawnedAttributes();
+	RemoveAllGameplayCues();
+
+	ClearActorInfo();
 }
 
 #define REGISTER_ATTRIBUTE_DELEGATE(AttributeClass, AttributeName, ViewModelClass, ViewModelObject) \

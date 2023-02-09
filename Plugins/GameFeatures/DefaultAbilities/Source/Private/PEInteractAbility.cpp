@@ -33,11 +33,8 @@ void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle, c
 {
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 
-	if (TaskHandle.IsValid() && TaskHandle->GetIsInteractAllowed())
+	if (TaskHandle.IsValid() && TaskHandle->GetIsInteractAllowed() && IsValid(TaskHandle->GetInteractable()) && IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
 	{
-		if (IsValid(TaskHandle->GetInteractable()) && IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
-		{
-			IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(), Cast<APECharacter>(ActorInfo->AvatarActor.Get()), TaskHandle->GetInteractableHitResult());
-		}
+		IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(), Cast<APECharacter>(ActorInfo->AvatarActor.Get()), TaskHandle->GetInteractableHitResult());
 	}
 }
