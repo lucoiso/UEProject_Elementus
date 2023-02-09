@@ -150,57 +150,73 @@ void UPEAbilitySystemComponent::InitializeAttributeViewModel(const UAttributeSet
 	if (AttributeSet->GetClass()->IsChildOf<UPEBasicStatusAS>())
 	{
 		InitializeBasicAttributesViewModel(Cast<UPEBasicStatusAS>(AttributeSet));
-		return;
 	}
-
-	if (AttributeSet->GetClass()->IsChildOf<UPECustomStatusAS>())
+	else if (AttributeSet->GetClass()->IsChildOf<UPECustomStatusAS>())
 	{
 		InitializeCustomAttributesViewModel(Cast<UPECustomStatusAS>(AttributeSet));
-		return;
 	}
-
-	if (AttributeSet->GetClass()->IsChildOf<UPELevelingAS>())
+	else if (AttributeSet->GetClass()->IsChildOf<UPELevelingAS>())
 	{
 		InitializeLevelingAttributesViewModel(Cast<UPELevelingAS>(AttributeSet));
-		return;
 	}
 }
 
-#define REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(AttributeClass, AttributeName, ViewModelClass, ViewModelObject) \
-if (GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).IsBoundToObject(ViewModelObject)) \
+#define REGISTER_ATTRIBUTE_DELEGATE(AttributeClass, AttributeName, ViewModelClass, ViewModelObject) \
+if (GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).IsBoundToObject(this)) \
 { \
-	GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).RemoveAll(ViewModelObject); \
+	GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).RemoveAll(this); \
 } \
-GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).AddUObject(ViewModelObject, &##ViewModelClass##::OnAttributeChange); \
+GetGameplayAttributeValueChangeDelegate(##AttributeClass##::Get##AttributeName##Attribute()).AddUObject(this, &UPEAbilitySystemComponent::OnViewModelAttributeChange); \
 /* This block is used to initialize the first value of the attribute because the viewmodel is only updating when the attribute changes after the binding occurs */ \
 { \
-	const float AttributeValue = Attribute->Get##AttributeName##(); \
-	ViewModelClass##::Set##AttributeName##_WrapperImpl(ViewModelObject, static_cast<const void*>(&AttributeValue)); \
+	OnViewModelAttributeChange_Client(##AttributeClass##::Get##AttributeName##Attribute(), Attribute->Get##AttributeName##()); \
 }
 
 void UPEAbilitySystemComponent::InitializeBasicAttributesViewModel(const UPEBasicStatusAS* Attribute)
 {
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPEBasicStatusAS, Health, UPEVM_AttributeBasic, BasicAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPEBasicStatusAS, MaxHealth, UPEVM_AttributeBasic, BasicAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPEBasicStatusAS, Stamina, UPEVM_AttributeBasic, BasicAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPEBasicStatusAS, MaxStamina, UPEVM_AttributeBasic, BasicAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPEBasicStatusAS, Mana, UPEVM_AttributeBasic, BasicAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPEBasicStatusAS, MaxMana, UPEVM_AttributeBasic, BasicAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPEBasicStatusAS, Health, UPEVM_AttributeBasic, BasicAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPEBasicStatusAS, MaxHealth, UPEVM_AttributeBasic, BasicAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPEBasicStatusAS, Stamina, UPEVM_AttributeBasic, BasicAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPEBasicStatusAS, MaxStamina, UPEVM_AttributeBasic, BasicAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPEBasicStatusAS, Mana, UPEVM_AttributeBasic, BasicAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPEBasicStatusAS, MaxMana, UPEVM_AttributeBasic, BasicAttributes_VM);
 }
 
 void UPEAbilitySystemComponent::InitializeCustomAttributesViewModel(const UPECustomStatusAS* Attribute)
 {
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPECustomStatusAS, AttackRate, UPEVM_AttributeCustom, CustomAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPECustomStatusAS, DefenseRate, UPEVM_AttributeCustom, CustomAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPECustomStatusAS, SpeedRate, UPEVM_AttributeCustom, CustomAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPECustomStatusAS, JumpRate, UPEVM_AttributeCustom, CustomAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPECustomStatusAS, Gold, UPEVM_AttributeCustom, CustomAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPECustomStatusAS, AttackRate, UPEVM_AttributeCustom, CustomAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPECustomStatusAS, DefenseRate, UPEVM_AttributeCustom, CustomAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPECustomStatusAS, SpeedRate, UPEVM_AttributeCustom, CustomAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPECustomStatusAS, JumpRate, UPEVM_AttributeCustom, CustomAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPECustomStatusAS, Gold, UPEVM_AttributeCustom, CustomAttributes_VM);
 }
 
 void UPEAbilitySystemComponent::InitializeLevelingAttributesViewModel(const UPELevelingAS* Attribute)
 {
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPELevelingAS, CurrentLevel, UPEVM_AttributeLeveling, LevelingAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPELevelingAS, CurrentExperience, UPEVM_AttributeLeveling, LevelingAttributes_VM);
-	REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL(UPELevelingAS, RequiredExperience, UPEVM_AttributeLeveling, LevelingAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPELevelingAS, CurrentLevel, UPEVM_AttributeLeveling, LevelingAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPELevelingAS, CurrentExperience, UPEVM_AttributeLeveling, LevelingAttributes_VM);
+	REGISTER_ATTRIBUTE_DELEGATE(UPELevelingAS, RequiredExperience, UPEVM_AttributeLeveling, LevelingAttributes_VM);
 }
-#undef REGISTER_ATTRIBUTE_DELEGATE_TO_VIEWMODEL
+
+#undef REGISTER_ATTRIBUTE_DELEGATE
+
+void UPEAbilitySystemComponent::OnViewModelAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
+{
+	OnViewModelAttributeChange_Client(AttributeChangeData.Attribute, AttributeChangeData.NewValue);
+}
+
+void UPEAbilitySystemComponent::OnViewModelAttributeChange_Client_Implementation(const FGameplayAttribute& Attribute, const float& NewValue)
+{
+	if (Attribute.GetAttributeSetClass()->IsChildOf<UPEBasicStatusAS>())
+	{
+		BasicAttributes_VM->NotifyAttributeChange(Attribute, NewValue);
+	}
+	else if (Attribute.GetAttributeSetClass()->IsChildOf<UPECustomStatusAS>())
+	{
+		CustomAttributes_VM->NotifyAttributeChange(Attribute, NewValue);
+	}
+	else if (Attribute.GetAttributeSetClass()->IsChildOf<UPELevelingAS>())
+	{
+		LevelingAttributes_VM->NotifyAttributeChange(Attribute, NewValue);
+	}
+}

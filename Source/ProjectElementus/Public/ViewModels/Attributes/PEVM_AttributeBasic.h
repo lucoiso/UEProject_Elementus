@@ -46,24 +46,25 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
 	float MaxStamina;
 
-	virtual void OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData);
+protected:
+	virtual void NotifyAttributeChange(const FGameplayAttribute& Attribute, const float& NewValue) override;
 
 private:
-	void SetHealth(const float InValue);
+	void SetHealth(const float Value);
 	float GetHealth() const;
 
-	void SetMaxHealth(const float InValue);
+	void SetMaxHealth(const float Value);
 	float GetMaxHealth() const;
 
-	void SetMana(const float InValue);
+	void SetMana(const float Value);
 	float GetMana() const;
 
-	void SetMaxMana(const float InValue);
+	void SetMaxMana(const float Value);
 	float GetMaxMana() const;
 
-	void SetStamina(const float InValue);
+	void SetStamina(const float Value);
 	float GetStamina() const;
 
-	void SetMaxStamina(const float InValue);
+	void SetMaxStamina(const float Value);
 	float GetMaxStamina() const;
 };

@@ -34,21 +34,22 @@ public:
 	UPROPERTY(BlueprintReadWrite, FieldNotify, Setter, Getter, Category = "Project Elementus | Properties")
 	float Gold;
 
-	virtual void OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData);
+protected:
+	virtual void NotifyAttributeChange(const FGameplayAttribute& Attribute, const float& NewValue) override;
 
 private:
-	void SetAttackRate(const float InValue);
+	void SetAttackRate(const float Value);
 	float GetAttackRate() const;
 
-	void SetDefenseRate(const float InValue);
+	void SetDefenseRate(const float Value);
 	float GetDefenseRate() const;
 
-	void SetSpeedRate(const float InValue);
+	void SetSpeedRate(const float Value);
 	float GetSpeedRate() const;
 
-	void SetJumpRate(const float InValue);
+	void SetJumpRate(const float Value);
 	float GetJumpRate() const;
 
-	void SetGold(const float InValue);
+	void SetGold(const float Value);
 	float GetGold() const;
 };

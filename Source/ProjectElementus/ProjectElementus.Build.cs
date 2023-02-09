@@ -44,5 +44,7 @@ public class ProjectElementus : ModuleRules
 			"ModelViewViewModel",
 			"MoviePlayer"
 		});
+
+		SetupIrisSupport(Target);
 	}
 }

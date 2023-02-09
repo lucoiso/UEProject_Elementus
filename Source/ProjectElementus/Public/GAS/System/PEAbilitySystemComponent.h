@@ -9,9 +9,7 @@
 #include "PEAbilitySystemComponent.generated.h"
 
 struct FGameplayEffectGroupedData;
-class UPEVM_AttributeBasic;
-class UPEVM_AttributeCustom;
-class UPEVM_AttributeLeveling;
+class UPEVM_AttributeBase;
 
 /**
  *
@@ -39,17 +37,22 @@ public:
 	void RemoveEffectGroupedDataFromTarget(const FGameplayEffectGroupedData GroupedData, UAbilitySystemComponent* InstigatorABSC, UAbilitySystemComponent* TargetABSC, const int32 StacksToRemove = 1);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
-	TObjectPtr<UPEVM_AttributeBasic> BasicAttributes_VM;
+	TObjectPtr<UPEVM_AttributeBase> BasicAttributes_VM;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
-	TObjectPtr<UPEVM_AttributeCustom> CustomAttributes_VM;
+	TObjectPtr<UPEVM_AttributeBase> CustomAttributes_VM;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Project Elementus | Properties")
-	TObjectPtr<UPEVM_AttributeLeveling> LevelingAttributes_VM;
+	TObjectPtr<UPEVM_AttributeBase> LevelingAttributes_VM;
 	
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
-
 	virtual void InitializeAttributeViewModel(const UAttributeSet* AttributeClass);
+
+protected:
+	virtual void OnViewModelAttributeChange(const FOnAttributeChangeData& AttributeChangeData);
+
+	UFUNCTION(Client, Reliable)
+	void OnViewModelAttributeChange_Client(const FGameplayAttribute& Attribute, const float& NewValue);
 
 private:
 	void InitializeBasicAttributesViewModel(const class UPEBasicStatusAS* Attribute);

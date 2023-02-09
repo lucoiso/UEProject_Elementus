@@ -11,19 +11,9 @@ UPEVM_AttributeBasic::UPEVM_AttributeBasic(const FObjectInitializer& ObjectIniti
 {
 }
 
-float UPEVM_AttributeBasic::GetHealthPercent() const
+void UPEVM_AttributeBasic::NotifyAttributeChange(const FGameplayAttribute& Attribute, const float& NewValue)
 {
-	if (Health <= 0.f || MaxHealth <= 0.f)
-	{
-		return 0.f;
-	}
-	
-	return Health / MaxHealth;
-}
-
-void UPEVM_AttributeBasic::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
-{
-	Super::OnAttributeChange(AttributeChangeData);
+	Super::NotifyAttributeChange(Attribute, NewValue);
 
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, Health);
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, MaxHealth);
@@ -35,15 +25,14 @@ void UPEVM_AttributeBasic::OnAttributeChange(const FOnAttributeChangeData& Attri
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPEBasicStatusAS, MaxStamina);
 }
 
-void UPEVM_AttributeBasic::SetHealth(const float InValue)
+float UPEVM_AttributeBasic::GetHealthPercent() const
 {
-	if (InValue == Health)
-	{
-		return;
-	}
+	GET_MVVM_PERCENTAGE_VALUE(Health, MaxHealth);
+}
 
-	UE_MVVM_SET_PROPERTY_VALUE(Health, InValue);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetHealthPercent);
+void UPEVM_AttributeBasic::SetHealth(const float Value)
+{
+	UPDATE_MVVM_PROPERTY_VALUE_WITH_PERCENT(Health, Value);
 }
 
 float UPEVM_AttributeBasic::GetHealth() const
@@ -51,14 +40,9 @@ float UPEVM_AttributeBasic::GetHealth() const
 	return Health;
 }
 
-void UPEVM_AttributeBasic::SetMaxHealth(const float InValue)
+void UPEVM_AttributeBasic::SetMaxHealth(const float Value)
 {
-	if (InValue == MaxHealth)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(MaxHealth, InValue);
+	UPDATE_MVVM_PROPERTY_MAX_VALUE_WITH_PERCENT(Health, Value);
 }
 
 float UPEVM_AttributeBasic::GetMaxHealth() const
@@ -68,23 +52,12 @@ float UPEVM_AttributeBasic::GetMaxHealth() const
 
 float UPEVM_AttributeBasic::GetManaPercent() const
 {
-	if (Mana <= 0.f || MaxMana <= 0.f)
-	{
-		return 0.f;
-	}
-
-	return Mana / MaxMana;
+	GET_MVVM_PERCENTAGE_VALUE(Mana, MaxMana);
 }
 
-void UPEVM_AttributeBasic::SetMana(const float InValue)
+void UPEVM_AttributeBasic::SetMana(const float Value)
 {
-	if (InValue == Mana)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(Mana, InValue);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetManaPercent);
+	UPDATE_MVVM_PROPERTY_VALUE_WITH_PERCENT(Mana, Value);
 }
 
 float UPEVM_AttributeBasic::GetMana() const
@@ -92,14 +65,9 @@ float UPEVM_AttributeBasic::GetMana() const
 	return Mana;
 }
 
-void UPEVM_AttributeBasic::SetMaxMana(const float InValue)
+void UPEVM_AttributeBasic::SetMaxMana(const float Value)
 {
-	if (InValue == MaxMana)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(MaxMana, InValue);
+	UPDATE_MVVM_PROPERTY_MAX_VALUE_WITH_PERCENT(Mana, Value);
 }
 
 float UPEVM_AttributeBasic::GetMaxMana() const
@@ -109,23 +77,12 @@ float UPEVM_AttributeBasic::GetMaxMana() const
 
 float UPEVM_AttributeBasic::GetStaminaPercent() const
 {
-	if (Stamina <= 0.f || MaxStamina <= 0.f)
-	{
-		return 0.f;
-	}
-
-	return Stamina / MaxStamina;
+	GET_MVVM_PERCENTAGE_VALUE(Stamina, MaxStamina);
 }
 
-void UPEVM_AttributeBasic::SetStamina(const float InValue)
+void UPEVM_AttributeBasic::SetStamina(const float Value)
 {
-	if (InValue == Stamina)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(Stamina, InValue);
-	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetStaminaPercent);
+	UPDATE_MVVM_PROPERTY_VALUE_WITH_PERCENT(Stamina, Value);
 }
 
 float UPEVM_AttributeBasic::GetStamina() const
@@ -133,14 +90,9 @@ float UPEVM_AttributeBasic::GetStamina() const
 	return Stamina;
 }
 
-void UPEVM_AttributeBasic::SetMaxStamina(const float InValue)
+void UPEVM_AttributeBasic::SetMaxStamina(const float Value)
 {
-	if (InValue == MaxStamina)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(MaxStamina, InValue);
+	UPDATE_MVVM_PROPERTY_MAX_VALUE_WITH_PERCENT(Stamina, Value);
 }
 
 float UPEVM_AttributeBasic::GetMaxStamina() const

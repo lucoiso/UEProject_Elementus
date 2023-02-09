@@ -11,9 +11,9 @@ UPEVM_AttributeCustom::UPEVM_AttributeCustom(const FObjectInitializer& ObjectIni
 {	
 }
 
-void UPEVM_AttributeCustom::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
+void UPEVM_AttributeCustom::NotifyAttributeChange(const FGameplayAttribute& Attribute, const float& NewValue)
 {
-	Super::OnAttributeChange(AttributeChangeData);
+	Super::NotifyAttributeChange(Attribute, NewValue);
 
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPECustomStatusAS, AttackRate);
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPECustomStatusAS, DefenseRate);
@@ -22,14 +22,9 @@ void UPEVM_AttributeCustom::OnAttributeChange(const FOnAttributeChangeData& Attr
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPECustomStatusAS, Gold);
 }
 
-void UPEVM_AttributeCustom::SetAttackRate(const float InValue)
+void UPEVM_AttributeCustom::SetAttackRate(const float Value)
 {
-	if (InValue == AttackRate)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(AttackRate, InValue);
+	UPDATE_MVVM_PROPERTY_VALUE(AttackRate, Value);
 }
 
 float UPEVM_AttributeCustom::GetAttackRate() const
@@ -37,14 +32,9 @@ float UPEVM_AttributeCustom::GetAttackRate() const
 	return AttackRate;
 }
 
-void UPEVM_AttributeCustom::SetDefenseRate(const float InValue)
+void UPEVM_AttributeCustom::SetDefenseRate(const float Value)
 {
-	if (InValue == DefenseRate)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(DefenseRate, InValue);
+	UPDATE_MVVM_PROPERTY_VALUE(DefenseRate, Value);
 }
 
 float UPEVM_AttributeCustom::GetDefenseRate() const
@@ -52,14 +42,9 @@ float UPEVM_AttributeCustom::GetDefenseRate() const
 	return DefenseRate;
 }
 
-void UPEVM_AttributeCustom::SetSpeedRate(const float InValue)
+void UPEVM_AttributeCustom::SetSpeedRate(const float Value)
 {
-	if (InValue == SpeedRate)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(SpeedRate, InValue);
+	UPDATE_MVVM_PROPERTY_VALUE(SpeedRate, Value);
 }
 
 float UPEVM_AttributeCustom::GetSpeedRate() const
@@ -67,14 +52,9 @@ float UPEVM_AttributeCustom::GetSpeedRate() const
 	return SpeedRate;
 }
 
-void UPEVM_AttributeCustom::SetJumpRate(const float InValue)
+void UPEVM_AttributeCustom::SetJumpRate(const float Value)
 {
-	if (InValue == JumpRate)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(JumpRate, InValue);
+	UPDATE_MVVM_PROPERTY_VALUE(JumpRate, Value);
 }
 
 float UPEVM_AttributeCustom::GetJumpRate() const
@@ -82,14 +62,9 @@ float UPEVM_AttributeCustom::GetJumpRate() const
 	return JumpRate;
 }
 
-void UPEVM_AttributeCustom::SetGold(const float InValue)
+void UPEVM_AttributeCustom::SetGold(const float Value)
 {
-	if (InValue == Gold)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(Gold, InValue);
+	UPDATE_MVVM_PROPERTY_VALUE(Gold, Value);
 }
 
 float UPEVM_AttributeCustom::GetGold() const

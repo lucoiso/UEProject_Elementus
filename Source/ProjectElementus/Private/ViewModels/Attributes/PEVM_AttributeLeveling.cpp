@@ -11,33 +11,23 @@ UPEVM_AttributeLeveling::UPEVM_AttributeLeveling(const FObjectInitializer& Objec
 {	
 }
 
-float UPEVM_AttributeLeveling::GetExperiencePercent() const
+void UPEVM_AttributeLeveling::NotifyAttributeChange(const FGameplayAttribute& Attribute, const float& NewValue)
 {
-	if (CurrentExperience <= 0.f || RequiredExperience <= 0.f)
-	{
-		return 0.f;
-	}
-
-	return CurrentExperience / RequiredExperience;
-}
-
-void UPEVM_AttributeLeveling::OnAttributeChange(const FOnAttributeChangeData& AttributeChangeData)
-{
-	Super::OnAttributeChange(AttributeChangeData);
+	Super::NotifyAttributeChange(Attribute, NewValue);
 
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPELevelingAS, CurrentLevel);
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPELevelingAS, CurrentExperience);
 	CHECK_ATTRIBUTE_AND_SET_VALUE(UPELevelingAS, RequiredExperience);
 }
 
-void UPEVM_AttributeLeveling::SetCurrentLevel(const float InValue)
+float UPEVM_AttributeLeveling::GetExperiencePercent() const
 {
-	if (InValue == CurrentLevel)
-	{
-		return;
-	}
+	GET_MVVM_PERCENTAGE_VALUE(CurrentExperience, RequiredExperience);
+}
 
-	UE_MVVM_SET_PROPERTY_VALUE(CurrentLevel, InValue);
+void UPEVM_AttributeLeveling::SetCurrentLevel(const float Value)
+{
+	UPDATE_MVVM_PROPERTY_VALUE(CurrentLevel, Value);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetExperiencePercent);
 }
 
@@ -46,14 +36,9 @@ float UPEVM_AttributeLeveling::GetCurrentLevel() const
 	return CurrentLevel;
 }
 
-void UPEVM_AttributeLeveling::SetCurrentExperience(const float InValue)
+void UPEVM_AttributeLeveling::SetCurrentExperience(const float Value)
 {
-	if (InValue == CurrentExperience)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(CurrentExperience, InValue);
+	UPDATE_MVVM_PROPERTY_VALUE(CurrentExperience, Value);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetExperiencePercent);
 }
 
@@ -62,14 +47,9 @@ float UPEVM_AttributeLeveling::GetCurrentExperience() const
 	return CurrentExperience;
 }
 
-void UPEVM_AttributeLeveling::SetRequiredExperience(const float InValue)
+void UPEVM_AttributeLeveling::SetRequiredExperience(const float Value)
 {
-	if (InValue == RequiredExperience)
-	{
-		return;
-	}
-
-	UE_MVVM_SET_PROPERTY_VALUE(RequiredExperience, InValue);
+	UPDATE_MVVM_PROPERTY_VALUE(RequiredExperience, Value);
 	UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(GetExperiencePercent);
 }
 
