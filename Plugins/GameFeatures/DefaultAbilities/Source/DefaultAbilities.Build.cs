@@ -25,7 +25,8 @@ public class DefaultAbilities : ModuleRules
 			"GameplayTags",
 			"GameplayTasks",
 			"ProjectElementus",
-			"ElementusAbilitySystem"
+			"ElementusAbilitySystem",
+			"ElementusCommon"
 		});
 	}
 }

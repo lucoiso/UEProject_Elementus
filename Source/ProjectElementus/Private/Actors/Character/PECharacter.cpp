@@ -5,7 +5,7 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "Actors/World/PEInventoryPackage.h"
+#include "Actors/PEInventoryPackage.h"
 #include "Core/PEAbilitySystemComponent.h"
 #include "Components/PEMovementComponent.h"
 #include "Components/PEInventoryComponent.h"

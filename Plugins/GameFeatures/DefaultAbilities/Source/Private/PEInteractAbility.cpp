@@ -4,8 +4,8 @@
 
 #include "PEInteractAbility.h"
 #include "Tasks/PEInteractAbility_Task.h"
-#include <Actors/Character/PECharacter.h>
-#include <Actors/Interfaces/PEInteractable.h>
+#include <GameFramework/Character.h>
+#include <Interfaces/PEInteractable.h>
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PEInteractAbility)
 
@@ -35,6 +35,6 @@ void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle, c
 
 	if (TaskHandle.IsValid() && TaskHandle->GetIsInteractAllowed() && IsValid(TaskHandle->GetInteractable()) && IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
 	{
-		IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(), Cast<APECharacter>(ActorInfo->AvatarActor.Get()), TaskHandle->GetInteractableHitResult());
+		IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(), Cast<ACharacter>(ActorInfo->AvatarActor.Get()), TaskHandle->GetInteractableHitResult());
 	}
 }

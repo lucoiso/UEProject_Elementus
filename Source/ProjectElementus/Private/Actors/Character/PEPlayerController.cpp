@@ -5,11 +5,9 @@
 #include "Actors/Character/PEPlayerController.h"
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "Components/PEInventoryComponent.h"
 #include "PEAbilityTags.h"
 #include "Management/Functions/PEEOSLibrary.h"
-#include "Management/PEProjectSettings.h"
-#include <Management/ElementusInventoryFunctions.h>
+#include <Management/PEInventorySystemSettings.h>
 #include <MFEA_Settings.h>
 #include <EnhancedInputComponent.h>
 #include <EnhancedPlayerInput.h>
@@ -33,8 +31,7 @@ APEPlayerController::APEPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	if (const UMFEA_Settings* MF_Settings = GetDefault<UMFEA_Settings>();
-		!MF_Settings->InputIDEnumeration.IsNull())
+	if (const UMFEA_Settings* MF_Settings = GetDefault<UMFEA_Settings>(); !MF_Settings->InputIDEnumeration.IsNull())
 	{
 		InputEnumHandle = MF_Settings->InputIDEnumeration.LoadSynchronous();
 	}
@@ -95,69 +92,6 @@ void APEPlayerController::RespawnAndPossess_Implementation()
 		}
 	}
 }
-
-void APEPlayerController::ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass)
-{
-	Server_ProcessGEApplication_Internal(EffectClass);
-}
-
-void APEPlayerController::Server_ProcessGEApplication_Internal_Implementation(const TSubclassOf<UGameplayEffect> EffectClass)
-{
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (UAbilitySystemComponent* const TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetPawn()))
-	{
-		TargetABSC->ApplyGameplayEffectToSelf(EffectClass.GetDefaultObject(), 1.f, TargetABSC->MakeEffectContext());
-	}
-}
-
-#pragma region Elementus Inventory Trade
-void APEPlayerController::ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer)
-{
-	if (HasAuthority())
-	{
-		ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
-	}
-	else
-	{
-		Server_ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
-	}
-}
-
-void APEPlayerController::Server_ProcessTrade_Internal_Implementation(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer)
-{
-	ProcessTrade_Internal(TradeInfo, OtherComponent, bIsFromPlayer);
-}
-
-void APEPlayerController::ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer) const
-{
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (const APECharacter* const ControllerOwner = GetPawn<APECharacter>();
-		ensureAlwaysMsgf(IsValid(ControllerOwner), TEXT("%s have a invalid character."), *GetName()))
-	{
-		if (UPEInventoryComponent* const OwningInventory = ControllerOwner->GetInventoryComponent();
-			ensureAlwaysMsgf(IsValid(OwningInventory), TEXT("%s have a invalid inventory."), *GetName()))
-		{
-			if (bIsFromPlayer && OtherComponent == nullptr)
-			{
-				OwningInventory->UpdateElementusItems(TradeInfo, EElementusInventoryUpdateOperation::Remove);
-			}
-			else
-			{
-				bIsFromPlayer ? UElementusInventoryFunctions::TradeElementusItem(TradeInfo, OwningInventory, OtherComponent)
-					: UElementusInventoryFunctions::TradeElementusItem(TradeInfo, OtherComponent, OwningInventory);
-			}
-		}
-	}
-}
-#pragma endregion Elementus Inventory Trade
 
 #pragma region IMFEA_AbilityInputBinding
 // Double "_Implementation" because this function is a RPC call version of a virtual function from IAbilityBinding interface
@@ -346,8 +280,8 @@ void APEPlayerController::Jump(const FInputActionValue& Value) const
 
 void APEPlayerController::Client_OpenInventory_Implementation()
 {
-	const UPEProjectSettings* const ProjectSettings = GetDefault<UPEProjectSettings>();
-	const TSubclassOf<UUserWidget> InventoryUIClass = ProjectSettings->MainInventoryWidget.IsNull() ? nullptr : ProjectSettings->MainInventoryWidget.LoadSynchronous();
+	const UPEInventorySystemSettings* const InventorySettings = UPEInventorySystemSettings::Get();
+	const TSubclassOf<UUserWidget> InventoryUIClass = InventorySettings->MainInventoryWidget.IsNull() ? nullptr : InventorySettings->MainInventoryWidget.LoadSynchronous();
 	
 	if (!IsValid(InventoryUIClass))
 	{

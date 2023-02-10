@@ -25,14 +25,6 @@ public:
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "UI", Meta = (DisplayName = "HUD UMG Class"))
 	TSoftClassPtr<UUserWidget> HUDClass;
 
-	/* A Blueprint Widget class to use as Inventory UI */
-	UPROPERTY(GlobalConfig, EditAnywhere, Category = "UI", Meta = (DisplayName = "Main Inventory UMG Class"))
-	TSoftClassPtr<UUserWidget> MainInventoryWidget;
-
-	/* A Blueprint Widget class to use as Trade UI */
-	UPROPERTY(GlobalConfig, EditAnywhere, Category = "UI", Meta = (DisplayName = "Trade Inventory UMG Class"))
-	TSoftClassPtr<UUserWidget> TradeInventoryWidget;
-
 	/* Color of player character's mesh */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "Character | Appearance")
 	FLinearColor PlayerColor;

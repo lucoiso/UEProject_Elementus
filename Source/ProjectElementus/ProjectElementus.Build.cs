@@ -42,8 +42,10 @@ public class ProjectElementus : ModuleRules
 			"JsonUtilities",
 			"DeveloperSettings",
 			"MoviePlayer",
-			"ElementusAbilitySystem"
-		});
+			"ElementusAbilitySystem",
+            "ElementusInventorySystem",
+            "ElementusCommon",
+        });
 
 		SetupIrisSupport(Target);
 	}

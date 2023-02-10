@@ -4,7 +4,7 @@
 
 #include "Tasks/PEInteractAbility_Task.h"
 #include <Actors/Character/PECharacter.h>
-#include <Actors/Interfaces/PEInteractable.h>
+#include <Interfaces/PEInteractable.h>
 #include <Targeting/PELineTargeting.h>
 #include <PEAbilityTags.h>
 #include <Abilities/GameplayAbilityTargetDataFilter.h>
