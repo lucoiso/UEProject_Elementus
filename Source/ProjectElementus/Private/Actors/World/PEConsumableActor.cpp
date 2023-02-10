@@ -5,7 +5,7 @@
 #include "Actors/World/PEConsumableActor.h"
 #include "Actors/Character/PECharacter.h"
 #include "Management/Data/PEConsumableData.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
+#include "Core/PEAbilitySystemComponent.h"
 #include <Components/StaticMeshComponent.h>
 #include <NiagaraComponent.h>
 

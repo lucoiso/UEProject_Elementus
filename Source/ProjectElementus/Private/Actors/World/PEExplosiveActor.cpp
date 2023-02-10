@@ -4,8 +4,8 @@
 
 #include "Actors/World/PEExplosiveActor.h"
 #include "Actors/Character/PECharacter.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
-#include "GAS/System/PEAbilityData.h"
+#include "Core/PEAbilitySystemComponent.h"
+#include "Core/PEAbilityData.h"
 #include <NiagaraFunctionLibrary.h>
 #include <NiagaraSystem.h>
 

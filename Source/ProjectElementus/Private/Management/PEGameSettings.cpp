@@ -81,7 +81,7 @@ void UPEGameSettings::ApplyNonResolutionSettings()
 
 void UPEGameSettings::SetToDefaults()
 {
-	AntiAliasingMode = 3;
+	AntiAliasingMode = 1;
 	bFSREnabled = true;
 	FSRMode = 3;
 	bEnableTemporalUpscaling = true;

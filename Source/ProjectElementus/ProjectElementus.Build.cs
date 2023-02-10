@@ -1,6 +1,6 @@
 // Author: Lucas Vilas-Boas
 // Year: 2022
-// Repo: https://github.com/lucoiso/UEModularFeatures_ExtraActions
+// Repo: https://github.com/lucoiso/UEProject_Elementus
 
 using UnrealBuildTool;
 
@@ -30,7 +30,6 @@ public class ProjectElementus : ModuleRules
 			"GameFeatures",
 			"ModularFeatures_ExtraActions",
 			"GameplayAbilities",
-			"GameplayTasks",
 			"AIModule",
 			"UMG",
 			"Niagara",
@@ -42,8 +41,8 @@ public class ProjectElementus : ModuleRules
 			"VoiceChat",
 			"JsonUtilities",
 			"DeveloperSettings",
-			"ModelViewViewModel",
-			"MoviePlayer"
+			"MoviePlayer",
+			"ElementusAbilitySystem"
 		});
 
 		SetupIrisSupport(Target);

@@ -5,8 +5,8 @@
 #include "Tasks/PEInteractAbility_Task.h"
 #include <Actors/Character/PECharacter.h>
 #include <Actors/Interfaces/PEInteractable.h>
-#include <GAS/Targeting/PELineTargeting.h>
-#include <Management/Data/PEGlobalTags.h>
+#include <Targeting/PELineTargeting.h>
+#include <PEAbilityTags.h>
 #include <Abilities/GameplayAbilityTargetDataFilter.h>
 #include <Abilities/Tasks/AbilityTask_WaitGameplayTag.h>
 #include <AbilitySystemComponent.h>

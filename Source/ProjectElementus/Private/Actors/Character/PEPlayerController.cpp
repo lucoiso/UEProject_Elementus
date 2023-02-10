@@ -6,7 +6,7 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "Components/PEInventoryComponent.h"
-#include "Management/Data/PEGlobalTags.h"
+#include "PEAbilityTags.h"
 #include "Management/Functions/PEEOSLibrary.h"
 #include "Management/PEProjectSettings.h"
 #include <Management/ElementusInventoryFunctions.h>

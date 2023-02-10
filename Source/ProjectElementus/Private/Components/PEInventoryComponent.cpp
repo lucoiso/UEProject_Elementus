@@ -5,9 +5,9 @@
 #include "Components/PEInventoryComponent.h"
 #include "Actors/Interfaces/PEEquipment.h"
 #include "Actors/Character/PECharacter.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
-#include "GAS/System/PEAbilityFunctions.h"
-#include "Management/Data/PEGlobalTags.h"
+#include "Core/PEAbilitySystemComponent.h"
+#include "Core/PEAbilityFunctions.h"
+#include "PEAbilityTags.h"
 #include <Management/ElementusInventoryFunctions.h>
 #include <MFEA_Settings.h>
 

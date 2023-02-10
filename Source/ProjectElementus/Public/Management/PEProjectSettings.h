@@ -56,12 +56,4 @@ public:
 	/* Air Control Multiplier that will be added to character's movement component */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "Character | Physics")
 	float AirControlMultiplier;
-
-	/* Global death effect used by GAS objects */
-	UPROPERTY(GlobalConfig, EditAnywhere, Category = "GAS | Effects")
-	TSoftClassPtr<UGameplayEffect> GlobalDeathEffect;
-
-	/* Global stun effect used by GAS objects */
-	UPROPERTY(GlobalConfig, EditAnywhere, Category = "GAS | Effects")
-	TSoftClassPtr<UGameplayEffect> GlobalStunEffect;
 };

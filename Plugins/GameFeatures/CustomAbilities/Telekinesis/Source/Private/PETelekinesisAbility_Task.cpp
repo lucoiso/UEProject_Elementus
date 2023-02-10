@@ -4,7 +4,7 @@
 
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
-#include <GAS/Targeting/PELineTargeting.h>
+#include <Targeting/PELineTargeting.h>
 #include <Actors/Character/PECharacter.h>
 #include <PhysicsEngine/PhysicsHandleComponent.h>
 

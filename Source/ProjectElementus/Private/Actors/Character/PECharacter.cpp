@@ -6,10 +6,10 @@
 #include "Actors/Character/PEAIController.h"
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/World/PEInventoryPackage.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
+#include "Core/PEAbilitySystemComponent.h"
 #include "Components/PEMovementComponent.h"
 #include "Components/PEInventoryComponent.h"
-#include "Management/Data/PEGlobalTags.h"
+#include "PEAbilityTags.h"
 #include "Management/PEProjectSettings.h"
 #include <Management/ElementusInventoryFunctions.h>
 #include <Components/CapsuleComponent.h>
@@ -170,21 +170,6 @@ void APECharacter::ApplyExtraSettings()
 }
 
 #pragma region Default Getters
-float APECharacter::GetDefaultWalkSpeed() const
-{
-	return DefaultWalkSpeed;
-}
-
-float APECharacter::GetDefaultCrouchSpeed() const
-{
-	return DefaultCrouchSpeed;
-}
-
-float APECharacter::GetDefaultJumpVelocity() const
-{
-	return DefaultJumpVelocity;
-}
-
 FVector APECharacter::GetCameraDefaultPosition()
 {
 	return APECharacter::PECameraDefaultPosition;

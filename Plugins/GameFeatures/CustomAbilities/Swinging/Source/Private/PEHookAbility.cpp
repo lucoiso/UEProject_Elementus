@@ -4,9 +4,9 @@
 
 #include "PEHookAbility.h"
 #include "PEHookAbility_Task.h"
-#include <GAS/Targeting/PELineTargeting.h>
-#include <GAS/System/PETrace.h>
-#include <Management/Data/PEGlobalTags.h>
+#include <Targeting/PELineTargeting.h>
+#include <Targeting/PETrace.h>
+#include <PEAbilityTags.h>
 #include <GameFramework/Character.h>
 #include <GeometryCollection/GeometryCollectionComponent.h>
 
