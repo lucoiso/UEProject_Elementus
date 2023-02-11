@@ -3,7 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PESprintAbility.h"
-#include <Management/Data/PEGlobalTags.h>
+#include <PEAbilityTags.h>
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PESprintAbility)
 

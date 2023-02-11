@@ -6,7 +6,7 @@
 
 #include <CoreMinimal.h>
 #include <Engine/StaticMeshActor.h>
-#include <GAS/System/PEEffectData.h>
+#include <Effects/PEEffectData.h>
 #include "PEThrowableActor.generated.h"
 
 class UGameplayEffect;

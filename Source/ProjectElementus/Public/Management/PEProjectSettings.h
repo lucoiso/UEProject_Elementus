@@ -25,14 +25,6 @@ public:
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "UI", Meta = (DisplayName = "HUD UMG Class"))
 	TSoftClassPtr<UUserWidget> HUDClass;
 
-	/* A Blueprint Widget class to use as Inventory UI */
-	UPROPERTY(GlobalConfig, EditAnywhere, Category = "UI", Meta = (DisplayName = "Main Inventory UMG Class"))
-	TSoftClassPtr<UUserWidget> MainInventoryWidget;
-
-	/* A Blueprint Widget class to use as Trade UI */
-	UPROPERTY(GlobalConfig, EditAnywhere, Category = "UI", Meta = (DisplayName = "Trade Inventory UMG Class"))
-	TSoftClassPtr<UUserWidget> TradeInventoryWidget;
-
 	/* Color of player character's mesh */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "Character | Appearance")
 	FLinearColor PlayerColor;
@@ -56,12 +48,4 @@ public:
 	/* Air Control Multiplier that will be added to character's movement component */
 	UPROPERTY(GlobalConfig, EditAnywhere, Category = "Character | Physics")
 	float AirControlMultiplier;
-
-	/* Global death effect used by GAS objects */
-	UPROPERTY(GlobalConfig, EditAnywhere, Category = "GAS | Effects")
-	TSoftClassPtr<UGameplayEffect> GlobalDeathEffect;
-
-	/* Global stun effect used by GAS objects */
-	UPROPERTY(GlobalConfig, EditAnywhere, Category = "GAS | Effects")
-	TSoftClassPtr<UGameplayEffect> GlobalStunEffect;
 };

@@ -5,8 +5,8 @@
 #include "Actors/Character/PEPlayerState.h"
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEPlayerController.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
-#include "Management/Data/PEGlobalTags.h"
+#include "Core/PEAbilitySystemComponent.h"
+#include "PEAbilityTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PEPlayerState)
 

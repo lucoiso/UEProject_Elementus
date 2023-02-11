@@ -5,7 +5,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include <GAS/System/PEGameplayAbility.h>
+#include <Core/PEGameplayAbility.h>
 #include "PEHookAbility.generated.h"
 
 class UPEHookAbility_Task;

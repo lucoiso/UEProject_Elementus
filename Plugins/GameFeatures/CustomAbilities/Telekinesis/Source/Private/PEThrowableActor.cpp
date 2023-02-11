@@ -4,8 +4,8 @@
 
 #include "PEThrowableActor.h"
 #include <Actors/Character/PECharacter.h>
-#include <GAS/System/PEAbilityData.h>
-#include <GAS/System/PEAbilitySystemComponent.h>
+#include <Core/PEAbilityData.h>
+#include <Core/PEAbilitySystemComponent.h>
 #include <Components/StaticMeshComponent.h>
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PEThrowableActor)

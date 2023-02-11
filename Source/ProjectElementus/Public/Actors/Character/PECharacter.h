@@ -74,18 +74,6 @@ public:
 	/** Returns FollowCamera Location at World **/
 	float GetCameraTargetArmLength() const;
 
-	/* Returns character default walk speed */
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	float GetDefaultWalkSpeed() const;
-
-	/* Returns character default crouch speed */
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	float GetDefaultCrouchSpeed() const;
-
-	/* Returns character default jump velocity */
-	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
-	float GetDefaultJumpVelocity() const;
-
 	/* Returns character associated Ability System Component */
 	UFUNCTION(BlueprintPure, Category = "Project Elementus | Functions")
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -129,13 +117,16 @@ public:
 
 private:
 	UFUNCTION(Server, Reliable)
-	void Server_PerformDeath();
+	void Server_DestroyCharacter();
 
-	UFUNCTION(Server, Reliable)
-	void Server_SpawnInventoryPackage();
+	UFUNCTION(Client, Reliable)
+	void Client_DeathSetup();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_DeathSetup();
+
+	UFUNCTION(Server, Reliable)
+	void Server_SpawnInventoryPackage();
 
 	virtual void Landed(const FHitResult& Hit) override;
 

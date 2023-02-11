@@ -5,9 +5,9 @@
 #include "PETelekinesisAbility.h"
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
-#include <GAS/Targeting/PELineTargeting.h>
-#include <GAS/System/PETrace.h>
-#include <Management/Data/PEGlobalTags.h>
+#include <Targeting/PELineTargeting.h>
+#include <Targeting/PETrace.h>
+#include <PEAbilityTags.h>
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PETelekinesisAbility)
 

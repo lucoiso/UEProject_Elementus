@@ -6,7 +6,7 @@
 
 #include <CoreMinimal.h>
 #include <GameFramework/Actor.h>
-#include "GAS/System/PEEffectData.h"
+#include "Effects/PEEffectData.h"
 #include "PEExplosiveActor.generated.h"
 
 class UNiagaraSystem;

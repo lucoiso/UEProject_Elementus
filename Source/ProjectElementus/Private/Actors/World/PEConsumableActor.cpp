@@ -3,11 +3,12 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Actors/World/PEConsumableActor.h"
-#include "Actors/Character/PECharacter.h"
 #include "Management/Data/PEConsumableData.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
+#include "Core/PEAbilitySystemComponent.h"
 #include <Components/StaticMeshComponent.h>
+#include <GameFramework/Character.h>
 #include <NiagaraComponent.h>
+#include <AbilitySystemGlobals.h>
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PEConsumableActor)
 
@@ -45,7 +46,7 @@ void APEConsumableActor::PerformConsumption(UAbilitySystemComponent* TargetABSC)
 	}
 }
 
-void APEConsumableActor::DoInteractionBehavior_Implementation(APECharacter* CharacterInteracting, const FHitResult& HitResult)
+void APEConsumableActor::DoInteractionBehavior_Implementation(ACharacter* CharacterInteracting, const FHitResult& HitResult)
 {
 	// Only call SetReplicates if has authority
 	if (GetLocalRole() != ROLE_Authority)
@@ -53,11 +54,11 @@ void APEConsumableActor::DoInteractionBehavior_Implementation(APECharacter* Char
 		return;
 	}
 
-	if (ensureAlwaysMsgf(IsValid(CharacterInteracting->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *CharacterInteracting->GetName()))
+	if (UAbilitySystemComponent* const TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(CharacterInteracting))
 	{
 		// Only replicates while a character is consuming
 		SetReplicates(true);
-		PerformConsumption(CharacterInteracting->GetAbilitySystemComponent());
+		PerformConsumption(TargetABSC);
 		SetReplicates(false);
 	}
 }

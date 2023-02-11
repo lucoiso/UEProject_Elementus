@@ -8,6 +8,7 @@
 #include <InputTriggers.h>
 #include <VisualLogger/VisualLogger.h>
 #include <Interfaces/MFEA_AbilityInputBinding.h>
+#include <Interfaces/PEElementusInventoryProcessor.h>
 #include <Management/ElementusInventoryData.h>
 #include "PEPlayerController.generated.h"
 
@@ -38,7 +39,7 @@ struct FPrimaryElementusItemId;
  *
  */
 UCLASS(NotBlueprintable, NotPlaceable, Category = "Project Elementus | Classes")
-class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IMFEA_AbilityInputBinding
+class PROJECTELEMENTUS_API APEPlayerController final : public APlayerController, public IMFEA_AbilityInputBinding, public IPEElementusInventoryProcessor
 {
 	GENERATED_BODY()
 
@@ -65,26 +66,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
 	void InitializeRespawn(const float InSeconds);
 
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ProcessTrade(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer = false);
-
-	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
-	void ProcessGameplayEffect(const TSubclassOf<UGameplayEffect> EffectClass);
-
 protected:
 	/* Perform the respawn task on server */
 	UFUNCTION(Server, Reliable)
 	void RespawnAndPossess();
 
 private:
-	UFUNCTION(Server, Reliable)
-	void Server_ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer);
-
-	void ProcessTrade_Internal(const TArray<FElementusItemInfo>& TradeInfo, UElementusInventoryComponent* OtherComponent, const bool bIsFromPlayer) const;
-
-	UFUNCTION(Server, Reliable)
-	void Server_ProcessGEApplication_Internal(TSubclassOf<UGameplayEffect> EffectClass);
-
 	struct FAbilityInputData
 	{
 		uint32 OnPressedHandle = 0;

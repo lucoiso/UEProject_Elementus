@@ -4,7 +4,7 @@
 
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
-#include <GAS/Targeting/PELineTargeting.h>
+#include <Targeting/PELineTargeting.h>
 #include <Actors/Character/PECharacter.h>
 #include <PhysicsEngine/PhysicsHandleComponent.h>
 
@@ -28,7 +28,6 @@ UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMove
 void UPETelekinesisAbility_Task::Activate()
 {
 	Super::Activate();
-
 	check(Ability);
 
 	TelekinesisOwner = Cast<APECharacter>(GetAvatarActor());

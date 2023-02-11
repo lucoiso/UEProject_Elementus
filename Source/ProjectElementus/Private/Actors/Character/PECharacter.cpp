@@ -5,11 +5,11 @@
 #include "Actors/Character/PECharacter.h"
 #include "Actors/Character/PEAIController.h"
 #include "Actors/Character/PEPlayerState.h"
-#include "Actors/World/PEInventoryPackage.h"
-#include "GAS/System/PEAbilitySystemComponent.h"
+#include "Actors/PEInventoryPackage.h"
+#include "Core/PEAbilitySystemComponent.h"
 #include "Components/PEMovementComponent.h"
 #include "Components/PEInventoryComponent.h"
-#include "Management/Data/PEGlobalTags.h"
+#include "PEAbilityTags.h"
 #include "Management/PEProjectSettings.h"
 #include <Management/ElementusInventoryFunctions.h>
 #include <Components/CapsuleComponent.h>
@@ -170,21 +170,6 @@ void APECharacter::ApplyExtraSettings()
 }
 
 #pragma region Default Getters
-float APECharacter::GetDefaultWalkSpeed() const
-{
-	return DefaultWalkSpeed;
-}
-
-float APECharacter::GetDefaultCrouchSpeed() const
-{
-	return DefaultCrouchSpeed;
-}
-
-float APECharacter::GetDefaultJumpVelocity() const
-{
-	return DefaultJumpVelocity;
-}
-
 FVector APECharacter::GetCameraDefaultPosition()
 {
 	return APECharacter::PECameraDefaultPosition;
@@ -254,24 +239,31 @@ void APECharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(APECharacter, InventoryComponent);
+	FDoRepLifetimeParams SharedParams;
+	SharedParams.bIsPushBased = true;
+
+	DOREPLIFETIME_WITH_PARAMS_FAST(APECharacter, InventoryComponent, SharedParams);
 }
 
 void APECharacter::PerformDeath()
 {
 	OnCharacterDeath.Broadcast();
 
-	Server_SpawnInventoryPackage();
+	AbilitySystemComponent->ResetAbilitySystemComponent();
+
+	Client_DeathSetup();
 	Multicast_DeathSetup();
+
+	Server_SpawnInventoryPackage();
 
 	bAlwaysRelevant = false;
 
 	FTimerDelegate TimerDelegate;
-	TimerDelegate.BindLambda([&]
+	TimerDelegate.BindLambda([this]
 	{
 		if (IsValid(this))
 		{
-			Server_PerformDeath();
+			Server_DestroyCharacter();
 		}
 	});
 
@@ -279,7 +271,13 @@ void APECharacter::PerformDeath()
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 15.0f, false);
 }
 
-void APECharacter::Server_PerformDeath_Implementation()
+void APECharacter::Client_DeathSetup_Implementation()
+{
+	// Unnequip all items on death
+	InventoryComponent->UnnequipAll(AbilitySystemComponent.Get());
+}
+
+void APECharacter::Server_DestroyCharacter_Implementation()
 {
 	// Destroy the character only on server (Will replicate to clients)
 	Destroy();

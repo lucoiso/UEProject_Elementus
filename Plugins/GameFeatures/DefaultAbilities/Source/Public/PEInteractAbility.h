@@ -5,7 +5,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include <GAS/System/PEGameplayAbility.h>
+#include <Core/PEGameplayAbility.h>
 #include "PEInteractAbility.generated.h"
 
 class UPEInteractAbility_Task;

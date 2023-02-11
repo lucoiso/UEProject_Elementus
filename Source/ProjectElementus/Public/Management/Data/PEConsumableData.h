@@ -7,7 +7,7 @@
 #include <CoreMinimal.h>
 #include <GameplayTagContainer.h>
 #include <Engine/DataAsset.h>
-#include "GAS/System/PEEffectData.h"
+#include "Effects/PEEffectData.h"
 #include "PEConsumableData.generated.h"
 
 class UNiagaraSystem;
