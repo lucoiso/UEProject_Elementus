@@ -21,6 +21,10 @@
 			]
 		},
 		{
+			"Name": "ElementusModules",
+			"Enabled": true
+		},
+		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
 		},

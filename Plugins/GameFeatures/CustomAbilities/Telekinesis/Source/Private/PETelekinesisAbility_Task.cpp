@@ -5,7 +5,8 @@
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
 #include <Targeting/PELineTargeting.h>
-#include <Actors/Character/PECharacter.h>
+#include <GameFramework/Character.h>
+#include <Camera/CameraComponent.h>
 #include <PhysicsEngine/PhysicsHandleComponent.h>
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PETelekinesisAbility_Task)
@@ -30,11 +31,11 @@ void UPETelekinesisAbility_Task::Activate()
 	Super::Activate();
 	check(Ability);
 
-	TelekinesisOwner = Cast<APECharacter>(GetAvatarActor());
+	OwningCharacter = Cast<ACharacter>(GetAvatarActor());
 
-	if (ensureAlwaysMsgf(TelekinesisOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
+	if (ensureAlwaysMsgf(OwningCharacter.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
 	{
-		PhysicsHandle = NewObject<UPhysicsHandleComponent>(TelekinesisOwner.Get(), UPhysicsHandleComponent::StaticClass(), TEXT("TelekinesisPhysicsHandle"));
+		PhysicsHandle = NewObject<UPhysicsHandleComponent>(OwningCharacter.Get(), UPhysicsHandleComponent::StaticClass(), TEXT("TelekinesisPhysicsHandle"));
 
 		if (PhysicsHandle.IsValid())
 		{
@@ -50,7 +51,7 @@ void UPETelekinesisAbility_Task::Activate()
 					OnGrabbing.ExecuteIfBound(true);
 				}
 
-				PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+				PhysicsHandle->SetTargetLocation(OwningCharacter->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 
 				bTickingTask = true;
 				return;
@@ -79,7 +80,7 @@ void UPETelekinesisAbility_Task::TickTask(const float DeltaTime)
 
 	if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 	{
-		PhysicsHandle->SetTargetLocation(TelekinesisOwner->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
+		PhysicsHandle->SetTargetLocation(OwningCharacter->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 	}
 
 	else
@@ -108,7 +109,7 @@ void UPETelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 	PhysicsHandle.Reset();
 
-	TelekinesisOwner.Reset();
+	OwningCharacter.Reset();
 	TelekinesisTarget.Reset();
 
 	Super::OnDestroy(AbilityIsEnding);
@@ -126,8 +127,17 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		QueryParams.AddIgnoredActor(Ability->GetAvatarActorFromActorInfo());
 		QueryParams.AddIgnoredActor(GrabbedPrimitive_Temp->GetAttachmentRootActor());
 
-		const FVector StartLocation = TelekinesisOwner->GetCameraComponentLocation();
-		const FVector EndLocation = StartLocation + TelekinesisOwner->GetCameraForwardVector() * 999999.f;
+		UActorComponent* const CameraComp = OwningCharacter->GetComponentByClass(UCameraComponent::StaticClass());
+		if (!IsValid(CameraComp))
+		{
+			UE_LOG(LogGameplayTasks, Error, TEXT("%s - Task %s failed to throw object due to invalid camera component"), *FString(__func__), *GetName());
+			EndTask();
+			return;
+		}
+
+		UCameraComponent* const TargetCamera = Cast<UCameraComponent>(CameraComp);
+		const FVector StartLocation = TargetCamera->GetComponentLocation();
+		const FVector EndLocation = StartLocation + TargetCamera->GetForwardVector() * 999999.f;
 
 		FHitResult HitResult;
 		FGameplayTargetDataFilterHandle DataFilterHandle;

@@ -3,9 +3,10 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEThrowableActor.h"
-#include <Actors/Character/PECharacter.h>
 #include <Core/PEAbilityData.h>
 #include <Core/PEAbilitySystemComponent.h>
+#include <AbilitySystemGlobals.h>
+#include <GameFramework/Character.h>
 #include <Components/StaticMeshComponent.h>
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PEThrowableActor)
@@ -46,23 +47,22 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AA
 		return;
 	}
 
-	if (OtherActor->GetClass()->IsChildOf<APECharacter>())
+	if (OtherActor->GetClass()->IsChildOf<ACharacter>())
 	{
-		if (APECharacter* const Player = Cast<APECharacter>(OtherActor))
+		if (ACharacter* const Character = Cast<ACharacter>(OtherActor))
 		{
 			constexpr float ImpulseMultiplier = 5.f;
-
-			Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
-
-			if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
-			{
-				ApplyThrowableEffect(Player->GetAbilitySystemComponent());
-			}
+			Character->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
 		}
 	}
 	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics() && OtherComp->Mobility == EComponentMobility::Movable)
 	{		
 		OtherComp->AddImpulseAtLocation(NormalImpulse.GetSafeNormal(), Hit.ImpactPoint, Hit.BoneName);
+	}
+
+	if (UAbilitySystemComponent* const TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OtherActor))
+	{
+		ApplyThrowableEffect(TargetABSC);
 	}
 
 	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);

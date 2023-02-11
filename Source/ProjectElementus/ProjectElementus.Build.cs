@@ -13,39 +13,14 @@ public class ProjectElementus : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new[]
 		{
-			"Core",
-			"ElementusInventory",
-			"GameplayTags"
+			"Core"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new[]
 		{
 			"Engine",
-			"CoreUObject",
-			"CoreOnline",
-			"NetCore",
-			"InputCore",
-			"EnhancedInput",
-			"ModularGameplay",
-			"GameFeatures",
-			"ModularFeatures_ExtraActions",
-			"GameplayAbilities",
-			"AIModule",
-			"UMG",
-			"Niagara",
-			"EOSSDKHandler",
-			"EOSShared",
-			"OnlineSubsystemEOS",
-			"OnlineSubsystem",
-			"EOSVoiceChat",
-			"VoiceChat",
-			"JsonUtilities",
-			"DeveloperSettings",
-			"MoviePlayer",
-			"ElementusAbilitySystem",
-            "ElementusInventorySystem",
-            "ElementusCommon",
-        });
+			"CoreUObject"
+		});
 
 		SetupIrisSupport(Target);
 	}

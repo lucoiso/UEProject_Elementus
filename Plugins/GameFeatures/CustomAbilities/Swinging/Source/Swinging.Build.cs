@@ -24,7 +24,6 @@ public class Swinging : ModuleRules
 			"GameplayAbilities",
 			"GameplayTags",
 			"GameplayTasks",
-			"ProjectElementus",
 			"GeometryCollectionEngine",
 			"ElementusAbilitySystem"
 		});

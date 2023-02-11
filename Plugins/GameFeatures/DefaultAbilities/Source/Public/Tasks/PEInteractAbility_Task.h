@@ -41,7 +41,7 @@ private:
 	float Range;
 	bool bUseCustomDepth;
 
-	TWeakObjectPtr<class APECharacter> InteractionOwner;
+	TWeakObjectPtr<class UCameraComponent> OwningCameraComponent;
 	TWeakObjectPtr<AActor> LastInteractableActor_Ref;
 	TWeakObjectPtr<UPrimitiveComponent> LastInteractablePrimitive_Ref;
 
