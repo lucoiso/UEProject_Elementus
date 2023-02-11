@@ -42,6 +42,6 @@ private:
 	float Intensity;
 
 	TWeakObjectPtr<class UPhysicsHandleComponent> PhysicsHandle;
-	TWeakObjectPtr<class APECharacter> TelekinesisOwner;
+	TWeakObjectPtr<class ACharacter> OwningCharacter;
 	TWeakObjectPtr<AActor> TelekinesisTarget;
 };

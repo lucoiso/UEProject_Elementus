@@ -3,13 +3,13 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "Tasks/PEInteractAbility_Task.h"
-#include <Actors/Character/PECharacter.h>
 #include <Interfaces/PEInteractable.h>
 #include <Targeting/PELineTargeting.h>
-#include <PEAbilityTags.h>
 #include <Abilities/GameplayAbilityTargetDataFilter.h>
 #include <Abilities/Tasks/AbilityTask_WaitGameplayTag.h>
+#include <Camera/CameraComponent.h>
 #include <AbilitySystemComponent.h>
+#include <PEAbilityTags.h>
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(PEInteractAbility_Task)
 
@@ -32,11 +32,11 @@ void UPEInteractAbility_Task::Activate()
 {
 	Super::Activate();
 	check(Ability);
-
-	InteractionOwner = Cast<APECharacter>(GetAvatarActor());
-
-	if (ensureAlwaysMsgf(InteractionOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
+		
+	if (UActorComponent* const CameraComp = GetAvatarActor()->GetComponentByClass(UCameraComponent::StaticClass()); IsValid(CameraComp))
 	{
+		OwningCameraComponent = Cast<UCameraComponent>(CameraComp);
+
 		UAbilityTask_WaitGameplayTagAdded* const WaitGameplayTagAdd = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
 		WaitGameplayTagAdd->Added.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
 
@@ -88,8 +88,8 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(Ability->GetAvatarActorFromActorInfo());
 
-	const FVector StartLocation = InteractionOwner->GetCameraComponentLocation();
-	const FVector EndLocation = StartLocation + InteractionOwner->GetCameraForwardVector() * Range;
+	const FVector StartLocation = OwningCameraComponent->GetComponentLocation();
+	const FVector EndLocation = StartLocation + OwningCameraComponent->GetForwardVector() * Range;
 
 	const FGameplayTargetDataFilterHandle DataFilterHandle;
 
@@ -104,7 +104,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 		if (LastInteractableActor_Ref.IsValid())
 		{
-			IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), false, InteractionOwner.Get(), HitResult);
+			IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), false, OwningCameraComponent->GetOwner(), HitResult);
 			LastInteractableActor_Ref.Reset();
 
 			if (LastInteractablePrimitive_Ref.IsValid())
@@ -126,7 +126,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 		LastInteractableActor_Ref = HitResult.GetActor();
 		LastInteractablePrimitive_Ref = HitResult.GetComponent();
 
-		IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), true, InteractionOwner.Get(), HitResult);
+		IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), true, OwningCameraComponent->GetOwner(), HitResult);
 
 		if (bUseCustomDepth)
 		{
@@ -145,7 +145,7 @@ void UPEInteractAbility_Task::OnDestroy(const bool AbilityIsEnding)
 
 	if (LastInteractableActor_Ref.IsValid())
 	{
-		IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), false, InteractionOwner.Get(), HitResult);
+		IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), false, OwningCameraComponent->GetOwner(), HitResult);
 		LastInteractableActor_Ref.Reset();
 
 		if (LastInteractablePrimitive_Ref.IsValid())
