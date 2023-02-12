@@ -6,12 +6,11 @@
 
 ## About
 
-Project Elementus is a third person template that can be used to start projects that will use some new features that come with Unreal Engine 5 as well as powerful existing features like the Gameplay Ability System and others!
+Project Elementus was intended to be a third person template that can be used to start projects that will use some new features that come with Unreal Engine 5 as well as powerful existing features like the Gameplay Ability System and others. And now, **Project Elementus was turned into a sample project and its content was moved to a new plugin**! :)
 
-My intention with this development is to help other developers in their projects by providing a starting point with already implemented functionalities. ❤️
+As a plugin, it is easier to organize and insert the content into already existing projects, facilitating maintenance and usability.
 
-I will be posting updates frequently on this forum thread: [Epic Developer Community](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)  
-Please give some feedback and feel invited to test the project and help me with this work. : )
+This plugin has it's own repository where you can check it for more details: https://github.com/lucoiso/UEElementusModules
 
 ## Features
 
@@ -24,12 +23,19 @@ Please give some feedback and feel invited to test the project and help me with 
 * Custom plugins;
 * Others.
 
+## Requirements
+* Unreal Engine 5.1
+* Visual Studio 2019 or 2022 with the module Game Development with C++
+* Git with Git LFS
+
 ## Links
+* [Modules](https://github.com/lucoiso/UEElementusModules)
 * [Documentation](https://github.com/lucoiso/UEProject_Elementus/wiki)
 * [Unreal Engine Forum](https://forums.unrealengine.com/t/project-elementus-custom-tps-template-w-extra-features/273595)
 * [Email](mailto:contatolukevboas@gmail.com)  
 
 ## Plugins
+* [Modules](https://github.com/lucoiso/UEElementusModules)
 * [Modular Features Extra Actions](https://github.com/lucoiso/UEModularFeatures_ExtraActions)
 * [Elementus Inventory](https://github.com/lucoiso/UEElementusInventory)
 * [EOS SDK Handler](https://github.com/lucoiso/UEEOSSDKHandler)
