@@ -4,6 +4,7 @@
 
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
+#include <LogElementusAbilitySystem.h>
 #include <Targeting/PELineTargeting.h>
 #include <GameFramework/Character.h>
 #include <Camera/CameraComponent.h>
@@ -92,8 +93,6 @@ void UPETelekinesisAbility_Task::TickTask(const float DeltaTime)
 
 void UPETelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
-	UE_LOG(LogGameplayTasks, Display, TEXT("%s - Task %s ended"), *FString(__func__), *GetName());
-
 	bIsFinished = true;
 
 	if (PhysicsHandle.IsValid())

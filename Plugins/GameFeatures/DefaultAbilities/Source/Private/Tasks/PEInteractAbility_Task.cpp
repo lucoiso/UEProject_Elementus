@@ -139,8 +139,6 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 
 void UPEInteractAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
-	UE_LOG(LogGameplayTasks, Display, TEXT("%s - Task %s ended"), *FString(__func__), *GetName());
-
 	bIsFinished = true;
 
 	if (LastInteractableActor_Ref.IsValid())

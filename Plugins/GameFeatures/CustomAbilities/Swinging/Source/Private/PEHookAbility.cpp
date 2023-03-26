@@ -90,13 +90,15 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	if (TargetHit->GetActor()->GetClass()->IsChildOf<ACharacter>() && TargetHit->GetActor() != GetAvatarActorFromActorInfo() || TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
 	{
 		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([=]() -> void
-		{
-			if (IsValid(this) && IsActive())
+		TimerDelegate.BindLambda(
+			[=]() -> void
 			{
-				EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+				if (IsValid(this) && IsActive())
+				{
+					EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+				}
 			}
-		});
+		);
 
 		GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime, false);
 	}

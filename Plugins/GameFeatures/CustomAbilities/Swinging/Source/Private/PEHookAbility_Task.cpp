@@ -124,8 +124,6 @@ void UPEHookAbility_Task::TickTask(const float DeltaTime)
 
 void UPEHookAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
-	UE_LOG(LogGameplayTasks, Display, TEXT("%s - Task %s ended"), *FString(__func__), *GetName());
-
 	bIsFinished = true;
 
 	HitTarget.Reset();

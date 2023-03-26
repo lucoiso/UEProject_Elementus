@@ -24,8 +24,10 @@ public class DefaultAbilities : ModuleRules
 			"GameplayAbilities",
 			"GameplayTags",
 			"GameplayTasks",
-			"ElementusAbilitySystem",
-			"ElementusCommon"
+			"ElementusCommon",
+			"ElementusAbilitySystem"
 		});
+
+		SetupIrisSupport(Target);
 	}
 }
