@@ -12,6 +12,11 @@ public class ProjectElementusTarget : TargetRules
         DefaultBuildSettings = BuildSettingsVersion.V2;
         IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
         ExtraModuleNames.Add("ProjectElementus");
-        bUseIris = true;
+
+        if (!bUseIris)
+        {
+            BuildEnvironment = TargetBuildEnvironment.Unique;
+            bUseIris = true;
+        }
     }
 }

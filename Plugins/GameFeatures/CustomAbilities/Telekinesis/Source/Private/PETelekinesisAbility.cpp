@@ -113,7 +113,7 @@ void UPETelekinesisAbility::WaitGameplayEvent_Callback_Implementation(FGameplayE
 {
 	if (IsValid(AbilityTask->GetTelekinesisTarget()))
 	{
-		PlayAbilitySoundAttached(AbilityTask->GetTelekinesisTarget()->GetRootComponent());
+		PlayAbilitySoundAtLocation(GetWorld(), AbilityTask->GetTelekinesisTarget()->GetActorLocation());
 
 		// When the AnimNotify is triggered, will launch the grabbed actor
 		// in the direction of the camera and end the ability

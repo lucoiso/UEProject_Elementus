@@ -13,6 +13,7 @@
 
 APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
+	bReplicates = true;
 	bNetStartup = false;
 	bNetLoadOnClient = false;
 	PrimaryActorTick.bCanEverTick = false;
@@ -21,28 +22,29 @@ APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer
 	SetRootComponent(GetStaticMeshComponent());
 	SetMobility(EComponentMobility::Movable);
 
+	GetStaticMeshComponent()->SetIsReplicated(true);
 	GetStaticMeshComponent()->SetSimulatePhysics(true);
 	GetStaticMeshComponent()->SetGenerateOverlapEvents(true);
 	GetStaticMeshComponent()->SetNotifyRigidBodyCollision(true);
 	GetStaticMeshComponent()->SetCollisionObjectType(ECC_PhysicsBody);
 	GetStaticMeshComponent()->SetCollisionProfileName(TEXT("PhysicsBody"));
 	GetStaticMeshComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-
-	bReplicates = true;
-	GetStaticMeshComponent()->SetIsReplicated(true);
 }
 
-void APEThrowableActor::ThrowSetup(AActor* Caller)
+void APEThrowableActor::Throw(AActor* CallerActor, const FVector& Velocity)
 {
-	CallerActor.Reset();
-	CallerActor = Caller;
+	Caller.Reset();
+	Caller = CallerActor;
 
 	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &APEThrowableActor::OnThrowableHit);
+
+	GetStaticMeshComponent()->WakeAllRigidBodies();
+	GetStaticMeshComponent()->AddImpulse(Velocity, NAME_None, true);
 }
 
 void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp, const FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (!IsValid(OtherActor) || OtherActor == CallerActor.Get())
+	if (!IsValid(OtherActor) || OtherActor == Caller.Get())
 	{
 		return;
 	}
@@ -66,6 +68,7 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AA
 	}
 
 	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
+	Caller.Reset();
 }
 
 void APEThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)

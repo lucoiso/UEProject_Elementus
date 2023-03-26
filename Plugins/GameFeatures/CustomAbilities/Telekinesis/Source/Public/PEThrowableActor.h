@@ -22,7 +22,8 @@ class APEThrowableActor final : public AStaticMeshActor
 public:
 	explicit APEThrowableActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	void ThrowSetup(AActor* Caller);
+	UFUNCTION(BlueprintCallable, Category = "Project Elementus | Functions")
+	void Throw(AActor* CallerActor, const FVector& Velocity);
 
 protected:
 	/* Effects that will be apply to affected characters on Hit */
@@ -35,5 +36,5 @@ protected:
 	void ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC);
 
 private:
-	TWeakObjectPtr<AActor> CallerActor;
+	TWeakObjectPtr<AActor> Caller;
 };

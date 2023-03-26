@@ -53,8 +53,8 @@ void UPETelekinesisAbility_Task::Activate()
 				}
 
 				PhysicsHandle->SetTargetLocation(OwningCharacter->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
-
 				bTickingTask = true;
+
 				return;
 			}
 		}
@@ -83,7 +83,6 @@ void UPETelekinesisAbility_Task::TickTask(const float DeltaTime)
 	{
 		PhysicsHandle->SetTargetLocation(OwningCharacter->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
 	}
-
 	else
 	{
 		bIsFinished = true;
@@ -122,6 +121,14 @@ void UPETelekinesisAbility_Task::ThrowObject()
 	{
 		PhysicsHandle->ReleaseComponent();
 
+		APEThrowableActor* const Throwable = Cast<APEThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor());
+		if (!IsValid(Throwable))
+		{
+			UE_LOG(LogGameplayTasks, Error, TEXT("%s - Task %s failed to throw object due to invalid throwable actor"), *FString(__func__), *GetName());
+			EndTask();
+			return;
+		}
+
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(Ability->GetAvatarActorFromActorInfo());
 		QueryParams.AddIgnoredActor(GrabbedPrimitive_Temp->GetAttachmentRootActor());
@@ -147,12 +154,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		const FVector Direction = (Temp_EndLoc - GrabbedPrimitive_Temp->GetComponentLocation()).GetSafeNormal();
 		const FVector Velocity = Direction * Intensity;
 
-		GrabbedPrimitive_Temp->SetAllPhysicsLinearVelocity(Velocity);
-
-		if (APEThrowableActor* const Throwable = Cast<APEThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor()))
-		{
-			Throwable->ThrowSetup(Ability->GetAvatarActorFromActorInfo());
-		}
+		Throwable->Throw(Ability->GetAvatarActorFromActorInfo(), Velocity);		
 	}
 
 	EndTask();

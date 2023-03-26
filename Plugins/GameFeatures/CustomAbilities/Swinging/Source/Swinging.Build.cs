@@ -27,7 +27,5 @@ public class Swinging : ModuleRules
 			"GeometryCollectionEngine",
 			"ElementusAbilitySystem"
 		});
-
-		SetupIrisSupport(Target);
 	}
 }
