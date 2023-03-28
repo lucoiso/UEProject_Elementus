@@ -30,6 +30,8 @@ public:
 
 	FHitResult GetInteractableHitResult() const;
 
+	void UpdateInteractableTarget();
+
 private:
 	virtual void TickTask(float DeltaTime) override;
 	virtual void OnDestroy(bool AbilityIsEnding) override;

@@ -22,8 +22,9 @@ APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer
 	bOnlyRelevantToOwner = false;
 	bAlwaysRelevant = false;
 	AActor::SetReplicateMovement(false);
-	NetUpdateFrequency = 100.f;
+	NetUpdateFrequency = 30.f;
 	NetPriority = 1.f;
+	NetDormancy = ENetDormancy::DORM_Initial;
 
 	SetRootComponent(GetStaticMeshComponent());
 	SetMobility(EComponentMobility::Movable);
@@ -39,6 +40,11 @@ APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer
 
 void APEThrowableActor::Throw(AActor* CallerActor, const FVector& Velocity)
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
 	Caller.Reset();
 	Caller = CallerActor;
 
@@ -46,6 +52,8 @@ void APEThrowableActor::Throw(AActor* CallerActor, const FVector& Velocity)
 
 	GetStaticMeshComponent()->WakeAllRigidBodies();
 	GetStaticMeshComponent()->AddImpulse(Velocity, NAME_None, true);
+
+	SetNetDormancy(ENetDormancy::DORM_DormantAll);
 }
 
 void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp, const FVector NormalImpulse, const FHitResult& Hit)
@@ -75,6 +83,8 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AA
 
 	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
 	Caller.Reset();
+
+	SetNetDormancy(ENetDormancy::DORM_Awake);
 }
 
 void APEThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)

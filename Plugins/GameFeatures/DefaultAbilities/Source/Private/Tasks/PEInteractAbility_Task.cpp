@@ -15,7 +15,7 @@
 
 UPEInteractAbility_Task::UPEInteractAbility_Task(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	bTickingTask = true;
+	bTickingTask = false;
 	bIsFinished = false;
 }
 
@@ -32,10 +32,15 @@ void UPEInteractAbility_Task::Activate()
 {
 	Super::Activate();
 	check(Ability);
-		
+
 	if (UActorComponent* const CameraComp = GetAvatarActor()->GetComponentByClass(UCameraComponent::StaticClass()); IsValid(CameraComp))
 	{
 		OwningCameraComponent = Cast<UCameraComponent>(CameraComp);
+
+		if (!Ability->GetActorInfo().IsNetAuthority())
+		{
+			return;
+		}
 
 		UAbilityTask_WaitGameplayTagAdded* const WaitGameplayTagAdd = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(Ability, FGameplayTag::RequestGameplayTag(TEXT("State.CannotInteract")));
 		WaitGameplayTagAdd->Added.AddDynamic(this, &UPEInteractAbility_Task::OnCannotInteractChanged);
@@ -46,6 +51,7 @@ void UPEInteractAbility_Task::Activate()
 		WaitGameplayTagAdd->ReadyForActivation();
 		WaitGameplayTagRemove->ReadyForActivation();
 
+		bTickingTask = true;
 		return;
 	}
 
@@ -68,21 +74,8 @@ FHitResult UPEInteractAbility_Task::GetInteractableHitResult() const
 	return HitResult;
 }
 
-void UPEInteractAbility_Task::OnCannotInteractChanged()
+void UPEInteractAbility_Task::UpdateInteractableTarget()
 {
-	bTickingTask = !AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_CannotInteract));
-}
-
-void UPEInteractAbility_Task::TickTask(const float DeltaTime)
-{
-	if (bIsFinished)
-	{
-		EndTask();
-		return;
-	}
-
-	Super::TickTask(DeltaTime);
-
 	HitResult.Reset(0.f, false);
 
 	FCollisionQueryParams QueryParams;
@@ -117,7 +110,7 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 				LastInteractablePrimitive_Ref.Reset();
 			}
 		}
-		
+
 		return;
 	}
 
@@ -137,6 +130,24 @@ void UPEInteractAbility_Task::TickTask(const float DeltaTime)
 	}
 }
 
+void UPEInteractAbility_Task::OnCannotInteractChanged()
+{
+	bTickingTask = !AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(GlobalTag_CannotInteract));
+}
+
+void UPEInteractAbility_Task::TickTask(const float DeltaTime)
+{
+	if (bIsFinished)
+	{
+		EndTask();
+		return;
+	}
+
+	Super::TickTask(DeltaTime);
+
+	UpdateInteractableTarget();
+}
+
 void UPEInteractAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	bIsFinished = true;
@@ -144,12 +155,9 @@ void UPEInteractAbility_Task::OnDestroy(const bool AbilityIsEnding)
 	if (LastInteractableActor_Ref.IsValid())
 	{
 		IPEInteractable::Execute_SetIsCurrentlyFocusedByActor(LastInteractableActor_Ref.Get(), false, OwningCameraComponent->GetOwner(), HitResult);
-		LastInteractableActor_Ref.Reset();
-
 		if (LastInteractablePrimitive_Ref.IsValid())
 		{
 			LastInteractablePrimitive_Ref->SetRenderCustomDepth(false);
-			LastInteractablePrimitive_Ref.Reset();
 		}
 	}
 

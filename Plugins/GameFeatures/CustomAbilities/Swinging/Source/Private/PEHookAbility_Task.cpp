@@ -3,6 +3,7 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEHookAbility_Task.h"
+#include <LogElementusAbilitySystem.h>
 #include <GameFramework/Character.h>
 #include <GameFramework/CharacterMovementComponent.h>
 #include <GeometryCollection/GeometryCollectionComponent.h>
@@ -54,7 +55,10 @@ void UPEHookAbility_Task::Activate()
 				OnHooking.ExecuteIfBound(true);
 			}
 
-			bTickingTask = true;
+			bIsTargetMovable = HitDataHandle.GetComponent()->Mobility == EComponentMobility::Movable;
+			bIsGeometryCollection = HitDataHandle.GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>();
+
+			bTickingTask = Ability->GetActorInfo().IsNetAuthority();
 			return;
 		}
 	}
@@ -80,54 +84,49 @@ FHitResult UPEHookAbility_Task::GetHitResult() const
 
 void UPEHookAbility_Task::TickTask(const float DeltaTime)
 {
+	Super::TickTask(DeltaTime); 
+	
 	if (bIsFinished)
 	{
-		EndTask();
 		return;
 	}
 
-	Super::TickTask(DeltaTime);
-
-	if (IsValid(HitDataHandle.GetComponent()))
-	{
-		const bool bIsTargetMovable = HitDataHandle.GetComponent()->Mobility == EComponentMobility::Movable;
-
-		// UGeometryCollectionComponent is a special case, it is movable but
-		// we can't get individual geometry bones via targeting (HitDataHandle.BoneName is returning None)
-		// To avoid wrong location, we will use the final location of the hook instead of the hit location
-		CurrentHookLocation = bIsTargetMovable && !HitDataHandle.GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>() ? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName) : HitDataHandle.Location;
-
-		if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation();
-			Difference.Size() >= 100.f)
-		{
-			const FVector BaseForce = Difference * Intensity;
-			const FVector HookForce = MaxForce > 0.f ? BaseForce.GetClampedToMaxSize(MaxForce) : BaseForce;
-
-			HookOwner->GetCharacterMovement()->AddForce(HookForce);
-
-			if (HitTarget.IsValid())
-			{
-				HitTarget->GetCharacterMovement()->AddForce(-1.f * HookForce);
-			}
-			else if (bIsTargetMovable && HitDataHandle.GetComponent()->IsSimulatingPhysics())
-			{
-				HitDataHandle.GetComponent()->AddForce(-1.f * HookForce);
-			}
-		}
-	}
-	else
-	{
-		bIsFinished = true;
-		EndTask();
-	}
+	UpdateHookMovement();
 }
 
 void UPEHookAbility_Task::OnDestroy(const bool AbilityIsEnding)
 {
 	bIsFinished = true;
 
-	HitTarget.Reset();
-	HookOwner.Reset();
-
 	Super::OnDestroy(AbilityIsEnding);
+}
+
+void UPEHookAbility_Task::UpdateHookMovement()
+{
+	if (!IsValid(HitDataHandle.GetComponent()))
+	{
+		return;
+	}
+
+	// UGeometryCollectionComponent is a special case, it is movable but
+	// we can't get individual geometry bones via targeting (HitDataHandle.BoneName is returning None)
+	// To avoid wrong location, we will use the final location of the hook instead of the hit location
+	CurrentHookLocation = bIsTargetMovable && !bIsGeometryCollection ? HitDataHandle.GetComponent()->GetSocketLocation(HitDataHandle.BoneName) : HitDataHandle.Location;
+
+	if (const FVector Difference = CurrentHookLocation - HookOwner->GetActorLocation(); Difference.Size() >= 100.f)
+	{
+		const FVector BaseForce = Difference * Intensity;
+		const FVector HookForce = MaxForce > 0.f ? BaseForce.GetClampedToMaxSize(MaxForce) : BaseForce;
+
+		HookOwner->GetCharacterMovement()->AddForce(HookForce);
+
+		if (HitTarget.IsValid())
+		{
+			HitTarget->GetCharacterMovement()->AddForce(-1.f * HookForce);
+		}
+		else if (bIsTargetMovable && HitDataHandle.GetComponent()->IsSimulatingPhysics())
+		{
+			HitDataHandle.GetComponent()->AddForce(-1.f * HookForce);
+		}
+	}
 }

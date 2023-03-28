@@ -93,6 +93,11 @@ void UPETelekinesisAbility::GrabbingComplete(const bool ValidTarget)
 	// When the AnimNotify is triggered, will launch the grabbed actor in the direction of the camera
 	if (ValidTarget)
 	{
+		if (HasAuthority(&CurrentActivationInfo))
+		{
+			AbilityTask->GetTelekinesisTarget()->SetNetDormancy(DORM_Awake);
+		}
+
 		ActivateWaitConfirmInputTask();
 		ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag(GlobalTag_AbilityNotify));
 	}

@@ -30,13 +30,18 @@ UPETelekinesisAbility_Task* UPETelekinesisAbility_Task::PETelekinesisAbilityMove
 void UPETelekinesisAbility_Task::Activate()
 {
 	Super::Activate();
-	check(Ability);
+	check(Ability);	
 
 	OwningCharacter = Cast<ACharacter>(GetAvatarActor());
 
 	if (ensureAlwaysMsgf(OwningCharacter.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
 	{
 		PhysicsHandle = NewObject<UPhysicsHandleComponent>(OwningCharacter.Get(), UPhysicsHandleComponent::StaticClass(), TEXT("TelekinesisPhysicsHandle"));
+		
+		if (!Ability->GetActorInfo().IsNetAuthority())
+		{
+			return;
+		}
 
 		if (PhysicsHandle.IsValid())
 		{
@@ -45,6 +50,7 @@ void UPETelekinesisAbility_Task::Activate()
 
 			if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 			{
+				PhysicsHandle->GetGrabbedComponent()->SetSimulatePhysics(true);
 				PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
 
 				if (ShouldBroadcastAbilityTaskDelegates())
@@ -53,8 +59,8 @@ void UPETelekinesisAbility_Task::Activate()
 				}
 
 				PhysicsHandle->SetTargetLocation(OwningCharacter->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
-				bTickingTask = true;
 
+				bTickingTask = true;
 				return;
 			}
 		}
@@ -71,22 +77,16 @@ void UPETelekinesisAbility_Task::Activate()
 
 void UPETelekinesisAbility_Task::TickTask(const float DeltaTime)
 {
+	Super::TickTask(DeltaTime);
+
 	if (bIsFinished)
 	{
-		EndTask();
 		return;
 	}
-
-	Super::TickTask(DeltaTime);
 
 	if (IsValid(PhysicsHandle->GetGrabbedComponent()))
 	{
 		PhysicsHandle->SetTargetLocation(OwningCharacter->GetMesh()->GetSocketLocation("Telekinesis_AbilitySocket"));
-	}
-	else
-	{
-		bIsFinished = true;
-		EndTask();
 	}
 }
 
@@ -105,17 +105,12 @@ void UPETelekinesisAbility_Task::OnDestroy(const bool AbilityIsEnding)
 		}
 	}
 
-	PhysicsHandle.Reset();
-
-	OwningCharacter.Reset();
-	TelekinesisTarget.Reset();
-
 	Super::OnDestroy(AbilityIsEnding);
 }
 
 void UPETelekinesisAbility_Task::ThrowObject()
 {
-	bIsFinished = true;
+	bTickingTask = false;
 
 	if (UPrimitiveComponent* const GrabbedPrimitive_Temp = PhysicsHandle->GetGrabbedComponent())
 	{
@@ -157,6 +152,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		Throwable->Throw(Ability->GetAvatarActorFromActorInfo(), Velocity);		
 	}
 
+	bIsFinished = true;
 	EndTask();
 }
 
