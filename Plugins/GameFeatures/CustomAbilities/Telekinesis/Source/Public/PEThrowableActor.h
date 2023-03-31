@@ -15,7 +15,7 @@ class UAbilitySystemComponent;
  *
  */
 UCLASS(MinimalAPI, Abstract, Blueprintable, Category = "Project Elementus | Classes")
-class APEThrowableActor final : public AStaticMeshActor
+class APEThrowableActor : public AStaticMeshActor
 {
 	GENERATED_BODY()
 
