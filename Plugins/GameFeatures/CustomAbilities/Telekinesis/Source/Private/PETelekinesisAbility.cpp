@@ -5,9 +5,11 @@
 #include "PETelekinesisAbility.h"
 #include "PETelekinesisAbility_Task.h"
 #include "PEThrowableActor.h"
-#include <GAS/Targeting/PELineTargeting.h>
-#include <GAS/System/PETrace.h>
-#include <Management/Data/PEGlobalTags.h>
+#include <Targeting/PELineTargeting.h>
+#include <Targeting/PETrace.h>
+#include <PEAbilityTags.h>
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PETelekinesisAbility)
 
 UPETelekinesisAbility::UPETelekinesisAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), ThrowIntensity(2750.f)
 {
@@ -91,6 +93,11 @@ void UPETelekinesisAbility::GrabbingComplete(const bool ValidTarget)
 	// When the AnimNotify is triggered, will launch the grabbed actor in the direction of the camera
 	if (ValidTarget)
 	{
+		if (HasAuthority(&CurrentActivationInfo))
+		{
+			AbilityTask->GetTelekinesisTarget()->SetNetDormancy(DORM_Awake);
+		}
+
 		ActivateWaitConfirmInputTask();
 		ActivateWaitGameplayEventTask(FGameplayTag::RequestGameplayTag(GlobalTag_AbilityNotify));
 	}
@@ -111,7 +118,7 @@ void UPETelekinesisAbility::WaitGameplayEvent_Callback_Implementation(FGameplayE
 {
 	if (IsValid(AbilityTask->GetTelekinesisTarget()))
 	{
-		PlayAbilitySoundAttached(AbilityTask->GetTelekinesisTarget()->GetRootComponent());
+		PlayAbilitySoundAtLocation(GetWorld(), AbilityTask->GetTelekinesisTarget()->GetActorLocation());
 
 		// When the AnimNotify is triggered, will launch the grabbed actor
 		// in the direction of the camera and end the ability

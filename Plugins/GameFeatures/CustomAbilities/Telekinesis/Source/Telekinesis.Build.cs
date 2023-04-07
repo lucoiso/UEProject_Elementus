@@ -20,7 +20,9 @@ public class Telekinesis : ModuleRules
 			"GameplayAbilities",
 			"GameplayTags",
 			"GameplayTasks",
-			"ProjectElementus"
+			"ElementusAbilitySystem"
 		});
+
+		SetupIrisSupport(Target);
 	}
 }

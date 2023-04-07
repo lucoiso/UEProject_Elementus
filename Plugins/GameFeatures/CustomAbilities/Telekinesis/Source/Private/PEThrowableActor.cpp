@@ -3,59 +3,72 @@
 // Repo: https://github.com/lucoiso/UEProject_Elementus
 
 #include "PEThrowableActor.h"
-#include <Actors/Character/PECharacter.h>
-#include <GAS/System/PEAbilityData.h>
-#include <GAS/System/PEAbilitySystemComponent.h>
+#include <Core/PEAbilityData.h>
+#include <Core/PEAbilitySystemComponent.h>
+#include <AbilitySystemGlobals.h>
+#include <GameFramework/Character.h>
 #include <Components/StaticMeshComponent.h>
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEThrowableActor)
 
 APEThrowableActor::APEThrowableActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
+	bReplicates = true;
 	bNetStartup = false;
 	bNetLoadOnClient = false;
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
+	bOnlyRelevantToOwner = false;
+	bAlwaysRelevant = false;
+	AActor::SetReplicateMovement(false);
+	NetUpdateFrequency = 30.f;
+	NetPriority = 1.f;
+	NetDormancy = ENetDormancy::DORM_Initial;
+
 	SetRootComponent(GetStaticMeshComponent());
 	SetMobility(EComponentMobility::Movable);
 
+	GetStaticMeshComponent()->SetIsReplicated(true);
 	GetStaticMeshComponent()->SetSimulatePhysics(true);
 	GetStaticMeshComponent()->SetGenerateOverlapEvents(true);
 	GetStaticMeshComponent()->SetNotifyRigidBodyCollision(true);
 	GetStaticMeshComponent()->SetCollisionObjectType(ECC_PhysicsBody);
 	GetStaticMeshComponent()->SetCollisionProfileName(TEXT("PhysicsBody"));
 	GetStaticMeshComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-
-	bReplicates = true;
-	GetStaticMeshComponent()->SetIsReplicated(true);
 }
 
-void APEThrowableActor::ThrowSetup(AActor* Caller)
+void APEThrowableActor::Throw(AActor* CallerActor, const FVector& Velocity)
 {
-	CallerActor.Reset();
-	CallerActor = Caller;
-
-	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &APEThrowableActor::OnThrowableHit);
-}
-
-void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp, const FVector NormalImpulse, const FHitResult& Hit)
-{
-	if (!IsValid(OtherActor) || OtherActor == CallerActor.Get())
+	if (GetLocalRole() != ROLE_Authority)
 	{
 		return;
 	}
 
-	if (OtherActor->GetClass()->IsChildOf<APECharacter>())
+	Caller.Reset();
+	Caller = CallerActor;
+
+	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &APEThrowableActor::OnThrowableHit);
+
+	GetStaticMeshComponent()->WakeAllRigidBodies();
+	GetStaticMeshComponent()->AddImpulse(Velocity, NAME_None, true);
+
+	SetNetDormancy(ENetDormancy::DORM_DormantAll);
+}
+
+void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AActor* OtherActor, UPrimitiveComponent* OtherComp, const FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (!IsValid(OtherActor) || OtherActor == Caller.Get())
 	{
-		if (APECharacter* const Player = Cast<APECharacter>(OtherActor))
+		return;
+	}
+
+	if (OtherActor->GetClass()->IsChildOf<ACharacter>())
+	{
+		if (ACharacter* const Character = Cast<ACharacter>(OtherActor))
 		{
 			constexpr float ImpulseMultiplier = 5.f;
-
-			Player->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
-
-			if (ensureAlwaysMsgf(IsValid(Player->GetAbilitySystemComponent()), TEXT("%s have a invalid Ability System Component"), *Player->GetName()))
-			{
-				ApplyThrowableEffect(Player->GetAbilitySystemComponent());
-			}
+			Character->LaunchCharacter(NormalImpulse.GetSafeNormal() * ImpulseMultiplier, false, false);
 		}
 	}
 	else if (IsValid(OtherComp) && OtherComp->IsSimulatingPhysics() && OtherComp->Mobility == EComponentMobility::Movable)
@@ -63,7 +76,15 @@ void APEThrowableActor::OnThrowableHit([[maybe_unused]] UPrimitiveComponent*, AA
 		OtherComp->AddImpulseAtLocation(NormalImpulse.GetSafeNormal(), Hit.ImpactPoint, Hit.BoneName);
 	}
 
+	if (UAbilitySystemComponent* const TargetABSC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OtherActor))
+	{
+		ApplyThrowableEffect(TargetABSC);
+	}
+
 	GetStaticMeshComponent()->OnComponentHit.RemoveAll(this);
+	Caller.Reset();
+
+	SetNetDormancy(ENetDormancy::DORM_Awake);
 }
 
 void APEThrowableActor::ApplyThrowableEffect(UAbilitySystemComponent* TargetABSC)

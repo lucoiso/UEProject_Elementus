@@ -44,4 +44,9 @@ private:
 	bool bIsFinished;
 	FHitResult HitDataHandle;
 	FVector CurrentHookLocation;
+
+	bool bIsTargetMovable;
+	bool bIsGeometryCollection;
+
+	void UpdateHookMovement();
 };

@@ -30,6 +30,8 @@ public:
 
 	FHitResult GetInteractableHitResult() const;
 
+	void UpdateInteractableTarget();
+
 private:
 	virtual void TickTask(float DeltaTime) override;
 	virtual void OnDestroy(bool AbilityIsEnding) override;
@@ -41,7 +43,7 @@ private:
 	float Range;
 	bool bUseCustomDepth;
 
-	TWeakObjectPtr<class APECharacter> InteractionOwner;
+	TWeakObjectPtr<class UCameraComponent> OwningCameraComponent;
 	TWeakObjectPtr<AActor> LastInteractableActor_Ref;
 	TWeakObjectPtr<UPrimitiveComponent> LastInteractablePrimitive_Ref;
 

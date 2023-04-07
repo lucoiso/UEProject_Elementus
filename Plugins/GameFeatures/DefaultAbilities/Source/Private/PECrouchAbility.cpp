@@ -5,6 +5,8 @@
 #include "PECrouchAbility.h"
 #include <GameFramework/Character.h>
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PECrouchAbility)
+
 UPECrouchAbility::UPECrouchAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
@@ -16,16 +18,16 @@ void UPECrouchAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	ACharacter* const Player = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
+	ACharacter* const OwningCharacter = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
 
 	// Only characters can activate this ability
-	if (!IsValid(Player))
+	if (!IsValid(OwningCharacter))
 	{
 		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 		return;
 	}
 
-	Player->CanCrouch() && !Player->bIsCrouched ? Player->Crouch() : Player->UnCrouch();
+	OwningCharacter->CanCrouch() && !OwningCharacter->bIsCrouched ? OwningCharacter->Crouch() : OwningCharacter->UnCrouch();
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }

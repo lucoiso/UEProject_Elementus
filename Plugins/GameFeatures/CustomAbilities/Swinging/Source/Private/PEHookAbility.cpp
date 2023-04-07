@@ -4,11 +4,13 @@
 
 #include "PEHookAbility.h"
 #include "PEHookAbility_Task.h"
-#include <GAS/Targeting/PELineTargeting.h>
-#include <GAS/System/PETrace.h>
-#include <Management/Data/PEGlobalTags.h>
+#include <Targeting/PELineTargeting.h>
+#include <Targeting/PETrace.h>
+#include <PEAbilityTags.h>
 #include <GameFramework/Character.h>
 #include <GeometryCollection/GeometryCollectionComponent.h>
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEHookAbility)
 
 UPEHookAbility::UPEHookAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), HookIntensity(100.f), ImpulseIntensityMultiplier(30.f), MaxHookForce(200000.f)
 {
@@ -88,13 +90,15 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	if (TargetHit->GetActor()->GetClass()->IsChildOf<ACharacter>() && TargetHit->GetActor() != GetAvatarActorFromActorInfo() || TargetHit->GetComponent()->GetClass()->IsChildOf<UGeometryCollectionComponent>())
 	{
 		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([=]() -> void
-		{
-			if (IsValid(this) && IsActive())
+		TimerDelegate.BindLambda(
+			[=]() -> void
 			{
-				EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+				if (IsValid(this) && IsActive())
+				{
+					EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true, false);
+				}
 			}
-		});
+		);
 
 		GetWorld()->GetTimerManager().SetTimer(CancelationTimerHandle, TimerDelegate, AbilityActiveTime, false);
 	}

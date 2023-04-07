@@ -4,8 +4,11 @@
 
 #include "PEInteractAbility.h"
 #include "Tasks/PEInteractAbility_Task.h"
-#include <Actors/Character/PECharacter.h>
-#include <Actors/Interfaces/PEInteractable.h>
+#include <GameFramework/Character.h>
+#include <Interfaces/PEInteractable.h>
+#include <AbilitySystemComponent.h>
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(PEInteractAbility)
 
 UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -15,8 +18,6 @@ UPEInteractAbility::UPEInteractAbility(const FObjectInitializer& ObjectInitializ
 
 	AbilityMaxRange = 1000.f;
 	bUseCustomDepth = false;
-
-	bReplicateInputDirectly = true;
 }
 
 void UPEInteractAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -31,11 +32,22 @@ void UPEInteractAbility::InputPressed(const FGameplayAbilitySpecHandle Handle, c
 {
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 
-	if (TaskHandle.IsValid() && TaskHandle->GetIsInteractAllowed())
+	if (!TaskHandle.IsValid())
 	{
-		if (IsValid(TaskHandle->GetInteractable()) && IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable()))
+		return;
+	}
+
+	TaskHandle->UpdateInteractableTarget();
+
+	const bool bCanInteract = TaskHandle->GetIsInteractAllowed() && IsValid(TaskHandle->GetInteractable()) && IPEInteractable::Execute_IsInteractEnabled(TaskHandle->GetInteractable());
+
+	if (bCanInteract)
+	{
+		if (!ActorInfo->IsNetAuthority())
 		{
-			IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(), Cast<APECharacter>(ActorInfo->AvatarActor.Get()), TaskHandle->GetInteractableHitResult());
+			ActorInfo->AbilitySystemComponent->ServerSetInputPressed(Handle);
 		}
+
+		IPEInteractable::Execute_DoInteractionBehavior(TaskHandle->GetInteractable(), Cast<ACharacter>(ActorInfo->AvatarActor.Get()), TaskHandle->GetInteractableHitResult());
 	}
 }
