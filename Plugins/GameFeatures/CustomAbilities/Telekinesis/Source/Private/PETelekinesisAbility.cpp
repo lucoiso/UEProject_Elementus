@@ -81,8 +81,6 @@ void UPETelekinesisAbility::WaitTargetData_Callback_Implementation(const FGamepl
 	Params.Location = TargetHit->Location;
 	Params.TargetAttachComponent = TargetHit->GetComponent();
 
-	TargetData->AddTargetDataToGameplayCueParameters(Params);
-
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Telekinesis"), Params);
 }
 

@@ -82,8 +82,6 @@ void UPEHookAbility::WaitTargetData_Callback_Implementation(const FGameplayAbili
 	Params.Location = TargetHit->Location;
 	Params.TargetAttachComponent = TargetHit->GetComponent();
 
-	TargetData->AddTargetDataToGameplayCueParameters(Params);
-
 	ActivateGameplayCues(FGameplayTag::RequestGameplayTag("GameplayCue.Swinging"), Params);
 
 	// If the target is a character, will finish this ability after AbilityActiveTime seconds

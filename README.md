@@ -22,7 +22,7 @@ This plugin has it's own repository where you can check it for more details: htt
 * Others.
 
 ## Requirements
-* Unreal Engine 5.2.
+* Unreal Engine 5.3.
 * Visual Studio 2019 or 2022 with the module Game Development with C++.
 * Git with Git LFS.
 
