@@ -33,7 +33,7 @@ void UPEHookAbility_Task::Activate()
 
 	HookOwner = Cast<ACharacter>(GetAvatarActor());
 
-	if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
+	if (ensureAlwaysMsgf(HookOwner.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__FUNCTION__), *GetName()))
 	{
 		CurrentHookLocation = HitDataHandle.Location;
 

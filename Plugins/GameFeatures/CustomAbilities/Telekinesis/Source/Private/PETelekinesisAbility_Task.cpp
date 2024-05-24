@@ -34,7 +34,7 @@ void UPETelekinesisAbility_Task::Activate()
 
 	OwningCharacter = Cast<ACharacter>(GetAvatarActor());
 
-	if (ensureAlwaysMsgf(OwningCharacter.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__func__), *GetName()))
+	if (ensureAlwaysMsgf(OwningCharacter.IsValid(), TEXT("%s - Task %s failed to activate because have a invalid owner"), *FString(__FUNCTION__), *GetName()))
 	{
 		PhysicsHandle = NewObject<UPhysicsHandleComponent>(OwningCharacter.Get(), UPhysicsHandleComponent::StaticClass(), TEXT("TelekinesisPhysicsHandle"));
 		
@@ -119,7 +119,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		APEThrowableActor* const Throwable = Cast<APEThrowableActor>(GrabbedPrimitive_Temp->GetAttachmentRootActor());
 		if (!IsValid(Throwable))
 		{
-			UE_LOG(LogGameplayTasks, Error, TEXT("%s - Task %s failed to throw object due to invalid throwable actor"), *FString(__func__), *GetName());
+			UE_LOG(LogGameplayTasks, Error, TEXT("%s - Task %s failed to throw object due to invalid throwable actor"), *FString(__FUNCTION__), *GetName());
 			EndTask();
 			return;
 		}
@@ -131,7 +131,7 @@ void UPETelekinesisAbility_Task::ThrowObject()
 		UActorComponent* const CameraComp = OwningCharacter->GetComponentByClass(UCameraComponent::StaticClass());
 		if (!IsValid(CameraComp))
 		{
-			UE_LOG(LogGameplayTasks, Error, TEXT("%s - Task %s failed to throw object due to invalid camera component"), *FString(__func__), *GetName());
+			UE_LOG(LogGameplayTasks, Error, TEXT("%s - Task %s failed to throw object due to invalid camera component"), *FString(__FUNCTION__), *GetName());
 			EndTask();
 			return;
 		}
